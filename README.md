@@ -1,6 +1,6 @@
 # VeVote Mono Repo
 
-VeVote is a decentralized governance platform built on VeChain. This repository serves as the monorepo for the VeVote project, containing all relevant components such as the frontend, smart contracts, and utilities.
+VeVote is a decentralized governance platform. This repository serves as the monorepo for the VeVote project, containing all relevant components such as the frontend, smart contracts, and utilities.
 
 ## Requirements
 
