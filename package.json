@@ -1,0 +1,38 @@
+{
+  "name": "react-dapp-template",
+  "private": true,
+  "scripts": {
+    "build": "turbo build",
+    "lint": "turbo lint",
+    "clean": "turbo clean",
+    "purge": "turbo purge",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "dev": "yarn && dotenv -v VITE_APP_ENV=local -- turbo dev --",
+    "dev:testnet": "yarn && dotenv -v VITE_APP_ENV=testnet -e .env -- turbo dev:testnet --",
+    "dev:mainnet": "yarn && dotenv -v VITE_APP_ENV=mainnet -e .env -- turbo dev:mainnet --",
+    "contracts:compile": "dotenv -v VITE_APP_ENV=local -- turbo run compile --filter=@repo/contracts",
+    "contracts:deploy": "dotenv -v VITE_APP_ENV=local -- turbo run deploy --filter=@repo/contracts",
+    "contracts:deploy:testnet": "dotenv -v VITE_APP_ENV=testnet -- turbo run deploy:testnet --filter=@repo/contracts",
+    "contracts:deploy:mainnet": "dotenv -v VITE_APP_ENV=mainnet -- turbo run deploy:mainnet --filter=@repo/contracts",
+    "check-contracts-deployment": "npx hardhat run scripts/checkContractsDeployment.ts",
+    "check-contracts-deployment:testnet": "npx hardhat run scripts/checkContractsDeployment.ts --network vechain_testnet",
+    "check-contracts-deployment:mainnet": "npx hardhat run scripts/checkContractsDeployment.ts --network vechain_mainnet",
+    "solo-up": "make solo-up",
+    "solo-down": "make solo-down",
+    "solo-clean": "make solo-clean"
+  },
+  "devDependencies": {
+    "prettier": "^3.2.5",
+    "turbo": "^1.13.3",
+    "typescript": "^5.4.5",
+    "dotenv-cli": "latest"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "packageManager": "yarn@1.22.17",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ]
+}
