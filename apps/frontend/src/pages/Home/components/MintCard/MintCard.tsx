@@ -11,58 +11,53 @@ import {
   Text,
   VStack,
   useToast,
-} from "@chakra-ui/react";
-import { useVeVoteMinter } from "../../../../hooks/useVeVoteMinter";
-import { useForm } from "react-hook-form";
-import { useCallback } from "react";
-import { useMintVeVote } from "../../../../hooks/useMintVeVote";
+} from "@chakra-ui/react"
+import { useForm } from "react-hook-form"
+import { useCallback } from "react"
+import { useVeVoteMinter } from "@/hooks/useVeVoteMinter"
+import { useMintVeVote } from "@/hooks/useMintVeVote"
 
 interface MintForm {
-  amount: string;
-  receiver: string;
+  amount: string
+  receiver: string
 }
 
 export const MintCard = () => {
-  const form = useForm<MintForm>();
-  const toast = useToast();
+  const form = useForm<MintForm>()
+  const toast = useToast()
 
-  const { errors } = form.formState;
+  const { errors } = form.formState
 
   const mintMutation = useMintVeVote({
     onSuccess: () => {
-      form.reset();
-      mintMutation.resetStatus();
+      form.reset()
+      mintMutation.resetStatus()
       toast({
         title: "Success",
         description: "Minted correctly!",
         status: "success",
         duration: 9000,
         isClosable: true,
-      });
+      })
     },
-  });
+  })
 
   const onSubmit = useCallback(
     (data: MintForm) => {
-      mintMutation.sendTransaction(data);
+      mintMutation.sendTransaction(data)
     },
-    [mintMutation]
-  );
+    [mintMutation],
+  )
 
-  const { isMinter, minter } = useVeVoteMinter();
-  console.log("minter", minter);
+  const { isMinter, minter } = useVeVoteMinter()
+  console.log("minter", minter)
   if (!isMinter) {
-    return null;
+    return null
   }
   return (
     <Card>
       <CardBody>
-        <VStack
-          align={"stretch"}
-          as="form"
-          onSubmit={form.handleSubmit(onSubmit)}
-          gap={4}
-        >
+        <VStack align={"stretch"} as="form" onSubmit={form.handleSubmit(onSubmit)} gap={4}>
           <HStack justify={"flex-end"} w="full">
             {isMinter && <Badge colorScheme="orange">Admin</Badge>}
           </HStack>
@@ -109,5 +104,5 @@ export const MintCard = () => {
         </VStack>
       </CardBody>
     </Card>
-  );
-};
+  )
+}
