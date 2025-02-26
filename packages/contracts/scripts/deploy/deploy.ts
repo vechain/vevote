@@ -1,11 +1,12 @@
 import { ethers, network } from "hardhat";
 import { ContractsConfig } from "@repo/config/contracts/type";
 import { HttpNetworkConfig } from "hardhat/types";
-import { saveContractsToFile } from "../helpers";
+import { deployProxy, saveContractsToFile } from "../helpers";
 import { Network } from "@repo/constants";
 import { AppConfig, getConfig } from "@repo/config";
 import fs from "fs";
 import path from "path";
+import { VeVote } from "../../typechain-types";
 
 const appConfig = getConfig();
 
@@ -22,12 +23,12 @@ export async function deployAll(config: ContractsConfig) {
   // ---------------------- Deploy Contracts ----------------------
 
   // Deploy the vevote contract
-  const contractName = "VeVote";
-  const owner = "0xf077b491b355e64048ce21e3a6fc4751eeea77fa";
-  const VeVoteContract = await ethers.getContractFactory(contractName);
-  const vevote = await VeVoteContract.deploy(owner);
-  await vevote.waitForDeployment();
-  console.log(`${contractName} impl.: ${await vevote.getAddress()}`);
+  const vevote = (await deployProxy(
+    "VeVote",
+    [],
+    undefined,
+    true,
+  )) as VeVote
 
   const date = new Date(performance.now() - start);
   console.log(
