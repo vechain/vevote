@@ -1,4 +1,4 @@
-import { useSendVeVote } from "@/hooks/useSendVeVote"
+import { useSendVeVote } from "@/hooks/useSendVeVote";
 import {
   Button,
   Card,
@@ -10,42 +10,42 @@ import {
   Text,
   VStack,
   useToast,
-} from "@chakra-ui/react"
-import { useCallback } from "react"
-import { useForm } from "react-hook-form"
+} from "@chakra-ui/react";
+import { useCallback } from "react";
+import { useForm } from "react-hook-form";
 
 interface SendForm {
-  amount: string
-  receiver: string
+  amount: string;
+  receiver: string;
 }
 
 export const SendCard = () => {
-  const form = useForm<SendForm>()
-  const { errors } = form.formState
-  const toast = useToast()
+  const form = useForm<SendForm>();
+  const { errors } = form.formState;
+  const toast = useToast();
 
   const sendMutation = useSendVeVote({
     onSuccess: () => {
-      form.reset()
-      sendMutation.resetStatus()
+      form.reset();
+      sendMutation.resetStatus();
       toast({
         title: "Success",
         description: "Transaction sent",
         status: "success",
         duration: 9000,
         isClosable: true,
-      })
+      });
     },
-  })
+  });
   const onSubmit = useCallback(
     (data: SendForm) => {
-      sendMutation.sendTransaction(data)
+      sendMutation.sendTransaction(data);
     },
     [sendMutation],
-  )
-  const isMinter = true
+  );
+  const isMinter = true;
   if (!isMinter) {
-    return null
+    return null;
   }
   return (
     <Card>
@@ -92,5 +92,5 @@ export const SendCard = () => {
         </VStack>
       </CardBody>
     </Card>
-  )
-}
+  );
+};

@@ -1,5 +1,5 @@
-import { Image, VStack } from "@chakra-ui/react"
-import { motion } from "framer-motion"
+import { Image, VStack } from "@chakra-ui/react";
+import { motion } from "framer-motion";
 
 export const NotConnected = () => {
   return (
@@ -12,5 +12,5 @@ export const NotConnected = () => {
         <Image src={"/images/vevote.jpeg"} alt="Not Connected" w={"400px"} h="400px" rounded="full" />
       </motion.div>
     </VStack>
-  )
-}
+  );
+};

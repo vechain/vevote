@@ -1,9 +1,9 @@
 /// <reference types="vitest" />
-import path from "path"
-import { defineConfig } from "vite"
-import react from "@vitejs/plugin-react"
-import { nodePolyfills } from "vite-plugin-node-polyfills"
-import { resolve } from "path"
+import path from "path";
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import { nodePolyfills } from "vite-plugin-node-polyfills";
+import { resolve } from "path";
 
 export default defineConfig(({ mode }) => {
   return {
@@ -35,5 +35,5 @@ export default defineConfig(({ mode }) => {
       setupFiles: [resolve(__dirname, "test/setup/setup.ts"), resolve(__dirname, "test/setup/resizeObserverMock.ts")],
     },
     base: mode === "production" ? "/vechain-dapp-kit/react/" : "/",
-  }
-})
+  };
+});

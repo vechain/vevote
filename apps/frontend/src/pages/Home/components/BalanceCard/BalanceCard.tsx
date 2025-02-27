@@ -1,8 +1,8 @@
-import { Card, CardBody, HStack, Image, Text } from "@chakra-ui/react"
-import { useVeVoteBalance } from "@/hooks/useVeVoteBalance"
+import { Card, CardBody, HStack, Image, Text } from "@chakra-ui/react";
+import { useVeVoteBalance } from "@/hooks/useVeVoteBalance";
 
 export const BalanceCard = () => {
-  const { balance } = useVeVoteBalance()
+  const { balance } = useVeVoteBalance();
   return (
     <Card>
       <CardBody>
@@ -19,5 +19,5 @@ export const BalanceCard = () => {
         </HStack>
       </CardBody>
     </Card>
-  )
-}
+  );
+};
