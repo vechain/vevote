@@ -1,4 +1,4 @@
-import { useSendVeVote } from "@/hooks/useSendVeVote";
+import { useBuildSendVeVote } from "@/hooks/useBuildSendVeVote";
 import {
   Button,
   Card,
@@ -24,7 +24,7 @@ export const SendCard = () => {
   const { errors } = form.formState;
   const toast = useToast();
 
-  const sendMutation = useSendVeVote({
+  const sendMutation = useBuildSendVeVote({
     onSuccess: () => {
       form.reset();
       sendMutation.resetStatus();

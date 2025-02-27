@@ -15,7 +15,7 @@ import {
 import { useForm } from "react-hook-form";
 import { useCallback } from "react";
 import { useVeVoteMinter } from "@/hooks/useVeVoteMinter";
-import { useMintVeVote } from "@/hooks/useMintVeVote";
+import { useBuildMintVeVote } from "@/hooks/useBuildMintVeVote";
 
 interface MintForm {
   amount: string;
@@ -28,7 +28,7 @@ export const MintCard = () => {
 
   const { errors } = form.formState;
 
-  const mintMutation = useMintVeVote({
+  const mintMutation = useBuildMintVeVote({
     onSuccess: () => {
       form.reset();
       mintMutation.resetStatus();

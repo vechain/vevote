@@ -11,23 +11,23 @@ const GovernorInterface = VeVote__factory.createInterface();
 
 type Props = { onSuccess?: () => void };
 
-type useSendVeVoteParams = {
+type useBuildMintVeVoteParams = {
   amount: string;
   receiver: string;
 };
 
-export const useSendVeVote = ({ onSuccess }: Props) => {
+export const useBuildMintVeVote = ({ onSuccess }: Props) => {
   const { account } = useWallet();
 
-  const clauseBuilder = useCallback(({ amount, receiver }: useSendVeVoteParams) => {
+  const clauseBuilder = useCallback(({ amount, receiver }: useBuildMintVeVoteParams) => {
     const contractAmount = ethers.parseEther(amount);
     return [
       buildClause({
         to: getConfig(import.meta.env.VITE_APP_ENV).vevoteContractAddress,
         contractInterface: GovernorInterface,
-        method: "transfer",
+        method: "mint",
         args: [receiver, contractAmount],
-        comment: "transfer vevote",
+        comment: "mint vevote",
       }),
     ];
   }, []);
