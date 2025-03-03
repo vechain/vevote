@@ -1,11 +1,12 @@
 // SPDX-License-Identifier: MIT
-// Forked from OpenZeppelin Contracts (last updated v5.0.0) (governance/IGovernor.sol)
 
 pragma solidity 0.8.20;
 
-import { IERC165 } from "@openzeppelin/contracts/interfaces/IERC165.sol";
-import { IERC6372 } from "@openzeppelin/contracts/interfaces/IERC6372.sol";
 import { VeVoteTypes } from "../vevote/libraries/VeVoteTypes.sol";
+import { INodeManagement } from "./INodeManagement.sol";
+import { ITokenAuction } from "./ITokenAuction.sol";
+import "@openzeppelin/contracts/interfaces/IERC165.sol";
+import "@openzeppelin/contracts/interfaces/IERC6372.sol";
 
 interface IVeVote is IERC165, IERC6372 {
   // ------------------------------- Errors -------------------------------
@@ -60,6 +61,31 @@ interface IVeVote is IERC165, IERC6372 {
    */
   error UnauthorizedAccess(address user);
 
+  /**
+   * @dev Thrown when the minimum voting delay is set to an invalid value (zero).
+   */
+  error InvalidMinVotingDelay();
+
+  /**
+   * @dev Thrown when the minimum voting duration is set to an invalid value (zero).
+   */
+  error InvalidMinVotingDuration();
+
+  /**
+   * @dev Thrown when the maximum voting duration is set to an invalid value (zero).
+   */
+  error InvalidMaxVotingDuration();
+
+  /**
+   * @dev Thrown when the maximum number of choices is set to an invalid value (zero).
+   */
+  error InvalidMaxChoices();
+
+  /**
+   * @dev Thrown when an invalid address (zero address) is provided.
+   */
+  error InvalidAddress();
+
   // ------------------------------- Events -------------------------------
   /**
    * @notice Emitted when a new proposal is created.
@@ -95,6 +121,36 @@ interface IVeVote is IERC165, IERC6372 {
    */
   event QuorumNumeratorUpdated(uint256 oldNumerator, uint256 newNumerator);
 
+  /**
+   * @notice Emitted when the minimum voting delayis updated.
+   */
+  event MinVotingDelaySet(uint256 oldMinMinVotingDelay, uint256 newMinVotingDelay);
+
+  /**
+   * @notice Emitted when the minimum voting duration is updated.
+   */
+  event MinVotingDurationSet(uint256 oldMinVotingDuration, uint256 newMinVotingDuration);
+
+  /**
+   * @notice Emitted when the maximum voting duration is updated.
+   */
+  event MaxVotingDurationSet(uint256 oldMaxVotingDuration, uint256 newMaxVotingDuration);
+
+  /**
+   * @notice Emitted when the maximum number of choices is updated.
+   */
+  event MaxChoicesSet(uint256 oldMaxChoices, uint256 newMaxChoices);
+
+  /**
+   * @notice Emitted when the NodeManagement contract is set.
+   */
+  event NodeManagementContractSet(address oldContractAddress, address newContractAddress);
+
+  /**
+   * @notice Emitted when the TokenAuction contract is set.
+   */
+  event VechainNodeContractSet(address oldContractAddress, address newContractAddress);
+
   // ------------------------------- Getter Functions -------------------------------
   /**
    * @notice Returns the hash of a proposal.
@@ -115,29 +171,29 @@ interface IVeVote is IERC165, IERC6372 {
     bytes32 descriptionHash,
     uint8 maxSelection,
     uint8 minSelection
-  ) internal pure returns (uint256);
+  ) external pure returns (uint256);
 
   /**
    * @notice Returns the start time of a proposal.
    * @param proposalId The ID of the proposal
    * @return The start time of the proposal.
    */
-  function proposalSnapshot(uint256 proposalId) internal view returns (uint48);
+  function proposalSnapshot(uint256 proposalId) external view returns (uint48);
 
   /**
    * @notice Returns the deadline timestamp of a proposal.
    * @param proposalId The ID of the proposal
    * @return The deadline of the proposal.
    */
-  function proposalDeadline(uint256 proposalId) internal view returns (uint48);
+  function proposalDeadline(uint256 proposalId) external view returns (uint48);
 
   /**
    * @notice Returns the proposer of a proposal.
    * @param proposalId The id of the proposal.
    * @return The address of the proposer.
    */
-  function proposalProposer(uint256 proposalId) internal view returns (address);
-  
+  function proposalProposer(uint256 proposalId) external view returns (address);
+
   /**
    * @notice Retrieves the current state of a proposal.
    * @param proposalId The ID of the proposal.
@@ -170,6 +226,41 @@ interface IVeVote is IERC165, IERC6372 {
    * @return The constant quorum denominator (100).
    */
   function quorumDenominator() external pure returns (uint256);
+
+    /**
+   * @notice Returns the minimum voting delay.
+   * @return uint48 The minimum voting delay
+   */
+  function getMinVotingDelay() external view returns (uint48);
+
+  /**
+   * @notice Returns the minimum voting duration.
+   * @return uint48 The minimum voting duration
+   */
+  function getMinVotingDuration() external view returns (uint48);
+
+  /**
+   * @notice Returns the maximum voting duration.
+   * @return uint48 The maximum voting duration
+   */
+  function getMaxVotingDuration() external view returns (uint48);
+
+  /**
+   * @notice Returns the maximum number of choices.
+   * @return uint8 The maximum number of choices
+   */
+  function getMaxChoices() external view returns (uint8);
+  /**
+   * @notice Returns the node management contract instance.
+   * @return INodeManagement The node management contract
+   */
+  function getNodeManagementContract() external view returns (INodeManagement);
+
+  /**
+   * @notice Returns the vechain node contract instance.
+   * @return ITokenAuction The vechain node contract
+   */
+  function getVechainNodeContract() external view returns (ITokenAuction);
 
   /**
    * @notice Returns the current timepoint using the block number.
@@ -213,4 +304,40 @@ interface IVeVote is IERC165, IERC6372 {
    * @return The proposal ID.
    */
   function cancel(uint256 proposalId) external returns (uint256);
+
+  /**
+   * @notice Updates the minimum voting delay.
+   * @param newMinVotingDelay The new minimum voting delay
+   */
+  function setMinVotingDelay(uint48 newMinVotingDelay) external;
+
+  /**
+   * @notice Updates the minimum voting duration.
+   * @param newMinVotingDuration The new minimum voting duration
+   */
+  function setMinVotingDuration(uint48 newMinVotingDuration) external;
+
+  /**
+   * @notice Updates the maximum voting duration.
+   * @param newMaxVotingDuration The new maximum voting duration
+   */
+  function setMaxVotingDuration(uint48 newMaxVotingDuration) external;
+
+  /**
+   * @notice Updates the maximum number of choices.
+   * @param newMaxChoices The new maximum number of choices
+   */
+  function setMaxChoices(uint8 newMaxChoices) external;
+
+  /**
+   * @notice Updates the node management contract address.
+   * @param nodeManagement The address of the node management contract
+   */
+  function setNodeManagementContract(address nodeManagement) external;
+
+  /**
+   * @notice Updates the Vechain Node Token Auction contract address.
+   * @param tokenAuction The address of the token auction contract
+   */
+  function setVechainNodeContract(address tokenAuction) external;
 }

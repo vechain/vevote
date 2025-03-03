@@ -9,12 +9,9 @@ import { VeVoteTypes } from "./VeVoteTypes.sol";
 import "@openzeppelin/contracts/utils/structs/Checkpoints.sol";
 import "@openzeppelin/contracts/utils/math/SafeCast.sol";
 
-/**
- * @title VeVoteQuorumLogic
- * @notice Library for managing and calculating quorum requirements in the VeVote contract.
- * @dev This library provides functions to track quorum history, update quorum requirements,
- * and determine if quorum has been met for proposals.
- */
+/// @title VeVoteQuorumLogic
+/// @notice Library for managing and calculating quorum requirements in the VeVote contract.
+/// @dev This library provides functions to track quorum history, update quorum requirements, and determine if quorum has been met for proposals.
 library VeVoteQuoromLogic {
   using Checkpoints for Checkpoints.Trace208;
 

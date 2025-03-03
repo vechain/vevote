@@ -10,6 +10,9 @@ import { VeVoteClockLogic } from "./vevote/libraries/VeVoteClockLogic.sol";
 import { VeVoteStateLogic } from "./vevote/libraries/VeVoteStateLogic.sol";
 import { VeVoteProposalLogic } from "./vevote/libraries/VeVoteProposalLogic.sol";
 import { VeVoteStorageTypes } from "./vevote/libraries/VeVoteStorageTypes.sol";
+import { VeVoteConfigurator } from "./vevote/libraries/VeVoteConfigurator.sol";
+import { INodeManagement } from "./interfaces/INodeManagement.sol";
+import { ITokenAuction } from "./interfaces/ITokenAuction.sol";
 import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "@openzeppelin/contracts/utils/introspection/IERC165.sol";
@@ -76,7 +79,7 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
     bytes32 descriptionHash,
     uint8 maxSelection,
     uint8 minSelection
-  ) internal pure returns (uint256) {
+  ) external pure returns (uint256) {
     return
       VeVoteProposalLogic.hashProposal(
         proposer,
@@ -94,7 +97,7 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
    * @param proposalId The ID of the proposal
    * @return The start time of the proposal.
    */
-  function proposalSnapshot(uint256 proposalId) internal view returns (uint48) {
+  function proposalSnapshot(uint256 proposalId) external view returns (uint48) {
     VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
     return VeVoteProposalLogic.proposalSnapshot($, proposalId);
   }
@@ -104,7 +107,7 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
    * @param proposalId The ID of the proposal
    * @return The deadline of the proposal.
    */
-  function proposalDeadline(uint256 proposalId) internal view returns (uint48) {
+  function proposalDeadline(uint256 proposalId) external view returns (uint48) {
     VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
     return VeVoteProposalLogic.proposalDeadline($, proposalId);
   }
@@ -114,7 +117,7 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
    * @param proposalId The id of the proposal.
    * @return The address of the proposer.
    */
-  function proposalProposer(uint256 proposalId) internal view returns (address) {
+  function proposalProposer(uint256 proposalId) external view returns (address) {
     VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
     return VeVoteProposalLogic.proposalProposer($, proposalId);
   }
@@ -163,6 +166,60 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
    */
   function quorumDenominator() external pure returns (uint256) {
     return VeVoteQuoromLogic.quorumDenominator();
+  }
+
+  /**
+   * @notice See {IVeVote-getMinVotingDelay}.
+   * @return uint48 The minimum voting delay
+   */
+  function getMinVotingDelay() external view returns (uint48) {
+    VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
+    return VeVoteConfigurator.getMinVotingDelay($);
+  }
+
+  /**
+   * @notice See {IVeVote-getMinVotingDuration}.
+   * @return uint48 The minimum voting duration
+   */
+  function getMinVotingDuration() external view returns (uint48) {
+    VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
+    return VeVoteConfigurator.getMinVotingDuration($);
+  }
+
+  /**
+   * @notice See {IVeVote-getMaxVotingDuration}.
+   * @return uint48 The maximum voting duration
+   */
+  function getMaxVotingDuration() external view returns (uint48) {
+    VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
+    return VeVoteConfigurator.getMaxVotingDuration($);
+  }
+
+  /**
+   * @notice See {IVeVote-getMaxChoices}.
+   * @return uint8 The maximum number of choices
+   */
+  function getMaxChoices() external view returns (uint8) {
+    VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
+    return VeVoteConfigurator.getMaxChoices($);
+  }
+
+  /**
+   * @notice See {IVeVote-getNodeManagementContract}.
+   * @return INodeManagement The node management contract
+   */
+  function getNodeManagementContract() external view returns (INodeManagement) {
+    VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
+    return VeVoteConfigurator.getNodeManagementContract($);
+  }
+
+  /**
+   * @notice See {IVeVote-getVechainNodeContract}.
+   * @return ITokenAuction The vechain node contract
+   */
+  function getVechainNodeContract() external view returns (ITokenAuction) {
+    VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
+    return VeVoteConfigurator.getVechainNodeContract($);
   }
 
   /**
@@ -215,6 +272,66 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
     VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
     return VeVoteProposalLogic.cancel($, _msgSender(), hasRole(DEFAULT_ADMIN_ROLE, _msgSender()), proposalId);
   }
+
+  /**
+   * @notice See {IVeVote-setMinVotingDelay}.
+   * Callable only by the admin role.
+   * @param newMinVotingDelay The new minimum voting delay
+   */
+  function setMinVotingDelay(uint48 newMinVotingDelay) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
+    VeVoteConfigurator.setMinVotingDelay($, newMinVotingDelay);
+  }
+
+  /**
+   * @notice See {IVeVote-setMinVotingDuration}.
+   * Callable only by the admin role.
+   * @param newMinVotingDuration The new minimum voting duration
+   */
+  function setMinVotingDuration(uint48 newMinVotingDuration) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
+    VeVoteConfigurator.setMinVotingDuration($, newMinVotingDuration);
+  }
+
+  /**
+   * @notice See {IVeVote-setMaxVotingDuration}.
+   * Callable only by the admin role.
+   * @param newMaxVotingDuration The new maximum voting duration
+   */
+  function setMaxVotingDuration(uint48 newMaxVotingDuration) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
+    VeVoteConfigurator.setMaxVotingDuration($, newMaxVotingDuration);
+  }
+
+  /**
+   * @notice See {IVeVote-setMaxChoices}.
+   * Callable only by the admin role.
+   * @param newMaxChoices The new maximum number of choices
+   */
+  function setMaxChoices(uint8 newMaxChoices) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
+    VeVoteConfigurator.setMaxChoices($, newMaxChoices);
+  }
+
+  /**
+   * @notice See {IVeVote-setNodeManagementContract}.
+   * Callable only by the admin role.
+   * @param nodeManagement The address of the node management contract
+   */
+  function setNodeManagementContract(address nodeManagement) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
+    VeVoteConfigurator.setNodeManagementContract($, nodeManagement);
+  }
+
+  /**
+   * @notice See {IVeVote-setVechainNodeContract}.
+   * Callable only by the admin role.
+   * @param tokenAuction The address of the token auction contract
+   */
+  function setVechainNodeContract(address tokenAuction) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
+    VeVoteConfigurator.setVechainNodeContract($, tokenAuction);
+  } 
 
   // ------------------ Overrides ------------------ //
 
