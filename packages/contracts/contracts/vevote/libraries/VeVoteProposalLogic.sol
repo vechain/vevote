@@ -236,17 +236,16 @@ library VeVoteProposalLogic {
   }
 
   /**
-   * @notice Returns the deadline block of a proposal.
-   * @dev Determines the block number at which the proposal will be considered expired.
+   * @notice Returns the deadline timestamp of a proposal.
+   * @dev Determines the timestamp at which the proposal will be considered expired.
    * @param self The storage reference for the GovernorStorage.
    * @param proposalId The id of the proposal.
-   * @return The deadline block number.
+   * @return The deadline timestamp.
    */
   function proposalDeadline(
-    // CHECK EXTERNAL VS INTERNAL SIZING
     VeVoteStorageTypes.VeVoteStorage storage self,
     uint256 proposalId
-  ) internal view returns (uint256) {
+  ) internal view returns (uint48) {
     VeVoteTypes.ProposalCore storage proposal = self.proposals[proposalId];
     return proposal.voteStart + proposal.voteDuration;
   }

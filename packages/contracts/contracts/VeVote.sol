@@ -56,6 +56,69 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
   }
 
   // ------------------ GETTERS ------------------ //
+
+  /**
+   * @notice See {IVeVote-getProposal}.
+   * @param proposer The address of the proposer.
+   * @param startTime The time when the proposal starts.
+   * @param voteDuration The duration of the proposal.
+   * @param choices The voting choices for the proposal.
+   * @param descriptionHash The hash of the proposal description.
+   * @param maxSelection The maximum number of choices a voter can select.
+   * @param minSelection The minimum number of choices a voter must select.
+   * @return VeVoteTypes.ProposalCore The core data of the proposal
+   */
+  function hashProposal(
+    address proposer,
+    uint48 startTime,
+    uint48 voteDuration,
+    bytes32[] memory choices,
+    bytes32 descriptionHash,
+    uint8 maxSelection,
+    uint8 minSelection
+  ) internal pure returns (uint256) {
+    return
+      VeVoteProposalLogic.hashProposal(
+        proposer,
+        startTime,
+        voteDuration,
+        choices,
+        descriptionHash,
+        maxSelection,
+        minSelection
+      );
+  }
+
+  /**
+   * @notice See {IVeVote-proposalSnapshot}.
+   * @param proposalId The ID of the proposal
+   * @return The start time of the proposal.
+   */
+  function proposalSnapshot(uint256 proposalId) internal view returns (uint48) {
+    VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
+    return VeVoteProposalLogic.proposalSnapshot($, proposalId);
+  }
+
+  /**
+   * @notice See {IVeVote-proposalDeadline}.
+   * @param proposalId The ID of the proposal
+   * @return The deadline of the proposal.
+   */
+  function proposalDeadline(uint256 proposalId) internal view returns (uint48) {
+    VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
+    return VeVoteProposalLogic.proposalDeadline($, proposalId);
+  }
+
+  /**
+   * @notice See {IVeVote-proposalProposer}.
+   * @param proposalId The id of the proposal.
+   * @return The address of the proposer.
+   */
+  function proposalProposer(uint256 proposalId) internal view returns (address) {
+    VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
+    return VeVoteProposalLogic.proposalProposer($, proposalId);
+  }
+
   /**
    * @notice See {IVeVote-state}.
    * @return VeVoteTypes.ProposalState The current state of the proposal
