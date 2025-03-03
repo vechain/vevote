@@ -55,6 +55,11 @@ interface IVeVote is IERC165, IERC6372 {
    */
   error VeVoteNonexistentProposal(uint256 proposalId);
 
+  /**
+   * @dev Thrown when a user is not authorized to perform an action.
+   */
+  error UnauthorizedAccess(address user);
+
   // ------------------------------- Events -------------------------------
   /**
    * @notice Emitted when a new proposal is created.
@@ -77,6 +82,11 @@ interface IVeVote is IERC165, IERC6372 {
     uint8 maxSelection,
     uint8 minSelection
   );
+
+  /**
+   * @dev Emitted when a proposal is canceled.
+   */
+  event ProposalCanceled(uint256 proposalId);
 
   /**
    * @notice Emitted when the quorum numerator is updated.
@@ -153,4 +163,12 @@ interface IVeVote is IERC165, IERC6372 {
     uint8 maxSelection,
     uint8 minSelection
   ) external returns (uint256);
+
+  /**
+   * @notice Cancels a proposal.
+   * @dev Allows the proposer or an admin to cancel a proposal before execution.
+   * @param proposalId The ID of the proposal to cancel.
+   * @return The proposal ID.
+   */
+  function cancel(uint256 proposalId) external returns (uint256);
 }

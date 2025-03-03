@@ -12,12 +12,24 @@ import { VeVoteTypes } from "./VeVoteTypes.sol";
 /// @notice Handles the state determination of governance proposals in the VeVote system.
 /// @dev Provides functions to determine the status of a proposal based on various governance rules.
 library VeVoteStateLogic {
+  /// @notice Bitmap representing all possible proposal states.
+  bytes32 internal constant ALL_PROPOSAL_STATES_BITMAP =
+    bytes32((2 ** (uint8(type(VeVoteTypes.ProposalState).max) + 1)) - 1);
+
   // ------------------------------- Errors -------------------------------f
   /**
    * @dev Thrown when the `proposalId` does not exist.
    * @param proposalId The ID of the proposal that does not exist.
    */
   error VeVoteNonexistentProposal(uint256 proposalId);
+
+  /**
+   * @dev Thrown when the current state of a proposal does not match the expected state.
+   * @param proposalId The ID of the proposal.
+   * @param current The current state of the proposal.
+   * @param expectedStates The expected states for the proposal.
+   */
+  error VeVoteUnexpectedProposalState(uint256 proposalId, VeVoteTypes.ProposalState current, bytes32 expectedStates);
 
   // ------------------------------- External Functions -------------------------------
   /**
@@ -32,6 +44,36 @@ library VeVoteStateLogic {
     uint256 proposalId
   ) external view returns (VeVoteTypes.ProposalState) {
     return _state(self, proposalId);
+  }
+
+  // ------------------------------- Internal Functions -------------------------------
+
+  /**
+   * @dev Internal function to validate the current state of a proposal against expected states.
+   * @param self The storage reference for the VeVoteStorage.
+   * @param proposalId The ID of the proposal.
+   * @param allowedStates The bitmap of allowed states.
+   * @return The current state of the proposal.
+   */
+  function validateStateBitmap(
+    VeVoteStorageTypes.VeVoteStorage storage self,
+    uint256 proposalId,
+    bytes32 allowedStates
+  ) internal view returns (VeVoteTypes.ProposalState) {
+    VeVoteTypes.ProposalState currentState = _state(self, proposalId);
+    if (encodeStateBitmap(currentState) & allowedStates == bytes32(0)) {
+      revert VeVoteUnexpectedProposalState(proposalId, currentState, allowedStates);
+    }
+    return currentState;
+  }
+
+  /**
+   * @dev Encodes a `ProposalState` into a `bytes32` representation where each bit enabled corresponds to the underlying position in the `ProposalState` enum.
+   * @param proposalState The state to encode.
+   * @return The encoded state bitmap.
+   */
+  function encodeStateBitmap(VeVoteTypes.ProposalState proposalState) internal pure returns (bytes32) {
+    return bytes32(1 << uint8(proposalState));
   }
 
   /**

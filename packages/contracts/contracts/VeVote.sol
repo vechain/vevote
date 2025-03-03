@@ -31,8 +31,8 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
    * @param data Initialization data containing the initial settings for the governor
    */
   function initialize(
-    VeVoteTypes.InitializationData memory data,
-    VeVoteTypes.InitializationRolesData memory rolesData
+    VeVoteTypes.InitializationData calldata data,
+    VeVoteTypes.InitializationRolesData calldata rolesData
   ) external initializer {
     __VeVoteStorage_init(data);
     __AccessControl_init();
@@ -47,14 +47,15 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
 
     // Set the whitelist roles
     uint256 whitelistLength = rolesData.whitelist.length;
-    for (uint256 i; i < whitelistLength;) {
+    for (uint256 i; i < whitelistLength; ) {
       _grantRole(WHITELISTED_ROLE, rolesData.whitelist[i]);
-      unchecked { ++i; }
+      unchecked {
+        ++i;
+      }
     }
   }
 
   // ------------------ GETTERS ------------------ //
-
   /**
    * @notice See {IVeVote-state}.
    * @return VeVoteTypes.ProposalState The current state of the proposal
@@ -131,15 +132,25 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
    * @return uint256 The ID of the proposal
    */
   function propose(
-    string memory description,
+    string calldata description,
     uint48 startTime,
     uint48 voteDuration,
-    bytes32[] memory choices,
+    bytes32[] calldata choices,
     uint8 maxSelection,
     uint8 minSelection
   ) external onlyRole(WHITELISTED_ROLE) returns (uint256) {
     VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
     return VeVoteProposalLogic.propose($, description, startTime, voteDuration, choices, maxSelection, minSelection);
+  }
+
+  /**
+   * @notice See {IVeVote-cancel}.
+   * @param proposalId The proposal id
+   * @return uint256 The proposal id
+   */
+  function cancel(uint256 proposalId) external returns (uint256) {
+    VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
+    return VeVoteProposalLogic.cancel($, _msgSender(), hasRole(DEFAULT_ADMIN_ROLE, _msgSender()), proposalId);
   }
 
   // ------------------ Overrides ------------------ //

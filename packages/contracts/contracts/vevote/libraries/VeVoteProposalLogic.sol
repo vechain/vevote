@@ -46,6 +46,11 @@ library VeVoteProposalLogic {
    */
   error VeVoteInvalidProposalDescription();
 
+  /**
+   * @dev Thrown when a user is not authorized to perform an action.
+   */
+  error UnauthorizedAccess(address user);
+
   // ------------------------------- Events -------------------------------
   /**
    * @notice Emitted when a new proposal is created.
@@ -69,6 +74,11 @@ library VeVoteProposalLogic {
     uint8 minSelection
   );
 
+  /**
+   * @dev Emitted when a proposal is canceled.
+   */
+  event ProposalCanceled(uint256 proposalId);
+
   // ------------------------------- Functions -------------------------------
   // ------------------------------- Setter Functions -------------------------------
   /**
@@ -85,10 +95,10 @@ library VeVoteProposalLogic {
    */
   function propose(
     VeVoteStorageTypes.VeVoteStorage storage self,
-    string memory description,
+    string calldata description,
     uint48 startTime,
     uint48 voteDuration,
-    bytes32[] memory choices,
+    bytes32[] calldata choices,
     uint8 maxSelection,
     uint8 minSelection
   ) external returns (uint256) {
@@ -129,6 +139,56 @@ library VeVoteProposalLogic {
       maxSelection,
       minSelection
     );
+
+    return proposalId;
+  }
+
+  /**
+   * @notice Cancels a proposal.
+   * @dev Allows the proposer or an admin to cancel a proposal before execution.
+   * @param self The storage reference for the GovernorStorage.
+   * @param account The address of the account attempting to cancel the proposal.
+   * @param admin Flag indicating if the caller is an admin.
+   * @param proposalId The ID of the proposal to cancel.
+   * @return The proposal ID.
+   */
+  function cancel(
+    VeVoteStorageTypes.VeVoteStorage storage self,
+    address account,
+    bool admin,
+    uint256 proposalId
+  ) external returns (uint256) {
+    // Cache the proposer and current state to minimize redundant storage reads
+    address proposer = proposalProposer(self, proposalId);
+    VeVoteTypes.ProposalState currentState = VeVoteStateLogic._state(self, proposalId);
+
+    // Ensure only the proposer or an admin can cancel
+    if (account != proposer && !admin) {
+      revert UnauthorizedAccess(account);
+    }
+
+    // Validate that the proposal is not already canceled or executed
+    VeVoteStateLogic.validateStateBitmap(
+      self,
+      proposalId,
+      VeVoteStateLogic.encodeStateBitmap(VeVoteTypes.ProposalState.Pending) |
+        VeVoteStateLogic.encodeStateBitmap(VeVoteTypes.ProposalState.Active)
+    );
+
+    // If the proposer is canceling, ensure it's still in a pending state
+    if (account == proposer && currentState != VeVoteTypes.ProposalState.Pending) {
+      revert VeVoteUnexpectedProposalState(
+        proposalId,
+        currentState,
+        bytes32(uint256(VeVoteTypes.ProposalState.Pending))
+      );
+    }
+
+    // Mark the proposal as canceled
+    self.proposals[proposalId].canceled = true;
+
+    // Emit event for tracking proposal cancellation
+    emit ProposalCanceled(proposalId);
 
     return proposalId;
   }
@@ -189,6 +249,19 @@ library VeVoteProposalLogic {
   ) internal view returns (uint256) {
     VeVoteTypes.ProposalCore storage proposal = self.proposals[proposalId];
     return proposal.voteStart + proposal.voteDuration;
+  }
+
+  /**
+   * @notice Returns the proposer of a proposal.
+   * @param self The storage reference for the VeVoteStorage.
+   * @param proposalId The id of the proposal.
+   * @return The address of the proposer.
+   */
+  function proposalProposer(
+    VeVoteStorageTypes.VeVoteStorage storage self,
+    uint256 proposalId
+  ) internal view returns (address) {
+    return self.proposals[proposalId].proposer;
   }
 
   // ------------------------------- Private Functions -------------------------------
