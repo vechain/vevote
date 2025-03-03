@@ -1,0 +1,48 @@
+// SPDX-License-Identifier: MIT
+
+pragma solidity 0.8.20;
+
+import { VeVoteStorageTypes } from "./libraries/VeVoteStorageTypes.sol";
+import { VeVoteTypes } from "./libraries/VeVoteTypes.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+
+/// @title VeVoteStorage
+/// @notice Contract used as storage of the VeVote contract.
+/// @dev It defines the storage layout of the VeVote contract.
+contract VeVoteStorage is Initializable {
+  // keccak256(abi.encode(uint256(keccak256("VeVoteStorageLocation")) - 1)) & ~bytes32(uint256(0xff))
+  bytes32 private constant VeVoteStorageLocation = 0xe4daadd51b0f186722e079c28ae9ded1c74d42eecd2103f7a5ce80c77c626300;
+
+  /// @dev Internal function to access the vevote storage slot.
+  function getVeVoteStorage() internal pure returns (VeVoteStorageTypes.VeVoteStorage storage $) {
+    assembly {
+      $.slot := VeVoteStorageLocation
+    }
+  }
+
+  /// @dev Initializes the governor storage
+  function __VeVoteStorage_init(
+    VeVoteTypes.InitializationData memory initializationData
+  ) internal onlyInitializing {
+    __VeVoteStorage_init_unchained(initializationData);
+  }
+
+  /// @dev Part of the initialization process that configures the governor storage.
+  function __VeVoteStorage_init_unchained(
+    VeVoteTypes.InitializationData memory initializationData
+  ) internal onlyInitializing {
+    VeVoteStorageTypes.VeVoteStorage storage veVoteStorage = getVeVoteStorage();
+
+    // Validate and set the governor external contracts storage
+    require(address(initializationData.nodeManagement) != address(0), "VeVote: NodeManagement address cannot be zero");
+    require(address(initializationData.tokenAuction) != address(0), "VeVote: VechainNode address cannot be zero");
+    veVoteStorage.nodeManagement = initializationData.nodeManagement;
+    veVoteStorage.tokenAuction = initializationData.tokenAuction;
+
+    // Set the general storage parameters
+    veVoteStorage.minVotingDelay = initializationData.initialMinVotingDelay;
+    veVoteStorage.minVotingDuration = initializationData.initialMinVotingDuration;
+    veVoteStorage.maxVotingDuration = initializationData.initialMaxVotingDuration;
+    veVoteStorage.maxChoices = initializationData.initialMaxChoices;
+  }
+}
