@@ -26,6 +26,6 @@ contract VeVote is ERC20Upgradeable, OwnableUpgradeable, UUPSUpgradeable {
     /// @dev This should be updated every time a new version of implementation is deployed
   /// @return string The version of the contract
 function version() public pure virtual returns (string memory) {
-    return "1";
+    return "test";
   }
 }
