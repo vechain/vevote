@@ -5,6 +5,7 @@ pragma solidity 0.8.20;
 import { VeVoteTypes } from "./VeVoteTypes.sol";
 import { INodeManagement } from "../../interfaces/INodeManagement.sol";
 import { ITokenAuction } from "../../interfaces/ITokenAuction.sol";
+import { VechainNodesDataTypes } from "../../libraries/VechainNodesDataTypes.sol";
 import "@openzeppelin/contracts/utils/structs/DoubleEndedQueue.sol";
 import "@openzeppelin/contracts/utils/structs/Checkpoints.sol";
 
@@ -15,21 +16,30 @@ library VeVoteStorageTypes {
     // ------------------------------- Version 1 -------------------------------
     // ------------------------------- General Storage -------------------------------
     mapping(uint256 proposalId => VeVoteTypes.ProposalCore) proposals;
-    // minVotingDelay is the minimum delay between the time a proposal is created and the time it can be voted on
+     /// @notice Minimum delay before a proposal can be voted on after creation
     uint48 minVotingDelay;
-    //minVotingDuration is the minimum duration of a vote on a proposal
+    /// @notice Minimum duration a vote must remain open
     uint48 minVotingDuration;
-    // maxVotingDuration is the maximum duration of a vote on a proposal
+    /// @notice Maximum duration a vote can remain open
     uint48 maxVotingDuration;
-    // maxChoices is the maximum number of choices a proposal can have
+    /// @notice Maximum number of choices allowed in a proposal
     uint8 maxChoices;
     // ------------------------------- Quorum Storage -------------------------------
-    // quorum numerator history
+    /// @notice Stores history of quorum numerator changes
     Checkpoints.Trace208 quorumNumeratorHistory;
     // ------------------------------- External Contracts Storage -------------------------------
-    // Node Management contract
-    INodeManagement nodeManagement; 
-    // Vechain Node Token Auction contract
-    ITokenAuction tokenAuction; // TODO: Do we need this, or can we just use the nodeManagement contract?
+    /// @notice Node Management contract for fetching voter eligibility and node information
+    INodeManagement nodeManagement;
+    /// @notice Vechain Node Token Auction contract (Optional - Pending Confirmation)
+    ITokenAuction vechainNodesContract; // TODO: Do we need this, or can we just use the nodeManagement contract?
+    // ------------------------------- Voting Storage -------------------------------
+    /// @notice Voting weight multiplier for different node levels
+    mapping(VechainNodesDataTypes.NodeStrengthLevel => uint256) nodeMultiplier;
+    /// @notice Vote tally for each proposal choice
+    mapping(uint256 => mapping(uint8 => uint256)) voteTally;
+    /// @notice Stores the votes for each proposal (bitmask representation)
+    mapping(uint256 => mapping(address => uint32)) votes;
+    /// @notice Stores the cheapest Node a user can obtain
+    VechainNodesDataTypes.NodeStrengthLevel cheapestNode;
   }
 }

@@ -161,8 +161,8 @@ library VeVoteConfigurator {
   function setVechainNodeContract(VeVoteStorageTypes.VeVoteStorage storage self, address newContractAddress) external {
     if (newContractAddress == address(0)) revert InvalidAddress();
 
-    address oldContractAddress = address(self.tokenAuction);
-    self.tokenAuction = ITokenAuction(newContractAddress);
+    address oldContractAddress = address(self.vechainNodesContract);
+    self.vechainNodesContract = ITokenAuction(newContractAddress);
     emit VechainNodeContractSet(oldContractAddress, newContractAddress);
   }
 
@@ -219,6 +219,6 @@ library VeVoteConfigurator {
    * @return The current VeChain Node contract address.
    */
   function getVechainNodeContract(VeVoteStorageTypes.VeVoteStorage storage self) internal view returns (ITokenAuction) {
-    return self.tokenAuction;
+    return self.vechainNodesContract;
   }
 }

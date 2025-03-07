@@ -49,7 +49,7 @@ library VeVoteTypes {
 
   struct InitializationData {
     INodeManagement nodeManagement;
-    ITokenAuction tokenAuction;
+    ITokenAuction vechainNodesContract;
     uint256 quorumPercentage;
     uint48 initialMinVotingDelay;
     uint48 initialMaxVotingDuration;

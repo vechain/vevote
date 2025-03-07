@@ -35,9 +35,9 @@ contract VeVoteStorage is Initializable {
 
     // Validate and set the governor external contracts storage
     require(address(initializationData.nodeManagement) != address(0), "VeVote: NodeManagement address cannot be zero");
-    require(address(initializationData.tokenAuction) != address(0), "VeVote: VechainNode address cannot be zero");
+    require(address(initializationData.vechainNodesContract) != address(0), "VeVote: VechainNode address cannot be zero");
     veVoteStorage.nodeManagement = initializationData.nodeManagement;
-    veVoteStorage.tokenAuction = initializationData.tokenAuction;
+    veVoteStorage.vechainNodesContract = initializationData.vechainNodesContract;
 
     // Set the general storage parameters
     veVoteStorage.minVotingDelay = initializationData.initialMinVotingDelay;
