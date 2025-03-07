@@ -66,7 +66,7 @@ jobs:
           slither-args: --filter-paths "(openzeppelin|mocks|interfaces|deprecated|templates|NodeManagement)" --exclude-informational --exclude-optimization --checklist --markdown-root ${{ github.server_url }}/${{ github.repository }}/blob/${{ github.sha }}/
 
       - name: Upload Slither report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: slither-report
           path: slither-report.md
