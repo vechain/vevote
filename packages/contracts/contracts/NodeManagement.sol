@@ -411,6 +411,37 @@ contract NodeManagement is INodeManagement, AccessControlUpgradeable, UUPSUpgrad
   }
 
   /**
+   * @notice Retrieves a list of nodes a user manages, along with their respective node levels.
+   * @dev TODO: This function is incomplete and needs to be updated when the new node contract is ready.
+   * @param user The address of the user to check.
+   * @return NodeInfo[] Array of node information structures.
+   */
+  function getUsersNodesWithLevelInfo(address user) external view returns (VechainNodesDataTypes.NodeLevelInfo[] memory) {
+    NodeManagementStorage storage $ = _getNodeManagementStorage();
+
+    // Get the set of node IDs associated with the user
+    uint256[] memory nodeIds = getNodeIds(user);
+
+    // Create an array to store node information
+     VechainNodesDataTypes.NodeLevelInfo[] memory nodesLevelInfo =  new VechainNodesDataTypes.NodeLevelInfo[](nodeIds.length);
+
+    // Populate node information
+    for (uint256 i = 0; i < nodeIds.length; i++) {
+      uint256 nodeId = nodeIds[i];
+      VechainNodesDataTypes.NodeStrengthLevel nodeLevel = getNodeLevel(nodeId);
+      (uint256 minBalance, , , ) = $.vechainNodesContract.getTokenParams(uint8(nodeLevel));
+
+      nodesLevelInfo[i] = VechainNodesDataTypes.NodeLevelInfo({
+        nodeId: nodeId,
+        nodeLevel: nodeLevel,
+        minBalance: minBalance
+      });
+    }
+
+    return nodesLevelInfo;
+  }
+
+  /**
    * @notice Check if a user directly owns a node (not delegated).
    * @param user The address of the user to check.
    * @return uint256 The ID of the owned node (0 if none).

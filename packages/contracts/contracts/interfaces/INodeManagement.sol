@@ -133,4 +133,12 @@ interface INodeManagement {
    * @return VechainNodesDataTypes.NodeStrengthLevel The node level of the node managed by the user.
    */
   function getUsersNodeLevels(address user) external view returns (VechainNodesDataTypes.NodeStrengthLevel[] memory);
+
+  /**
+   * @notice Retrieves a list of nodes a user manages, along with their respective node levels.
+   * @dev TODO: This function is incomplete and needs to be updated when the new node contract is ready.
+   * @param user The address of the user to check.
+   * @return NodeInfo[] Array of node information structures.
+   */
+  function getUsersNodesWithLevelInfo(address user) external view returns (VechainNodesDataTypes.NodeLevelInfo[] memory);
 }

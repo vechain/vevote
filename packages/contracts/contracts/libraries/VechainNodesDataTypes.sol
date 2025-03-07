@@ -30,4 +30,13 @@ library VechainNodesDataTypes {
     uint256 thunderX;
     uint256 mjolnirX;
   }
+
+  /**
+   * @dev Node level and minimum balance information for a node.
+   */
+  struct NodeLevelInfo {
+    uint256 nodeId;
+    VechainNodesDataTypes.NodeStrengthLevel nodeLevel;
+    uint256 minBalance;
+  }
 }
