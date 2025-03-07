@@ -30,7 +30,6 @@ jobs:
     name: Slither Analysis
     runs-on: ubuntu-latest
     needs: check-changes
-    if: false
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
