@@ -395,6 +395,12 @@ interface IVeVote is IERC165, IERC6372 {
   // solhint-disable-next-line func-name-mixedcase
   function CLOCK_MODE() external pure returns (string memory);
 
+  /**
+   * @notice Returns the version of the contract.
+   * @return The version of the contract.
+   */
+  function version() external pure returns (string memory);
+
   // ------------------------------- Setter Functions -------------------------------
 
   /**

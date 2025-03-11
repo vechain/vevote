@@ -292,6 +292,13 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
     return VeVoteClockLogic.CLOCK_MODE();
   }
 
+  /**
+   * @notice See {IVeVote-version}.
+   */
+  function version() external pure returns (string memory) {
+    return "1";
+  }
+
   // ------------------ SETTERS ------------------ //
   /**
    * @notice See {IVeVote-propose}.
