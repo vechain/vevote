@@ -4,6 +4,7 @@ pragma solidity 0.8.20;
 library VechainNodesDataTypes {
   /**
    * @dev The strength level of each node.
+   * TODO: Ensure this is up to date with the latest node levels.
    */
   enum NodeStrengthLevel {
     None,
@@ -15,7 +16,13 @@ library VechainNodesDataTypes {
     VeThorX,
     StrengthX,
     ThunderX,
-    MjolnirX
+    MjolnirX,
+    // New Node levels
+    Flash,
+    Lightning,
+    Dawn,
+    // Validator Node levels
+    Validator
   }
 
   /**

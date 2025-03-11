@@ -58,5 +58,12 @@ contract VeVoteStorage is Initializable {
     $.nodeMultiplier[VechainNodesDataTypes.NodeStrengthLevel.StrengthX] = 150; // Strength X Node multipler -> Scaled by 150
     $.nodeMultiplier[VechainNodesDataTypes.NodeStrengthLevel.ThunderX] = 150; // Thunder X Node multipler -> Scaled by 150
     $.nodeMultiplier[VechainNodesDataTypes.NodeStrengthLevel.MjolnirX] = 150; // Mjolnir X Node multipler -> Scaled by 150
+
+    // TODO: Update these values to the correct values
+    $.nodeMultiplier[VechainNodesDataTypes.NodeStrengthLevel.Flash] = 100; // Flash Node multipler -> Scaled by 200
+    $.nodeMultiplier[VechainNodesDataTypes.NodeStrengthLevel.Lightning] = 100; // Lightning Node multipler -> Scaled by 200
+    $.nodeMultiplier[VechainNodesDataTypes.NodeStrengthLevel.Dawn] = 100; // Dawn Node multipler -> Scaled by 200
+
+    $.nodeMultiplier[VechainNodesDataTypes.NodeStrengthLevel.Validator] = 200; // Validator Node multipler -> Scaled by 300
   }
 }

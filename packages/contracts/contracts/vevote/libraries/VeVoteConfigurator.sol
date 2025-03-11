@@ -209,7 +209,7 @@ library VeVoteConfigurator {
    * @param self The storage reference for VeVote.
    * @param updatedNodeMultipliers The new node multiplier scores to set.
    */
-  function updateNodeEndorsementScores(
+  function updateNodeMultipliers(
     VeVoteStorageTypes.VeVoteStorage storage self,
     VeVoteTypes.NodeVoteMultiplier memory updatedNodeMultipliers
   ) external {
@@ -295,10 +295,11 @@ library VeVoteConfigurator {
 
   /**
    * @notice this function returns the endorsement score of a node level.
+   * @dev This value is scaled down by 100 from its stored value.
    * @param nodeLevel The node level of the node ID.
    * @return uint256 The voting multiplier score of the node level.
    */
-  function nodeLevelEndorsementScore(
+  function nodeLevelMultiplier(
     VeVoteStorageTypes.VeVoteStorage storage self,
     VechainNodesDataTypes.NodeStrengthLevel nodeLevel
   ) internal view returns (uint256) {
