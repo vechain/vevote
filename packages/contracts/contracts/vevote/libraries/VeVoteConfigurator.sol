@@ -1,9 +1,12 @@
 // SPDX-License-Identifier: MIT
+
 pragma solidity 0.8.20;
 
 import { VeVoteStorageTypes } from "./VeVoteStorageTypes.sol";
 import { INodeManagement } from "../../interfaces/INodeManagement.sol";
 import { ITokenAuction } from "../../interfaces/ITokenAuction.sol";
+import { VeVoteTypes } from "./VeVoteTypes.sol";
+import { VechainNodesDataTypes } from "../../libraries/VechainNodesDataTypes.sol";
 
 /// @title VeVoteConfigurator
 /// @notice Library for configuring governance parameters in VeVote.
@@ -35,6 +38,11 @@ library VeVoteConfigurator {
    * @dev Thrown when an invalid address (zero address) is provided.
    */
   error InvalidAddress();
+
+  /**
+   * @dev Thrown when an invalid node is set as the cheapest node.
+   */
+  error InvalidNode();
 
   // ------------------------------- Events -------------------------------
 
@@ -79,6 +87,19 @@ library VeVoteConfigurator {
    * @param newContractAddress The new contract address.
    */
   event VechainNodeContractSet(address oldContractAddress, address newContractAddress);
+
+  /**
+   * @notice Emitted when the VeChain node base level is updated.
+   * @param oldBaseLevelNode The previous base level node.
+   * @param newBaseLevelNode The new base level node.
+   */
+  event VechainBaseNodeSet(uint8 oldBaseLevelNode, uint8 newBaseLevelNode);
+
+  /**
+   * @notice Emitted when the node multiplier scores are updated.
+   * @param nodeMultiplier The updated node multiplier scores.
+   */
+  event NodeVoteMultipliersUpdated(VeVoteTypes.NodeVoteMultiplier nodeMultiplier);
 
   /** ------------------ SETTERS ------------------ **/
 
@@ -131,11 +152,25 @@ library VeVoteConfigurator {
    * @param newMaxChoices The new maximum number of choices allowed.
    */
   function setMaxChoices(VeVoteStorageTypes.VeVoteStorage storage self, uint8 newMaxChoices) external {
-    if (newMaxChoices == 0) revert InvalidMaxChoices();
+    if (newMaxChoices == 0 || newMaxChoices > 32) revert InvalidMaxChoices();
 
     uint8 oldMaxChoices = self.maxChoices;
     self.maxChoices = newMaxChoices;
     emit MaxChoicesSet(oldMaxChoices, newMaxChoices);
+  }
+
+  /**
+   * @notice Sets the most basic node level that can be obtained.
+   * @dev Ensures the new node level is greater than zero before updating.
+   * @param self The storage reference for VeVote.
+   * @param baseNodeLevel The new base level node to set.
+   */
+  function setBaseLevelNode(VeVoteStorageTypes.VeVoteStorage storage self, uint8 baseNodeLevel) external {
+    if (baseNodeLevel == 0) revert InvalidNode();
+
+    uint8 oldBaseLevelNode = self.baseLevelNode;
+    self.baseLevelNode = baseNodeLevel;
+    emit VechainBaseNodeSet(oldBaseLevelNode, baseNodeLevel);
   }
 
   /**
@@ -144,7 +179,10 @@ library VeVoteConfigurator {
    * @param self The storage reference for VeVote.
    * @param newContractAddress The new contract address to set.
    */
-  function setNodeManagementContract(VeVoteStorageTypes.VeVoteStorage storage self, address newContractAddress) external {
+  function setNodeManagementContract(
+    VeVoteStorageTypes.VeVoteStorage storage self,
+    address newContractAddress
+  ) external {
     if (newContractAddress == address(0)) revert InvalidAddress();
 
     address oldContractAddress = address(self.nodeManagement);
@@ -164,6 +202,28 @@ library VeVoteConfigurator {
     address oldContractAddress = address(self.vechainNodesContract);
     self.vechainNodesContract = ITokenAuction(newContractAddress);
     emit VechainNodeContractSet(oldContractAddress, newContractAddress);
+  }
+
+  /**
+   * @notice Updates the node multiplier scores for each node level.
+   * @param self The storage reference for VeVote.
+   * @param updatedNodeMultipliers The new node multiplier scores to set.
+   */
+  function updateNodeEndorsementScores(
+    VeVoteStorageTypes.VeVoteStorage storage self,
+    VeVoteTypes.NodeVoteMultiplier memory updatedNodeMultipliers
+  ) external {
+    // Set the endorsement score for each node level
+    self.nodeMultiplier[VechainNodesDataTypes.NodeStrengthLevel.Strength] = updatedNodeMultipliers.strength; // Strength Node score
+    self.nodeMultiplier[VechainNodesDataTypes.NodeStrengthLevel.Thunder] = updatedNodeMultipliers.thunder; // Thunder Node score
+    self.nodeMultiplier[VechainNodesDataTypes.NodeStrengthLevel.Mjolnir] = updatedNodeMultipliers.mjolnir; // Mjolnir Node score
+
+    self.nodeMultiplier[VechainNodesDataTypes.NodeStrengthLevel.VeThorX] = updatedNodeMultipliers.veThorX; // VeThor X Node score
+    self.nodeMultiplier[VechainNodesDataTypes.NodeStrengthLevel.StrengthX] = updatedNodeMultipliers.strengthX; // Strength X Node score
+    self.nodeMultiplier[VechainNodesDataTypes.NodeStrengthLevel.ThunderX] = updatedNodeMultipliers.thunderX; // Thunder X Node score
+    self.nodeMultiplier[VechainNodesDataTypes.NodeStrengthLevel.MjolnirX] = updatedNodeMultipliers.mjolnirX; // Mjolnir X Node score
+
+    emit NodeVoteMultipliersUpdated(updatedNodeMultipliers);
   }
 
   /** ------------------ GETTERS ------------------ **/
@@ -204,12 +264,23 @@ library VeVoteConfigurator {
     return self.maxChoices;
   }
 
-   /**
+  /**
+   * @notice Returns the base level node for the VeChain Node contract.
+   * @param self The storage reference for VeVote.
+   * @return The current base level node.
+   */
+  function getBaseLevelNode(VeVoteStorageTypes.VeVoteStorage storage self) internal view returns (uint8) {
+    return self.baseLevelNode;
+  }
+
+  /**
    * @notice Returns the address of the Node Management contract.
    * @param self The storage reference for VeVote.
    * @return The current Node Management contract address.
    */
-  function getNodeManagementContract(VeVoteStorageTypes.VeVoteStorage storage self) internal view returns (INodeManagement) {
+  function getNodeManagementContract(
+    VeVoteStorageTypes.VeVoteStorage storage self
+  ) internal view returns (INodeManagement) {
     return self.nodeManagement;
   }
 
@@ -220,5 +291,17 @@ library VeVoteConfigurator {
    */
   function getVechainNodeContract(VeVoteStorageTypes.VeVoteStorage storage self) internal view returns (ITokenAuction) {
     return self.vechainNodesContract;
+  }
+
+  /**
+   * @notice this function returns the endorsement score of a node level.
+   * @param nodeLevel The node level of the node ID.
+   * @return uint256 The voting multiplier score of the node level.
+   */
+  function nodeLevelEndorsementScore(
+    VeVoteStorageTypes.VeVoteStorage storage self,
+    VechainNodesDataTypes.NodeStrengthLevel nodeLevel
+  ) internal view returns (uint256) {
+    return self.nodeMultiplier[nodeLevel];
   }
 }

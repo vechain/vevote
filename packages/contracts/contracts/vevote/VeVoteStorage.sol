@@ -31,18 +31,31 @@ contract VeVoteStorage is Initializable {
   function __VeVoteStorage_init_unchained(
     VeVoteTypes.InitializationData memory initializationData
   ) internal onlyInitializing {
-    VeVoteStorageTypes.VeVoteStorage storage veVoteStorage = getVeVoteStorage();
+    VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
 
     // Validate and set the governor external contracts storage
     require(address(initializationData.nodeManagement) != address(0), "VeVote: NodeManagement address cannot be zero");
     require(address(initializationData.vechainNodesContract) != address(0), "VeVote: VechainNode address cannot be zero");
-    veVoteStorage.nodeManagement = initializationData.nodeManagement;
-    veVoteStorage.vechainNodesContract = initializationData.vechainNodesContract;
+    $.nodeManagement = initializationData.nodeManagement;
+    $.vechainNodesContract = initializationData.vechainNodesContract;
 
     // Set the general storage parameters
-    veVoteStorage.minVotingDelay = initializationData.initialMinVotingDelay;
-    veVoteStorage.minVotingDuration = initializationData.initialMinVotingDuration;
-    veVoteStorage.maxVotingDuration = initializationData.initialMaxVotingDuration;
-    veVoteStorage.maxChoices = initializationData.initialMaxChoices;
+    $.minVotingDelay = initializationData.initialMinVotingDelay;
+    $.minVotingDuration = initializationData.initialMinVotingDuration;
+    $.maxVotingDuration = initializationData.initialMaxVotingDuration;
+    $.maxChoices = initializationData.initialMaxChoices;
+
+    // Set the base level node
+    $.baseLevelNode = initializationData.baseLevelNode;
+
+    // Set the voting weight multipliers for different node levels
+    $.nodeMultiplier[VechainNodesDataTypes.NodeStrengthLevel.Strength] = 100; // Strength Node multipler -> Scaled by 100
+    $.nodeMultiplier[VechainNodesDataTypes.NodeStrengthLevel.Thunder] = 100; // Thunder Node multipler -> Scaled by 100
+    $.nodeMultiplier[VechainNodesDataTypes.NodeStrengthLevel.Mjolnir] = 100; // Mjolnir Node multipler -> Scaled by 100
+
+    $.nodeMultiplier[VechainNodesDataTypes.NodeStrengthLevel.VeThorX] = 150; // VeThor X Node multipler -> Scaled by 150
+    $.nodeMultiplier[VechainNodesDataTypes.NodeStrengthLevel.StrengthX] = 150; // Strength X Node multipler -> Scaled by 150
+    $.nodeMultiplier[VechainNodesDataTypes.NodeStrengthLevel.ThunderX] = 150; // Thunder X Node multipler -> Scaled by 150
+    $.nodeMultiplier[VechainNodesDataTypes.NodeStrengthLevel.MjolnirX] = 150; // Mjolnir X Node multipler -> Scaled by 150
   }
 }

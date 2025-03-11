@@ -16,7 +16,7 @@ library VeVoteStorageTypes {
     // ------------------------------- Version 1 -------------------------------
     // ------------------------------- General Storage -------------------------------
     mapping(uint256 proposalId => VeVoteTypes.ProposalCore) proposals;
-     /// @notice Minimum delay before a proposal can be voted on after creation
+    /// @notice Minimum delay before a proposal can be voted on after creation
     uint48 minVotingDelay;
     /// @notice Minimum duration a vote must remain open
     uint48 minVotingDuration;
@@ -39,7 +39,9 @@ library VeVoteStorageTypes {
     mapping(uint256 => mapping(uint8 => uint256)) voteTally;
     /// @notice Stores the votes for each proposal (bitmask representation)
     mapping(uint256 => mapping(address => uint32)) votes;
+    /// @notice Stores the total votes for each proposal
+    mapping(uint256 => uint256) totalVotes;
     /// @notice Stores the cheapest Node a user can obtain
-    VechainNodesDataTypes.NodeStrengthLevel cheapestNode;
+    uint8 baseLevelNode; // TODO: DO WE NEED THIS?
   }
 }

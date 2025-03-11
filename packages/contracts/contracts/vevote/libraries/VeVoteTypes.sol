@@ -55,11 +55,36 @@ library VeVoteTypes {
     uint48 initialMaxVotingDuration;
     uint48 initialMinVotingDuration;
     uint8 initialMaxChoices;
+    uint8 baseLevelNode;
   }
 
   struct InitializationRolesData {
     address admin;
     address upgrader;
-    address[] whitelist; 
+    address[] whitelist;
+  }
+
+  /**
+   * @notice Represents the result of a proposal vote.
+   * @param choice The label of the choice.
+   * @param weight The total votes for that choice.
+   */
+  struct ProposalVoteResult {
+    bytes32 choice;
+    uint256 weight;
+  }
+
+
+    /**
+   * @dev The score of a node.
+   */
+  struct NodeVoteMultiplier {
+    uint256 strength;
+    uint256 thunder;
+    uint256 mjolnir;
+    uint256 veThorX;
+    uint256 strengthX;
+    uint256 thunderX;
+    uint256 mjolnirX;
   }
 }

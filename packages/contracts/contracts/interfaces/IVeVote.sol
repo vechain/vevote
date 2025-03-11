@@ -86,6 +86,36 @@ interface IVeVote is IERC165, IERC6372 {
    */
   error InvalidAddress();
 
+  /**
+   * @dev Thrown when an invalid node is set as the cheapest node.
+   */
+  error InvalidNode();
+
+  /**
+   * @dev Thrown when the proposal is not active.
+   */
+  error ProposalNotActive();
+
+  /**
+   * @dev Thrown when the user did not select a valid number of choices.
+   */
+  error InvalidVoteChoice();
+
+  /**
+   * @dev Thrown when the user is not eligible to vote.
+   */
+  error VoterNotEligible();
+
+  /**
+   * @dev Thrown when the user has already voted on the proposal.
+   */
+  error AlreadyVoted();
+
+  /**
+   * @dev Thrown when the voting power calculation overflows.
+   */
+  error VotePowerOverflow();
+
   // ------------------------------- Events -------------------------------
   /**
    * @notice Emitted when a new proposal is created.
@@ -113,6 +143,11 @@ interface IVeVote is IERC165, IERC6372 {
    * @dev Emitted when a proposal is canceled.
    */
   event ProposalCanceled(uint256 proposalId);
+
+  /**
+   * @dev Emitted when a proposal is executed.
+   */
+  event VeVoteProposalExecuted(uint256 proposalId);
 
   /**
    * @notice Emitted when the quorum numerator is updated.
@@ -151,7 +186,71 @@ interface IVeVote is IERC165, IERC6372 {
    */
   event VechainNodeContractSet(address oldContractAddress, address newContractAddress);
 
+  /**
+   * @notice Emitted when a user casts a vote on a proposal.
+   * @param voter The address of the voter.
+   * @param proposalId The ID of the proposal being voted on.
+   * @param choices The bitmask representing the selected vote choices.
+   * @param weight The voting weight of the voter.
+   * @param reason The reason for the vote.
+   */
+  event VoteCast(address indexed voter, uint256 indexed proposalId, uint32 choices, uint256 weight, string reason);
+
+  /**
+   * @notice Emitted when the VeChain node base level is updated.
+   * @param oldBaseLevelNode The previous base level node.
+   * @param newBaseLevelNode The new base level node.
+   */
+  event VechainBaseNodeSet(uint8 oldBaseLevelNode, uint8 newBaseLevelNode);
+
+  // ------------------------------- Structs -------------------------------
+  /**
+   * @notice Represents the result of a proposal vote.
+   * @param choice The label of the choice.
+   * @param weight The total votes for that choice.
+   */
+  struct ProposalVoteResult {
+    bytes32 choice;
+    uint256 weight;
+  }
+
   // ------------------------------- Getter Functions -------------------------------
+  /**
+   * @notice Retrieves the votes cast for a proposal.
+   * @param proposalId The ID of the proposal.
+   */
+  function getProposalVotes(uint256 proposalId) external view returns (VeVoteTypes.ProposalVoteResult[] memory results);
+
+  /**
+   * @notice Retrieves the total votes for a proposal.
+   * @param proposalId The ID of the proposal.
+   * @return The total votes for the proposal.
+   */
+  function totalVotes(uint256 proposalId) external view returns (uint256);
+
+  /**
+   * @notice Checks if an account has voted on a specific proposal.
+   * @param proposalId The ID of the proposal.
+   * @param account The address of the account.
+   * @return True if the account has voted, false otherwise.
+   */
+  function hasVoted(uint256 proposalId, address account) external view returns (bool);
+
+  /**
+   * @notice Retrieves the voting weight of an account at a given timepoint.
+   * @param account The address of the account.
+   * @param timepoint The specific timepoint.
+   * @return The voting weight of the account.
+   */
+  function getVoteWeightAtTimepoint(address account, uint48 timepoint) external view returns (uint256);
+
+  /**
+   * @notice Retrieves the voting weight of an account at a current timepoint.
+   * @param account The address of the account.
+   * @return The voting weight of the account.
+   */
+  function getVoteWeight(address account) external view returns (uint256);
+
   /**
    * @notice Returns the hash of a proposal.
    * @param proposer The address of the proposer.
@@ -195,6 +294,20 @@ interface IVeVote is IERC165, IERC6372 {
   function proposalProposer(uint256 proposalId) external view returns (address);
 
   /**
+   * @notice Returns the proposal choices.
+   * @param proposalId The ID of the proposal.
+   * @return The choices available for the proposal.
+   */
+  function proposalChoices(uint256 proposalId) external view returns (bytes32[] memory);
+
+  /**
+   * @notice Returns the minimum and maximum choices that can be selected for a proposal
+   * @param proposalId The id of the proposal.
+   * @return The minimum and maximum choices that can be selected.
+   */
+  function proposalSelectionRange(uint256 proposalId) external view returns (uint8, uint8);
+
+  /**
    * @notice Retrieves the current state of a proposal.
    * @param proposalId The ID of the proposal.
    * @return The current state of the proposal.
@@ -227,7 +340,7 @@ interface IVeVote is IERC165, IERC6372 {
    */
   function quorumDenominator() external pure returns (uint256);
 
-    /**
+  /**
    * @notice Returns the minimum voting delay.
    * @return uint48 The minimum voting delay
    */
@@ -250,6 +363,13 @@ interface IVeVote is IERC165, IERC6372 {
    * @return uint8 The maximum number of choices
    */
   function getMaxChoices() external view returns (uint8);
+
+  /**
+   * @notice Returns the base level node for the VeChain Node contract.
+   * @return The current base level node.
+   */
+  function getBaseLevelNode() external view returns (uint8);
+
   /**
    * @notice Returns the node management contract instance.
    * @return INodeManagement The node management contract
@@ -306,6 +426,13 @@ interface IVeVote is IERC165, IERC6372 {
   function cancel(uint256 proposalId) external returns (uint256);
 
   /**
+   * @notice Marks a proposal as executed.
+   * @dev Allows an admin to mark a proposal as executed.
+   * @param proposalId The ID of the proposal to execute.
+   */
+  function execute(uint256 proposalId) external returns (uint256);
+
+  /**
    * @notice Updates the minimum voting delay.
    * @param newMinVotingDelay The new minimum voting delay
    */
@@ -330,6 +457,12 @@ interface IVeVote is IERC165, IERC6372 {
   function setMaxChoices(uint8 newMaxChoices) external;
 
   /**
+   * @notice Sets the most basic node level that can be obtained.
+   * @param newBaseLevelNode The new base level node to set.
+   */
+  function setBaseLevelNode(uint8 newBaseLevelNode) external;
+
+  /**
    * @notice Updates the node management contract address.
    * @param nodeManagement The address of the node management contract
    */
@@ -340,4 +473,10 @@ interface IVeVote is IERC165, IERC6372 {
    * @param tokenAuction The address of the token auction contract
    */
   function setVechainNodeContract(address tokenAuction) external;
+
+  /**
+   * @notice Updates the quorum numerator.
+   * @param newQuorumNumerator The new quorum numerator
+   */
+  function updateQuorumNumerator(uint256 newQuorumNumerator) external;
 }

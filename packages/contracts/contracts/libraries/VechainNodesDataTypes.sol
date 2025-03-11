@@ -19,19 +19,6 @@ library VechainNodesDataTypes {
   }
 
   /**
-   * @dev The score of a node.
-   */
-  struct NodeStrengthScores {
-    uint256 strength;
-    uint256 thunder;
-    uint256 mjolnir;
-    uint256 veThorX;
-    uint256 strengthX;
-    uint256 thunderX;
-    uint256 mjolnirX;
-  }
-
-  /**
    * @dev Node level and minimum balance information for a node.
    */
   struct NodeLevelInfo {

@@ -87,7 +87,14 @@ library VeVoteStateLogic {
     VeVoteStorageTypes.VeVoteStorage storage self,
     uint256 proposalId
   ) internal view returns (VeVoteTypes.ProposalState) {
+    // Cache the proposal and its snapshot
     VeVoteTypes.ProposalCore storage proposal = self.proposals[proposalId];
+    uint256 snapshot = proposal.voteStart;
+      
+    // If there is no snapshot, the proposal does not exist
+    if (snapshot == 0) {
+      revert VeVoteNonexistentProposal(proposalId);
+    }
 
     // If the proposal has been executed, return Executed state
     if (proposal.executed) {
@@ -99,14 +106,7 @@ library VeVoteStateLogic {
       return VeVoteTypes.ProposalState.Canceled;
     }
 
-    // Retrieve the proposal's voting snapshot (start time)
-    uint256 snapshot = VeVoteProposalLogic.proposalSnapshot(self, proposalId);
-
-    // If there is no snapshot, the proposal does not exist
-    if (snapshot == 0) {
-      revert VeVoteNonexistentProposal(proposalId);
-    }
-
+    // Retrieve the current timepoint
     uint256 currentTimepoint = VeVoteClockLogic.clock();
 
     // If the snapshot is in the future, the proposal is still Pending

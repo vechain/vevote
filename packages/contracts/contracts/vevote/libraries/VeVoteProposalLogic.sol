@@ -79,6 +79,11 @@ library VeVoteProposalLogic {
    */
   event ProposalCanceled(uint256 proposalId);
 
+  /**
+   * @dev Emitted when a proposal is executed.
+   */
+  event VeVoteProposalExecuted(uint256 proposalId);
+
   // ------------------------------- Functions -------------------------------
   // ------------------------------- Setter Functions -------------------------------
   /**
@@ -95,10 +100,10 @@ library VeVoteProposalLogic {
    */
   function propose(
     VeVoteStorageTypes.VeVoteStorage storage self,
-    string calldata description,
+    string memory description,
     uint48 startTime,
     uint48 voteDuration,
-    bytes32[] calldata choices,
+    bytes32[] memory choices,
     uint8 maxSelection,
     uint8 minSelection
   ) external returns (uint256) {
@@ -158,9 +163,8 @@ library VeVoteProposalLogic {
     bool admin,
     uint256 proposalId
   ) external returns (uint256) {
-    // Cache the proposer and current state to minimize redundant storage reads
+    // Cache the proposer
     address proposer = proposalProposer(self, proposalId);
-    VeVoteTypes.ProposalState currentState = VeVoteStateLogic._state(self, proposalId);
 
     // Ensure only the proposer or an admin can cancel
     if (account != proposer && !admin) {
@@ -168,7 +172,7 @@ library VeVoteProposalLogic {
     }
 
     // Validate that the proposal is not already canceled or executed
-    VeVoteStateLogic.validateStateBitmap(
+    VeVoteTypes.ProposalState currentState = VeVoteStateLogic.validateStateBitmap(
       self,
       proposalId,
       VeVoteStateLogic.encodeStateBitmap(VeVoteTypes.ProposalState.Pending) |
@@ -191,6 +195,26 @@ library VeVoteProposalLogic {
     emit ProposalCanceled(proposalId);
 
     return proposalId;
+  }
+
+  /**
+   * @notice Marks a proposal as executed.
+   * @dev Allows an admin to mark a proposal as executed.
+   * @param self The storage reference for the GovernorStorage.
+   * @param proposalId The ID of the proposal to execute.
+   */
+  function execute(VeVoteStorageTypes.VeVoteStorage storage self, uint256 proposalId) external returns (uint256) {
+    // Validate that proposal is in a succeeded state
+    VeVoteStateLogic.validateStateBitmap(
+      self,
+      proposalId,
+      VeVoteStateLogic.encodeStateBitmap(VeVoteTypes.ProposalState.Succeeded)
+    );
+
+    // Mark the proposal as executed
+    self.proposals[proposalId].executed = true;
+
+    emit VeVoteProposalExecuted(proposalId);
   }
 
   // ------------------------------- Getter Functions -------------------------------
@@ -236,11 +260,11 @@ library VeVoteProposalLogic {
   }
 
   /**
-   * @notice Returns the deadline timestamp of a proposal.
-   * @dev Determines the timestamp at which the proposal will be considered expired.
-   * @param self The storage reference for the GovernorStorage.
-   * @param proposalId The id of the proposal.
-   * @return The deadline timestamp.
+   * @notice Returns the timestamp at which voting ends for the given proposal.
+   * @dev Calculates the deadline as voteStart + voteDuration. After this timestamp, the proposal is no longer active.
+   * @param self The storage reference for the VeVoteStorage.
+   * @param proposalId The unique identifier of the proposal.
+   * @return deadline The UNIX timestamp when the proposal voting period ends.
    */
   function proposalDeadline(
     VeVoteStorageTypes.VeVoteStorage storage self,
@@ -261,6 +285,33 @@ library VeVoteProposalLogic {
     uint256 proposalId
   ) internal view returns (address) {
     return self.proposals[proposalId].proposer;
+  }
+
+  /**
+   * @notice Returns the choices available for a proposal.
+   * @param self The storage reference for the VeVoteStorage.
+   * @param proposalId The id of the proposal.
+   * @return The choices available for the proposal.
+   */
+  function proposalChoices(
+    VeVoteStorageTypes.VeVoteStorage storage self,
+    uint256 proposalId
+  ) internal view returns (bytes32[] memory) {
+    return self.proposals[proposalId].choices;
+  }
+
+  /**
+   * @notice Returns the minimum and maximum choices that can be selected for a proposal
+   * @param self The storage reference for the VeVoteStorage.
+   * @param proposalId The id of the proposal.
+   * @return The minimum and maximum choices that can be selected.
+   */
+  function proposalSelectionRange(
+    VeVoteStorageTypes.VeVoteStorage storage self,
+    uint256 proposalId
+  ) internal view returns (uint8, uint8) {
+    VeVoteTypes.ProposalCore storage proposal = self.proposals[proposalId];
+    return (proposal.minSelection, proposal.maxSelection);
   }
 
   // ------------------------------- Private Functions -------------------------------
@@ -287,7 +338,7 @@ library VeVoteProposalLogic {
     uint256 proposalId
   ) private view {
     // Start time must be in the future and at least minVotingDelay seconds from now
-    if (startTime <= VeVoteClockLogic.clock() || VeVoteClockLogic.clock() - startTime > self.minVotingDelay) {
+    if (startTime <= VeVoteClockLogic.clock() + self.minVotingDelay) {
       revert VeVoteInvalidStartTime(startTime);
     }
 
@@ -303,13 +354,13 @@ library VeVoteProposalLogic {
       revert VeVoteInvalidProposalDescription();
     }
 
-    // Ensure `minSelection` is not greater than `maxSelection` (logical validation)
-    if (minSelection > maxSelection) {
+    // Ensure `minSelection` is not greater than `maxSelection` (logical validation) && greater than 0
+    if (minSelection > maxSelection || minSelection < 1) {
       revert VeVoteInvalidSelectionRange(minSelection, maxSelection);
     }
 
     // Ensure there are enough choices for voters to pick up to `maxSelection`
-    if (choices.length < maxSelection && choices.length < self.maxChoices) {
+    if (choices.length < maxSelection || choices.length > self.maxChoices) {
       revert VeVoteInvalidChoiceCount(choices.length, minSelection, maxSelection);
     }
 
