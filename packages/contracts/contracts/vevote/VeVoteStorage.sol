@@ -4,6 +4,7 @@ pragma solidity 0.8.20;
 
 import { VeVoteStorageTypes } from "./libraries/VeVoteStorageTypes.sol";
 import { VeVoteTypes } from "./libraries/VeVoteTypes.sol";
+import { VechainNodesDataTypes } from "../libraries/VechainNodesDataTypes.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
 /// @title VeVoteStorage

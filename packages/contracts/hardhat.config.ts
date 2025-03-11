@@ -1,36 +1,32 @@
-import {
-  VECHAIN_URL_SOLO,
-  VECHAIN_URL_MAINNET,
-  VECHAIN_URL_TESTNET,
-} from "@vechain/hardhat-vechain";
-import { HardhatUserConfig } from "hardhat/config";
-import "@nomicfoundation/hardhat-toolbox";
-import "@nomiclabs/hardhat-truffle5";
-import "@vechain/hardhat-vechain";
-import "@vechain/hardhat-ethers";
-import "hardhat-contract-sizer";
-import "hardhat-ignore-warnings";
-import { getConfig } from "@repo/config";
-import "solidity-coverage";
-import "solidity-docgen";
-import { EnvConfig } from "@repo/config/contracts";
+import { VECHAIN_URL_SOLO, VECHAIN_URL_MAINNET, VECHAIN_URL_TESTNET } from "@vechain/hardhat-vechain"
+import { HardhatUserConfig } from "hardhat/config"
+import "@nomicfoundation/hardhat-toolbox"
+import "@nomiclabs/hardhat-truffle5"
+import "@vechain/hardhat-vechain"
+import "@vechain/hardhat-ethers"
+import "hardhat-contract-sizer"
+import "hardhat-ignore-warnings"
+import { getConfig } from "@repo/config"
+import "solidity-coverage"
+import "solidity-docgen"
+import { EnvConfig } from "@repo/config/contracts"
 
 const config: HardhatUserConfig = {
   solidity: "0.8.20",
-};
+}
 
 const getEnvMnemonic = () => {
-  const mnemonic = process.env.MNEMONIC;
+  const mnemonic = process.env.MNEMONIC
 
-  return mnemonic ?? "";
-};
+  return mnemonic ?? ""
+}
 
 const getSoloUrl = () => {
   const url = process.env.VITE_APP_ENV
     ? getConfig(process.env.VITE_APP_ENV as EnvConfig).network.urls[0]
-    : VECHAIN_URL_SOLO;
-  return url;
-};
+    : VECHAIN_URL_SOLO
+  return url
+}
 
 module.exports = {
   solidity: {
@@ -91,6 +87,6 @@ module.exports = {
   docgen: {
     pages: "files",
   },
-};
+}
 
-export default config;
+export default config

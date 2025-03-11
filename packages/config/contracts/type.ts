@@ -1,6 +1,13 @@
 export type ContractsConfig = {
-  VITE_APP_ENV: "local" | "e2e" | "testnet" | "mainnet";
-  CONTRACTS_ADMIN_ADDRESS: string;
-  XAPP_BASE_URI: string;
-  VECHAIN_NODES_CONTRACT_ADDRESS: string;
-};
+  VITE_APP_ENV: "local" | "e2e" | "testnet" | "mainnet"
+  CONTRACTS_ADMIN_ADDRESS: string
+  XAPP_BASE_URI: string
+  VECHAIN_NODES_CONTRACT_ADDRESS: string
+  NODE_MANAGEMENT_CONTRACT_ADDRESS: string
+  QUORUM_PERCENTAGE: number
+  INITIAL_MIN_VOTING_DELAY: number
+  INITIAL_MAX_VOTING_DURATION: number
+  INITIAL_MIN_VOTING_DURATION: number
+  INITIAL_MAX_CHOICES: number
+  BASE_LEVEL_NODE: number
+}
