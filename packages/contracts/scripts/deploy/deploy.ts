@@ -52,7 +52,7 @@ export async function deployAll(config: ContractsConfig) {
 
     console.log("Vechain Nodes Mock deployed at: ", await vechainNodesMock.getAddress())
 
-    // Deploy the vevote contract
+    // Deploy the NodeManagement contract
     nodeManagement = (await deployProxy("NodeManagement", [
       vechainNodesAddress,
       TEMP_ADMIN,
