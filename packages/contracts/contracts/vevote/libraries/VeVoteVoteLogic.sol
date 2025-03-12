@@ -9,6 +9,9 @@ import { VechainNodesDataTypes } from "../../libraries/VechainNodesDataTypes.sol
 import { INodeManagement } from "../../interfaces/INodeManagement.sol";
 import { Math } from "@openzeppelin/contracts/utils/math/Math.sol";
 
+/// @title VeVoteVoteLogic
+/// @notice Voting logic for VeVote governance system including casting votes, vote weight calculation, and result tallying.
+/// @dev This library handles how users interact with proposals through voting and ensures constraints are respected.
 library VeVoteVoteLogic {
   // ------------------------------- Constants -------------------------------
   uint256 private constant VOTING_MULTIPLER_SCALE = 100;
