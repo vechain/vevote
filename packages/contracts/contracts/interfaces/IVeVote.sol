@@ -418,7 +418,7 @@ interface IVeVote is IERC165, IERC6372 {
    * @notice Returns the version of the contract.
    * @return The version of the contract.
    */
-  function version() external pure returns (string memory);
+  function version() external pure returns (uint8);
 
   // ------------------------------- Setter Functions -------------------------------
 

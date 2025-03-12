@@ -297,8 +297,8 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
   /**
    * @notice See {IVeVote-version}.
    */
-  function version() external pure returns (string memory) {
-    return "1";
+  function version() external pure returns (uint8) {
+    return 1;
   }
 
   // ------------------ SETTERS ------------------ //
