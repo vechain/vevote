@@ -12,6 +12,6 @@ export function createLocalConfig() {
     INITIAL_MAX_VOTING_DURATION: 100, // 10 blocks
     INITIAL_MIN_VOTING_DURATION: 10, // 1 block
     INITIAL_MAX_CHOICES: 32, // 32 choices
-    BASE_LEVEL_NODE: 1
+    BASE_LEVEL_NODE: 10
   })
 }

@@ -74,6 +74,12 @@ describe("VeVote", function () {
         ),
       ).to.be.revertedWithCustomError(vevote, "InvalidInitialization")
     })
+
+    it("Should support ERC 165 interface", async () => {
+      const { vevote } = await getOrDeployContractInstances({ forceDeploy: true })
+
+      expect(await vevote.supportsInterface("0x01ffc9a7")).to.equal(true) // ERC165
+    })
   })
 
   describe("Proposal Creation", function () {
@@ -349,6 +355,17 @@ describe("VeVote", function () {
       expect(await vevote.state(proposalId)).to.equal(2)
     })
 
+    it("Non admin or proposar cannot cancel", async function () {
+      const { vevote, otherAccount } = await getOrDeployContractInstances({ forceDeploy: true })
+      const tx = await createProposal()
+      const proposalId = await getProposalIdFromTx(tx)
+      expect(await vevote.state(proposalId)).to.equal(0)
+      await expect(vevote.connect(otherAccount).cancel(proposalId)).to.revertedWithCustomError(
+        vevote,
+        "UnauthorizedAccess",
+      )
+    })
+
     it("Only the proposar can cancel their own proposal when it is PENDING state", async function () {
       const { vevote, whitelistedAccount, mjolnirXHolder, admin } = await getOrDeployContractInstances({
         forceDeploy: true,
@@ -573,7 +590,21 @@ describe("VeVote", function () {
       expect(await vevote.totalVotes(proposalId)).to.equal(190)
     })
 
-    it("Should normalise the vote weights when calling the getters in the contract", async function () {})
+    // TODO: Update this test to reflect the new node contract
+    it("Should determine vote weight based on all nodes a user owns and has deleagted to them at a certian timepoint", async function () {
+      const { vevote, strengthHolder} = await getOrDeployContractInstances({
+        forceDeploy: true,
+      })
+
+      const timepoint = await getCurrentBlockTimestamp()
+
+      // User owns 1 node with weight 100
+      expect(await vevote.getVoteWeightAtTimepoint(strengthHolder.address, timepoint)).to.equal(100)
+    })
+
+    it("Should normalise the vote weights when calling the getters in the contract", async function () {
+      // TODO: Implement a test for all values when new node contracts in
+    })
 
     it("Should split vote weight evenly between all choices when a user votes", async function () {
       const { vevote, strengthHolder } = await getOrDeployContractInstances({ forceDeploy: true })
@@ -651,6 +682,43 @@ describe("VeVote", function () {
       const votes2 = await vevote.getProposalVotes(proposalId)
       expect(votes2[0].weight).to.equal(1) // Choice 1 will be 1
       expect(votes2[1].weight).to.equal(0) // Choice 2 will still be 0 as total weight is 0.5
+    })
+
+    it("Has Voted should return true if user has voted", async function () {
+      const { vevote, dawnHolder } = await getOrDeployContractInstances({ forceDeploy: true })
+      const tx = await createProposal()
+      const proposalId = await getProposalIdFromTx(tx)
+      await waitForProposalToStart(proposalId)
+      await vevote.connect(dawnHolder).castVote(proposalId, 1)
+      expect(await vevote.hasVoted(proposalId, dawnHolder.address)).to.equal(true)
+    })
+
+    it("Should emit the VoteCast event with correct info", async function () {
+      const { vevote, dawnHolder } = await getOrDeployContractInstances({ forceDeploy: true })
+      const tx = await createProposal()
+      const proposalId = await getProposalIdFromTx(tx)
+      await waitForProposalToStart(proposalId)
+      await expect(vevote.connect(dawnHolder).castVote(proposalId, 1)).to.emit(vevote, "VoteCast").withArgs(
+        dawnHolder.address,
+        proposalId,
+        1,
+        1,
+        ""
+      )
+    })
+
+    it("Should emit the VoteCast event with correct info when castVoteWithReason is cast", async function () {
+      const { vevote, dawnHolder } = await getOrDeployContractInstances({ forceDeploy: true })
+      const tx = await createProposal()
+      const proposalId = await getProposalIdFromTx(tx)
+      await waitForProposalToStart(proposalId)
+      await expect(vevote.connect(dawnHolder).castVoteWithReason(proposalId, 1, "Test Reason")).to.emit(vevote, "VoteCast").withArgs(
+        dawnHolder.address,
+        proposalId,
+        1,
+        1,
+        "Test Reason"
+      )
     })
   })
 
@@ -746,7 +814,7 @@ describe("VeVote", function () {
     })
   })
 
-  describe("Quorom", function () {
+  describe("Proposal Quorom", function () {
     it("Should return the correct quorom denominator", async function () {
       const { vevote } = await getOrDeployContractInstances({ forceDeploy: true })
       expect(await vevote.quorumDenominator()).to.equal(100)
@@ -781,6 +849,8 @@ describe("VeVote", function () {
 
     it("Should return the correct quorom at a given timepoint", async function () {
       // TODO: When quorom is implemented
+      const { vevote } = await getOrDeployContractInstances({ forceDeploy: true })
+      expect(await vevote.quorum(1)).to.equal(0) // THIS IS A PLACEHOLDER
     })
 
     it("Only admin addresses can set the quorom numerator", async function () {
@@ -813,7 +883,7 @@ describe("VeVote", function () {
     })
   })
 
-  describe.only("Proposal State", function () {
+  describe("Proposal State", function () {
     it("Should return EXECUTED if contract has been marked as executed", async function () {
       const { vevote, admin, mjolnirXHolder } = await getOrDeployContractInstances({ forceDeploy: true })
       const tx = await createProposal()
@@ -866,13 +936,300 @@ describe("VeVote", function () {
     })
 
     it("Should return SUCEEDED if proposal deadline is before current timepoint and quorom is reached", async function () {
-      const { vevote, admin, mjolnirXHolder } = await getOrDeployContractInstances({ forceDeploy: true })
+      const { vevote, mjolnirXHolder } = await getOrDeployContractInstances({ forceDeploy: true })
       const tx = await createProposal()
       const proposalId = await getProposalIdFromTx(tx)
       await waitForProposalToStart(proposalId)
       await vevote.connect(mjolnirXHolder).castVote(proposalId, 1)
       await waitForProposalToEnd(proposalId)
       expect(await vevote.state(proposalId)).to.equal(4) // SUCEEDED
+    })
+
+    it("Should throw error if getting state of non existent proposal", async function () {
+      const { vevote } = await getOrDeployContractInstances({ forceDeploy: true })
+      await expect(vevote.state(100000)).to.be.revertedWithCustomError(vevote, "VeVoteNonexistentProposal")
+    })
+  })
+
+  describe("Proposal Configuration", function () {
+    it("Only admin addresses ca nset min voting delay", async function () {
+      const { vevote, admin, otherAccount } = await getOrDeployContractInstances({ forceDeploy: true })
+      await expect(vevote.connect(otherAccount).setMinVotingDelay(100)).to.be.revertedWithCustomError(
+        vevote,
+        "AccessControlUnauthorizedAccount",
+      )
+      await expect(vevote.connect(admin).setMinVotingDelay(100)).to.not.be.reverted
+
+      expect(await vevote.getMinVotingDelay()).to.equal(100)
+    })
+
+    it("Cannot set min voting delay to 0", async function () {
+      const { vevote, admin } = await getOrDeployContractInstances({ forceDeploy: true })
+      await expect(vevote.connect(admin).setMinVotingDelay(0)).to.be.revertedWithCustomError(
+        vevote,
+        "InvalidMinVotingDelay",
+      )
+    })
+
+    it("Should emit an event when min voting delay is set", async function () {
+      const config = createLocalConfig()
+      const { vevote, admin } = await getOrDeployContractInstances({ forceDeploy: true })
+      await expect(vevote.connect(admin).setMinVotingDelay(1234))
+        .to.emit(vevote, "MinVotingDelaySet")
+        .withArgs(config.INITIAL_MIN_VOTING_DELAY, 1234)
+    })
+
+    it("Only admin addresses can set min voting duration", async function () {
+      const { vevote, admin, otherAccount } = await getOrDeployContractInstances({ forceDeploy: true })
+      await expect(vevote.connect(otherAccount).setMinVotingDuration(6)).to.be.revertedWithCustomError(
+        vevote,
+        "AccessControlUnauthorizedAccount",
+      )
+      await expect(vevote.connect(admin).setMinVotingDuration(6)).to.not.be.reverted
+
+      expect(await vevote.getMinVotingDuration()).to.equal(6)
+    })
+
+    it("Cannot set min voting duration to 0", async function () {
+      const { vevote, admin } = await getOrDeployContractInstances({ forceDeploy: true })
+      await expect(vevote.connect(admin).setMinVotingDuration(0)).to.be.revertedWithCustomError(
+        vevote,
+        "InvalidMinVotingDuration",
+      )
+    })
+
+    it("Cannot set min voting duration greater or equal than max", async function () {
+      const config = createLocalConfig()
+      const { vevote, admin } = await getOrDeployContractInstances({ forceDeploy: true })
+      await expect(vevote.connect(admin).setMinVotingDuration(config.INITIAL_MAX_VOTING_DURATION)).to.be.revertedWithCustomError(
+        vevote,
+        "InvalidMinVotingDuration",
+      )
+    })
+
+    it("Should emit an event when min voting duration is set", async function () {
+      const config = createLocalConfig()
+      const { vevote, admin } = await getOrDeployContractInstances({ forceDeploy: true })
+      await expect(vevote.connect(admin).setMinVotingDuration(6))
+        .to.emit(vevote, "MinVotingDurationSet")
+        .withArgs(config.INITIAL_MIN_VOTING_DURATION, 6)
+    })
+
+    it("Only admin addresses can set max voting duration", async function () {
+      const { vevote, admin, otherAccount } = await getOrDeployContractInstances({ forceDeploy: true })
+      await expect(vevote.connect(otherAccount).setMaxVotingDuration(100)).to.be.revertedWithCustomError(
+        vevote,
+        "AccessControlUnauthorizedAccount",
+      )
+      await expect(vevote.connect(admin).setMaxVotingDuration(100)).to.not.be.reverted
+
+      expect(await vevote.getMaxVotingDuration()).to.equal(100)
+    })
+
+    it("Cannot set max voting duration to less than equal min", async function () {
+      const config = createLocalConfig()
+      const { vevote, admin } = await getOrDeployContractInstances({ forceDeploy: true })
+      await expect(vevote.connect(admin).setMaxVotingDuration(config.INITIAL_MIN_VOTING_DURATION)).to.be.revertedWithCustomError(
+        vevote,
+        "InvalidMaxVotingDuration",
+      )
+    })
+
+    it("Should emit an event when max voting duration is set", async function () {
+      const config = createLocalConfig()
+      const { vevote, admin } = await getOrDeployContractInstances({ forceDeploy: true })
+      await expect(vevote.connect(admin).setMaxVotingDuration(1234))
+        .to.emit(vevote, "MaxVotingDurationSet")
+        .withArgs(config.INITIAL_MAX_VOTING_DURATION, 1234)
+    })
+
+    it("Only admin addresses can set max choices", async function () {
+      const { vevote, admin, otherAccount } = await getOrDeployContractInstances({ forceDeploy: true })
+      await expect(vevote.connect(otherAccount).setMaxVotingDuration(10)).to.be.revertedWithCustomError(
+        vevote,
+        "AccessControlUnauthorizedAccount",
+      )
+      await expect(vevote.connect(admin).setMaxChoices(10)).to.not.be.reverted
+
+      expect(await vevote.getMaxChoices()).to.equal(10)
+    })
+
+    it("Max choices cannot be 0", async function () {
+      const { vevote, admin } = await getOrDeployContractInstances({ forceDeploy: true })
+      await expect(vevote.connect(admin).setMaxChoices(0)).to.be.revertedWithCustomError(
+        vevote,
+        "InvalidMaxChoices",
+      )
+    })
+
+    it("Max choices cannot be greater than 32", async function () {
+      const { vevote, admin } = await getOrDeployContractInstances({ forceDeploy: true })
+      await expect(vevote.connect(admin).setMaxChoices(33)).to.be.revertedWithCustomError(
+        vevote,
+        "InvalidMaxChoices",
+      )
+    })
+
+    it("Should emit an event when max choices is set", async function () {
+      const config = createLocalConfig()
+      const { vevote, admin } = await getOrDeployContractInstances({ forceDeploy: true })
+      await expect(vevote.connect(admin).setMaxChoices(10))
+        .to.emit(vevote, "MaxChoicesSet")
+        .withArgs(config.INITIAL_MAX_CHOICES, 10)
+    })
+
+    it("Only admin addresses can set base level node", async function () {
+      const { vevote, admin, otherAccount } = await getOrDeployContractInstances({ forceDeploy: true })
+      await expect(vevote.connect(otherAccount).setBaseLevelNode(1)).to.be.revertedWithCustomError(
+        vevote,
+        "AccessControlUnauthorizedAccount",
+      )
+      await expect(vevote.connect(admin).setBaseLevelNode(1)).to.not.be.reverted
+
+      expect(await vevote.getBaseLevelNode()).to.equal(1)
+    })
+
+    it("Base level node cannot be 0", async function () {
+      const { vevote, admin } = await getOrDeployContractInstances({ forceDeploy: true })
+      await expect(vevote.connect(admin).setBaseLevelNode(0)).to.be.revertedWithCustomError(
+        vevote,
+        "InvalidNode",
+      )
+    })
+
+    it("Should emit an event when base level node is set", async function () {
+      const config = createLocalConfig()
+      const { vevote, admin } = await getOrDeployContractInstances({ forceDeploy: true })
+      await expect(vevote.connect(admin).setBaseLevelNode(1))
+        .to.emit(vevote, "VechainBaseNodeSet")
+        .withArgs(config.BASE_LEVEL_NODE, 1)
+    })
+
+    it("Only admin address can update node management cotract", async function () {
+      const { vevote, admin, otherAccount, vechainNodesMock } = await getOrDeployContractInstances({
+        forceDeploy: true,
+      })
+      await expect(
+        vevote.connect(otherAccount).setNodeManagementContract(await vechainNodesMock.getAddress()),
+      ).to.be.revertedWithCustomError(vevote, "AccessControlUnauthorizedAccount")
+      await expect(vevote.connect(admin).setNodeManagementContract(await vechainNodesMock.getAddress())).to.not.be
+        .reverted
+
+      expect(await vevote.getNodeManagementContract()).to.equal(await vechainNodesMock.getAddress())
+    })
+
+    it("Cannot set node management contract to ZERO address", async function () {
+      const { vevote, admin } = await getOrDeployContractInstances({
+        forceDeploy: true,
+      })
+      await expect(
+        vevote.connect(admin).setNodeManagementContract(ethers.ZeroAddress),
+      ).to.be.revertedWithCustomError(vevote, "InvalidAddress")
+    })
+
+    it("Should emit an event when node management contract updated", async function () {
+      const { vevote, admin, vechainNodesMock, nodeManagement } = await getOrDeployContractInstances({
+        forceDeploy: true,
+      })
+      await expect(vevote.connect(admin).setNodeManagementContract(await vechainNodesMock.getAddress()))
+        .to.emit(vevote, "NodeManagementContractSet")
+        .withArgs(await nodeManagement.getAddress(), await vechainNodesMock.getAddress())
+    })
+
+    it("Only admin address can update vechain node cotract", async function () {
+      const { vevote, otherAccount, nodeManagement} = await getOrDeployContractInstances({ forceDeploy: true })
+      await expect(
+        vevote.connect(otherAccount).setVechainNodeContract(await nodeManagement.getAddress()),
+      ).to.be.revertedWithCustomError(vevote, "AccessControlUnauthorizedAccount")
+    })
+
+    it("Cannot set vechain node contract to ZERO address", async function () {
+      const { vevote, admin } = await getOrDeployContractInstances({
+        forceDeploy: true,
+      })
+      await expect(
+        vevote.connect(admin).setNodeManagementContract(ethers.ZeroAddress),
+      ).to.be.revertedWithCustomError(vevote, "InvalidAddress")
+    })
+
+
+    it("Should emit an event when vechain node contract updated", async function () {
+      const { vevote, admin, vechainNodesMock, nodeManagement } = await getOrDeployContractInstances({
+        forceDeploy: true,
+      })
+      await expect(vevote.connect(admin).setVechainNodeContract(await nodeManagement.getAddress()))
+        .to.emit(vevote, "VechainNodeContractSet")
+        .withArgs(await vechainNodesMock.getAddress(), await nodeManagement.getAddress())
+    })
+
+    it("Only admin address can update node multiplers", async function () {
+      const { vevote, admin, otherAccount } = await getOrDeployContractInstances({ forceDeploy: true })
+      const nodeMultipliers = {
+        strength: 1,
+        thunder: 2,
+        mjolnir: 3,
+        veThorX: 4,
+        strengthX: 5,
+        thunderX: 6,
+        mjolnirX: 7,
+        flash: 8,
+        lightning: 9,
+        dawn: 10,
+        validator: 11,
+      }
+      await expect(
+        vevote.connect(otherAccount).updateNodeMultipliers(nodeMultipliers),
+      ).to.be.revertedWithCustomError(vevote, "AccessControlUnauthorizedAccount")
+      await expect(vevote.connect(admin).updateNodeMultipliers(nodeMultipliers)).to.not.be.reverted
+
+      expect(await vevote.nodeLevelMultiplier(1)).to.equal(1)
+      expect(await vevote.nodeLevelMultiplier(2)).to.equal(2)
+      expect(await vevote.nodeLevelMultiplier(3)).to.equal(3)
+      expect(await vevote.nodeLevelMultiplier(4)).to.equal(4)
+      expect(await vevote.nodeLevelMultiplier(5)).to.equal(5)
+      expect(await vevote.nodeLevelMultiplier(6)).to.equal(6)
+      expect(await vevote.nodeLevelMultiplier(7)).to.equal(7)
+      expect(await vevote.nodeLevelMultiplier(8)).to.equal(8)
+      expect(await vevote.nodeLevelMultiplier(9)).to.equal(9)
+      expect(await vevote.nodeLevelMultiplier(10)).to.equal(10)
+      expect(await vevote.nodeLevelMultiplier(11)).to.equal(11)
+    })
+
+    it("Should emit an event when vechain node contract updated", async function () {
+      const { vevote, admin } = await getOrDeployContractInstances({
+        forceDeploy: true,
+      })
+
+      const nodeMultipliers = {
+        strength: 1,
+        thunder: 2,
+        mjolnir: 3,
+        veThorX: 4,
+        strengthX: 5,
+        thunderX: 6,
+        mjolnirX: 7,
+        flash: 8,
+        lightning: 9,
+        dawn: 10,
+        validator: 11,
+      }
+
+      await expect(vevote.connect(admin).updateNodeMultipliers(nodeMultipliers))
+        .to.emit(vevote, "NodeVoteMultipliersUpdated")
+        .withArgs(Object.values(nodeMultipliers).map(BigInt))
+    })
+  })
+
+  describe("Proposal Clock", function () {
+    it("Should return the current block timestamp", async function () {
+      const { vevote } = await getOrDeployContractInstances({})
+      const currentTime = await getCurrentBlockTimestamp()
+      expect(await vevote.clock()).to.equal(currentTime)
+    })
+
+    it("Should return the correct CLOCK_TYPE", async function () {
+      const { vevote } = await getOrDeployContractInstances({})
+      expect(await vevote.CLOCK_MODE()).to.equal("mode=timestamp&from=default")
     })
   })
 })

@@ -51,7 +51,7 @@ library VeVoteConfigurator {
    * @param oldMinVotingDelay The previous minimum voting delay.
    * @param newMinVotingDelay The new minimum voting delay.
    */
-  event MinVotingDelaySet(uint48 oldMinVotingDelay, uint256 newMinVotingDelay);
+  event MinVotingDelaySet(uint48 oldMinVotingDelay, uint48 newMinVotingDelay);
 
   /**
    * @notice Emitted when the minimum voting duration is updated.
@@ -114,6 +114,7 @@ library VeVoteConfigurator {
 
     uint48 oldMinVotingDelay = self.minVotingDelay;
     self.minVotingDelay = newMinVotingDelay;
+
     emit MinVotingDelaySet(oldMinVotingDelay, newMinVotingDelay);
   }
 
@@ -124,7 +125,7 @@ library VeVoteConfigurator {
    * @param newMinVotingDuration The new minimum voting duration to set.
    */
   function setMinVotingDuration(VeVoteStorageTypes.VeVoteStorage storage self, uint48 newMinVotingDuration) external {
-    if (newMinVotingDuration == 0) revert InvalidMinVotingDuration();
+    if (newMinVotingDuration == 0 || newMinVotingDuration >= self.maxVotingDuration) revert InvalidMinVotingDuration();
 
     uint48 oldMinVotingDuration = self.minVotingDuration;
     self.minVotingDuration = newMinVotingDuration;
@@ -138,7 +139,7 @@ library VeVoteConfigurator {
    * @param newMaxVotingDuration The new maximum voting duration to set.
    */
   function setMaxVotingDuration(VeVoteStorageTypes.VeVoteStorage storage self, uint48 newMaxVotingDuration) external {
-    if (newMaxVotingDuration == 0) revert InvalidMaxVotingDuration();
+    if (newMaxVotingDuration <= self.minVotingDuration) revert InvalidMaxVotingDuration();
 
     uint48 oldMaxVotingDuration = self.maxVotingDuration;
     self.maxVotingDuration = newMaxVotingDuration;
@@ -222,6 +223,12 @@ library VeVoteConfigurator {
     self.nodeMultiplier[VechainNodesDataTypes.NodeStrengthLevel.StrengthX] = updatedNodeMultipliers.strengthX; // Strength X Node score
     self.nodeMultiplier[VechainNodesDataTypes.NodeStrengthLevel.ThunderX] = updatedNodeMultipliers.thunderX; // Thunder X Node score
     self.nodeMultiplier[VechainNodesDataTypes.NodeStrengthLevel.MjolnirX] = updatedNodeMultipliers.mjolnirX; // Mjolnir X Node score
+
+    // TODO: Ensure these are correct, set the new nodes
+    self.nodeMultiplier[VechainNodesDataTypes.NodeStrengthLevel.Flash] = updatedNodeMultipliers.flash; // Flash Node score
+    self.nodeMultiplier[VechainNodesDataTypes.NodeStrengthLevel.Lightning] = updatedNodeMultipliers.lightning; // Lightning Node score
+    self.nodeMultiplier[VechainNodesDataTypes.NodeStrengthLevel.Dawn] = updatedNodeMultipliers.dawn; // Dawn Node score
+    self.nodeMultiplier[VechainNodesDataTypes.NodeStrengthLevel.Validator] = updatedNodeMultipliers.validator; // Validator Node score
 
     emit NodeVoteMultipliersUpdated(updatedNodeMultipliers);
   }

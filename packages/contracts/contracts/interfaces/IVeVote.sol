@@ -162,24 +162,32 @@ interface IVeVote is IERC165, IERC6372 {
   event QuorumNumeratorUpdated(uint256 oldNumerator, uint256 newNumerator);
 
   /**
-   * @notice Emitted when the minimum voting delayis updated.
+   * @notice Emitted when the minimum voting delay is updated.
+   * @param oldMinVotingDelay The previous minimum voting delay.
+   * @param newMinVotingDelay The new minimum voting delay.
    */
-  event MinVotingDelaySet(uint256 oldMinMinVotingDelay, uint256 newMinVotingDelay);
+  event MinVotingDelaySet(uint48 oldMinVotingDelay, uint48 newMinVotingDelay);
 
   /**
    * @notice Emitted when the minimum voting duration is updated.
+   * @param oldMinVotingDuration The previous minimum voting duration.
+   * @param newMinVotingDuration The new minimum voting duration.
    */
-  event MinVotingDurationSet(uint256 oldMinVotingDuration, uint256 newMinVotingDuration);
+  event MinVotingDurationSet(uint48 oldMinVotingDuration, uint48 newMinVotingDuration);
 
   /**
    * @notice Emitted when the maximum voting duration is updated.
+   * @param oldMaxVotingDuration The previous maximum voting duration.
+   * @param newMaxVotingDuration The new maximum voting duration.
    */
-  event MaxVotingDurationSet(uint256 oldMaxVotingDuration, uint256 newMaxVotingDuration);
+  event MaxVotingDurationSet(uint48 oldMaxVotingDuration, uint48 newMaxVotingDuration);
 
   /**
    * @notice Emitted when the maximum number of choices is updated.
+   * @param oldMaxChoices The previous maximum number of choices.
+   * @param newMaxChoices The new maximum number of choices.
    */
-  event MaxChoicesSet(uint256 oldMaxChoices, uint256 newMaxChoices);
+  event MaxChoicesSet(uint8 oldMaxChoices, uint8 newMaxChoices);
 
   /**
    * @notice Emitted when the NodeManagement contract is set.
@@ -207,6 +215,12 @@ interface IVeVote is IERC165, IERC6372 {
    * @param newBaseLevelNode The new base level node.
    */
   event VechainBaseNodeSet(uint8 oldBaseLevelNode, uint8 newBaseLevelNode);
+
+  /**
+   * @notice Emitted when the node multiplier scores are updated.
+   * @param nodeMultiplier The updated node multiplier scores.
+   */
+  event NodeVoteMultipliersUpdated(VeVoteTypes.NodeVoteMultiplier nodeMultiplier);
 
   // ------------------------------- Structs -------------------------------
   /**

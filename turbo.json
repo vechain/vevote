@@ -8,7 +8,8 @@
   ],
   "globalEnv": [
     "VITE_APP_ENV",
-    "MNEMONIC"
+    "MNEMONIC",
+    "IS_TEST_COVERAGE"
   ],
   "pipeline": {
     "build": {
@@ -147,7 +148,7 @@
     "test:coverage:solidity": {
       "cache": false,
       "dependsOn": [
-        "^@repo/config#check-or-generate-local-config"
+        "@repo/config#check-or-generate-local-config"
       ]
     },
     "test:thor-solo": {

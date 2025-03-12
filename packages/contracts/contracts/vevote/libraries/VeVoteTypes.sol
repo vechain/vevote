@@ -74,8 +74,7 @@ library VeVoteTypes {
     uint256 weight;
   }
 
-
-    /**
+  /**
    * @dev The score of a node.
    */
   struct NodeVoteMultiplier {
@@ -86,5 +85,9 @@ library VeVoteTypes {
     uint256 strengthX;
     uint256 thunderX;
     uint256 mjolnirX;
+    uint256 flash;
+    uint256 lightning;
+    uint256 dawn;
+    uint256 validator;
   }
 }
