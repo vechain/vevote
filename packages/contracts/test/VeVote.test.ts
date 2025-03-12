@@ -23,7 +23,7 @@ describe("VeVote", function () {
 
     it("correct contract version should be set", async function () {
       const { vevote } = await getOrDeployContractInstances({})
-      expect(await vevote.version()).to.equal("1")
+      expect(await vevote.version()).to.equal(1)
     })
 
     it("should set the correct admin address", async function () {
