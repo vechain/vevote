@@ -26,9 +26,9 @@ pragma solidity 0.8.20;
 import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
-import { VechainNodesDataTypes } from "./libraries/VechainNodesDataTypes.sol";
-import { ITokenAuction } from "./interfaces/ITokenAuction.sol";
-import { INodeManagement } from "./interfaces/INodeManagement.sol";
+import { VechainNodesDataTypes } from "../libraries/VechainNodesDataTypes.sol";
+import { ITokenAuction } from "../interfaces/ITokenAuction.sol";
+import { INodeManagement } from "../interfaces/INodeManagement.sol";
 
 /**
  * @title NodeManagement
