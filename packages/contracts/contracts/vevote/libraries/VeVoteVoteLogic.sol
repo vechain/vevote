@@ -101,7 +101,6 @@ library VeVoteVoteLogic {
     self.totalVotes[proposalId] += normalisedVoteWeight;
 
     unchecked {
-      // We do not normalize the vote weight here, as it is done in the tally, could cause rounding errors
       uint256 divisionResult = weight / selectedChoices; // Store division result in memory
       mapping(uint8 => uint256) storage proposalTally = self.voteTally[proposalId]; // Cache storage pointer
 
@@ -178,7 +177,8 @@ library VeVoteVoteLogic {
 
     // Iterate over each choice and calculate the normalized weight
     for (uint8 i = 0; i < numChoices; i++) {
-      // Determine the normalized weight of the vote
+      // Determine the normalized weight of the vote -> There could still be rounding errors here due to the fact users split their vote and vote smallest voting weight being 1
+      // TODO: Double check team are aware if we keep smallest votimg weight as 1 this could hapepn.
       uint256 normalizedWeight = self.voteTally[proposalId][i] /
         _voteWeightDenominator(self, self.proposals[proposalId].voteStart);
 

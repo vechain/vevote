@@ -19,6 +19,8 @@ import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol"
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "@openzeppelin/contracts/utils/introspection/IERC165.sol";
 
+import "hardhat/console.sol";
+
 contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgradeable {
   /// @notice The role that can upgrade the contract
   bytes32 public constant UPGRADER_ROLE = keccak256("UPGRADER_ROLE");
@@ -246,7 +248,7 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
    */
   function getBaseLevelNode() external view returns (uint8) {
     VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
-    VeVoteConfigurator.getBaseLevelNode($);
+    return VeVoteConfigurator.getBaseLevelNode($);
   }
 
   /**
@@ -270,11 +272,11 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
    * @param nodeLevel The node level of the node ID.
    * @return uint256 The voting multiplier score of the node level.
    */
-  function nodeLevelEndorsementScore(
+  function nodeLevelMultiplier(
     VechainNodesDataTypes.NodeStrengthLevel nodeLevel
   ) external view returns (uint256) {
     VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
-    return VeVoteConfigurator.nodeLevelEndorsementScore($, nodeLevel);
+    return VeVoteConfigurator.nodeLevelMultiplier($, nodeLevel);
   }
 
   /**
@@ -406,13 +408,13 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
   }
 
   /**
-   * @notice See {IVeVote-updateNodeEndorsementScores}.
+   * @notice See {IVeVote-updateNodeMultipliers}.
    */
-  function updateNodeEndorsementScores(
+  function updateNodeMultipliers(
     VeVoteTypes.NodeVoteMultiplier memory updatedNodeMultipliers
   ) external onlyRole(DEFAULT_ADMIN_ROLE) {
     VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
-    VeVoteConfigurator.updateNodeEndorsementScores($, updatedNodeMultipliers);
+    VeVoteConfigurator.updateNodeMultipliers($, updatedNodeMultipliers);
   }
 
   /**

@@ -372,55 +372,10 @@ library VeVoteProposalLogic {
   }
 
   /**
-   * @dev Checks if the description string ends with a proposer's address suffix.
-   * @param proposer The address of the proposer.
-   * @param description The description of the proposal.
-   * @return True if the suffix matches the proposer's address or if there is no suffix, false otherwise.
-   */
-
-  /** 
-  function isValidDescriptionForProposer(address proposer, string memory description) private pure returns (bool) {
-    uint256 len = bytes(description).length;
-
-    // Length is too short to contain a valid proposer suffix
-    if (len < 52) {
-      return true;
-    }
-
-    // Extract what would be the `#proposer=0x` marker beginning the suffix
-    bytes12 marker;
-    assembly {
-      // Start of the string contents in memory = description + 32
-      // First character of the marker = len - 52
-      // We read the memory word starting at the first character of the marker:
-      // (description + 32) + (len - 52) = description + (len - 20)
-      marker := mload(add(description, sub(len, 20)))
-    }
-
-    // If the marker is not found, there is no proposer suffix to check
-    if (marker != bytes12("#proposer=0x")) {
-      return true;
-    }
-
-    // Parse the 40 characters following the marker as uint160
-    uint160 recovered;
-    for (uint256 i = len - 40; i < len; ++i) {
-      (bool isHex, uint8 value) = tryHexToUint(bytes(description)[i]);
-      // If any of the characters is not a hex digit, ignore the suffix entirely
-      if (!isHex) {
-        return true;
-      }
-      recovered = (recovered << 4) | value;
-    }
-
-    return recovered == uint160(proposer);
-  }
-*/
-
-  /**
    * @dev Validates if a given string is a valid IPFS CID.
-   * @param description The proposal description (expected to be an IPFS hash with or without "ipfs://").
+   * @param description The proposal description (expected to be an IPFS hash).
    * @return True if the description is a valid IPFS CID, false otherwise.
+   * // TODO: DO WE NEED TO VALIDATE THE DESCRIPTION?
    */
   function isValidIPFSHash(string memory description) private pure returns (bool) {
     bytes memory descBytes = bytes(description);
@@ -431,62 +386,31 @@ library VeVoteProposalLogic {
       return true;
     }
 
-    // CID v1 (59 chars, Base58 encoded)
-    if (len == 59 && isBase58(descBytes, 0, 59)) {
-      return true;
-    }
-
-    // "ipfs://" CID (length at least 53)
-    if (len >= 53 && _startsWithIPFS(descBytes)) {
-      uint256 cidStart = 7;
-      uint256 cidLen = len - cidStart;
-
-      return
-        (cidLen == 46 && descBytes[cidStart] == "Q" && descBytes[cidStart + 1] == "m") ||
-        (cidLen == 59 && isBase58(descBytes, cidStart, len));
+    // CID v1 (Base32: starts with "bafk", 59+ chars, lowercase)
+    if (len >= 59 && descBytes[0] == "b" && descBytes[1] == "a" && descBytes[2] == "f" && descBytes[3] == "k") {
+      return isBase32(descBytes, 0, len);
     }
 
     return false;
   }
 
   /**
-   * @dev Checks if a byte array starts with "ipfs://".
-   * @param descBytes The byte array of the input string.
-   * @return True if it starts with "ipfs://", false otherwise.
+   * @dev Validates if a given byte array is a valid Base32 string.
+   * @param descBytes The byte array to validate.
+   * @param startIndex The start index of the Base32 string.
+   * @param endIndex The end index of the Base32 string.
+   * @return True if the byte array is a valid Base32 string, false otherwise.
    */
-  function _startsWithIPFS(bytes memory descBytes) private pure returns (bool) {
-    return
-      descBytes.length >= 7 &&
-      descBytes[0] == "i" &&
-      descBytes[1] == "p" &&
-      descBytes[2] == "f" &&
-      descBytes[3] == "s" &&
-      descBytes[4] == ":" &&
-      descBytes[5] == "/" &&
-      descBytes[6] == "/";
-  }
-
-  /**
-   * @dev Checks if a string is valid Base58 encoding.
-   * @param descBytes The byte array of the input.
-   * @param startIndex The index where the check should start.
-   * @param endIndex The index where the check should stop.
-   * @return True if the input is valid Base58, false otherwise.
-   */
-  function isBase58(bytes memory descBytes, uint256 startIndex, uint256 endIndex) private pure returns (bool) {
+  function isBase32(bytes memory descBytes, uint256 startIndex, uint256 endIndex) private pure returns (bool) {
     unchecked {
       for (uint256 i = startIndex; i < endIndex; ++i) {
         uint8 char = uint8(descBytes[i]);
 
-        // Base58 characters: 1-9, A-Z (except I, O), a-z (except l)
-        if (
-          (char < 0x31) || // Below '1'
-          (char > 0x7A) || // Above 'z'
-          (char == 0x30) || // '0'
-          (char == 0x4F) || // 'O'
-          (char == 0x49) || // 'I'
-          (char == 0x6C) // 'l'
-        ) {
+        // Base32 lower-case alphabet: a-z (97-122), 2-7 (50-55)
+        bool isLetter = (char >= 97 && char <= 122); // a-z
+        bool isDigit = (char >= 50 && char <= 55); // 2-7
+
+        if (!isLetter && !isDigit) {
           return false;
         }
       }

@@ -116,6 +116,11 @@ interface IVeVote is IERC165, IERC6372 {
    */
   error VotePowerOverflow();
 
+  /**
+   * @dev Thrown when the voting weight denominator is zero.
+   */
+  error VoteWeightDenominatorZero();
+
   // ------------------------------- Events -------------------------------
   /**
    * @notice Emitted when a new proposal is created.
