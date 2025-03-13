@@ -27,7 +27,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
       <ChakraProvider>
         <VeChainKitProvider
           feeDelegation={{
-            delegatorUrl: "",
+            delegatorUrl: "https://sponsor-testnet.vechain.energy/by/283",
             delegateAllTransactions: true,
           }}
           dappKit={{

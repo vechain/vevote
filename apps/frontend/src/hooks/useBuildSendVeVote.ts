@@ -1,4 +1,3 @@
-import { getConfig } from "@repo/config";
 import { VeVote__factory } from "@repo/contracts";
 import { useCallback, useMemo } from "react";
 import { useBuildTransaction } from "../utils";
@@ -23,7 +22,7 @@ export const useBuildSendVeVote = ({ onSuccess }: Props) => {
     const contractAmount = ethers.parseEther(amount);
     return [
       buildClause({
-        to: getConfig(import.meta.env.VITE_APP_ENV).vevoteContractAddress,
+        to: receiver,
         contractInterface: GovernorInterface,
         method: "transfer",
         args: [receiver, contractAmount],
