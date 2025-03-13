@@ -1,11 +1,12 @@
 import { ethers, network } from "hardhat";
 import { ContractsConfig } from "@repo/config/contracts/type";
 import { HttpNetworkConfig } from "hardhat/types";
-import { saveContractsToFile } from "../helpers";
+import { deployProxy, saveContractsToFile } from "../helpers";
 import { Network } from "@repo/constants";
 import { AppConfig, getConfig } from "@repo/config";
 import fs from "fs";
 import path from "path";
+import { VeVote } from "../../typechain-types";
 
 const appConfig = getConfig();
 
@@ -19,15 +20,35 @@ export async function deployAll(config: ContractsConfig) {
 
   console.log(`================  Address used to deploy: ${deployer.address}`);
 
+  // ---------------------- Deploy Mocks ----------------------
+  let vechainNodesAddress = "0xb81E9C5f9644Dec9e5e3Cac86b4461A222072302" // this is the mainnet address
+  let vechainNodesMock = await ethers.getContractAt("TokenAuction", config.VECHAIN_NODES_CONTRACT_ADDRESS)
+  if (network.name !== "vechain_mainnet") {
+    console.log("Deploying Vechain Nodes mock contracts")
+
+    const TokenAuctionLock = await ethers.getContractFactory("TokenAuction")
+    vechainNodesMock = await TokenAuctionLock.deploy()
+    await vechainNodesMock.waitForDeployment()
+
+    const ClockAuctionLock = await ethers.getContractFactory("ClockAuction")
+    const clockAuctionContract = await ClockAuctionLock.deploy(await vechainNodesMock.getAddress(), deployer)
+
+    await vechainNodesMock.setSaleAuctionAddress(await clockAuctionContract.getAddress())
+
+    await vechainNodesMock.addOperator(deployer)
+    vechainNodesAddress = await vechainNodesMock.getAddress()
+
+    console.log("Vechain Nodes Mock deployed at: ", await vechainNodesMock.getAddress())
+  }
   // ---------------------- Deploy Contracts ----------------------
 
   // Deploy the vevote contract
-  const contractName = "VeVote";
-  const owner = "0xf077b491b355e64048ce21e3a6fc4751eeea77fa";
-  const VeVoteContract = await ethers.getContractFactory(contractName);
-  const vevote = await VeVoteContract.deploy(owner);
-  await vevote.waitForDeployment();
-  console.log(`${contractName} impl.: ${await vevote.getAddress()}`);
+  const vevote = (await deployProxy(
+    "VeVote",
+    [],
+    undefined,
+    true,
+  )) as VeVote
 
   const date = new Date(performance.now() - start);
   console.log(
@@ -54,12 +75,14 @@ export async function deployAll(config: ContractsConfig) {
   await overrideContractConfigWithNewContracts(
     {
       vevote,
+      vechainNodesMock: vechainNodesAddress,
     },
     appConfig.network
   );
 
   return {
     vevote,
+    vechainNodesMock: vechainNodesAddress,
   };
   // close the script
 }
