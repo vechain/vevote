@@ -1,4 +1,4 @@
-# 📄 VeVote Smart Contracts Overview
+# 📄 VeVote Smart Contracts Documentation
 
 This document provides a technical summary of the smart contracts that make up the VeVote governance system. It explains the architecture, roles, upgrade mechanics, use of libraries, and how contracts interact with external components.
 
@@ -35,7 +35,7 @@ VeVote uses a set of specialized **library contracts** to keep the logic modular
 | `VeVoteVoteLogic.sol`      | Voting logic: casting, tallying, validation                      |
 | `VeVoteProposalLogic.sol`  | Proposal creation: input validation, role checks, setup          |
 | `VeVoteQuorumLogic.sol`    | Quorum calculation and pass/fail logic                           |
-| `VeVoteClockLogic.sol`     | Time-related logic: delay enforcement, active period windows     |
+| `VeVoteClockLogic.sol`     | Time-related logic  |
 | `VeVoteConfigurator.sol`   | Admin-only config updates: vote durations, multipliers, quorum   |
 
 > 📌 These libraries are called via delegatecall from `VeVote.sol`, and all read/write operations interact with `VeVoteStorage.sol`.
