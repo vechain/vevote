@@ -70,6 +70,9 @@ describe("VeVote", function () {
             admin: admin.address,
             upgrader: admin.address,
             whitelist: [admin.address],
+            settingsManager: admin.address,
+            nodeWeightManager: admin.address,
+            executor: admin.address,
           },
         ),
       ).to.be.revertedWithCustomError(vevote, "InvalidInitialization")
@@ -366,7 +369,7 @@ describe("VeVote", function () {
       )
     })
 
-    it("Only the proposar can cancel their own proposal when it is PENDING state", async function () {
+    it("Only whitelisted addresses can cancel their a proposal when it is PENDING state", async function () {
       const { vevote, whitelistedAccount, mjolnirXHolder, admin } = await getOrDeployContractInstances({
         forceDeploy: true,
       })
@@ -447,7 +450,7 @@ describe("VeVote", function () {
       expect(await vevote.state(proposalId1)).to.equal(0)
       await expect(vevote.connect(admin).cancel(proposalId1)).to.not.be.reverted
 
-      // Should be able to cancel ACTIVE proposal
+      // Admin should be able to cancel ACTIVE proposal
       await waitForProposalToStart(proposalId2)
       expect(await vevote.state(proposalId2)).to.equal(1)
       await expect(vevote.connect(admin).cancel(proposalId2)).to.not.be.reverted
@@ -773,7 +776,7 @@ describe("VeVote", function () {
         vevote,
         "VeVoteUnexpectedProposalState",
       )
-      await vevote.connect(admin).cancel(proposalId1) // Cancel the proposal for tests below
+      await vevote.connect(whitelistedAccount).cancel(proposalId1) // Cancel the proposal for tests below
 
       // Should be able to execute ACTIVE proposal
       await waitForProposalToStart(proposalId2)
@@ -896,11 +899,11 @@ describe("VeVote", function () {
       expect(await vevote.state(proposalId)).to.equal(5) // EXECUTED
     })
 
-    it("Should return CANCELLED if contract has been marked as cancelled by admin", async function () {
-      const { vevote, admin } = await getOrDeployContractInstances({ forceDeploy: true })
+    it("Should return CANCELLED if contract has been marked as cancelled by whitelisted account", async function () {
+      const { vevote, whitelistedAccount } = await getOrDeployContractInstances({ forceDeploy: true })
       const tx = await createProposal()
       const proposalId = await getProposalIdFromTx(tx)
-      await vevote.connect(admin).cancel(proposalId)
+      await vevote.connect(whitelistedAccount).cancel(proposalId)
       expect(await vevote.state(proposalId)).to.equal(2) // CANCELLED
     })
 

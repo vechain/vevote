@@ -26,6 +26,12 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
   bytes32 public constant UPGRADER_ROLE = keccak256("UPGRADER_ROLE");
   /// @notice The role that can create proposals
   bytes32 public constant WHITELISTED_ROLE = keccak256("WHITELISTED_ROLE");
+    /// @notice The role that can execute proposals
+  bytes32 public constant EXECUTOR_ROLE = keccak256("EXECUTOR_ROLE");
+  /// @notice The role that can update contract settings
+  bytes32 public constant SETTINGS_MANAGER_ROLE = keccak256("SETTINGS_MANAGER_ROLE");
+  /// @notice The role that can update parms related to node voting weights
+  bytes32 public constant NODE_WEIGHT_MANAGER_ROLE = keccak256("NODE_WEIGHT_MANAGER_ROLE");
 
   /// @custom:oz-upgrades-unsafe-allow constructor
   constructor() {
@@ -51,6 +57,9 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
     require(address(rolesData.admin) != address(0), "VeVote: Admin address cannot be zero");
     _grantRole(DEFAULT_ADMIN_ROLE, rolesData.admin);
     _grantRole(UPGRADER_ROLE, rolesData.upgrader);
+    _grantRole(SETTINGS_MANAGER_ROLE, rolesData.settingsManager);
+    _grantRole(NODE_WEIGHT_MANAGER_ROLE, rolesData.nodeWeightManager);
+    _grantRole(EXECUTOR_ROLE, rolesData.executor);
 
     // Set the whitelist roles
     uint256 whitelistLength = rolesData.whitelist.length;
@@ -324,13 +333,13 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
    */
   function cancel(uint256 proposalId) external returns (uint256) {
     VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
-    return VeVoteProposalLogic.cancel($, _msgSender(), hasRole(DEFAULT_ADMIN_ROLE, _msgSender()), proposalId);
+    return VeVoteProposalLogic.cancel($, hasRole(WHITELISTED_ROLE, _msgSender()), hasRole(DEFAULT_ADMIN_ROLE, _msgSender()), proposalId);
   }
 
   /**
    * @notice See {IVeVote-execute}.
    */
-  function execute(uint256 proposalId) external onlyRole(DEFAULT_ADMIN_ROLE) returns (uint256) {
+  function execute(uint256 proposalId) external onlyRole(EXECUTOR_ROLE) returns (uint256) {
     VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
     return VeVoteProposalLogic.execute($, proposalId);
   }
@@ -354,7 +363,7 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
   /**
    * @notice See {IVeVote-setMinVotingDelay}.
    */
-  function setMinVotingDelay(uint48 newMinVotingDelay) external onlyRole(DEFAULT_ADMIN_ROLE) {
+  function setMinVotingDelay(uint48 newMinVotingDelay) external onlyRole(SETTINGS_MANAGER_ROLE) {
     VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
     VeVoteConfigurator.setMinVotingDelay($, newMinVotingDelay);
   }
@@ -362,7 +371,7 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
   /**
    * @notice See {IVeVote-setMinVotingDuration}.
    */
-  function setMinVotingDuration(uint48 newMinVotingDuration) external onlyRole(DEFAULT_ADMIN_ROLE) {
+  function setMinVotingDuration(uint48 newMinVotingDuration) external onlyRole(SETTINGS_MANAGER_ROLE) {
     VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
     VeVoteConfigurator.setMinVotingDuration($, newMinVotingDuration);
   }
@@ -370,7 +379,7 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
   /**
    * @notice See {IVeVote-setMaxVotingDuration}.
    */
-  function setMaxVotingDuration(uint48 newMaxVotingDuration) external onlyRole(DEFAULT_ADMIN_ROLE) {
+  function setMaxVotingDuration(uint48 newMaxVotingDuration) external onlyRole(SETTINGS_MANAGER_ROLE) {
     VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
     VeVoteConfigurator.setMaxVotingDuration($, newMaxVotingDuration);
   }
@@ -378,7 +387,7 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
   /**
    * @notice See {IVeVote-setMaxChoices}.
    */
-  function setMaxChoices(uint8 newMaxChoices) external onlyRole(DEFAULT_ADMIN_ROLE) {
+  function setMaxChoices(uint8 newMaxChoices) external onlyRole(SETTINGS_MANAGER_ROLE) {
     VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
     VeVoteConfigurator.setMaxChoices($, newMaxChoices);
   }
@@ -386,7 +395,7 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
   /**
    * @notice See {IVeVote-setBaseLevelNode}.
    */
-  function setBaseLevelNode(uint8 newBaseLevelNode) external onlyRole(DEFAULT_ADMIN_ROLE) {
+  function setBaseLevelNode(uint8 newBaseLevelNode) external onlyRole(NODE_WEIGHT_MANAGER_ROLE) {
     VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
     VeVoteConfigurator.setBaseLevelNode($, newBaseLevelNode);
   }
@@ -394,7 +403,7 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
   /**
    * @notice See {IVeVote-setNodeManagementContract}.
    */
-  function setNodeManagementContract(address nodeManagement) external onlyRole(DEFAULT_ADMIN_ROLE) {
+  function setNodeManagementContract(address nodeManagement) external onlyRole(SETTINGS_MANAGER_ROLE) {
     VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
     VeVoteConfigurator.setNodeManagementContract($, nodeManagement);
   }
@@ -402,7 +411,7 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
   /**
    * @notice See {IVeVote-setVechainNodeContract}.
    */
-  function setVechainNodeContract(address tokenAuction) external onlyRole(DEFAULT_ADMIN_ROLE) {
+  function setVechainNodeContract(address tokenAuction) external onlyRole(SETTINGS_MANAGER_ROLE) {
     VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
     VeVoteConfigurator.setVechainNodeContract($, tokenAuction);
   }
@@ -412,7 +421,7 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
    */
   function updateNodeMultipliers(
     VeVoteTypes.NodeVoteMultiplier memory updatedNodeMultipliers
-  ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+  ) external onlyRole(NODE_WEIGHT_MANAGER_ROLE) {
     VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
     VeVoteConfigurator.updateNodeMultipliers($, updatedNodeMultipliers);
   }
@@ -420,7 +429,7 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
   /**
    * @notice See {IVeVote-updateQuorumNumerator}.
    */
-  function updateQuorumNumerator(uint256 newQuorumNumerator) external onlyRole(DEFAULT_ADMIN_ROLE) {
+  function updateQuorumNumerator(uint256 newQuorumNumerator) external onlyRole(SETTINGS_MANAGER_ROLE) {
     VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
     VeVoteQuoromLogic.updateQuorumNumerator($, newQuorumNumerator);
   }

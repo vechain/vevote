@@ -62,6 +62,9 @@ library VeVoteTypes {
     address admin;
     address upgrader;
     address[] whitelist;
+    address settingsManager;
+    address nodeWeightManager;
+    address executor;
   }
 
   /**
