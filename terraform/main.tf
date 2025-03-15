@@ -1,5 +1,5 @@
-resource "vercel_project" "vevote_project_frontend" {
-  name      = local.env.project
+resource "vercel_project" "vevote_frontend" {
+  name      = "vevote-frontend"
   framework = "nextjs"
   git_repository = {
     type              = "github"
@@ -9,8 +9,8 @@ resource "vercel_project" "vevote_project_frontend" {
   root_directory = "apps/frontend"
 }
 
-resource "vercel_deployment" "vevote_frontend_deployment_prd" {
-  project_id = vercel_project.vevote_project.id
+resource "vercel_deployment" "vevote_frontend_deployment" {
+  project_id = vercel_project.vevote_frontend.id
   production = true
-  ref        = "main"
+  ref        = local.env.tag
 }

@@ -1,0 +1,105 @@
+name: Plan or Deploy VeVote stack
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'terraform/**'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'The environment to deploy'
+        required: true
+        type: environment
+  workflow_call:
+    inputs:
+      environment:
+        description: Which environment to plan/deploy to
+        required: true
+        default: dev
+        type: string
+      version:
+        description: The version of this release
+        required: false
+        type: string
+      force:
+        description: Whether to force apply
+        required: false
+        default: false
+        type: boolean
+
+# Required for authentication through GitHub OIDC
+permissions:
+  id-token: write # This is required for requesting the JWT
+  contents: read # This is required for actions/checkout
+
+env:
+  ENVIRONMENT: ${{ inputs.environment  }}
+  VERCEL_API_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+
+jobs:
+  deploy:
+    name: "Plan/deploy VeVote terraform - ${{ inputs.environment }}"
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment}}
+
+    defaults:
+      run:
+        working-directory: terraform
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: eu-west-1
+          role-to-assume: ${{ secrets.AWS_ACC_ROLE }}
+
+      # Required for Terraform to source modules from other vechain repositories
+      - name: Set up SSH agent
+        uses: webfactory/ssh-agent@v0.8.0
+        with:
+          ssh-private-key: ${{ secrets.VECHAINCI_SSH_PRIVATE_KEYS }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.7.3
+          terraform_wrapper: true
+
+      - name: Terraform Format
+        id: fmt
+        run: terraform fmt -check -recursive
+        continue-on-error: true
+
+      - name: Terraform Initialize
+        id: init
+        run: terraform init -backend-config="config/${{ env.ENVIRONMENT }}/backend.config"
+
+      - name: Terraform Workspace
+        id: workspace
+        run: terraform workspace select --or-create  ${{ env.ENVIRONMENT }}
+
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate
+
+      - name: Update tag
+        id: update-tag
+        if: inputs.version && inputs.version != 'latest'
+        run: |
+          sed -i "s/latest/${{ inputs.version }}/g" config/${{ env.ENVIRONMENT }}/common.yaml
+          cat config/${{ env.ENVIRONMENT }}/common.yaml
+        continue-on-error: false
+
+      - name: Terraform Plan
+        id: plan
+        run: terraform plan -out "apply.plan"
+
+      - name: Terraform Apply (PR builds will only plan, never deploy)
+        if: github.ref == 'refs/heads/main' || inputs.force
+        id: apply
+        run: terraform apply "apply.plan"

@@ -10,7 +10,7 @@ provider "aws" {
 
 terraform {
   backend "s3" {
-    key                  = "vevote-vercel-project/vercel.tfstate"
+    key                  = "vevote/vevote-vercel.tfstate"
     region               = "eu-west-1"
     workspace_key_prefix = "workspaces"
   }
