@@ -1,6 +1,5 @@
 import { Card, CardBody, HStack, Image, Text } from "@chakra-ui/react";
-import vevote from "../../../../assets/vevote.jpeg";
-import { useVeVoteBalance } from "../../../../hooks/useVeVoteBalance";
+import { useVeVoteBalance } from "@/hooks/useVeVoteBalance";
 
 export const BalanceCard = () => {
   const { balance } = useVeVoteBalance();
@@ -15,7 +14,7 @@ export const BalanceCard = () => {
             <Text fontSize="2xl" fontWeight="bold">
               {balance}
             </Text>
-            <Image src={vevote} alt="VET" boxSize="8" />
+            <Image src={"/images/vevote.jpeg"} alt="VET" boxSize="8" />
           </HStack>
         </HStack>
       </CardBody>

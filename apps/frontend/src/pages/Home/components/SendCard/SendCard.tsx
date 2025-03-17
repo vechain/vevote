@@ -1,3 +1,4 @@
+import { useBuildSendVeVote } from "@/hooks/useBuildSendVeVote";
 import {
   Button,
   Card,
@@ -12,7 +13,6 @@ import {
 } from "@chakra-ui/react";
 import { useCallback } from "react";
 import { useForm } from "react-hook-form";
-import { useSendVeVote } from "../../../../hooks/useSendVeVote";
 
 interface SendForm {
   amount: string;
@@ -24,7 +24,7 @@ export const SendCard = () => {
   const { errors } = form.formState;
   const toast = useToast();
 
-  const sendMutation = useSendVeVote({
+  const sendMutation = useBuildSendVeVote({
     onSuccess: () => {
       form.reset();
       sendMutation.resetStatus();
@@ -41,7 +41,7 @@ export const SendCard = () => {
     (data: SendForm) => {
       sendMutation.sendTransaction(data);
     },
-    [sendMutation]
+    [sendMutation],
   );
   const isMinter = true;
   if (!isMinter) {
@@ -50,12 +50,7 @@ export const SendCard = () => {
   return (
     <Card>
       <CardBody>
-        <VStack
-          align={"stretch"}
-          as="form"
-          onSubmit={form.handleSubmit(onSubmit)}
-          gap={4}
-        >
+        <VStack align={"stretch"} as="form" onSubmit={form.handleSubmit(onSubmit)} gap={4}>
           <Text fontSize="lg" fontWeight="bold">
             Send
           </Text>
