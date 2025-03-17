@@ -1,4 +1,4 @@
-name: Plan or Deploy VeVote stack
+name: Plan or Deploy VeVote
 
 on:
   pull_request:
@@ -11,13 +11,14 @@ on:
       environment:
         description: 'The environment to deploy'
         required: true
-        type: environment
+        type: choice
+        options:
+          - prd
   workflow_call:
     inputs:
       environment:
         description: Which environment to plan/deploy to
         required: true
-        default: dev
         type: string
       version:
         description: The version of this release
