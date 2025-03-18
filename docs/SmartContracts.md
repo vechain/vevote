@@ -52,7 +52,8 @@ VeVote uses OpenZeppelin's `AccessControlUpgradeable` to manage permissions.
 | `UPGRADER_ROLE`      | Grants ability to upgrade logic contracts via proxy           |
 | `WHITELISTED_ROLE`   | Can submit proposals to the VeVote system                     |
 | `SETTINGS_MANAGER_ROLE` | Manages contract configurations |
-
+| `EXECUTOR_ROLE` | Can mark proposals as executed, as execution happens off-chain  |
+| `VOTE_PARAMS_MANAGER_ROLE` | Can update parameters of the vote weighting formula |
 ---
 
 ## 🔐 Upgradeability
