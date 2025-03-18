@@ -158,7 +158,7 @@ A proposal only passes if it reaches **quorum**—a minimum number of voting uni
 - Configurable via `VeVoteConfigurator`
 - Calculated at proposal end using the snapshot
 
-If quorum isn’t met, the proposal automatically **fails**.
+If quorum isn’t met, the proposal automatically **fails** (**DEFEATED**).
 
 ---
 
