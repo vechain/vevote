@@ -168,11 +168,12 @@ Only users with the `WHITELISTED_ROLE` can submit proposals on-chain.
 
 To suggest a proposal:
 
-👉 Contact the **VeChain Foundation**.
-They can help:
+👉 Open a thread on [Discourse](https://vechain.discourse.group/latest).
+You can use the same channel to get some help to:
 - Review your proposal
+- Get some endorsement 
 - Format it correctly
-- Submit it through a whitelisted address
+- Funnel it to a whitelisted member (`WHITELISTED_ROLE`)
 
 Proposal Creation Format: 
 
