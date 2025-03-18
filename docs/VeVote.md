@@ -154,7 +154,7 @@ Each proposal moves through the following stages:
 
 A proposal only passes if it reaches **quorum**—a minimum number of voting units participating.
 
-- Defined as a **percentage of total staked VET in Node contracts**
+- Defined as a **percentage of total voting units**
 - Configurable via `VeVoteConfigurator`
 - Calculated at proposal end using the snapshot
 
