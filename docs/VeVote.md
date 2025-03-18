@@ -49,7 +49,7 @@ VeVote uses a **weighted voting system** based on your Node type. Larger, higher
 
 Voting power is calculated using **Voting Units**, determined by:
 
-1. The amount of **VET staked** for your Node (compared to the smallest tier)
+1. The minimum requirement of **VET staked** for your Node (compared to the smallest tier)
 2. A **multiplier** based on the Node tier
 
 ### 🧮 Step 1: Base Voting Power
