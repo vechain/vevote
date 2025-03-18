@@ -4,7 +4,7 @@
 
 **VeVote** is VeChain’s official decentralized governance system. It allows holders of eligible **VeChain Nodes**—or wallets with delegated Nodes—to vote on proposals that shape the ecosystem’s future.
 
-From protocol upgrades to community initiatives, VeVote ensures decision-making is **transparent**, **fair**, and **community-driven**.
+From protocol upgrades to community initiatives, VeVote ensures decision-making is **transparent**, **fair**, and **decentralised**.
 
 ---
 
