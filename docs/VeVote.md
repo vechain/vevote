@@ -146,7 +146,8 @@ Each proposal moves through the following stages:
 - Selected accounts can mark the proposal as Executed after the decision has become effective
 
 ### 7. **Cancellation**
-- Creators or admins may cancel proposals before they complete
+- Creator or other users with the `WHITELISTED_ROLE` may cancel proposals before they start
+- Admins may cancel proposals before they complete
 
 ---
 
