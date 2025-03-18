@@ -142,6 +142,7 @@ Each proposal moves through the following stages:
 
 ### 6. **Execution (Off-chain)**
 - Passed proposals may be manually implemented by VeChain Foundation or others
+- Selected accounts can mark the proposal as Executed after the decision has become effective
 
 ### 7. **Cancellation**
 - Creators or admins may cancel proposals before they complete
