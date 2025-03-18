@@ -35,7 +35,7 @@ Your total voting power is **evenly split** among selected choices:
 Power per Choice = Voting Units ÷ Choices Selected
 ```
 
-Example: Thunder X Node (840 units), selecting 2 options:
+Example: ThunderX Node (840 units), selecting 2 options:
 ```
 Each option receives 420 units
 ```
