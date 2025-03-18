@@ -2,15 +2,13 @@ import { ethers, network } from "hardhat"
 import { ContractsConfig } from "@repo/config/contracts/type"
 import { HttpNetworkConfig } from "hardhat/types"
 import { deployProxy, saveContractsToFile } from "../helpers"
-import { Network } from "@repo/constants"
-import { AppConfig, getConfig } from "@repo/config"
-import fs from "fs"
-import path from "path"
+import { getConfig } from "@repo/config"
 import {
   NodeManagement,
   VeVote,
 } from "../../typechain-types"
 import { deployLibraries } from "../helpers/deployLibraries"
+import { createNodeHolder } from "../../test/helpers/xnode"
 
 const appConfig = getConfig()
 
@@ -18,9 +16,23 @@ export async function deployAll(config: ContractsConfig) {
   const start = performance.now()
   const networkConfig = network.config as HttpNetworkConfig
   console.log(
-    `================  Deploying contracts on ${network.name} (${networkConfig.url}) with ${config.VITE_APP_ENV} configurations `,
+    `================  Deploying contracts on ${networkConfig.url} with ${config.VITE_APP_ENV} configurations `,
   )
-  const [deployer] = await ethers.getSigners()
+  // Contracts are deployed using the first signer/account by default
+  const [
+    deployer,
+    strengthHolder,
+    thunderHolder,
+    mjolnirHolder,
+    veThorXHolder,
+    strengthXHolder,
+    thunderXHolder,
+    mjolnirXHolder,
+    flashHolder,
+    lighteningHolder,
+    dawnHolder,
+    validatorHolder
+  ] = await ethers.getSigners()
 
   const TEMP_ADMIN = network.name === "vechain_solo" ? config.CONTRACTS_ADMIN_ADDRESS : deployer.address
   console.log("================================================================================")
@@ -60,6 +72,21 @@ export async function deployAll(config: ContractsConfig) {
     ], undefined, true)) as NodeManagement
 
     nodeManagementAddress = await nodeManagement.getAddress()
+
+    // Create mock node holders
+
+    // ---------------------- Create Node Holders ----------------------
+    await createNodeHolder(1, strengthHolder, vechainNodesMock)
+    await createNodeHolder(2, thunderHolder, vechainNodesMock)
+    await createNodeHolder(3, mjolnirHolder, vechainNodesMock)
+    await createNodeHolder(4, veThorXHolder, vechainNodesMock)
+    await createNodeHolder(5, strengthXHolder, vechainNodesMock)
+    await createNodeHolder(6, thunderXHolder, vechainNodesMock)
+    await createNodeHolder(7, mjolnirXHolder, vechainNodesMock)
+    await createNodeHolder(8, flashHolder, vechainNodesMock)
+    await createNodeHolder(9, lighteningHolder, vechainNodesMock)
+    await createNodeHolder(10, dawnHolder, vechainNodesMock)
+    await createNodeHolder(11, validatorHolder, vechainNodesMock)
   }
 
   // ---------------------- Deploy Libraries ----------------------
@@ -126,43 +153,9 @@ export async function deployAll(config: ContractsConfig) {
   console.log("Deployment completed successfully!")
   console.log("================================================================================")
 
-  await overrideContractConfigWithNewContracts(
-    {
-      vevote,
-      vechainNodesMock: vechainNodesAddress,
-      nodeManagement: nodeManagementAddress,
-    },
-    appConfig.network,
-  )
-
   return {
     vevote,
-    vechainNodesMock: vechainNodesAddress,
-    nodeManagement: nodeManagementAddress,
+    vechainNodes: vechainNodesMock,
+    nodeManagement: nodeManagement,
   }
-  // close the script
-}
-
-export async function overrideContractConfigWithNewContracts(
-  contracts: Awaited<ReturnType<typeof deployAll>>,
-  network: Network,
-) {
-  const newConfig: AppConfig = {
-    ...appConfig,
-    vevoteContractAddress: await contracts.vevote.getAddress(),
-  }
-
-  // eslint-disable-next-line
-  const toWrite = `import { AppConfig } from \".\" \n const config: AppConfig = ${JSON.stringify(newConfig, null, 2)};
-  export default config;`
-
-  const configFiles: { [key: string]: string } = {
-    solo: "local.ts",
-    testnet: "testnet.ts",
-    main: "mainnet.ts",
-  }
-  const fileToWrite = configFiles[network.name]
-  const localConfigPath = path.resolve(`../config/${fileToWrite}`)
-  console.log(`Writing new config file to ${localConfigPath}`)
-  fs.writeFileSync(localConfigPath, toWrite)
 }

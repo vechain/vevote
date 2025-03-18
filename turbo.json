@@ -9,7 +9,9 @@
   "globalEnv": [
     "VITE_APP_ENV",
     "MNEMONIC",
-    "IS_TEST_COVERAGE"
+    "IS_TEST_COVERAGE",
+    "NEXT_DEVNET_URL",
+    "DEVNET_STAGING_MNEMONIC"
   ],
   "pipeline": {
     "build": {
@@ -33,6 +35,11 @@
         "^setup-contracts"
       ]
     },
+    "dev:staging": {
+      "cache": false,
+      "persistent": true,
+      "dependsOn": ["^setup-contracts:staging"]
+    },
     "dev:testnet": {
       "cache": false,
       "persistent": true,
@@ -48,6 +55,14 @@
       ]
     },
     "setup-contracts": {
+      "cache": false,
+      "persistent": true,
+      "dependsOn": [
+        "^compile",
+        "@repo/contracts#check-contracts-deployment"
+      ]
+    },
+    "setup-contracts:staging": {
       "cache": false,
       "persistent": true,
       "dependsOn": [
@@ -81,6 +96,10 @@
         "@repo/config#check-or-generate-local-config"
       ]
     },
+    "@repo/contracts#check-contracts-deployment:staging": {
+      "cache": false,
+      "dependsOn": ["^compile", "@repo/config#check-or-generate-local-config"]
+    },
     "@repo/contracts#check-contracts-deployment:testnet": {
       "cache": false,
       "dependsOn": [
@@ -112,6 +131,9 @@
         "^deploy",
         "@repo/config#check-or-generate-local-config"
       ]
+    },
+    "deploy:devnet-staging": {
+      "dependsOn": ["^deploy:devnet-staging"]
     },
     "deploy:testnet": {
       "dependsOn": [
