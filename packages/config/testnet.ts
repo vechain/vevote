@@ -3,6 +3,8 @@ const config: AppConfig = {
   environment: "testnet",
   basePath: "https://example.org",
   vevoteContractAddress: "0x31454bc37feCC3855bf9DF1cA769f25C82eD1e98",
+  vechainNodesContractAddress: "0x3f5cd240773b04B11a59eD43C267C7F0FEAc2b02",
+  nodeManagementContractAddress: "0xb81E9C5f9644Dec9e5e3Cac86b4461A222072302",
   nodeUrl: "https://testnet.vechain.org",
   network: {
     id: "testnet",

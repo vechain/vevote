@@ -2,11 +2,12 @@
   "name": "vevote",
   "private": true,
   "scripts": {
-    "build": "turbo build",
     "lint": "turbo lint",
     "clean": "turbo clean",
     "purge": "turbo purge",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "build": "dotenv -v VITE_APP_ENV=local -- turbo build",
+    "build:staging": "dotenv -v VITE_APP_ENV=devnet-staging -- turbo build",
     "dev": "yarn && dotenv -v VITE_APP_ENV=local -- turbo dev --",
     "dev:staging": "yarn && dotenv -v VITE_APP_ENV=devnet-staging -e .env -- turbo dev:staging --",
     "dev:testnet": "yarn && dotenv -v VITE_APP_ENV=testnet -e .env -- turbo dev:testnet --",

@@ -3,6 +3,8 @@ const config: AppConfig = {
   environment: "mainnet",
   basePath: "https://governance.vebetterdao.org",
   vevoteContractAddress: "0xDc9927805Df9075113e9786ADDD793Fc1786A170",
+  vechainNodesContractAddress: "0x3f5cd240773b04B11a59eD43C267C7F0FEAc2b02",
+  nodeManagementContractAddress: "0xb81E9C5f9644Dec9e5e3Cac86b4461A222072302",
   nodeUrl: "https://mainnet.vechain.org",
   network: {
     id: "main",

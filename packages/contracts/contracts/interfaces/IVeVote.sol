@@ -2,7 +2,7 @@
 
 pragma solidity 0.8.20;
 
-import { VeVoteTypes } from "../vevote/libraries/VeVoteTypes.sol";
+import { VeVoteTypes } from "../governance/libraries/VeVoteTypes.sol";
 import { INodeManagement } from "./INodeManagement.sol";
 import { ITokenAuction } from "./ITokenAuction.sol";
 import "@openzeppelin/contracts/interfaces/IERC165.sol";
