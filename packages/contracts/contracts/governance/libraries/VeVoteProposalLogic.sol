@@ -152,23 +152,20 @@ library VeVoteProposalLogic {
    * @notice Cancels a proposal.
    * @dev Allows the proposer or an admin to cancel a proposal before execution.
    * @param self The storage reference for the GovernorStorage.
-   * @param account The address of the account attempting to cancel the proposal.
+   * @param whitelisted Flag indicating if the caller is whitelisted.
    * @param admin Flag indicating if the caller is an admin.
    * @param proposalId The ID of the proposal to cancel.
    * @return The proposal ID.
    */
   function cancel(
     VeVoteStorageTypes.VeVoteStorage storage self,
-    address account,
+    bool whitelisted,
     bool admin,
     uint256 proposalId
   ) external returns (uint256) {
-    // Cache the proposer
-    address proposer = proposalProposer(self, proposalId);
-
-    // Ensure only the proposer or an admin can cancel
-    if (account != proposer && !admin) {
-      revert UnauthorizedAccess(account);
+    // Ensure only a whitelisted address or the contract admin can cancel a proposal
+    if (!admin && !whitelisted) {
+      revert UnauthorizedAccess(msg.sender);
     }
 
     // Validate that the proposal is not already canceled or executed
@@ -179,8 +176,8 @@ library VeVoteProposalLogic {
         VeVoteStateLogic.encodeStateBitmap(VeVoteTypes.ProposalState.Active)
     );
 
-    // If the proposer is canceling, ensure it's still in a pending state
-    if (account == proposer && currentState != VeVoteTypes.ProposalState.Pending) {
+    // If a whitelisted address is canceling, ensure it's still in a pending state
+    if (!admin && currentState != VeVoteTypes.ProposalState.Pending) {
       revert VeVoteUnexpectedProposalState(
         proposalId,
         currentState,

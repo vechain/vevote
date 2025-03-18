@@ -113,6 +113,9 @@ export async function deployAll(config: ContractsConfig) {
         admin: TEMP_ADMIN,
         upgrader: TEMP_ADMIN,
         whitelist: [TEMP_ADMIN],
+        settingsManager: TEMP_ADMIN,
+        nodeWeightManager: TEMP_ADMIN,
+        executor: TEMP_ADMIN,
       },
     ],
     {
