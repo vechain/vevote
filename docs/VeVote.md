@@ -54,7 +54,7 @@ Voting power is calculated using **Voting Units**, determined by:
 
 ### 🧮 Step 1: Base Voting Power
 
-Every Node is compared to the smallest type—**Dawn (10,000 VET)**—which equals **1 voting unit**:
+Every Node is compared to the minimum requirement of the lowest Node tier —**Dawn (10,000 VET)**—which equals **1 voting unit**:
 
 ```
 Base Voting Power = Your Node’s VET ÷ 10,000
