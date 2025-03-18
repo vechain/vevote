@@ -106,7 +106,8 @@ If you hold—or are delegated—more than one Node, your **total voting power**
 
 ### 🕒 When Is Voting Power Counted?
 
-A **snapshot** is taken at the **start** of every proposal’s voting period. Your voting power is locked in based on:
+A **snapshot** is taken at the **start** of every proposal’s voting period, that means that the voting power you will have at the exact `startTime`, will be frozen regardless of when you will cast your vote. 
+Your voting power is locked in based on:
 
 - All Nodes you own directly
 - Any Nodes delegated to your wallet
