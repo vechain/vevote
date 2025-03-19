@@ -4,7 +4,7 @@ import { DAppKitWalletButton } from "@vechain/vechain-kit";
 export const Navbar = () => {
   return (
     <HStack justify={"space-between"} p={2} borderBottom={"1px solid #EEEEEE"}>
-      <Heading fontSize={"lg"}>Proposal</Heading>
+      <Heading>Proposal</Heading>
       <DAppKitWalletButton
         mobile={useBreakpointValue({
           base: true,
