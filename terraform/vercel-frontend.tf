@@ -1,5 +1,5 @@
 resource "vercel_project" "vevote_frontend" {
-  count     = terraform.workspace == "prod" ? 1 : 0
+  count     = terraform.workspace == "prd" ? 1 : 0
   name      = "vevote-frontend"
   team_id   = local.env.vercel_team_id
   framework = "nextjs"
@@ -12,7 +12,7 @@ resource "vercel_project" "vevote_frontend" {
 }
 
 resource "vercel_deployment" "vevote_frontend_deployment" {
-  count      = terraform.workspace == "prod" ? 1 : 0
+  count      = terraform.workspace == "prd" ? 1 : 0
   project_id = vercel_project.vevote_frontend[0].id
   team_id    = local.env.vercel_team_id
   production = true

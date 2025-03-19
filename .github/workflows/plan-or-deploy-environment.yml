@@ -11,14 +11,14 @@ on:
       environment:
         description: 'The environment to deploy'
         required: true
-        type: choice
-        options:
-          - prd
+        default: prd
+        type: string
   workflow_call:
     inputs:
       environment:
         description: Which environment to plan/deploy to
         required: true
+        default: prd
         type: string
       version:
         description: The version of this release
