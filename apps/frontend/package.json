@@ -30,14 +30,14 @@
     "@vechain/connex-types": "^2.1.0",
     "@vechain/dapp-kit-react": "1.4.1",
     "@vechain/vechain-kit": "1.5.6",
-    "axios": "^1.7.9",
+    "axios": "^1.8.2",
     "ethers": "^6.9.0",
     "framer-motion": "^11.2.12",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.52.0",
-    "viem": "^2.21.9",
-    "vite": "^5.0.12"
+    "vite": "^5.4.12",
+    "viem": "^2.21.9"
   },
   "devDependencies": {
     "@originjs/vite-plugin-commonjs": "^1.0.3",
@@ -52,6 +52,6 @@
     "react-test-renderer": "^18.2.0",
     "typescript": "^5.2.2",
     "vite-plugin-node-polyfills": "^0.17.0",
-    "vitest": "^1.2.2"
+    "vitest": "^1.6.1"
   }
 }
