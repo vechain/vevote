@@ -2,12 +2,15 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
-import { ChakraProvider } from "@chakra-ui/react";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import { persister, queryClient } from "./utils/queryClient.ts";
 import { getConfig } from "@repo/config";
 import { VeChainKitProvider } from "@vechain/vechain-kit";
 import { WalletConnectOptions } from "@vechain/dapp-kit-react";
+import { ThemeProvider } from "./contexts/ThemeProvider.tsx";
+
+import "@fontsource-variable/rubik";
+import "@fontsource-variable/inter";
 
 const config = getConfig(import.meta.env.VITE_APP_ENV);
 
@@ -24,7 +27,7 @@ const walletConnectOptions: WalletConnectOptions = {
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <PersistQueryClientProvider client={queryClient} persistOptions={{ persister }}>
-      <ChakraProvider>
+      <ThemeProvider>
         <VeChainKitProvider
           feeDelegation={{
             delegatorUrl: "https://sponsor-testnet.vechain.energy/by/283",
@@ -43,7 +46,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
           }}>
           <App />
         </VeChainKitProvider>
-      </ChakraProvider>
+      </ThemeProvider>
     </PersistQueryClientProvider>
   </React.StrictMode>,
 );
