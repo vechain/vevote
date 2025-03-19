@@ -5,6 +5,7 @@ import { headingStyle } from "@/theme/heading";
 
 import "@fontsource-variable/rubik";
 import "@fontsource-variable/inter";
+import { badgeTheme } from "@/theme/badge";
 
 const config: ThemeConfig = {
   initialColorMode: "light",
@@ -24,6 +25,7 @@ const theme = extendTheme({
   fontSizes,
   components: {
     Heading: headingStyle,
+    Badge: badgeTheme,
   },
 });
 
