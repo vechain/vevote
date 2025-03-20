@@ -13,6 +13,12 @@ export type Translation = RootTranslation
 export type Translations = RootTranslation
 
 type RootTranslation = {
+	statuses: {
+		/**
+		 * V​o​t​e​d
+		 */
+		voted: string
+	}
 	badge: {
 		/**
 		 * D​r​a​f​t
@@ -46,6 +52,12 @@ type RootTranslation = {
 }
 
 export type TranslationFunctions = {
+	statuses: {
+		/**
+		 * Voted
+		 */
+		voted: () => LocalizedString
+	}
 	badge: {
 		/**
 		 * Draft

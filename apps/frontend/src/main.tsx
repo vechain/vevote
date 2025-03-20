@@ -45,26 +45,24 @@ const Providers = ({ children }: PropsWithChildren) => {
   return (
     <I18nProvider locale={locale}>
       <PersistQueryClientProvider client={queryClient} persistOptions={{ persister }}>
-        <ThemeProvider>
-          <VeChainKitProvider
-            feeDelegation={{
-              delegatorUrl: "https://sponsor-testnet.vechain.energy/by/283",
-              delegateAllTransactions: true,
-            }}
-            dappKit={{
-              allowedWallets: ["veworld", "wallet-connect", "sync2"],
-              walletConnectOptions: {
-                projectId: walletConnectOptions.projectId,
-                metadata: walletConnectOptions.metadata,
-              },
-            }}
-            language="en"
-            network={{
-              type: config.network.type,
-            }}>
-            {children}
-          </VeChainKitProvider>
-        </ThemeProvider>
+        <VeChainKitProvider
+          feeDelegation={{
+            delegatorUrl: "https://sponsor-testnet.vechain.energy/by/283",
+            delegateAllTransactions: true,
+          }}
+          dappKit={{
+            allowedWallets: ["veworld", "wallet-connect", "sync2"],
+            walletConnectOptions: {
+              projectId: walletConnectOptions.projectId,
+              metadata: walletConnectOptions.metadata,
+            },
+          }}
+          language="en"
+          network={{
+            type: config.network.type,
+          }}>
+          <ThemeProvider>{children}</ThemeProvider>
+        </VeChainKitProvider>
       </PersistQueryClientProvider>
     </I18nProvider>
   );

@@ -1,4 +1,4 @@
-import { colors, fonts, fontSizes, rootVariables } from "@/theme";
+import { colors, fonts, fontSizes } from "@/theme";
 import { ChakraProvider, extendTheme, ThemeConfig } from "@chakra-ui/react";
 import { PropsWithChildren } from "react";
 import { headingStyle } from "@/theme/heading";
@@ -14,7 +14,6 @@ const config: ThemeConfig = {
 
 const theme = extendTheme({
   styles: {
-    ":root": rootVariables,
     "html, body": {
       fontFamily: "Inter, sans-serif",
     },

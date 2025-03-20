@@ -1,6 +1,9 @@
 import type { BaseTranslation } from "../i18n-types.js";
 
 const en = {
+  statuses: {
+    voted: "Voted",
+  },
   badge: {
     draft: "Draft",
     upcoming: "Upcoming",
