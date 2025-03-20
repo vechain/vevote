@@ -6,7 +6,7 @@ export const Navbar = () => {
   return (
     <HStack justify={"space-between"} p={2} borderBottom={"1px solid #EEEEEE"}>
       <Heading>Proposal</Heading>
-      <IconBadge variant={"voting"} />
+      <IconBadge variant={"draft"} />
       <DAppKitWalletButton
         mobile={useBreakpointValue({
           base: true,

@@ -1,4 +1,4 @@
-import { Badge, BadgeProps } from "@chakra-ui/react";
+import { TagProps, Tag, TagLeftIcon } from "@chakra-ui/react";
 import { useMemo } from "react";
 import { FiEdit2 } from "react-icons/fi";
 import { IoMdTime } from "react-icons/io";
@@ -8,7 +8,7 @@ import { BiCheckDouble } from "react-icons/bi";
 import { FaRegCircleXmark } from "react-icons/fa6";
 import { RiDeleteBin6Line } from "react-icons/ri";
 
-export const IconBadge = ({ variant, ...rest }: Omit<BadgeProps, "children">) => {
+export const IconBadge = ({ variant, ...rest }: Omit<TagProps, "children">) => {
   const IconElement = useMemo(() => {
     switch (variant) {
       case "draft":
@@ -52,9 +52,9 @@ export const IconBadge = ({ variant, ...rest }: Omit<BadgeProps, "children">) =>
   }, [variant]);
 
   return (
-    <Badge variant={variant} {...rest}>
-      <IconElement size={16} />
+    <Tag variant={variant} {...rest}>
+      <TagLeftIcon as={IconElement} />
       {text}
-    </Badge>
+    </Tag>
   );
 };
