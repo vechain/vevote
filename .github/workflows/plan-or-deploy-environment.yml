@@ -36,14 +36,14 @@ permissions:
   contents: read # This is required for actions/checkout
 
 env:
-  ENVIRONMENT: ${{ inputs.environment  }}
+  ENVIRONMENT: ${{ inputs.environment || 'prd' }}
   VERCEL_API_TOKEN: ${{ secrets.VERCEL_TOKEN }}
 
 jobs:
   deploy:
     name: "Plan/deploy VeVote terraform - ${{ inputs.environment }}"
     runs-on: ubuntu-latest
-    environment: ${{ inputs.environment}}
+    environment: ${{ inputs.environment || 'prd' }}
 
     defaults:
       run:

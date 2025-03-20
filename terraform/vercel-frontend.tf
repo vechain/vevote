@@ -1,6 +1,6 @@
 resource "vercel_project" "vevote_frontend" {
   count     = terraform.workspace == "prd" ? 1 : 0
-  name      = "vevote-frontend"
+  name      = "${local.env.project}-frontend"
   team_id   = local.env.vercel_team_id
   framework = "nextjs"
   git_repository = {
