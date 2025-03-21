@@ -1,5 +1,5 @@
 resource "vercel_project" "vevote_frontend" {
-  name      = "${local.config.project}-frontend-${local.parts.environment}"
+  name      = "${local.config.project}-frontend-${local.environment}"
   team_id   = local.config.vercel_team_id
   framework = "nextjs"
   git_repository = {
