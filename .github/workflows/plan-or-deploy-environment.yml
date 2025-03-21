@@ -11,14 +11,14 @@ on:
       environment:
         description: 'The environment to deploy'
         required: true
-        default: prd
+        default: dev
         type: string
   workflow_call:
     inputs:
       environment:
         description: Which environment to plan/deploy to
         required: true
-        default: prd
+        default: dev
         type: string
       version:
         description: The version of this release
@@ -36,14 +36,14 @@ permissions:
   contents: read # This is required for actions/checkout
 
 env:
-  ENVIRONMENT: ${{ inputs.environment || 'prd' }}
+  ENVIRONMENT: ${{ inputs.environment || 'dev' }}
   VERCEL_API_TOKEN: ${{ secrets.VERCEL_TOKEN }}
 
 jobs:
   deploy:
     name: "Plan/deploy VeVote terraform - ${{ inputs.environment }}"
     runs-on: ubuntu-latest
-    environment: ${{ inputs.environment || 'prd' }}
+    environment: ${{ inputs.environment || 'dev' }}
 
     defaults:
       run:
