@@ -26,7 +26,7 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
   bytes32 public constant UPGRADER_ROLE = keccak256("UPGRADER_ROLE");
   /// @notice The role that can create proposals
   bytes32 public constant WHITELISTED_ROLE = keccak256("WHITELISTED_ROLE");
-    /// @notice The role that can execute proposals
+  /// @notice The role that can execute proposals
   bytes32 public constant EXECUTOR_ROLE = keccak256("EXECUTOR_ROLE");
   /// @notice The role that can update contract settings
   bytes32 public constant SETTINGS_MANAGER_ROLE = keccak256("SETTINGS_MANAGER_ROLE");
@@ -281,9 +281,7 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
    * @param nodeLevel The node level of the node ID.
    * @return uint256 The voting multiplier score of the node level.
    */
-  function nodeLevelMultiplier(
-    VechainNodesDataTypes.NodeStrengthLevel nodeLevel
-  ) external view returns (uint256) {
+  function nodeLevelMultiplier(VechainNodesDataTypes.NodeStrengthLevel nodeLevel) external view returns (uint256) {
     VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
     return VeVoteConfigurator.nodeLevelMultiplier($, nodeLevel);
   }
@@ -328,12 +326,32 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
 
   /**
    * @notice See {IVeVote-cancel}.
-   * @param proposalId The proposal id
-   * @return uint256 The proposal id
    */
   function cancel(uint256 proposalId) external returns (uint256) {
     VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
-    return VeVoteProposalLogic.cancel($, hasRole(WHITELISTED_ROLE, _msgSender()), hasRole(DEFAULT_ADMIN_ROLE, _msgSender()), proposalId);
+    return
+      VeVoteProposalLogic.cancel(
+        $,
+        hasRole(WHITELISTED_ROLE, _msgSender()),
+        hasRole(DEFAULT_ADMIN_ROLE, _msgSender()),
+        proposalId,
+        ""
+      );
+  }
+
+  /**
+   * @notice See {IVeVote-cancelWithReason}.
+   */
+  function cancelWithReason(uint256 proposalId, string calldata reason) external returns (uint256) {
+    VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
+    return
+      VeVoteProposalLogic.cancel(
+        $,
+        hasRole(WHITELISTED_ROLE, _msgSender()),
+        hasRole(DEFAULT_ADMIN_ROLE, _msgSender()),
+        proposalId,
+        reason
+      );
   }
 
   /**
