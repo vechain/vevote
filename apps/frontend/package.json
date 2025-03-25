@@ -17,7 +17,7 @@
     "typesafe-i18n": "typesafe-i18n"
   },
   "dependencies": {
-    "@chakra-ui/react": "^2.8.2",
+    "@chakra-ui/react": "^2.10.4",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
     "@fontsource-variable/inter": "^5.2.5",

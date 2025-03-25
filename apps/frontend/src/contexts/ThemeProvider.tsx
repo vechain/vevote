@@ -7,6 +7,7 @@ import { linkTheme } from "@/theme/link";
 
 import "@fontsource-variable/rubik";
 import "@fontsource-variable/inter";
+import { dropdownTheme } from "@/theme/dropdown";
 
 const config: ThemeConfig = {
   initialColorMode: "light",
@@ -27,6 +28,7 @@ const theme = extendTheme({
     Heading: headingStyle,
     Tag: tagTheme,
     Link: linkTheme,
+    Menu: dropdownTheme,
   },
 });
 

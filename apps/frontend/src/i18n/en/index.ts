@@ -13,6 +13,14 @@ const en = {
     canceled: "Canceled",
     rejected: "Rejected",
   },
+  filters: {
+    sort: {
+      newest: "Newest",
+      oldest: "Oldest",
+      most_participant: "Most participant",
+      least_participant: "Least participant",
+    },
+  },
 } satisfies BaseTranslation;
 
 export default en;

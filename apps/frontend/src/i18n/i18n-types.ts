@@ -49,6 +49,26 @@ type RootTranslation = {
 		 */
 		rejected: string
 	}
+	filters: {
+		sort: {
+			/**
+			 * N​e​w​e​s​t
+			 */
+			newest: string
+			/**
+			 * O​l​d​e​s​t
+			 */
+			oldest: string
+			/**
+			 * M​o​s​t​ ​p​a​r​t​i​c​i​p​a​n​t
+			 */
+			most_participant: string
+			/**
+			 * L​e​a​s​t​ ​p​a​r​t​i​c​i​p​a​n​t
+			 */
+			least_participant: string
+		}
+	}
 }
 
 export type TranslationFunctions = {
@@ -87,6 +107,26 @@ export type TranslationFunctions = {
 		 * Rejected
 		 */
 		rejected: () => LocalizedString
+	}
+	filters: {
+		sort: {
+			/**
+			 * Newest
+			 */
+			newest: () => LocalizedString
+			/**
+			 * Oldest
+			 */
+			oldest: () => LocalizedString
+			/**
+			 * Most participant
+			 */
+			most_participant: () => LocalizedString
+			/**
+			 * Least participant
+			 */
+			least_participant: () => LocalizedString
+		}
 	}
 }
 
