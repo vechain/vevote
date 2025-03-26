@@ -8,7 +8,7 @@ on:
         type: choice
         options:
           - dev
-          - prd
+          - prod
 
 jobs:
   setup-environment:
@@ -74,7 +74,7 @@ jobs:
   create-release:
     runs-on: ubuntu-latest
     needs: [check-existing-release, setup-environment]
-    if: ${{ needs.check-existing-release.outputs.NEW_RELEASE == 'true' && needs.setup-environment.outputs.ENVIRONMENT == 'prd' }}
+    if: ${{ needs.check-existing-release.outputs.NEW_RELEASE == 'true' && needs.setup-environment.outputs.ENVIRONMENT == 'prod' }}
     permissions:
       contents: write
     steps:
