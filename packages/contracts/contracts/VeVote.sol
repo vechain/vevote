@@ -3,15 +3,15 @@
 pragma solidity 0.8.20;
 
 import { IVeVote } from "./interfaces/IVeVote.sol";
-import { VeVoteStorage } from "./vevote/VeVoteStorage.sol";
-import { VeVoteTypes } from "./vevote/libraries/VeVoteTypes.sol";
-import { VeVoteQuoromLogic } from "./vevote/libraries/VeVoteQuoromLogic.sol";
-import { VeVoteClockLogic } from "./vevote/libraries/VeVoteClockLogic.sol";
-import { VeVoteStateLogic } from "./vevote/libraries/VeVoteStateLogic.sol";
-import { VeVoteVoteLogic } from "./vevote/libraries/VeVoteVoteLogic.sol";
-import { VeVoteProposalLogic } from "./vevote/libraries/VeVoteProposalLogic.sol";
-import { VeVoteStorageTypes } from "./vevote/libraries/VeVoteStorageTypes.sol";
-import { VeVoteConfigurator } from "./vevote/libraries/VeVoteConfigurator.sol";
+import { VeVoteStorage } from "./governance/VeVoteStorage.sol";
+import { VeVoteTypes } from "./governance/libraries/VeVoteTypes.sol";
+import { VeVoteQuoromLogic } from "./governance/libraries/VeVoteQuoromLogic.sol";
+import { VeVoteClockLogic } from "./governance/libraries/VeVoteClockLogic.sol";
+import { VeVoteStateLogic } from "./governance/libraries/VeVoteStateLogic.sol";
+import { VeVoteVoteLogic } from "./governance/libraries/VeVoteVoteLogic.sol";
+import { VeVoteProposalLogic } from "./governance/libraries/VeVoteProposalLogic.sol";
+import { VeVoteStorageTypes } from "./governance/libraries/VeVoteStorageTypes.sol";
+import { VeVoteConfigurator } from "./governance/libraries/VeVoteConfigurator.sol";
 import { VechainNodesDataTypes } from "./libraries/VechainNodesDataTypes.sol";
 import { INodeManagement } from "./interfaces/INodeManagement.sol";
 import { ITokenAuction } from "./interfaces/ITokenAuction.sol";
