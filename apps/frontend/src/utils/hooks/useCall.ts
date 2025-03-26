@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useConnex } from "@vechain/dapp-kit-react";
+import { useConnex } from "@vechain/vechain-kit";
 import { Interface } from "ethers";
 import { useCallback, useMemo } from "react";
 
@@ -16,9 +16,7 @@ export type UseCallParams<T extends Interface> = {
   args?: unknown[]; // Optional arguments for the method
   keyArgs?: unknown[]; // Optional key arguments for the query key
   enabled?: boolean; // Whether the query should be enabled
-  mapResponse?: (
-    _res: Connex.VM.Output & Connex.Thor.Account.WithDecoded
-  ) => any; // Optional functon to map the response
+  mapResponse?: (_res: Connex.VM.Output & Connex.Thor.Account.WithDecoded) => any; // Optional functon to map the response
 };
 
 /**
@@ -44,9 +42,7 @@ export const useCall = <T extends Interface>({
   const { thor } = useConnex();
   const queryFn = useCallback(async () => {
     try {
-      const functionFragment = contractInterface
-        ?.getFunction(method)
-        ?.format("json");
+      const functionFragment = contractInterface?.getFunction(method)?.format("json");
       if (!functionFragment) throw new Error(`Method ${method} not found`);
 
       const res = await thor
@@ -54,10 +50,7 @@ export const useCall = <T extends Interface>({
         .method(JSON.parse(functionFragment))
         .call(...args);
 
-      if (res.vmError)
-        return Promise.reject(
-          new Error(`Method ${method} reverted: ${res.vmError}`)
-        );
+      if (res.vmError) return Promise.reject(new Error(`Method ${method} reverted: ${res.vmError}`));
 
       if (mapResponse) return mapResponse(res);
 
@@ -65,16 +58,13 @@ export const useCall = <T extends Interface>({
     } catch (error) {
       console.error(
         `Error calling ${method}: ${(error as Error)?.message} with args: ${JSON.stringify(args)}`,
-        (error as Error)?.stack
+        (error as Error)?.stack,
       );
       throw error;
     }
   }, [args, contractAddress, contractInterface, mapResponse, method, thor]);
 
-  const queryKey = useMemo(
-    () => getCallKey({ method, keyArgs: keyArgs || args }),
-    [method, keyArgs, args]
-  );
+  const queryKey = useMemo(() => getCallKey({ method, keyArgs: keyArgs || args }), [method, keyArgs, args]);
 
   const enableQuery = useMemo(() => !!thor && enabled, [enabled, thor]);
 

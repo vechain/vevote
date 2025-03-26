@@ -12,10 +12,10 @@ import {
   VStack,
   useToast,
 } from "@chakra-ui/react";
-import { useVeVoteMinter } from "../../../../hooks/useVeVoteMinter";
 import { useForm } from "react-hook-form";
 import { useCallback } from "react";
-import { useMintVeVote } from "../../../../hooks/useMintVeVote";
+import { useVeVoteMinter } from "@/hooks/useVeVoteMinter";
+import { useBuildMintVeVote } from "@/hooks/useBuildMintVeVote";
 
 interface MintForm {
   amount: string;
@@ -28,7 +28,7 @@ export const MintCard = () => {
 
   const { errors } = form.formState;
 
-  const mintMutation = useMintVeVote({
+  const mintMutation = useBuildMintVeVote({
     onSuccess: () => {
       form.reset();
       mintMutation.resetStatus();
@@ -46,23 +46,17 @@ export const MintCard = () => {
     (data: MintForm) => {
       mintMutation.sendTransaction(data);
     },
-    [mintMutation]
+    [mintMutation],
   );
 
-  const { isMinter, minter } = useVeVoteMinter();
-  console.log("minter", minter);
+  const { isMinter } = useVeVoteMinter();
   if (!isMinter) {
     return null;
   }
   return (
     <Card>
       <CardBody>
-        <VStack
-          align={"stretch"}
-          as="form"
-          onSubmit={form.handleSubmit(onSubmit)}
-          gap={4}
-        >
+        <VStack align={"stretch"} as="form" onSubmit={form.handleSubmit(onSubmit)} gap={4}>
           <HStack justify={"flex-end"} w="full">
             {isMinter && <Badge colorScheme="orange">Admin</Badge>}
           </HStack>

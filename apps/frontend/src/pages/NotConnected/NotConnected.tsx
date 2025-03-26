@@ -1,5 +1,4 @@
 import { Image, VStack } from "@chakra-ui/react";
-import vevote from "../../assets/vevote.jpeg";
 import { motion } from "framer-motion";
 
 export const NotConnected = () => {
@@ -9,15 +8,8 @@ export const NotConnected = () => {
         animate={{
           scale: [1, 1.2, 1],
           rotate: [0, 365],
-        }}
-      >
-        <Image
-          src={vevote}
-          alt="Not Connected"
-          w={"400px"}
-          h="400px"
-          rounded="full"
-        />
+        }}>
+        <Image src={"/images/vevote.jpeg"} alt="Not Connected" w={"400px"} h="400px" rounded="full" />
       </motion.div>
     </VStack>
   );
