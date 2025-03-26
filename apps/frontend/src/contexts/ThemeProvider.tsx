@@ -7,6 +7,9 @@ import { linkTheme } from "@/theme/link";
 
 import "@fontsource-variable/rubik";
 import "@fontsource-variable/inter";
+import { tabsTheme } from "@/theme/tabs";
+import { inputTheme } from "@/theme/input";
+import { iconTheme } from "@/theme/Icon";
 
 const config: ThemeConfig = {
   initialColorMode: "light",
@@ -27,6 +30,9 @@ const theme = extendTheme({
     Heading: headingStyle,
     Tag: tagTheme,
     Link: linkTheme,
+    Tabs: tabsTheme,
+    Input: inputTheme,
+    Icon: iconTheme,
   },
 });
 
