@@ -21,6 +21,14 @@ const en = {
       least_participant: "Least participant",
     },
   },
+  header: {
+    official: "Official",
+    blockchain: "VeChainThor Blockchain",
+    voting_platform: "voting platform",
+    immutable: "Immutable.",
+    transparent: "Transparent.",
+    decentralized: "Decentralized.",
+  },
   footer: {
     all_right: "All Rights Reserved © Vechain Foundation San Marino S.r.l.",
     legal: {

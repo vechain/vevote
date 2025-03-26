@@ -69,6 +69,32 @@ type RootTranslation = {
 			least_participant: string
 		}
 	}
+	header: {
+		/**
+		 * O​f​f​i​c​i​a​l
+		 */
+		official: string
+		/**
+		 * V​e​C​h​a​i​n​T​h​o​r​ ​B​l​o​c​k​c​h​a​i​n
+		 */
+		blockchain: string
+		/**
+		 * v​o​t​i​n​g​ ​p​l​a​t​f​o​r​m
+		 */
+		voting_platform: string
+		/**
+		 * I​m​m​u​t​a​b​l​e​.
+		 */
+		immutable: string
+		/**
+		 * T​r​a​n​s​p​a​r​e​n​t​.
+		 */
+		transparent: string
+		/**
+		 * D​e​c​e​n​t​r​a​l​i​z​e​d​.
+		 */
+		decentralized: string
+	}
 	footer: {
 		/**
 		 * A​l​l​ ​R​i​g​h​t​s​ ​R​e​s​e​r​v​e​d​ ​©​ ​V​e​c​h​a​i​n​ ​F​o​u​n​d​a​t​i​o​n​ ​S​a​n​ ​M​a​r​i​n​o​ ​S​.​r​.​l​.
@@ -147,6 +173,32 @@ export type TranslationFunctions = {
 			 */
 			least_participant: () => LocalizedString
 		}
+	}
+	header: {
+		/**
+		 * Official
+		 */
+		official: () => LocalizedString
+		/**
+		 * VeChainThor Blockchain
+		 */
+		blockchain: () => LocalizedString
+		/**
+		 * voting platform
+		 */
+		voting_platform: () => LocalizedString
+		/**
+		 * Immutable.
+		 */
+		immutable: () => LocalizedString
+		/**
+		 * Transparent.
+		 */
+		transparent: () => LocalizedString
+		/**
+		 * Decentralized.
+		 */
+		decentralized: () => LocalizedString
 	}
 	footer: {
 		/**
