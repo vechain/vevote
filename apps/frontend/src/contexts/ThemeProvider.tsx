@@ -4,10 +4,10 @@ import { PropsWithChildren } from "react";
 import { headingStyle } from "@/theme/heading";
 import { tagTheme } from "@/theme/tag";
 import { linkTheme } from "@/theme/link";
+import { dropdownTheme } from "@/theme/dropdown";
 
 import "@fontsource-variable/rubik";
 import "@fontsource-variable/inter";
-import { dropdownTheme } from "@/theme/dropdown";
 
 const config: ThemeConfig = {
   initialColorMode: "light",
@@ -15,11 +15,6 @@ const config: ThemeConfig = {
 };
 
 const theme = extendTheme({
-  styles: {
-    "html, body": {
-      fontFamily: "Inter, sans-serif",
-    },
-  },
   colors,
   config,
   fonts,

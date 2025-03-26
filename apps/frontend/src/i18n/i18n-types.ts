@@ -69,6 +69,26 @@ type RootTranslation = {
 			least_participant: string
 		}
 	}
+	footer: {
+		/**
+		 * A​l​l​ ​R​i​g​h​t​s​ ​R​e​s​e​r​v​e​d​ ​©​ ​V​e​c​h​a​i​n​ ​F​o​u​n​d​a​t​i​o​n​ ​S​a​n​ ​M​a​r​i​n​o​ ​S​.​r​.​l​.
+		 */
+		all_right: string
+		legal: {
+			/**
+			 * T​e​r​m​s​ ​o​f​ ​S​e​r​v​i​c​e
+			 */
+			terms_of_service: string
+			/**
+			 * P​r​i​v​a​c​y​ ​P​o​l​i​c​y
+			 */
+			privacy_policy: string
+			/**
+			 * C​o​o​k​i​e​s​ ​P​o​l​i​c​y
+			 */
+			cookies_policy: string
+		}
+	}
 }
 
 export type TranslationFunctions = {
@@ -126,6 +146,26 @@ export type TranslationFunctions = {
 			 * Least participant
 			 */
 			least_participant: () => LocalizedString
+		}
+	}
+	footer: {
+		/**
+		 * All Rights Reserved © Vechain Foundation San Marino S.r.l.
+		 */
+		all_right: () => LocalizedString
+		legal: {
+			/**
+			 * Terms of Service
+			 */
+			terms_of_service: () => LocalizedString
+			/**
+			 * Privacy Policy
+			 */
+			privacy_policy: () => LocalizedString
+			/**
+			 * Cookies Policy
+			 */
+			cookies_policy: () => LocalizedString
 		}
 	}
 }

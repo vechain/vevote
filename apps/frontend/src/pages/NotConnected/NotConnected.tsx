@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 
 export const NotConnected = () => {
   return (
-    <VStack align="center" justify="center" h="full">
+    <VStack align="center" justify="center" minH="100vh">
       <motion.div
         animate={{
           scale: [1, 1.2, 1],

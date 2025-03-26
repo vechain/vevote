@@ -1,6 +1,4 @@
-import "@fontsource-variable/rubik";
-import "@fontsource-variable/inter";
-import { defineStyle, theme } from "@chakra-ui/react";
+import { defineStyle } from "@chakra-ui/react";
 
 export const colors = {
   primary: {
@@ -83,8 +81,8 @@ export const colors = {
 };
 
 export const fonts = {
-  body: `"Inter Variable",${theme.fonts?.body}, sans-serif`,
-  heading: `"Rubik Variable",${theme.fonts?.heading}, sans-serif`,
+  body: `"Inter", sans-serif`,
+  heading: `"Rubik", sans-serif`,
 };
 
 export const fontSizes = defineStyle({

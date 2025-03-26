@@ -21,6 +21,14 @@ const en = {
       least_participant: "Least participant",
     },
   },
+  footer: {
+    all_right: "All Rights Reserved © Vechain Foundation San Marino S.r.l.",
+    legal: {
+      terms_of_service: "Terms of Service",
+      privacy_policy: "Privacy Policy",
+      cookies_policy: "Cookies Policy",
+    },
+  },
 } satisfies BaseTranslation;
 
 export default en;
