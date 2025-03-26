@@ -146,8 +146,11 @@ interface IVeVote is IERC165, IERC6372 {
 
   /**
    * @dev Emitted when a proposal is canceled.
+   * @param proposalId The ID of the proposal.
+   * @param canceller The address that canceled the proposal.
+   * @param reason The reason for canceling the proposal.
    */
-  event ProposalCanceled(uint256 proposalId);
+  event ProposalCanceled(uint256 proposalId, address canceller, string reason);
 
   /**
    * @dev Emitted when a proposal is executed.
@@ -449,6 +452,16 @@ interface IVeVote is IERC165, IERC6372 {
    * @return The proposal ID.
    */
   function cancel(uint256 proposalId) external returns (uint256);
+
+
+  /**
+   * @notice Cancels a proposal.
+   * @dev Allows the proposer or an admin to cancel a proposal before execution.
+   * @param proposalId The ID of the proposal to cancel.
+    * @param reason The reason for canceling the proposal.
+   * @return The proposal ID.
+   */
+  function cancelWithReason(uint256 proposalId, string calldata reason) external returns (uint256);
 
   /**
    * @notice Marks a proposal as executed.

@@ -77,7 +77,7 @@ library VeVoteProposalLogic {
   /**
    * @dev Emitted when a proposal is canceled.
    */
-  event ProposalCanceled(uint256 proposalId);
+  event ProposalCanceled(uint256 proposalId, address canceller, string reason);
 
   /**
    * @dev Emitted when a proposal is executed.
@@ -161,7 +161,8 @@ library VeVoteProposalLogic {
     VeVoteStorageTypes.VeVoteStorage storage self,
     bool whitelisted,
     bool admin,
-    uint256 proposalId
+    uint256 proposalId,
+    string memory reason
   ) external returns (uint256) {
     // Ensure only a whitelisted address or the contract admin can cancel a proposal
     if (!admin && !whitelisted) {
@@ -189,7 +190,7 @@ library VeVoteProposalLogic {
     self.proposals[proposalId].canceled = true;
 
     // Emit event for tracking proposal cancellation
-    emit ProposalCanceled(proposalId);
+    emit ProposalCanceled(proposalId, msg.sender, reason);
 
     return proposalId;
   }

@@ -1,0 +1,94 @@
+import "@fontsource-variable/rubik";
+import "@fontsource-variable/inter";
+import { defineStyle, theme } from "@chakra-ui/react";
+
+export const colors = {
+  primary: {
+    50: "#F9F8FB",
+    100: "#F0EEFC",
+    200: "#CCC3F4",
+    300: "#A897EC",
+    400: "#836CE4",
+    500: "#6042DD",
+    600: "#4424C6",
+    700: "#351C9B",
+    800: "#261470",
+    900: "#170D45",
+  },
+  gray: {
+    50: "#F9F9FA",
+    100: "#F1F2F3",
+    200: "#E7E9EB",
+    300: "#D2D5D9",
+    400: "#AAAFB6",
+    500: "#747C89",
+    600: "#525860",
+    700: "#363A3F",
+    800: "#1B1D1F",
+    900: "#171923",
+  },
+
+  blue: {
+    50: "#EBF8FF",
+    100: "#BEE3F8",
+    200: "#90CDF4",
+    300: "#63B3ED",
+    400: "#4299E1",
+    500: "#3182CE",
+    600: "#2B6CB0",
+    700: "#2C5282",
+    800: "#2A4365",
+    900: "#1A365D",
+  },
+  green: {
+    50: "#F0FFF4",
+    100: "#C6F6D5",
+    200: "#9AE6B4",
+    300: "#68D391",
+    400: "#48BB78",
+    500: "#38A169",
+    600: "#25855A",
+    700: "#276749",
+    800: "#22543D",
+    900: "#1C4532",
+  },
+  red: {
+    50: "#FFF5F5",
+    100: "#FED7D7",
+    200: "#FEB2B2",
+    300: "#FC8181",
+    400: "#F56565",
+    500: "#E53E3E",
+    600: "#C53030",
+    700: "#9B2C2C",
+    800: "#822727",
+    900: "#63171B",
+  },
+  orange: {
+    50: "#FFFAF0",
+    100: "#FEEBCB",
+    200: "#FBD38D",
+    300: "#F6AD55",
+    400: "#ED8936",
+    500: "#DD6B20",
+    600: "#C05621",
+    700: "#9C4221",
+    800: "#7B341E",
+    900: "#652B19",
+  },
+  valid: "#38A169",
+  danger: "#E53E3E",
+  info: "#3182CE",
+  warning: "#DD6B20",
+};
+
+export const fonts = {
+  body: `"Inter Variable",${theme.fonts?.body}, sans-serif`,
+  heading: `"Rubik Variable",${theme.fonts?.heading}, sans-serif`,
+};
+
+export const fontSizes = defineStyle({
+  medium: "1.25rem",
+  large: "2rem",
+  "x-large": "3rem",
+});

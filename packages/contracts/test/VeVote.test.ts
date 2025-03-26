@@ -492,7 +492,14 @@ describe("VeVote", function () {
       const { vevote, admin } = await getOrDeployContractInstances({ forceDeploy: true })
       const tx = await createProposal()
       const proposalId = await getProposalIdFromTx(tx)
-      await expect(vevote.connect(admin).cancel(proposalId)).to.emit(vevote, "ProposalCanceled").withArgs(proposalId)
+      await expect(vevote.connect(admin).cancel(proposalId)).to.emit(vevote, "ProposalCanceled").withArgs(proposalId, admin.address, "")
+    })
+
+    it("Should emit the ProposalCancelled event with correct info when cancelWithReason is called", async function () {
+      const { vevote, admin } = await getOrDeployContractInstances({ forceDeploy: true })
+      const tx = await createProposal()
+      const proposalId = await getProposalIdFromTx(tx)
+      await expect(vevote.connect(admin).cancelWithReason(proposalId, "BAD IDEA")).to.emit(vevote, "ProposalCanceled").withArgs(proposalId, admin.address, "BAD IDEA")
     })
 
     it("Should return the proposal id", async function () {
