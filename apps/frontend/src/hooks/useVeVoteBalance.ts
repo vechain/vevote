@@ -6,7 +6,7 @@ import { useWallet } from "@vechain/vechain-kit";
 
 const contractAddress = getConfig(import.meta.env.VITE_APP_ENV).vevoteContractAddress;
 const contractInterface = VeVote__factory.createInterface();
-const method = "balanceOf";
+const method = "getVoteWeight";
 
 export const getVeVoteBalanceQueryKey = (address: string) => getCallKey({ method, keyArgs: [address] });
 

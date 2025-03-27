@@ -119,7 +119,7 @@ export const deployAndUpgrade = async (
 
 export function getInitializerData(contractInterface: Interface, args: any[], version?: number) {
   const initializer = version ? `initializeV${version}` : "initialize"
-
+  
   const fragment = contractInterface.getFunction(initializer)
   if (!fragment) {
     throw new Error(`Contract initializer not found`)

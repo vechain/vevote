@@ -18,7 +18,11 @@ export enum SeedStrategy {
   LINEAR,
 }
 
-const PHRASE = (process.env.MNEMONIC || VECHAIN_DEFAULT_MNEMONIC).split(" ")
+const isStagingEnv = process.env.NEXT_PUBLIC_APP_ENV === "devnet-staging"
+
+const PHRASE = (
+  isStagingEnv ? process.env.DEVNET_STAGING_MNEMONIC : process.env.MNEMONIC || VECHAIN_DEFAULT_MNEMONIC
+)?.split(" ") as string[]
 
 export const TEST_DERIVATION_PATH = "m"
 
@@ -74,49 +78,4 @@ export const getSeedAccounts = (strategy: SeedStrategy, numAccounts: number, acc
     default:
       throw new Error("Unknown seed strategy")
   }
-}
-
-const getSeedAccountsFixed = (numAccounts: number, acctOffset: number): SeedAccount[] => {
-  const keys = getTestKeys(numAccounts + acctOffset)
-
-  const seedAccounts: SeedAccount[] = []
-
-  keys.slice(acctOffset).forEach(key => {
-    seedAccounts.push({
-      key,
-      amount: unitsUtils.parseVET("200000"),
-    })
-  })
-
-  return seedAccounts
-}
-
-const getSeedAccountsRandom = (numAccounts: number, acctOffset: number): SeedAccount[] => {
-  const keys = getTestKeys(numAccounts + acctOffset)
-
-  const seedAccounts: SeedAccount[] = []
-
-  keys.slice(acctOffset).forEach(key => {
-    seedAccounts.push({
-      key,
-      amount: getRandomStartingBalance(5, 1000),
-    })
-  })
-
-  return seedAccounts
-}
-
-const getSeedAccountsLinear = (numAccounts: number, acctOffset: number): SeedAccount[] => {
-  const keys = getTestKeys(numAccounts + acctOffset)
-
-  const seedAccounts: SeedAccount[] = []
-
-  keys.slice(acctOffset).forEach((key, index) => {
-    seedAccounts.push({
-      key,
-      amount: unitsUtils.parseVET(((index + 1) * 5).toFixed(2)),
-    })
-  })
-
-  return seedAccounts
 }
