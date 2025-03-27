@@ -212,7 +212,7 @@ describe("VeVote", function () {
       ).to.be.revertedWithCustomError(vevote, "VeVoteInvalidChoiceCount")
     })
 
-    it("Should store the proposar address correctly", async function () {
+    it("Should store the proposer address correctly", async function () {
       const { vevote, whitelistedAccount } = await getOrDeployContractInstances({})
       const tx = await createProposal()
       const proposalId = await getProposalIdFromTx(tx)
@@ -349,7 +349,7 @@ describe("VeVote", function () {
       expect(await vevote.state(proposalId)).to.equal(2)
     })
 
-    it("Proposars can cancel their own proposal", async function () {
+    it("proposers can cancel their own proposal", async function () {
       const { vevote, whitelistedAccount } = await getOrDeployContractInstances({ forceDeploy: true })
       const tx = await createProposal({ proposer: whitelistedAccount })
       const proposalId = await getProposalIdFromTx(tx)
@@ -358,7 +358,7 @@ describe("VeVote", function () {
       expect(await vevote.state(proposalId)).to.equal(2)
     })
 
-    it("Non admin or proposar cannot cancel", async function () {
+    it("Non admin or proposer cannot cancel", async function () {
       const { vevote, otherAccount } = await getOrDeployContractInstances({ forceDeploy: true })
       const tx = await createProposal()
       const proposalId = await getProposalIdFromTx(tx)
@@ -914,7 +914,7 @@ describe("VeVote", function () {
       expect(await vevote.state(proposalId)).to.equal(2) // CANCELLED
     })
 
-    it("Should return CANCELLED if contract has been marked as cancelled by proposar", async function () {
+    it("Should return CANCELLED if contract has been marked as cancelled by proposer", async function () {
       const { vevote, whitelistedAccount } = await getOrDeployContractInstances({ forceDeploy: true })
       const tx = await createProposal({ proposer: whitelistedAccount })
       const proposalId = await getProposalIdFromTx(tx)
