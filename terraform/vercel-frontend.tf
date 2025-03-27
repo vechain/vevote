@@ -15,20 +15,24 @@ resource "vercel_project" "vevote_frontend" {
 
   environment = [
     {
-      name  = "VECHAIN_URL_DEVNET"
-      value = local.config.vercel_frontend_env.vechain_url_devnet
+      target = ["production", "preview"]
+      key    = "VECHAIN_URL_DEVNET"
+      value  = local.config.all_environments.vechain_url_devnet
     },
     {
-      name  = "PUBLIC_IPFS_PINNING_SERVICE"
-      value = local.config.vercel_frontend_env.public_ipfs_pinning_service
+      target = ["production", "preview"]
+      key    = "PUBLIC_IPFS_PINNING_SERVICE"
+      value  = local.config.all_environments.public_ipfs_pinning_service
     },
     {
-      name  = "DEVNET_STAGING_MNEMONIC"
-      value = local.config.vercel_frontend_env.devnet_staging_mnemonic
+      target = ["production", "preview"]
+      key    = "DEVNET_STAGING_MNEMONIC"
+      value  = local.config.all_environments.devnet_staging_mnemonic
     },
     {
-      name  = "MNEMONIC"
-      value = local.config.vercel_frontend_env.mnemonic
+      target = ["production", "preview"]
+      key    = "MNEMONIC"
+      value  = local.config.all_environments.mnemonic
     }
   ]
 }

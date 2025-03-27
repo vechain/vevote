@@ -3,7 +3,7 @@ project_alias: ve
 tag: latest
 vercel_team_id: team_gWCnY5uRnzsZIb5SvnCXAIjH
 
-vercel_frontend_env:
+all_environments:
   vechain_url_devnet: https://galactica.green.dev.node.vechain.org/
   public_ipfs_pinning_service: https://api.gateway-proxy.vechain.org/api/v1/pinning/pinFileToIPFS
   devnet_staging_mnemonic: belt enemy list bless taxi produce inner whale urge width sauce release
