@@ -5,9 +5,6 @@ import { headingStyle } from "@/theme/heading";
 import { tagTheme } from "@/theme/tag";
 import { linkTheme } from "@/theme/link";
 import { dropdownTheme } from "@/theme/dropdown";
-
-import "@fontsource-variable/rubik";
-import "@fontsource-variable/inter";
 import { tabsTheme } from "@/theme/tabs";
 import { inputTheme } from "@/theme/input";
 import { iconTheme } from "@/theme/Icon";

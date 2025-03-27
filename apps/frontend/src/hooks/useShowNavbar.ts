@@ -10,7 +10,7 @@ export const useShowNavbar = ({ elementRef }: { elementRef: RefObject<HTMLDivEle
       const scrollY = window.scrollY;
       const triggerHeight = elementRef?.current?.clientHeight || 0;
 
-      setShowBackground(scrollY > triggerHeight);
+      setShowBackground(scrollY > triggerHeight - 50);
 
       const yOld = yOldRef.current;
       const scrollQty = Math.abs(scrollY - yOld);
