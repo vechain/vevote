@@ -42,7 +42,7 @@
     "react-hook-form": "^7.52.0",
     "typesafe-i18n": "^5.26.2",
     "viem": "^2.21.9",
-    "vite": "^5.4.12"
+    "vite": "^5.4.15"
   },
   "devDependencies": {
     "@originjs/vite-plugin-commonjs": "^1.0.3",
