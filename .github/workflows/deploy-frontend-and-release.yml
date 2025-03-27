@@ -1,0 +1,93 @@
+name: Deploy Frontend to Vercel & Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      deployment-environment:
+        required: true
+        type: choice
+        options:
+          - dev
+          - prod
+
+jobs:
+  setup-environment:
+    name: Set Up Environment Variables
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'push' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    outputs:
+      ENVIRONMENT: ${{ steps.set-vars.outputs.ENVIRONMENT }}
+      VERSION: ${{ steps.set-vars.outputs.VERSION }}
+    steps:
+      - name: Set environment variables
+        id: set-vars
+        run: |
+          echo "ENVIRONMENT=${{ inputs.deployment-environment || 'dev' }}" >> $GITHUB_OUTPUT
+          if [[ "${{ github.event_name }}" == 'workflow_dispatch' && "${{ github.ref_name }}" == 'main' ]]; then
+            LATEST_TAG=$(git tag | sort -V | tail -n1)
+            echo "VERSION=${LATEST_TAG}" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.event_name }}" == 'workflow_dispatch' && "${{ github.ref_name }}" == v.* ]]; then
+            echo "VERSION=${{ github.ref_name }}" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.event_name }}" == 'push' ]]; then
+            echo "VERSION=latest" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.event.workflow_run.conclusion }}" == 'success' ]]; then
+            echo "VERSION=${{ github.sha }}" >> $GITHUB_OUTPUT
+          else
+            echo "Unrecognised version. Please select an existing version tag to deploy."
+            exit 1
+          fi
+  check-existing-release:
+    name: Check Existing Releases
+    runs-on: ubuntu-latest
+    needs: setup-environment
+    outputs:
+      NEW_RELEASE: ${{ steps.check-release.outputs.NEW_RELEASE }}
+    steps:
+      - name: Check if deployment version already exists
+        id: check-release
+        env:
+          VERSION: ${{ needs.setup-environment.outputs.VERSION }}
+        run: |
+          VERSION=${{ env.VERSION }}
+          RELEASES=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            https://api.github.com/repos/${{ github.repository }}/releases)
+          if echo "$RELEASES" | jq -e ".[] | select(.tag_name==\"$VERSION\")"; then
+            echo "NEW_RELEASE=false" >> $GITHUB_OUTPUT
+          else
+            echo "NEW_RELEASE=true" >> $GITHUB_OUTPUT
+          fi
+  deploy-app-and-infra:
+    needs: [setup-environment]
+    name: Run Deployment - ${{ needs.setup-environment.outputs.ENVIRONMENT }}
+    uses: ./.github/workflows/plan-or-deploy-environment.yml
+    with:
+      environment: ${{ needs.setup-environment.outputs.ENVIRONMENT }}
+      version: ${{ needs.setup-environment.outputs.VERSION }}
+      # Force ensures environment is spun up if it does not already exist
+      force: true
+    permissions:
+      packages: read
+      contents: read
+      id-token: write
+    secrets: inherit
+
+  create-release:
+    runs-on: ubuntu-latest
+    needs: [check-existing-release, setup-environment]
+    if: ${{ needs.check-existing-release.outputs.NEW_RELEASE == 'true' && needs.setup-environment.outputs.ENVIRONMENT == 'prod' }}
+    permissions:
+      contents: write
+    steps:
+      - name: Create release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          tag: ${{ needs.setup-environment.outputs.VERSION }}
+        run: |
+          latest_release=$(curl -s -H "Authorization: token ${{ github.token }}" \
+            https://api.github.com/repos/${{ github.repository }}/releases/latest | jq -r '.tag_name')
+          echo "Latest release: ${latest_release}"
+          gh release create "${tag}" \
+              --repo="${{ github.repository }}" \
+              --title="Release ${tag}" \
+              --generate-notes \
+              --notes-start-tag "${latest_release}"
