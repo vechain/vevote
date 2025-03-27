@@ -78,7 +78,7 @@ jobs:
     needs: check-changes
     if: needs.check-changes.outputs.contracts-changed == 'true'
     env:
-      VECHAIN_DEVNET_URL: ${{ secrets.VECHAIN_DEVNET_URL }}
+      VECHAIN_URL_DEVNET: ${{ secrets.VECHAIN_URL_DEVNET }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
