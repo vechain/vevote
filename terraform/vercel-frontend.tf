@@ -1,6 +1,6 @@
 resource "vercel_project" "vevote_frontend" {
   count     = terraform.workspace == "prod" ? 1 : 0
-  name      = "${local.config.project}-frontend-${local.environment}"
+  name      = "${local.config.project}-frontend"
   team_id   = local.config.vercel_team_id
   framework = "vite"
   git_repository = {
