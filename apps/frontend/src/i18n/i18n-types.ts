@@ -13,6 +13,40 @@ export type Translation = RootTranslation
 export type Translations = RootTranslation
 
 type RootTranslation = {
+	/**
+	 * S​t​a​r​t
+	 */
+	start: string
+	/**
+	 * E​n​d
+	 */
+	end: string
+	/**
+	 * A​l​l
+	 */
+	all: string
+	/**
+	 * F​i​n​i​s​h​e​d
+	 */
+	finished: string
+	proposals: {
+		/**
+		 * P​r​o​p​o​s​a​l​s
+		 */
+		title: string
+		/**
+		 * C​r​e​a​t​e​ ​P​r​o​p​o​s​a​l
+		 */
+		create: string
+		/**
+		 * S​e​a​r​c​h​ ​p​r​o​p​o​s​a​l​s​.​.​.
+		 */
+		search_placeholder: string
+		/**
+		 * N​o​ ​p​r​o​p​o​s​a​l​s​ ​f​o​u​n​d
+		 */
+		no_proposals: string
+	}
 	statuses: {
 		/**
 		 * V​o​t​e​d
@@ -118,6 +152,40 @@ type RootTranslation = {
 }
 
 export type TranslationFunctions = {
+	/**
+	 * Start
+	 */
+	start: () => LocalizedString
+	/**
+	 * End
+	 */
+	end: () => LocalizedString
+	/**
+	 * All
+	 */
+	all: () => LocalizedString
+	/**
+	 * Finished
+	 */
+	finished: () => LocalizedString
+	proposals: {
+		/**
+		 * Proposals
+		 */
+		title: () => LocalizedString
+		/**
+		 * Create Proposal
+		 */
+		create: () => LocalizedString
+		/**
+		 * Search proposals...
+		 */
+		search_placeholder: () => LocalizedString
+		/**
+		 * No proposals found
+		 */
+		no_proposals: () => LocalizedString
+	}
 	statuses: {
 		/**
 		 * Voted

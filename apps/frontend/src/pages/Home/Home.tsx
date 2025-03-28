@@ -4,7 +4,7 @@ import { MdOutlineHowToVote } from "react-icons/md";
 import { CiCirclePlus } from "react-icons/ci";
 import { SearchInput } from "@/components/ui/SearchInput";
 import { Sort, SortDropdown } from "@/components/ui/SortDropdown";
-import { PropsWithChildren, useMemo, useState } from "react";
+import { PropsWithChildren, useCallback, useMemo, useState } from "react";
 import { ProposalCardType } from "@/types/proposal";
 import { IconBadge } from "@/components/ui/IconBadge";
 import { Status } from "@/components/ui/Status";
@@ -14,96 +14,77 @@ import { CiCalendar } from "react-icons/ci";
 import { useFormatDate } from "@/hooks/useFormatDate";
 import { FaChevronRight } from "react-icons/fa";
 import dayjs from "dayjs";
-
-const mockProposals: ProposalCardType[] = [
-  {
-    isVoted: true,
-    status: "voting",
-    title: "All-Stakeholder Voting Proposal: Galactica Launch & Governance Upgrade",
-    endDate: new Date("2025-03-29T20:24:00"),
-  },
-  {
-    isVoted: false,
-    status: "upcoming",
-    title: "All-Stakeholder Voting Proposal: Galactica Launch & Governance Upgrade",
-    startDate: new Date("2025-05-10T03:24:00"),
-  },
-  {
-    isVoted: true,
-    status: "approved",
-    title: "All-Stakeholder Voting Proposal: Galactica Launch & Governance Upgrade",
-    endDate: new Date("2025-08-20T03:24:00"),
-  },
-  {
-    isVoted: true,
-    status: "executed",
-    title: "All-Stakeholder Voting Proposal: Galactica Launch & Governance Upgrade",
-    endDate: new Date("2025-07-05T03:12:00"),
-  },
-  {
-    isVoted: true,
-    status: "rejected",
-    title: "All-Stakeholder Voting Proposal: Galactica Launch & Governance Upgrade",
-    endDate: new Date(),
-  },
-  {
-    isVoted: false,
-    status: "canceled",
-    title: "All-Stakeholder Voting Proposal: Galactica Launch & Governance Upgrade",
-  },
-];
+import { mockProposals } from "@/utils/mock";
+import { useI18nContext } from "@/i18n/i18n-react";
 
 export const Home = () => {
   const [sort, setSort] = useState<Sort>(Sort.Newest);
+  const [searchValue, setSearchValue] = useState<string>("");
+  const { LL } = useI18nContext();
+  //add pagination
+
+  //add create proposal functionality
+
+  const filteredProposals = useMemo(() => {
+    const searchLower = searchValue.toLowerCase();
+    return mockProposals.filter(({ title }) => title.toLowerCase().includes(searchLower));
+  }, [searchValue]);
+
+  const getFilteredProposals = useCallback(
+    (statuses: string[], finished?: boolean) => {
+      if (finished)
+        return filteredProposals.filter(({ startDate, endDate }) => dayjs(endDate || startDate).isBefore(dayjs()));
+      return filteredProposals.filter(({ status }) => statuses.includes(status));
+    },
+    [filteredProposals],
+  );
+
   return (
     <PageContainer>
       <PageContainer.Header>
         <Heading fontSize={32} fontWeight={600} color="primary.600" display={"flex"} alignItems={"center"} gap={6}>
           <Icon as={MdOutlineHowToVote} width={8} height={8} color={"primary.600"} marginRight={2} />
-          {"Proposals"}
+          {LL.proposals.title()}
         </Heading>
         <Button marginLeft={"auto"} gap={3} color={"white"} bgColor={"primary.500"} _hover={{ bgColor: "primary.700" }}>
           <Icon as={CiCirclePlus} width={6} height={6} />
-          {"Create Proposal"}
+          {LL.proposals.create()}
         </Button>
       </PageContainer.Header>
       <PageContainer.Content>
         <Tabs>
           <Flex>
             <TabList>
-              <Tab>{"All"}</Tab>
-              <Tab>{"Voting now"}</Tab>
-              <Tab>{"Upcoming"}</Tab>
-              <Tab>{"Finished"}</Tab>
+              <Tab>{LL.all()}</Tab>
+              <Tab>{LL.badge.voting()}</Tab>
+              <Tab>{LL.badge.upcoming()}</Tab>
+              <Tab>{LL.finished()}</Tab>
             </TabList>
             <Flex marginLeft={"auto"} gap={4} alignItems={"center"}>
-              <SearchInput placeholder={"Search proposals..."} />
+              <SearchInput
+                value={searchValue}
+                onChange={e => setSearchValue(e.target.value)}
+                placeholder={LL.proposals.search_placeholder()}
+              />
               <SortDropdown sort={sort} setSort={setSort} />
             </Flex>
           </Flex>
 
           <TabPanels>
             <BasePanel>
-              {mockProposals.map(proposal => (
-                <ProposalCard key={proposal.title} {...proposal} />
-              ))}
+              {filteredProposals.length > 0 && filteredProposals.map((p, i) => <ProposalCard key={i} {...p} />)}
             </BasePanel>
             <BasePanel>
-              {mockProposals.map(
-                proposal => proposal.status === "voting" && <ProposalCard key={proposal.title} {...proposal} />,
-              )}
+              {getFilteredProposals(["voting"]).length > 0 &&
+                getFilteredProposals(["voting"]).map((p, i) => <ProposalCard key={i} {...p} />)}
             </BasePanel>
             <BasePanel>
-              {mockProposals.map(
-                proposal => proposal.status === "upcoming" && <ProposalCard key={proposal.title} {...proposal} />,
-              )}
+              {getFilteredProposals(["upcoming"]).length > 0 &&
+                getFilteredProposals(["upcoming"]).map((p, i) => <ProposalCard key={i} {...p} />)}
             </BasePanel>
             <BasePanel>
-              {mockProposals
-                .filter(p => dayjs(p.endDate).isBefore())
-                .map(proposal => (
-                  <ProposalCard key={proposal.title} {...proposal} />
-                ))}
+              {getFilteredProposals([""], true).length > 0 &&
+                getFilteredProposals([""], true).map((p, i) => <ProposalCard key={i} {...p} />)}
             </BasePanel>
           </TabPanels>
         </Tabs>
@@ -154,6 +135,8 @@ const ProposalCard = ({ isVoted, status, title, endDate, startDate }: ProposalCa
 };
 
 const DateItem = ({ startDate, endDate, status }: Pick<ProposalCardType, "endDate" | "startDate" | "status">) => {
+  const { LL } = useI18nContext();
+
   const { leftVotingDate, formattedDate } = useFormatDate();
   const date = useMemo(() => {
     switch (status) {
@@ -182,7 +165,7 @@ const DateItem = ({ startDate, endDate, status }: Pick<ProposalCardType, "endDat
       <Icon as={icon} width={4} height={4} color={"gray.700"} />
       {status !== "voting" && (
         <Text color={"gray.400"} fontSize={14}>
-          {status === "upcoming" ? "Start" : "End"}
+          {status === "upcoming" ? LL.start() : LL.end()}
         </Text>
       )}
 
@@ -192,6 +175,7 @@ const DateItem = ({ startDate, endDate, status }: Pick<ProposalCardType, "endDat
 };
 
 const EmptyPanel = () => {
+  const { LL } = useI18nContext();
   return (
     <TabPanel>
       <Flex
@@ -214,7 +198,7 @@ const EmptyPanel = () => {
           <Icon as={CiCircleInfo} width={8} height={8} color={"gray.400"} />
         </Flex>
         <Text color={"gray.600"} fontSize={24}>
-          {"No proposals found"}
+          {LL.proposals.no_proposals()}
         </Text>
       </Flex>
     </TabPanel>

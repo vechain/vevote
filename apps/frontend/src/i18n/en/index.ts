@@ -1,6 +1,16 @@
 import type { BaseTranslation } from "../i18n-types.js";
 
 const en = {
+  start: "Start",
+  end: "End",
+  all: "All",
+  finished: "Finished",
+  proposals: {
+    title: "Proposals",
+    create: "Create Proposal",
+    search_placeholder: "Search proposals...",
+    no_proposals: "No proposals found",
+  },
   statuses: {
     voted: "Voted",
   },
