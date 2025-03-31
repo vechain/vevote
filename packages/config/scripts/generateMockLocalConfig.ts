@@ -1,22 +1,26 @@
-import fs from "fs";
-import path from "path";
+import fs from "fs"
+import path from "path"
 /**
  * Generates a mock local config file if it does not exist yet
  * This is needed and executed in the dev pipeline to avoid versioning local.ts
  */
 export const generateMockLocalConfig = () => {
-  console.log("Checking if @repo/config/local.ts exists...");
-  const localConfigPath = path.resolve("./local.ts");
+  console.log("Checking if @repo/config/local.ts exists...")
+  const localConfigPath = path.resolve("./local.ts")
   if (fs.existsSync(localConfigPath)) {
-    console.log(`${localConfigPath} exists, skipping...`);
-    return;
+    console.log(`${localConfigPath} exists, skipping...`)
+    return
   }
 
-  console.log(`${localConfigPath} does not exist, generating mock...`);
+  console.log(`${localConfigPath} does not exist, generating mock...`)
   const toWrite = `import { AppConfig } from "." \n const config: AppConfig = {
     basePath: "http://localhost:3000",
     environment: "local",
     vevoteContractAddress: "0x45d5CA3f295ad8BCa291cC4ecd33382DE40E4FAc",
+    vechainNodesContractAddress: "0xCc7332f0f3Bc41528162ab6d5e1CA7A1e780b328",
+    nodeManagementContractAddress: "0x54A2816877E787CCadeE112a4Bb19aC7Cdc0E805",
+    ipfsPinningService: "https://api.gateway-proxy.vechain.org/api/v1/pinning/pinFileToIPFS",
+    ipfsFetchingService: "https://api.gateway-proxy.vechain.org/ipfs",
     "nodeUrl": "http://localhost:8669",
     "network": {
       "id": "solo",
@@ -49,11 +53,11 @@ export const generateMockLocalConfig = () => {
     }
     }
     export default config;
-    `;
+    `
 
-  console.log(`Writing mock config file to ${localConfigPath}`);
-  fs.writeFileSync(localConfigPath, toWrite);
-  console.log("Done!");
-};
+  console.log(`Writing mock config file to ${localConfigPath}`)
+  fs.writeFileSync(localConfigPath, toWrite)
+  console.log("Done!")
+}
 
-generateMockLocalConfig();
+generateMockLocalConfig()
