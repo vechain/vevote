@@ -33,6 +33,16 @@ type RootTranslation = {
 	 * S​h​o​w​ ​m​o​r​e
 	 */
 	show_more: string
+	home: {
+		/**
+		 * H​o​m​e
+		 */
+		title: string
+		/**
+		 * G​o​ ​t​o​ ​p​r​o​p​o​s​a​l​s
+		 */
+		go_to_proposals: string
+	}
 	proposals: {
 		/**
 		 * P​r​o​p​o​s​a​l​s
@@ -182,6 +192,16 @@ export type TranslationFunctions = {
 	 * Show more
 	 */
 	show_more: () => LocalizedString
+	home: {
+		/**
+		 * Home
+		 */
+		title: () => LocalizedString
+		/**
+		 * Go to proposals
+		 */
+		go_to_proposals: () => LocalizedString
+	}
 	proposals: {
 		/**
 		 * Proposals

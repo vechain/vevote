@@ -6,6 +6,10 @@ const en = {
   all: "All",
   finished: "Finished",
   show_more: "Show more",
+  home: {
+    title: "Home",
+    go_to_proposals: "Go to proposals",
+  },
   proposals: {
     title: "Proposals",
     create: "Create Proposal",
