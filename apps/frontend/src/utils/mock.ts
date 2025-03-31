@@ -34,6 +34,6 @@ export const mockProposals: ProposalCardType[] = [
   {
     isVoted: false,
     status: "canceled",
-    title: "Canceled Proposal: Galactica Launch & Governance Upgrade",
+    title: "Canceled Proposal: Galactica Launch",
   },
 ];
