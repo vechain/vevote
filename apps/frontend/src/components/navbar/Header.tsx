@@ -1,7 +1,7 @@
 import { Box, Flex, Heading, Image } from "@chakra-ui/react";
 import { PropsWithChildren, RefObject, useRef } from "react";
-import { Navbar } from "./Navbar";
 import { useI18nContext } from "@/i18n/i18n-react";
+import { Navbar } from "./Navbar";
 
 export const Header = () => {
   const triggerNavbarRef = useRef<HTMLDivElement | null>(null);
