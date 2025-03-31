@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "tsc && vite build --mode=development",
+    "build": "tsc && vite build --clearScreen false --mode=development",
     "clean": "rm -rf dist .turbo",
     "dev": "vite && typesafe-i18n",
     "dev:testnet": "vite",
