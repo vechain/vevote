@@ -5,11 +5,13 @@ const en = {
   end: "End",
   all: "All",
   finished: "Finished",
+  show_more: "Show more",
   proposals: {
     title: "Proposals",
     create: "Create Proposal",
     search_placeholder: "Search proposals...",
     no_proposals: "No proposals found",
+    pagination: "{current:number} of {total:number} proposals",
   },
   statuses: {
     voted: "Voted",

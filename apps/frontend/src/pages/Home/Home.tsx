@@ -4,7 +4,7 @@ import { MdOutlineHowToVote } from "react-icons/md";
 import { CiCirclePlus } from "react-icons/ci";
 import { SearchInput } from "@/components/ui/SearchInput";
 import { Sort, SortDropdown } from "@/components/ui/SortDropdown";
-import { PropsWithChildren, useCallback, useMemo, useState } from "react";
+import { PropsWithChildren, useMemo, useState } from "react";
 import { ProposalCardType } from "@/types/proposal";
 import { IconBadge } from "@/components/ui/IconBadge";
 import { Status } from "@/components/ui/Status";
@@ -16,28 +16,28 @@ import { FaChevronRight } from "react-icons/fa";
 import dayjs from "dayjs";
 import { mockProposals } from "@/utils/mock";
 import { useI18nContext } from "@/i18n/i18n-react";
+import { Pagination } from "@/components/ui/Pagination";
+
+const ITEMS_PER_PAGE = 6;
 
 export const Home = () => {
   const [sort, setSort] = useState<Sort>(Sort.Newest);
   const [searchValue, setSearchValue] = useState<string>("");
   const { LL } = useI18nContext();
-  //add pagination
 
-  //add create proposal functionality
-
-  const filteredProposals = useMemo(() => {
+  const proposalsBySearch = useMemo(() => {
     const searchLower = searchValue.toLowerCase();
     return mockProposals.filter(({ title }) => title.toLowerCase().includes(searchLower));
   }, [searchValue]);
 
-  const getFilteredProposals = useCallback(
-    (statuses: string[], finished?: boolean) => {
-      if (finished)
-        return filteredProposals.filter(({ startDate, endDate }) => dayjs(endDate || startDate).isBefore(dayjs()));
-      return filteredProposals.filter(({ status }) => statuses.includes(status));
-    },
-    [filteredProposals],
-  );
+  const proposalsByTabStatus = useMemo(() => {
+    return {
+      all: proposalsBySearch,
+      voting: proposalsBySearch.filter(({ status }) => status === "voting"),
+      upcoming: proposalsBySearch.filter(({ status }) => status === "upcoming"),
+      finished: proposalsBySearch.filter(({ startDate, endDate }) => dayjs(endDate || startDate).isBefore(dayjs())),
+    };
+  }, [proposalsBySearch]);
 
   return (
     <PageContainer>
@@ -71,21 +71,10 @@ export const Home = () => {
           </Flex>
 
           <TabPanels>
-            <BasePanel>
-              {filteredProposals.length > 0 && filteredProposals.map((p, i) => <ProposalCard key={i} {...p} />)}
-            </BasePanel>
-            <BasePanel>
-              {getFilteredProposals(["voting"]).length > 0 &&
-                getFilteredProposals(["voting"]).map((p, i) => <ProposalCard key={i} {...p} />)}
-            </BasePanel>
-            <BasePanel>
-              {getFilteredProposals(["upcoming"]).length > 0 &&
-                getFilteredProposals(["upcoming"]).map((p, i) => <ProposalCard key={i} {...p} />)}
-            </BasePanel>
-            <BasePanel>
-              {getFilteredProposals([""], true).length > 0 &&
-                getFilteredProposals([""], true).map((p, i) => <ProposalCard key={i} {...p} />)}
-            </BasePanel>
+            <Proposals proposals={proposalsByTabStatus.all} />
+            <Proposals proposals={proposalsByTabStatus.voting} />
+            <Proposals proposals={proposalsByTabStatus.upcoming} />
+            <Proposals proposals={proposalsByTabStatus.finished} />
           </TabPanels>
         </Tabs>
       </PageContainer.Content>
@@ -93,8 +82,33 @@ export const Home = () => {
   );
 };
 
+const Proposals = ({ proposals }: { proposals: ProposalCardType[] }) => {
+  const { LL } = useI18nContext();
+  const [limit, setLimit] = useState<number>(ITEMS_PER_PAGE);
+  const filteredProposals = useMemo(() => proposals.filter((_p, i) => i < limit), [proposals, limit]);
+
+  return (
+    <>
+      <BasePanel>
+        {filteredProposals.length > 0 ? (
+          filteredProposals.map((p, i) => <ProposalCard key={i} {...p} />)
+        ) : (
+          <EmptyPanel />
+        )}
+        <Pagination
+          text={LL.proposals.pagination({ current: filteredProposals.length, total: proposals.length })}
+          current={filteredProposals.length}
+          total={proposals.length}
+          onShowMore={() => {
+            setLimit(prev => prev + ITEMS_PER_PAGE);
+          }}
+        />
+      </BasePanel>
+    </>
+  );
+};
+
 const BasePanel = ({ children }: PropsWithChildren) => {
-  if (!children) return <EmptyPanel />;
   return (
     <TabPanel display={"flex"} flexDirection={"column"} gap={4}>
       {children}
