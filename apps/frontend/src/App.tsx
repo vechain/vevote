@@ -1,9 +1,9 @@
 import { Box, VStack } from "@chakra-ui/react";
 import { Home } from "./pages/Home";
 import { Footer } from "./components/footer/Footer";
-import { Header } from "./components/navbar/Header";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Proposals } from "./pages/Proposals";
+import { Header } from "./components/navbar/Header.tsx";
 
 function App() {
   return (
