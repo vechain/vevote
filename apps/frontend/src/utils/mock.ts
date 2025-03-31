@@ -10,30 +10,30 @@ export const mockProposals: ProposalCardType[] = [
   {
     isVoted: false,
     status: "upcoming",
-    title: "All-Stakeholder Voting Proposal: Galactica Launch & Governance Upgrade",
+    title: "Upcoming Proposal: Galactica Launch & Governance Upgrade",
     startDate: new Date("2025-05-10T03:24:00"),
   },
   {
     isVoted: true,
     status: "approved",
-    title: "All-Stakeholder Voting Proposal: Galactica Launch & Governance Upgrade",
+    title: "Approved Proposal: Galactica Launch & Governance Upgrade",
     endDate: new Date("2025-08-20T03:24:00"),
   },
   {
     isVoted: true,
     status: "executed",
-    title: "All-Stakeholder Voting Proposal: Galactica Launch & Governance Upgrade",
+    title: "Executed Proposal: Galactica Launch & Governance Upgrade",
     endDate: new Date("2025-07-05T03:12:00"),
   },
   {
     isVoted: true,
     status: "rejected",
-    title: "All-Stakeholder Voting Proposal: Galactica Launch & Governance Upgrade",
+    title: "Rejected Proposal: Galactica Launch & Governance Upgrade",
     endDate: new Date(),
   },
   {
     isVoted: false,
     status: "canceled",
-    title: "All-Stakeholder Voting Proposal: Galactica Launch & Governance Upgrade",
+    title: "Canceled Proposal: Galactica Launch & Governance Upgrade",
   },
 ];
