@@ -18,7 +18,7 @@
     "typesafe-i18n": "typesafe-i18n"
   },
   "dependencies": {
-    "@chakra-ui/react": "^2.8.2",
+    "@chakra-ui/react": "^2.10.4",
     "@chakra-ui/system": "^2.6.2",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
@@ -34,12 +34,14 @@
     "@vechain/dapp-kit-react": "1.4.1",
     "@vechain/vechain-kit": "1.5.6",
     "axios": "^1.8.2",
+    "dayjs": "^1.11.13",
     "ethers": "^6.9.0",
     "framer-motion": "^11.2.12",
     "nyc": "^17.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.52.0",
+    "react-router-dom": "^7.4.1",
     "typesafe-i18n": "^5.26.2",
     "viem": "^2.21.9",
     "vite": "^5.4.15"

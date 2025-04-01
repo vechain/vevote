@@ -1,21 +1,22 @@
-import { Box, Container, VStack } from "@chakra-ui/react";
+import { Box, VStack } from "@chakra-ui/react";
 import { Home } from "./pages/Home";
-import { NotConnected } from "./pages/NotConnected";
-import { Navbar } from "./components/Navbar";
-import { useWallet } from "@vechain/vechain-kit";
+import { Footer } from "@/components/footer/Footer";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Proposals } from "./pages/Proposals";
+import { Header } from "./components/navbar/Header";
 
 function App() {
-  const { account } = useWallet();
-
   return (
     <Box h="full" bgColor="#f7f7f7">
-      <VStack h="100vh" align="stretch" gap="0">
-        <Navbar />
-        <VStack align="stretch" flex="1" overflowY={"auto"} py={4}>
-          <Container maxW="container.lg" h="full">
-            <VStack align="stretch">{account?.address ? <Home /> : <NotConnected />}</VStack>
-          </Container>
-        </VStack>
+      <VStack minH="100vh" align="stretch">
+        <Header />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/proposals" element={<Proposals />} />
+          </Routes>
+        </BrowserRouter>
+        <Footer />
       </VStack>
     </Box>
   );

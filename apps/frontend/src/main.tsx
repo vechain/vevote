@@ -8,8 +8,6 @@ import { getConfig } from "@repo/config";
 import { VeChainKitProvider } from "@vechain/vechain-kit";
 import { WalletConnectOptions } from "@vechain/dapp-kit-react";
 import { ThemeProvider } from "./contexts/ThemeProvider.tsx";
-import "@fontsource-variable/rubik";
-import "@fontsource-variable/inter";
 import { useEffect, useState } from "react";
 import { Locales } from "./i18n/i18n-types";
 import { loadLocale } from "./i18n/i18n-util.sync";
