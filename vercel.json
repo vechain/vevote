@@ -1,8 +1,0 @@
-{
-  "git": {
-    "deploymentEnabled": {
-      "main": false
-    }
-  },
-  "rewrites": [{ "source": "/proposals", "destination": "/index.html" }]
-}
