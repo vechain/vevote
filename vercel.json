@@ -4,5 +4,12 @@
       "main": false
     }
   },
-  "rewrites": [{ "source": "/proposals", "destination": "/index.html" }]
+  "rewrites": [{ "source": "/**", "destination": "/index.html" }],
+  "builds": [
+    {
+      "src": "apps/frontend/package.json",
+      "use": "@vercel/static-build",
+      "config": { "distDir": "apps/frontend/dist" }
+    }
+  ]
 }
