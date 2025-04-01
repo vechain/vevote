@@ -30,6 +30,9 @@
     "typescript": "^5.4.5",
     "dotenv-cli": "latest"
   },
+  "resolutions": {
+    "**/elliptic": "^6.6.1"
+  },
   "engines": {
     "node": ">=18"
   },
