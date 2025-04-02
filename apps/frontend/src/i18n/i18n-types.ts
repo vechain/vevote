@@ -33,6 +33,14 @@ type RootTranslation = {
 	 * S​h​o​w​ ​m​o​r​e
 	 */
 	show_more: string
+	/**
+	 * E​x​i​t
+	 */
+	exit: string
+	/**
+	 * N​e​x​t
+	 */
+	next: string
 	home: {
 		/**
 		 * H​o​m​e
@@ -42,6 +50,32 @@ type RootTranslation = {
 		 * G​o​ ​t​o​ ​p​r​o​p​o​s​a​l​s
 		 */
 		go_to_proposals: string
+	}
+	proposal: {
+		create: {
+			/**
+			 * C​r​e​a​t​e​ ​P​r​o​p​o​s​a​l
+			 */
+			title: string
+			/**
+			 * {​c​u​r​r​e​n​t​}​ ​o​f​ ​{​t​o​t​a​l​}
+			 * @param {number} current
+			 * @param {number} total
+			 */
+			steps: RequiredParams<'current' | 'total'>
+			/**
+			 * A​d​d​ ​t​h​e​ ​m​a​i​n​ ​d​e​t​a​i​l​s​ ​a​n​d​ ​s​e​t​u​p​ ​t​h​e​ ​c​a​l​e​n​d​a​r
+			 */
+			voting_details_desc: string
+			/**
+			 * D​e​f​i​n​e​ ​t​h​e​ ​v​o​t​i​n​g​ ​s​e​t​u​p​ ​d​e​t​a​i​l​s
+			 */
+			voting_setup_desc: string
+			/**
+			 * R​e​v​i​e​w​ ​a​l​l​ ​t​h​e​ ​d​e​t​a​i​l​s​ ​b​e​f​o​r​e​ ​p​u​b​l​i​s​h​i​n​g
+			 */
+			voting_summary_desc: string
+		}
 	}
 	proposals: {
 		/**
@@ -192,6 +226,14 @@ export type TranslationFunctions = {
 	 * Show more
 	 */
 	show_more: () => LocalizedString
+	/**
+	 * Exit
+	 */
+	exit: () => LocalizedString
+	/**
+	 * Next
+	 */
+	next: () => LocalizedString
 	home: {
 		/**
 		 * Home
@@ -201,6 +243,30 @@ export type TranslationFunctions = {
 		 * Go to proposals
 		 */
 		go_to_proposals: () => LocalizedString
+	}
+	proposal: {
+		create: {
+			/**
+			 * Create Proposal
+			 */
+			title: () => LocalizedString
+			/**
+			 * {current} of {total}
+			 */
+			steps: (arg: { current: number, total: number }) => LocalizedString
+			/**
+			 * Add the main details and setup the calendar
+			 */
+			voting_details_desc: () => LocalizedString
+			/**
+			 * Define the voting setup details
+			 */
+			voting_setup_desc: () => LocalizedString
+			/**
+			 * Review all the details before publishing
+			 */
+			voting_summary_desc: () => LocalizedString
+		}
 	}
 	proposals: {
 		/**
