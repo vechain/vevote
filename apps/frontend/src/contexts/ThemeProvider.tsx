@@ -10,6 +10,7 @@ import "@fontsource-variable/inter";
 import { tabsTheme } from "@/theme/tabs";
 import { inputTheme } from "@/theme/input";
 import { iconTheme } from "@/theme/Icon";
+import { buttonTheme } from "@/theme/button";
 
 const config: ThemeConfig = {
   initialColorMode: "light",
@@ -33,6 +34,7 @@ const theme = extendTheme({
     Tabs: tabsTheme,
     Input: inputTheme,
     Icon: iconTheme,
+    Button: buttonTheme,
   },
 });
 
