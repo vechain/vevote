@@ -1,14 +1,17 @@
 import { PageContainer } from "@/components/PageContainer";
-import { useI18nContext } from "@/i18n/i18n-react";
-import { Button } from "@chakra-ui/react";
 import { useCreateProposal } from "./CreateProposalProvider";
+import { CreateProposalStep } from "@/types/proposal";
+import { ProposalDetailsForm } from "./ProposalDetailsForm";
+import { ProposalSetupForm } from "./ProposalSetupForm";
+import { ProposalSummaryForm } from "./ProposalSummaryForm";
 
 export const CreateProposalContent = () => {
-  const { LL } = useI18nContext();
-  const { setStep } = useCreateProposal();
+  const { step } = useCreateProposal();
   return (
     <PageContainer.Content>
-      <Button onClick={() => setStep(prev => prev + 1)}>{LL.next()}</Button>
+      {step === CreateProposalStep.VOTING_DETAILS && <ProposalDetailsForm />}
+      {step === CreateProposalStep.VOTING_SETUP && <ProposalSetupForm />}
+      {step === CreateProposalStep.VOTING_SUMMARY && <ProposalSummaryForm />}
     </PageContainer.Content>
   );
 };

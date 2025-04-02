@@ -12,6 +12,9 @@ const en = {
     title: "Home",
     go_to_proposals: "Go to proposals",
   },
+  field_errors: {
+    required: "Required",
+  },
   proposal: {
     create: {
       title: "Create Proposal",

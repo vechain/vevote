@@ -4,7 +4,7 @@ import { createContext, Dispatch, PropsWithChildren, SetStateAction, useContext,
 type ProposalDetails = {
   title: string;
   description: string;
-  headerImage: File | null;
+  headerImage: File;
   startDate: Date;
   endDate: Date;
   minParticipant: `${number}%`;

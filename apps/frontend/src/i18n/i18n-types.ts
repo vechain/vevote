@@ -51,6 +51,12 @@ type RootTranslation = {
 		 */
 		go_to_proposals: string
 	}
+	field_errors: {
+		/**
+		 * R​e​q​u​i​r​e​d
+		 */
+		required: string
+	}
 	proposal: {
 		create: {
 			/**
@@ -243,6 +249,12 @@ export type TranslationFunctions = {
 		 * Go to proposals
 		 */
 		go_to_proposals: () => LocalizedString
+	}
+	field_errors: {
+		/**
+		 * Required
+		 */
+		required: () => LocalizedString
 	}
 	proposal: {
 		create: {
