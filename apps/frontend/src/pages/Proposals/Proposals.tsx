@@ -46,7 +46,14 @@ export const Proposals = () => {
           <Icon as={MdOutlineHowToVote} width={8} height={8} color={"primary.600"} marginRight={2} />
           {LL.proposals.title()}
         </Heading>
-        <Button marginLeft={"auto"} gap={3} color={"white"} bgColor={"primary.500"} _hover={{ bgColor: "primary.700" }}>
+        <Button
+          as={Link}
+          href="/create-proposal"
+          marginLeft={"auto"}
+          gap={3}
+          color={"white"}
+          bgColor={"primary.500"}
+          _hover={{ bgColor: "primary.700" }}>
           <Icon as={CiCirclePlus} width={6} height={6} />
           {LL.proposals.create()}
         </Button>

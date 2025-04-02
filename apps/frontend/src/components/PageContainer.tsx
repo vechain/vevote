@@ -1,13 +1,18 @@
 import { Box, BoxProps, defineStyle, Flex, FlexProps, Grid, GridItem, GridProps } from "@chakra-ui/react";
 import { PropsWithChildren, useMemo } from "react";
 
-const PageContainer = ({ children, ...props }: PropsWithChildren<FlexProps>) => {
+const PageContainer = ({
+  children,
+  variant = "constrained",
+  ...props
+}: PropsWithChildren<FlexProps> & { variant?: "full" | "constrained" }) => {
   return (
     <Flex
       flex={1}
       padding={"40px"}
       minWidth={"1000px"}
-      maxWidth={"1440px"}
+      maxWidth={variant === "constrained" ? "1440px" : "full"}
+      width={"full"}
       marginX={"auto"}
       flexDirection={"column"}
       gap={"40px"}

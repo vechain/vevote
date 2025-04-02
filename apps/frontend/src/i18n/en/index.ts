@@ -6,9 +6,23 @@ const en = {
   all: "All",
   finished: "Finished",
   show_more: "Show more",
+  exit: "Exit",
+  next: "Next",
   home: {
     title: "Home",
     go_to_proposals: "Go to proposals",
+  },
+  field_errors: {
+    required: "Required",
+  },
+  proposal: {
+    create: {
+      title: "Create Proposal",
+      steps: "{current:number} of {total:number}",
+      voting_details_desc: "Add the main details and setup the calendar",
+      voting_setup_desc: "Define the voting setup details",
+      voting_summary_desc: "Review all the details before publishing",
+    },
   },
   proposals: {
     title: "Proposals",
