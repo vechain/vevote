@@ -1,9 +1,14 @@
 export type ProposalStatus = "draft" | "upcoming" | "voting" | "approved" | "executed" | "canceled" | "rejected";
 
 export type ProposalCardType = {
+  id: string;
+  address: string;
+  createdAt: Date;
+  headerImage: string;
   status: ProposalStatus;
   isVoted: boolean;
   title: string;
+  description: string;
   startDate?: Date;
   endDate?: Date;
 };

@@ -14,6 +14,14 @@ export type Translations = RootTranslation
 
 type RootTranslation = {
 	/**
+	 * H​o​m​e​p​a​g​e
+	 */
+	homepage: string
+	/**
+	 * B​a​c​k
+	 */
+	back: string
+	/**
 	 * S​t​a​r​t
 	 */
 	start: string
@@ -21,6 +29,10 @@ type RootTranslation = {
 	 * E​n​d
 	 */
 	end: string
+	/**
+	 * O​n
+	 */
+	on: string
 	/**
 	 * A​l​l
 	 */
@@ -41,6 +53,14 @@ type RootTranslation = {
 	 * N​e​x​t
 	 */
 	next: string
+	/**
+	 * L​e​a​r​n​ ​m​o​r​e
+	 */
+	learn_more: string
+	/**
+	 * S​e​e​ ​d​e​t​a​i​l​s
+	 */
+	see_details: string
 	home: {
 		/**
 		 * H​o​m​e
@@ -58,6 +78,30 @@ type RootTranslation = {
 		required: string
 	}
 	proposal: {
+		/**
+		 * P​r​o​p​o​s​a​l
+		 */
+		title: string
+		/**
+		 * P​r​o​p​o​s​e​d​ ​b​y
+		 */
+		proposed_by: string
+		/**
+		 * V​o​t​i​n​g​ ​c​a​l​e​n​d​a​r
+		 */
+		voting_calendar: string
+		/**
+		 * W​h​o​ ​c​a​n​ ​v​o​t​e
+		 */
+		who_can_vote: string
+		/**
+		 * V​e​C​h​a​i​n​ ​F​o​u​n​d​a​t​i​o​n
+		 */
+		vechain_foundation: string
+		/**
+		 * N​o​d​e​ ​h​o​l​d​e​r​s​ ​w​i​t​h​ ​v​o​t​i​n​g​ ​p​o​w​e​r​ ​w​i​l​l​ ​b​e​ ​a​b​l​e​ ​t​o​ ​v​o​t​e​ ​o​n​ ​t​h​i​s​ ​p​r​o​p​o​s​a​l​.
+		 */
+		node_holders: string
 		create: {
 			/**
 			 * C​r​e​a​t​e​ ​P​r​o​p​o​s​a​l
@@ -213,6 +257,14 @@ type RootTranslation = {
 
 export type TranslationFunctions = {
 	/**
+	 * Homepage
+	 */
+	homepage: () => LocalizedString
+	/**
+	 * Back
+	 */
+	back: () => LocalizedString
+	/**
 	 * Start
 	 */
 	start: () => LocalizedString
@@ -220,6 +272,10 @@ export type TranslationFunctions = {
 	 * End
 	 */
 	end: () => LocalizedString
+	/**
+	 * On
+	 */
+	on: () => LocalizedString
 	/**
 	 * All
 	 */
@@ -240,6 +296,14 @@ export type TranslationFunctions = {
 	 * Next
 	 */
 	next: () => LocalizedString
+	/**
+	 * Learn more
+	 */
+	learn_more: () => LocalizedString
+	/**
+	 * See details
+	 */
+	see_details: () => LocalizedString
 	home: {
 		/**
 		 * Home
@@ -257,6 +321,30 @@ export type TranslationFunctions = {
 		required: () => LocalizedString
 	}
 	proposal: {
+		/**
+		 * Proposal
+		 */
+		title: () => LocalizedString
+		/**
+		 * Proposed by
+		 */
+		proposed_by: () => LocalizedString
+		/**
+		 * Voting calendar
+		 */
+		voting_calendar: () => LocalizedString
+		/**
+		 * Who can vote
+		 */
+		who_can_vote: () => LocalizedString
+		/**
+		 * VeChain Foundation
+		 */
+		vechain_foundation: () => LocalizedString
+		/**
+		 * Node holders with voting power will be able to vote on this proposal.
+		 */
+		node_holders: () => LocalizedString
 		create: {
 			/**
 			 * Create Proposal

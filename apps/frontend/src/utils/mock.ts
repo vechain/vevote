@@ -2,38 +2,81 @@ import { ProposalCardType } from "@/types/proposal";
 
 export const mockProposals: ProposalCardType[] = [
   {
+    id: "1",
+    address: "0x1234567890abcdef1234567890abcdef12345678",
+    createdAt: new Date("2025-01-01T00:00:00"),
+    headerImage: "/images/proposal_example.png",
     isVoted: true,
     status: "voting",
+    description:
+      "Galactica is the first of three stages of the VeChain Renaissance - a revolutionary technical roadmap and generational leap for the protocol. Galactica begins a process that will ultimately upgrade VeChainThor’s tokenomic, governance and technical capabilities, placing community at the core and tying rewards to network contributions. (To review technical changes, including the massive upgrades to VeChain’s tokenomic model, see our recent release here)",
     title: "All-Stakeholder Voting Proposal: Galactica Launch & Governance Upgrade",
+    startDate: new Date("2025-03-01T03:24:00"),
     endDate: new Date("2025-03-29T20:24:00"),
   },
   {
+    id: "2",
+    address: "0x1234567890abcdef1234567890abcdef12345678",
+    createdAt: new Date("2025-01-01T00:00:00"),
+    headerImage: "/images/proposal_example.png",
     isVoted: false,
     status: "upcoming",
+    description:
+      "Galactica is the first of three stages of the VeChain Renaissance - a revolutionary technical roadmap and generational leap for the protocol. Galactica begins a process that will ultimately upgrade VeChainThor’s tokenomic, governance and technical capabilities, placing community at the core and tying rewards to network contributions. (To review technical changes, including the massive upgrades to VeChain’s tokenomic model, see our recent release here)",
     title: "Upcoming Proposal: Galactica Launch & Governance Upgrade",
     startDate: new Date("2025-05-10T03:24:00"),
+    endDate: new Date("2025-06-10T20:24:00"),
   },
   {
+    id: "3",
+    address: "0x1234567890abcdef1234567890abcdef12345678",
+    createdAt: new Date("2025-01-01T00:00:00"),
+    headerImage: "/images/proposal_example.png",
     isVoted: true,
     status: "approved",
+    description:
+      "Galactica is the first of three stages of the VeChain Renaissance - a revolutionary technical roadmap and generational leap for the protocol. Galactica begins a process that will ultimately upgrade VeChainThor’s tokenomic, governance and technical capabilities, placing community at the core and tying rewards to network contributions. (To review technical changes, including the massive upgrades to VeChain’s tokenomic model, see our recent release here)",
     title: "Approved Proposal: Galactica Launch & Governance Upgrade",
+    startDate: new Date("2025-07-01T03:24:00"),
     endDate: new Date("2025-08-20T03:24:00"),
   },
   {
+    id: "4",
+    address: "0x1234567890abcdef1234567890abcdef12345678",
+    createdAt: new Date("2025-01-01T00:00:00"),
+    headerImage: "/images/proposal_example.png",
     isVoted: true,
     status: "executed",
+    description:
+      "Galactica is the first of three stages of the VeChain Renaissance - a revolutionary technical roadmap and generational leap for the protocol. Galactica begins a process that will ultimately upgrade VeChainThor’s tokenomic, governance and technical capabilities, placing community at the core and tying rewards to network contributions. (To review technical changes, including the massive upgrades to VeChain’s tokenomic model, see our recent release here)",
     title: "Executed Proposal: Galactica Launch & Governance Upgrade",
+    startDate: new Date("2025-07-01T03:24:00"),
     endDate: new Date("2025-07-05T03:12:00"),
   },
   {
+    id: "5",
+    address: "0x1234567890abcdef1234567890abcdef12345678",
+    createdAt: new Date("2025-01-01T00:00:00"),
+    headerImage: "/images/proposal_example.png",
     isVoted: true,
     status: "rejected",
+    description:
+      "Galactica is the first of three stages of the VeChain Renaissance - a revolutionary technical roadmap and generational leap for the protocol. Galactica begins a process that will ultimately upgrade VeChainThor’s tokenomic, governance and technical capabilities, placing community at the core and tying rewards to network contributions. (To review technical changes, including the massive upgrades to VeChain’s tokenomic model, see our recent release here)",
     title: "Rejected Proposal: Galactica Launch & Governance Upgrade",
+    startDate: new Date("2025-07-01T03:24:00"),
     endDate: new Date(),
   },
   {
+    id: "6",
+    address: "0x1234567890abcdef1234567890abcdef12345678",
+    createdAt: new Date("2025-01-01T00:00:00"),
+    headerImage: "/images/proposal_example.png",
     isVoted: false,
     status: "canceled",
+    description:
+      "Galactica is the first of three stages of the VeChain Renaissance - a revolutionary technical roadmap and generational leap for the protocol. Galactica begins a process that will ultimately upgrade VeChainThor’s tokenomic, governance and technical capabilities, placing community at the core and tying rewards to network contributions.(To review technical changes, including the massive upgrades to VeChain’s tokenomic model, see our recent release here)",
     title: "Canceled Proposal: Galactica Launch",
+    startDate: new Date("2025-07-01T03:24:00"),
+    endDate: new Date("2025-07-05T03:12:00"),
   },
 ];

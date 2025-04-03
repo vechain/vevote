@@ -25,8 +25,13 @@ export const useFormatDate = () => {
     return dayjs(date).format("MMM D, YYYY");
   }, []);
 
+  const formattedProposalDate = useCallback((date?: Date) => {
+    if (!date) return;
+    return dayjs(date).format("DD/MM/YYYY - HH[h]:mm[m]");
+  }, []);
   return {
     leftVotingDate,
     formattedDate,
+    formattedProposalDate,
   };
 };

@@ -1,35 +1,22 @@
-import { useEffect, useState, useRef, RefObject } from "react";
+import { useEffect, useState } from "react";
 
-export const useShowNavbar = ({ elementRef }: { elementRef: RefObject<HTMLDivElement> | null | undefined }) => {
-  const [showBackground, setShowBackground] = useState(false);
-  const [showHeader, setShowHeader] = useState(true);
-  const yOldRef = useRef(0);
+export const useShowNavbar = () => {
+  const [showBackground, setShowBackground] = useState(true);
 
   useEffect(() => {
     const handleScroll = () => {
       const scrollY = window.scrollY;
-      const triggerHeight = elementRef?.current?.clientHeight || 0;
 
-      setShowBackground(scrollY > triggerHeight - 50);
-
-      const yOld = yOldRef.current;
-      const scrollQty = Math.abs(scrollY - yOld);
-      const scrollWay = scrollY > yOld ? "down" : "up";
-
-      if (scrollQty > 50 && scrollWay === "down") {
-        setShowHeader(false);
-      } else if (scrollQty > 30 && scrollWay === "up") {
-        setShowHeader(true);
-      }
-
-      if (scrollQty > 50) {
-        yOldRef.current = scrollY;
+      if (scrollY > 50) {
+        setShowBackground(false);
+      } else {
+        setShowBackground(true);
       }
     };
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [elementRef]);
+  }, []);
 
-  return { showBackground, showHeader };
+  return { showBackground };
 };

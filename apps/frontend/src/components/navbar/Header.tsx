@@ -3,7 +3,7 @@ import { PropsWithChildren, RefObject, useRef } from "react";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { Navbar } from "./Navbar";
 
-export const Header = () => {
+export const ProposalsHeader = () => {
   const triggerNavbarRef = useRef<HTMLDivElement | null>(null);
   return (
     <>
