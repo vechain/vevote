@@ -61,6 +61,30 @@ type RootTranslation = {
 	 * S​e​e​ ​d​e​t​a​i​l​s
 	 */
 	see_details: string
+	/**
+	 * S​e​l​e​c​t
+	 */
+	select: string
+	/**
+	 * o​n​e
+	 */
+	one: string
+	/**
+	 * V​o​t​i​n​g
+	 */
+	voting: string
+	/**
+	 * M​o​s​t​ ​v​o​t​e​d
+	 */
+	most_voted: string
+	/**
+	 * V​o​t​e​s
+	 */
+	votes: string
+	/**
+	 * %
+	 */
+	percentage: string
 	home: {
 		/**
 		 * H​o​m​e
@@ -76,6 +100,16 @@ type RootTranslation = {
 		 * R​e​q​u​i​r​e​d
 		 */
 		required: string
+	}
+	voting_list: {
+		/**
+		 * V​o​t​i​n​g​ ​o​p​t​i​o​n​s​:
+		 */
+		voting_options: string
+		/**
+		 * o​p​t​i​o​n​ ​t​o​ ​v​o​t​e​:
+		 */
+		option_to_vote: string
 	}
 	proposal: {
 		/**
@@ -304,6 +338,30 @@ export type TranslationFunctions = {
 	 * See details
 	 */
 	see_details: () => LocalizedString
+	/**
+	 * Select
+	 */
+	select: () => LocalizedString
+	/**
+	 * one
+	 */
+	one: () => LocalizedString
+	/**
+	 * Voting
+	 */
+	voting: () => LocalizedString
+	/**
+	 * Most voted
+	 */
+	most_voted: () => LocalizedString
+	/**
+	 * Votes
+	 */
+	votes: () => LocalizedString
+	/**
+	 * %
+	 */
+	percentage: () => LocalizedString
 	home: {
 		/**
 		 * Home
@@ -319,6 +377,16 @@ export type TranslationFunctions = {
 		 * Required
 		 */
 		required: () => LocalizedString
+	}
+	voting_list: {
+		/**
+		 * Voting options:
+		 */
+		voting_options: () => LocalizedString
+		/**
+		 * option to vote:
+		 */
+		option_to_vote: () => LocalizedString
 	}
 	proposal: {
 		/**

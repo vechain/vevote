@@ -13,12 +13,22 @@ const en = {
   next: "Next",
   learn_more: "Learn more",
   see_details: "See details",
+  select: "Select",
+  one: "one",
+  voting: "Voting",
+  most_voted: "Most voted",
+  votes: "Votes",
+  percentage: "%",
   home: {
     title: "Home",
     go_to_proposals: "Go to proposals",
   },
   field_errors: {
     required: "Required",
+  },
+  voting_list: {
+    voting_options: "Voting options:",
+    option_to_vote: "option to vote:",
   },
   proposal: {
     title: "Proposal",

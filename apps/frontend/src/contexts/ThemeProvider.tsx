@@ -8,6 +8,8 @@ import { dropdownTheme } from "@/theme/dropdown";
 import { tabsTheme } from "@/theme/tabs";
 import { inputTheme } from "@/theme/input";
 import { iconTheme } from "@/theme/Icon";
+import { radioTheme } from "@/theme/radio";
+import { checkboxTheme } from "@/theme/checkbox";
 
 const config: ThemeConfig = {
   initialColorMode: "light",
@@ -27,6 +29,8 @@ const theme = extendTheme({
     Input: inputTheme,
     Icon: iconTheme,
     Menu: dropdownTheme,
+    Radio: radioTheme,
+    Checkbox: checkboxTheme,
   },
 });
 

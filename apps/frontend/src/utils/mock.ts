@@ -1,4 +1,6 @@
-import { ProposalCardType } from "@/types/proposal";
+import { ProposalCardType, SingleChoiceEnum, VotingEnum } from "@/types/proposal";
+
+export const defaultSingleChoice = [SingleChoiceEnum.YES, SingleChoiceEnum.NO, SingleChoiceEnum.ABSTAIN];
 
 export const mockProposals: ProposalCardType[] = [
   {
@@ -13,6 +15,9 @@ export const mockProposals: ProposalCardType[] = [
     title: "All-Stakeholder Voting Proposal: Galactica Launch & Governance Upgrade",
     startDate: new Date("2025-03-01T03:24:00"),
     endDate: new Date("2025-03-29T20:24:00"),
+    question: "Do you agree with the voting proposal Galactica launch & Governance upgrade?",
+    votingType: VotingEnum.SINGLE_CHOICE,
+    votingOptions: defaultSingleChoice,
   },
   {
     id: "2",
@@ -26,6 +31,9 @@ export const mockProposals: ProposalCardType[] = [
     title: "Upcoming Proposal: Galactica Launch & Governance Upgrade",
     startDate: new Date("2025-05-10T03:24:00"),
     endDate: new Date("2025-06-10T20:24:00"),
+    question: "Do you agree with the voting proposal Galactica launch & Governance upgrade?",
+    votingType: VotingEnum.SINGLE_OPTION,
+    votingOptions: { option1: "Option 1", option2: "Option 1" },
   },
   {
     id: "3",
@@ -39,6 +47,9 @@ export const mockProposals: ProposalCardType[] = [
     title: "Approved Proposal: Galactica Launch & Governance Upgrade",
     startDate: new Date("2025-07-01T03:24:00"),
     endDate: new Date("2025-08-20T03:24:00"),
+    question: "Do you agree with the voting proposal Galactica launch & Governance upgrade?",
+    votingType: VotingEnum.MULTIPLE_OPTIONS,
+    votingOptions: { option1: "Option 1", option2: "Option 1" },
   },
   {
     id: "4",
@@ -52,6 +63,9 @@ export const mockProposals: ProposalCardType[] = [
     title: "Executed Proposal: Galactica Launch & Governance Upgrade",
     startDate: new Date("2025-07-01T03:24:00"),
     endDate: new Date("2025-07-05T03:12:00"),
+    question: "Do you agree with the voting proposal Galactica launch & Governance upgrade?",
+    votingType: VotingEnum.SINGLE_CHOICE,
+    votingOptions: defaultSingleChoice,
   },
   {
     id: "5",
@@ -65,6 +79,9 @@ export const mockProposals: ProposalCardType[] = [
     title: "Rejected Proposal: Galactica Launch & Governance Upgrade",
     startDate: new Date("2025-07-01T03:24:00"),
     endDate: new Date(),
+    question: "Do you agree with the voting proposal Galactica launch & Governance upgrade?",
+    votingType: VotingEnum.SINGLE_CHOICE,
+    votingOptions: defaultSingleChoice,
   },
   {
     id: "6",
@@ -78,5 +95,8 @@ export const mockProposals: ProposalCardType[] = [
     title: "Canceled Proposal: Galactica Launch",
     startDate: new Date("2025-07-01T03:24:00"),
     endDate: new Date("2025-07-05T03:12:00"),
+    question: "Do you agree with the voting proposal Galactica launch & Governance upgrade?",
+    votingType: VotingEnum.SINGLE_CHOICE,
+    votingOptions: defaultSingleChoice,
   },
 ];
