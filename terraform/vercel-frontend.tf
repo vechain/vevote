@@ -15,9 +15,24 @@ resource "vercel_project" "vevote_frontend" {
   # Set environment variables based on workspace
   environment = terraform.workspace == "prod" ? [
     {
-      key    = "VITE_APP_ENV"
-      value  = "mainnet"
+      key    = "VECHAIN_URL_DEVNET"
+      value  = local.config.all_environments.vechain_url_devnet
       target = ["production", "preview", "development"]
+    },
+    {
+      key    = "PUBLIC_IPFS_PINNING_SERVICE"
+      value  = local.config.all_environments.public_ipfs_pinning_service
+      target = ["production", "preview", "development"]
+    },
+    {
+      key    = "DEVNET_STAGING_MNEMONIC"
+      value  = local.config.all_environments.devnet_staging_mnemonic
+      target = ["production", "preview"]
+    },
+    {
+      key    = "MNEMONIC"
+      value  = local.config.all_environments.mnemonic
+      target = ["production", "preview"]
     }
     ] : [
     {
