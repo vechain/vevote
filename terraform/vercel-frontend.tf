@@ -1,5 +1,6 @@
+# Vercel Frontend Project - Changes based on workspace
 resource "vercel_project" "vevote_frontend" {
-  name      = "${local.config.project}-frontend-dev-experimental"
+  name      = "${local.config.project}-frontend-${terraform.workspace}"
   team_id   = local.config.vercel_team_id
   framework = "vite"
   git_repository = {
@@ -8,43 +9,38 @@ resource "vercel_project" "vevote_frontend" {
     production_branch = "main"
   }
   root_directory   = "apps"
-  build_command    = "yarn clean && yarn build:staging"
-  dev_command      = "yarn dev:staging"
+  build_command    = terraform.workspace == "prod" ? "yarn build:mainnet" : "yarn build:staging"
   output_directory = "frontend/dist"
-
-  lifecycle {
-    ignore_changes = [
-      enable_affected_projects_deployments
-    ]
-  }
-}
-
-resource "vercel_project_environment_variable" "vechain_url_devnet" {
-  project_id = vercel_project.vevote_frontend.id
-  key        = "VECHAIN_URL_DEVNET"
-  value      = local.config.all_environments.vechain_url_devnet
-  target     = ["production", "preview"]
-}
-
-resource "vercel_project_environment_variable" "public_ipfs_pinning_service" {
-  project_id = vercel_project.vevote_frontend.id
-  key        = "PUBLIC_IPFS_PINNING_SERVICE"
-  value      = local.config.all_environments.public_ipfs_pinning_service
-  target     = ["production", "preview"]
-}
-
-resource "vercel_project_environment_variable" "devnet_staging_mnemonic" {
-  project_id = vercel_project.vevote_frontend.id
-  key        = "DEVNET_STAGING_MNEMONIC"
-  value      = local.config.all_environments.devnet_staging_mnemonic
-  target     = ["production", "preview"]
-}
-
-resource "vercel_project_environment_variable" "mnemonic" {
-  project_id = vercel_project.vevote_frontend.id
-  key        = "MNEMONIC"
-  value      = local.config.all_environments.mnemonic
-  target     = ["production", "preview"]
+  dev_command      = terraform.workspace == "prod" ? "yarn dev:mainnet" : "yarn dev:staging"
+  # Set environment variables based on workspace
+  environment = terraform.workspace == "prod" ? [
+    {
+      key    = "VITE_APP_ENV"
+      value  = "mainnet"
+      target = ["production", "preview", "development"]
+    }
+    ] : [
+    {
+      key    = "VECHAIN_URL_DEVNET"
+      value  = local.config.all_environments.vechain_url_devnet
+      target = ["production", "preview", "development"]
+    },
+    {
+      key    = "PUBLIC_IPFS_PINNING_SERVICE"
+      value  = local.config.all_environments.public_ipfs_pinning_service
+      target = ["production", "preview", "development"]
+    },
+    {
+      key    = "DEVNET_STAGING_MNEMONIC"
+      value  = local.config.all_environments.devnet_staging_mnemonic
+      target = ["production", "preview"]
+    },
+    {
+      key    = "MNEMONIC"
+      value  = local.config.all_environments.mnemonic
+      target = ["production", "preview"]
+    }
+  ]
 }
 
 resource "vercel_deployment" "vevote_frontend_deployment" {
