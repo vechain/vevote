@@ -1,8 +1,8 @@
 import { ProposalNavbar } from "@/components/navbar/Navbar";
 import { PageContainer } from "@/components/PageContainer";
 import { ProposalDetailsCards } from "@/components/ProposalDetailsCards";
+import { ProposalInfoBox } from "@/components/ProposalInfoBox";
 import { ProposalInfos } from "@/components/ProposalInfos";
-import { InfoBox } from "@/components/ui/InfoBox";
 import { VotingSection } from "@/components/VotingSection";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { ProposalCardType } from "@/types/proposal";
@@ -77,7 +77,7 @@ const ProposalHeader = ({ proposal }: { proposal: ProposalCardType }) => {
     <PageContainer.Header flexDirection={"column"} gap={10} alignItems={"start"}>
       <ProposalInfos proposal={proposal} />
       <ProposalDetailsCards proposal={proposal} />
-      <InfoBox variant={infoVariant} />
+      <ProposalInfoBox variant={infoVariant} />
     </PageContainer.Header>
   );
 };

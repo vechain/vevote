@@ -1,14 +1,17 @@
 import { useI18nContext } from "@/i18n/i18n-react";
-import { ProposalCardType } from "@/types/proposal";
+import { ProposalCardType, VotingEnum } from "@/types/proposal";
 import { Box, BoxProps, Flex, Heading, Text } from "@chakra-ui/react";
 import { PropsWithChildren } from "react";
 import { MdOutlineHowToVote } from "react-icons/md";
+import { VotingSingleChoice } from "./VotingList";
 
 export const VotingSection = ({ proposal }: { proposal: ProposalCardType }) => {
   return (
     <VotingSectionContainer>
       <VotingSectionHeader question={proposal.question} />
-      <VotingSectionContent>{"Voting Content"}</VotingSectionContent>
+      <VotingSectionContent>
+        {proposal.votingType === VotingEnum.SINGLE_CHOICE && <VotingSingleChoice proposal={proposal} />}
+      </VotingSectionContent>
     </VotingSectionContainer>
   );
 };
@@ -51,7 +54,7 @@ const VotingSectionHeader = ({ question }: VotingSectionHeaderProps) => {
 
 const VotingSectionContent = ({ children }: PropsWithChildren) => {
   return (
-    <Box paddingY={10} paddingX={11} maxWidth={"864px"} marginX={"auto"}>
+    <Box paddingY={10} paddingX={11} maxWidth={"864px"} marginX={"auto"} width={"100%"}>
       {children}
     </Box>
   );
