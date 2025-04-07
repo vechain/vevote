@@ -1,6 +1,9 @@
 name: Deploy Frontend to Vercel & Release
 
 on:
+  push:
+    tags:
+      - v.*
   workflow_dispatch:
     inputs:
       deployment-environment:
@@ -13,7 +16,7 @@ on:
 jobs:
   setup-environment:
     name: Set Up Environment Variables
-    if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'push' || github.event.workflow_run.conclusion == 'success' }}
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'push'}}
     runs-on: ubuntu-latest
     outputs:
       ENVIRONMENT: ${{ steps.set-vars.outputs.ENVIRONMENT }}
