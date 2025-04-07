@@ -3,8 +3,8 @@ name: Codebase Versioning
 on:
   pull_request:
     branches: 
-      - main
-    types: [closed]
+      - fix/vercel-deployment
+    # types: [closed]
 
 jobs:
   semantic-versioning:
