@@ -85,6 +85,18 @@ type RootTranslation = {
 	 * %
 	 */
 	percentage: string
+	/**
+	 * S​u​b​m​i​t
+	 */
+	submit: string
+	/**
+	 * V​o​t​i​n​g​ ​P​o​w​e​r
+	 */
+	voting_power: string
+	/**
+	 * V​o​t​e​d
+	 */
+	voted: string
 	home: {
 		/**
 		 * H​o​m​e
@@ -136,6 +148,19 @@ type RootTranslation = {
 		 * N​o​d​e​ ​h​o​l​d​e​r​s​ ​w​i​t​h​ ​v​o​t​i​n​g​ ​p​o​w​e​r​ ​w​i​l​l​ ​b​e​ ​a​b​l​e​ ​t​o​ ​v​o​t​e​ ​o​n​ ​t​h​i​s​ ​p​r​o​p​o​s​a​l​.
 		 */
 		node_holders: string
+		/**
+		 * V​o​t​i​n​g​ ​w​i​l​l​ ​s​t​a​r​t​ ​{​d​a​t​e​}
+		 * @param {string} date
+		 */
+		voting_will_start: RequiredParams<'date'>
+		/**
+		 * S​e​e​ ​y​o​u​r​ ​v​o​t​e​ ​d​e​t​a​i​l​s
+		 */
+		see_your_vote: string
+		/**
+		 * S​e​e​ ​a​l​l​ ​v​o​t​e​r​s
+		 */
+		see_all_voters: string
 		create: {
 			/**
 			 * C​r​e​a​t​e​ ​P​r​o​p​o​s​a​l
@@ -362,6 +387,18 @@ export type TranslationFunctions = {
 	 * %
 	 */
 	percentage: () => LocalizedString
+	/**
+	 * Submit
+	 */
+	submit: () => LocalizedString
+	/**
+	 * Voting Power
+	 */
+	voting_power: () => LocalizedString
+	/**
+	 * Voted
+	 */
+	voted: () => LocalizedString
 	home: {
 		/**
 		 * Home
@@ -413,6 +450,18 @@ export type TranslationFunctions = {
 		 * Node holders with voting power will be able to vote on this proposal.
 		 */
 		node_holders: () => LocalizedString
+		/**
+		 * Voting will start {date}
+		 */
+		voting_will_start: (arg: { date: string }) => LocalizedString
+		/**
+		 * See your vote details
+		 */
+		see_your_vote: () => LocalizedString
+		/**
+		 * See all voters
+		 */
+		see_all_voters: () => LocalizedString
 		create: {
 			/**
 			 * Create Proposal

@@ -3,7 +3,8 @@ import { ProposalCardType, SingleChoiceEnum, VotingEnum } from "@/types/proposal
 import { Flex, Text } from "@chakra-ui/react";
 import { useWallet } from "@vechain/vechain-kit";
 import { useMemo, useState } from "react";
-import { VotingItem } from "./VotingItem";
+import { VotingItem, VotingItemVariant } from "./VotingItem";
+import { VotingListFooter } from "./VotingListFooter";
 
 type VotingSingleChoiceProps = {
   proposal: Omit<ProposalCardType, "votingType" | "votingOptions"> & {
@@ -22,6 +23,20 @@ export const VotingSingleChoice = ({ proposal }: VotingSingleChoiceProps) => {
     [proposal.status, account?.address],
   );
 
+  const votingVariant: VotingItemVariant = useMemo(() => {
+    switch (proposal.status) {
+      case "upcoming":
+        return "upcoming";
+      case "voting":
+        return "voting";
+      case "approved":
+      case "executed":
+        return "result-win";
+      default:
+        return "result-lost";
+    }
+  }, [proposal.status]);
+
   return (
     <Flex gap={8} alignItems={"start"} flexDirection={"column"} width={"100%"}>
       <Text fontWeight={500} color="gray.500">
@@ -33,11 +48,12 @@ export const VotingSingleChoice = ({ proposal }: VotingSingleChoiceProps) => {
           label={option}
           isSelected={selectedOption === option}
           kind={VotingEnum.SINGLE_CHOICE}
-          variant={"voting"}
+          variant={votingVariant}
           votes={10}
           onClick={() => setSelectedOption(option)}
         />
       ))}
+      <VotingListFooter proposal={proposal} votingNotStarted={votingNotStarted} votingVariant={votingVariant} />
     </Flex>
   );
 };
@@ -46,10 +62,10 @@ const VotingTitle = () => {
   const { LL } = useI18nContext();
 
   return (
-    <Flex>
-      {LL.select()}{" "}
+    <Flex gap={1}>
+      {LL.select()}
       <Text color="gray.700" textDecoration={"underline"}>
-        {LL.voting_list.voting_options()}{" "}
+        {LL.one()}
       </Text>
       {LL.voting_list.option_to_vote()}
     </Flex>

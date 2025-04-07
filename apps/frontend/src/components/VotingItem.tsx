@@ -4,9 +4,9 @@ import { Box, Button, Checkbox, defineStyle, Flex, Radio, Text } from "@chakra-u
 import { useCallback, useMemo } from "react";
 import { motion } from "framer-motion";
 
-type VotingItemVariant = "upcoming" | "voting" | "result-lost" | "result-win";
+export type VotingItemVariant = "upcoming" | "voting" | "result-lost" | "result-win";
 
-type VotingItemProps = {
+export type VotingItemProps = {
   label: string;
   isSelected: boolean;
   kind: VotingEnum;

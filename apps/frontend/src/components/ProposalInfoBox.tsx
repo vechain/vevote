@@ -15,6 +15,7 @@ type ProposalInfoBoxProps = {
 export const ProposalInfoBox = ({ variant, canceledDate, canceledReason, proposalId }: ProposalInfoBoxProps) => {
   const { LL } = useI18nContext();
   const { formattedProposalDate } = useFormatDate();
+  // todo: add localization
   const contentVariant = useMemo(
     () => [
       {

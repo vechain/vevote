@@ -19,6 +19,9 @@ const en = {
   most_voted: "Most voted",
   votes: "Votes",
   percentage: "%",
+  submit: "Submit",
+  voting_power: "Voting Power",
+  voted: "Voted",
   home: {
     title: "Home",
     go_to_proposals: "Go to proposals",
@@ -37,6 +40,9 @@ const en = {
     who_can_vote: "Who can vote",
     vechain_foundation: "VeChain Foundation",
     node_holders: "Node holders with voting power will be able to vote on this proposal.",
+    voting_will_start: "Voting will start {date:string}",
+    see_your_vote: "See your vote details",
+    see_all_voters: "See all voters",
     create: {
       title: "Create Proposal",
       steps: "{current:number} of {total:number}",
