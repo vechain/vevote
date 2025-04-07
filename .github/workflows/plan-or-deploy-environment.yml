@@ -13,6 +13,15 @@ on:
         required: true
         default: dev
         type: string
+      tag:
+        description: 'Specific tag to deploy (optional)'
+        required: true
+        type: string
+  push:
+    branches:
+      - 'feature/**'
+    paths:
+      - 'terraform/**'
   workflow_call:
     inputs:
       environment:
@@ -29,6 +38,10 @@ on:
         required: false
         default: false
         type: boolean
+      tag:
+        description: Specific tag to deploy
+        required: true
+        type: string
 
 # Required for authentication through GitHub OIDC
 permissions:
@@ -90,10 +103,19 @@ jobs:
 
       - name: Update tag
         id: update-tag
-        if: inputs.version && inputs.version != 'latest'
         run: |
-          sed -i "s/latest/${{ inputs.version }}/g" config/${{ env.ENVIRONMENT }}/common.yaml
-          cat config/${{ env.ENVIRONMENT }}/common.yaml
+          TAG_VERSION="${{ inputs.tag || inputs.version }}"
+          if [[ -n "$TAG_VERSION" ]]; then
+            echo "Replacing 'latest' tag with: $TAG_VERSION"
+            # Find the tag line in common.yaml and replace it
+            sed -i "s/tag: latest/tag: $TAG_VERSION/g" config/${{ env.ENVIRONMENT }}/common.yaml
+            # Also handle case where tag might be indented with spaces
+            sed -i "s/tag:[ ]*latest/tag: $TAG_VERSION/g" config/${{ env.ENVIRONMENT }}/common.yaml
+            echo "Updated tag in common.yaml:"
+            grep "tag:" config/${{ env.ENVIRONMENT }}/common.yaml
+          else
+            echo "No tag specified, keeping 'latest'"
+          fi
         continue-on-error: false
 
       - name: Terraform Plan
