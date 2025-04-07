@@ -96,8 +96,15 @@ jobs:
           latest_release=$(curl -s -H "Authorization: token ${{ github.token }}" \
             https://api.github.com/repos/${{ github.repository }}/releases/latest | jq -r '.tag_name')
           echo "Latest release: ${latest_release}"
+          if [ "$latest_release" == "null" ]; then
           gh release create "${tag}" \
+            --repo="${{ github.repository }}" \
+            --title="Release ${tag}" \
+            --generate-notes
+          else
+            gh release create "${tag}" \
               --repo="${{ github.repository }}" \
               --title="Release ${tag}" \
               --generate-notes \
               --notes-start-tag "${latest_release}"
+          fi
