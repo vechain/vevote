@@ -20,8 +20,8 @@
         "@repo/config#check-or-generate-local-config"
       ],
       "outputs": [
-        ".dist/**",
-        "!.dist/cache/**"
+        "dist/**",
+        "!dist/cache/**"
       ]
     },
     "lint": {
