@@ -3,7 +3,7 @@ name: Codebase Versioning
 on:
   pull_request:
     branches: 
-      - fix/vercel-deployment
+      - main
     # types: [closed]
 
 jobs:
