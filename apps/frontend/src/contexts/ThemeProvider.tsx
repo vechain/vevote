@@ -8,6 +8,7 @@ import { dropdownTheme } from "@/theme/dropdown";
 import { tabsTheme } from "@/theme/tabs";
 import { inputTheme } from "@/theme/input";
 import { iconTheme } from "@/theme/Icon";
+import { buttonTheme } from "@/theme/button";
 import { radioTheme } from "@/theme/radio";
 import { checkboxTheme } from "@/theme/checkbox";
 
@@ -29,6 +30,7 @@ const theme = extendTheme({
     Input: inputTheme,
     Icon: iconTheme,
     Menu: dropdownTheme,
+    Button: buttonTheme,
     Radio: radioTheme,
     Checkbox: checkboxTheme,
   },

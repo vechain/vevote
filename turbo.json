@@ -13,7 +13,7 @@
   "pipeline": {
     "build": {
       "dependsOn": ["^compile", "@repo/config#check-or-generate-local-config"],
-      "outputs": [".dist/**", "!.dist/cache/**"]
+      "outputs": ["dist/**", "!dist/cache/**"]
     },
     "lint": {
       "dependsOn": ["^lint"]
