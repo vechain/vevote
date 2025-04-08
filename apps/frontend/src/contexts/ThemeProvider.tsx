@@ -4,9 +4,7 @@ import { PropsWithChildren } from "react";
 import { headingStyle } from "@/theme/heading";
 import { tagTheme } from "@/theme/tag";
 import { linkTheme } from "@/theme/link";
-
-import "@fontsource-variable/rubik";
-import "@fontsource-variable/inter";
+import { dropdownTheme } from "@/theme/dropdown";
 import { tabsTheme } from "@/theme/tabs";
 import { inputTheme } from "@/theme/input";
 import { iconTheme } from "@/theme/Icon";
@@ -18,11 +16,6 @@ const config: ThemeConfig = {
 };
 
 const theme = extendTheme({
-  styles: {
-    "html, body": {
-      fontFamily: "Inter, sans-serif",
-    },
-  },
   colors,
   config,
   fonts,
@@ -34,6 +27,7 @@ const theme = extendTheme({
     Tabs: tabsTheme,
     Input: inputTheme,
     Icon: iconTheme,
+    Menu: dropdownTheme,
     Button: buttonTheme,
   },
 });

@@ -20,6 +20,10 @@ const defaultVariant = definePartsStyle({
     borderRadius: "8px",
     padding: "4px",
   },
+  tabpanel: {
+    paddingX: 0,
+    paddingTop: 12,
+  },
 });
 
 const sizes = {
