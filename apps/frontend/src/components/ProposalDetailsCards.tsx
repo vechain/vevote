@@ -26,11 +26,11 @@ export const ProposalDetailsCards = ({ proposal }: { proposal: ProposalCardType 
             </Text>
             <CopyLink
               isExternal
-              textToCopy={proposal.address}
+              textToCopy={proposal.proposer}
               color={"primary.500"}
               fontWeight={500}
-              href={`${VECHAIN_EXPLORER_URL}/accounts/${proposal.address}`}>
-              {formatAddress(proposal.address)}
+              href={`${VECHAIN_EXPLORER_URL}/accounts/${proposal.proposer}`}>
+              {formatAddress(proposal.proposer)}
             </CopyLink>
           </Flex>
           <Flex gap={3} alignItems={"center"}>

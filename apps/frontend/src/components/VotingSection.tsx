@@ -3,7 +3,7 @@ import { ProposalCardType, VotingEnum } from "@/types/proposal";
 import { Box, BoxProps, Flex, Heading, Text } from "@chakra-ui/react";
 import { PropsWithChildren } from "react";
 import { MdOutlineHowToVote } from "react-icons/md";
-import { VotingSingleChoice } from "./VotingList";
+import { VotingMultipleOptions, VotingSingleChoice, VotingSingleOption } from "./VotingList";
 
 export const VotingSection = ({ proposal }: { proposal: ProposalCardType }) => {
   return (
@@ -11,6 +11,8 @@ export const VotingSection = ({ proposal }: { proposal: ProposalCardType }) => {
       <VotingSectionHeader question={proposal.question} />
       <VotingSectionContent>
         {proposal.votingType === VotingEnum.SINGLE_CHOICE && <VotingSingleChoice proposal={proposal} />}
+        {proposal.votingType === VotingEnum.SINGLE_OPTION && <VotingSingleOption proposal={proposal} />}
+        {proposal.votingType === VotingEnum.MULTIPLE_OPTIONS && <VotingMultipleOptions proposal={proposal} />}
       </VotingSectionContent>
     </VotingSectionContainer>
   );

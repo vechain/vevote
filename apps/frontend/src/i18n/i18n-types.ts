@@ -66,6 +66,14 @@ type RootTranslation = {
 	 */
 	select: string
 	/**
+	 * S​e​l​e​c​t​ ​b​e​t​w​e​e​n
+	 */
+	select_between: string
+	/**
+	 * a​n​d
+	 */
+	and: string
+	/**
 	 * o​n​e
 	 */
 	one: string
@@ -367,6 +375,14 @@ export type TranslationFunctions = {
 	 * Select
 	 */
 	select: () => LocalizedString
+	/**
+	 * Select between
+	 */
+	select_between: () => LocalizedString
+	/**
+	 * and
+	 */
+	and: () => LocalizedString
 	/**
 	 * one
 	 */

@@ -21,10 +21,15 @@ export type SingleChoiceOptions = {
   votingOptions: SingleChoiceEnum[];
 };
 
-export type CustomChoiceOptions = {
-  votingType: Extract<VotingEnum, VotingEnum.SINGLE_OPTION | VotingEnum.MULTIPLE_OPTIONS>;
-  votingOptions: Record<string, string>;
-};
+export type CustomChoiceOptions =
+  | {
+      votingType: VotingEnum.SINGLE_OPTION;
+      votingOptions: string[];
+    }
+  | {
+      votingType: VotingEnum.MULTIPLE_OPTIONS;
+      votingOptions: string[];
+    };
 
 export type VotingChoices = SingleChoiceOptions | CustomChoiceOptions;
 
@@ -32,14 +37,15 @@ export type ProposalStatus = "draft" | "upcoming" | "voting" | "approved" | "exe
 
 export type ProposalCardType = {
   id: string;
-  address: string;
+  proposer: string;
   createdAt: Date;
   headerImage: string;
   status: ProposalStatus;
   isVoted: boolean;
   title: string;
   description: string;
-  startDate?: Date;
-  endDate?: Date;
+  startDate: Date;
+  endDate: Date;
   question: string;
+  maxSelection: number;
 } & VotingChoices;

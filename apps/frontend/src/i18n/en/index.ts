@@ -14,6 +14,8 @@ const en = {
   learn_more: "Learn more",
   see_details: "See details",
   select: "Select",
+  select_between: "Select between",
+  and: "and",
   one: "one",
   voting: "Voting",
   most_voted: "Most voted",
