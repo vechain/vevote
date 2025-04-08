@@ -12,7 +12,7 @@ resource "vercel_project" "vevote_frontend" {
   build_command    = terraform.workspace == "prod" ? "yarn build:mainnet" : "yarn build:staging"
   output_directory = "frontend/dist"
   dev_command      = terraform.workspace == "prod" ? "yarn dev:mainnet" : "yarn dev:staging"
-  # Set environment variables based on workspace
+  ignore_command   = "[ \"$VERCEL_ENV\" != \"production\" ]"
   environment = terraform.workspace == "prod" ? [
     {
       key    = "VECHAIN_URL_DEVNET"
