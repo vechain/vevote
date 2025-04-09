@@ -45,7 +45,7 @@
     "react-router-dom": "^7.4.1",
     "typesafe-i18n": "^5.26.2",
     "viem": "^2.21.9",
-    "vite": "^5.4.16"
+    "vite": "^5.4.17"
   },
   "devDependencies": {
     "@originjs/vite-plugin-commonjs": "^1.0.3",
