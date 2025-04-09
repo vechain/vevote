@@ -3,16 +3,17 @@ import { useI18nContext } from "@/i18n/i18n-react";
 import { Button, Flex, Heading, Text } from "@chakra-ui/react";
 import { useMemo } from "react";
 import { IoArrowForward } from "react-icons/io5";
-import { InfoBox, InfoBoxProps, infoBoxVariants } from "./ui/InfoBox";
+import { InfoBox, infoBoxVariants } from "../ui/InfoBox";
+import { useProposal } from "./ProposalProvider";
 
 type ProposalInfoBoxProps = {
-  variant: InfoBoxProps["variant"];
   proposalId?: string;
   canceledDate?: Date;
   canceledReason?: string;
 };
 
-export const ProposalInfoBox = ({ variant, canceledDate, canceledReason, proposalId }: ProposalInfoBoxProps) => {
+export const ProposalInfoBox = ({ canceledDate, canceledReason, proposalId }: ProposalInfoBoxProps) => {
+  const { proposal } = useProposal();
   const { LL } = useI18nContext();
   const { formattedProposalDate } = useFormatDate();
   // todo: add localization
@@ -52,6 +53,17 @@ export const ProposalInfoBox = ({ variant, canceledDate, canceledReason, proposa
     ],
     [],
   );
+
+  const variant = useMemo(() => {
+    switch (proposal.status) {
+      case "voting":
+      case "upcoming":
+      case "draft":
+        return "info";
+      default:
+        return proposal.status;
+    }
+  }, [proposal.status]);
 
   const selectedVariant = useMemo(
     () => contentVariant.find(item => item.variant === variant),

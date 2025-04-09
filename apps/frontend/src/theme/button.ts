@@ -8,7 +8,7 @@ export const buttonTheme = defineStyleConfig({
     justifyContent: "center",
     alignItems: "center",
     pointerEvents: "auto",
-    transtionDuration: "150ms",
+    transitionDuration: "150ms",
     transitionProperty: "all",
     transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
     _disabled: {
@@ -20,6 +20,16 @@ export const buttonTheme = defineStyleConfig({
     fontWeight: 600,
   },
   sizes: {
+    icon: {
+      paddingX: "1rem",
+      paddingY: "0.75rem",
+      gap: "0.75rem",
+      height: "3rem",
+      minW: "1rem",
+      borderRadius: "0.75rem",
+      fontSize: "1rem",
+      lineHeight: "1.5rem",
+    },
     lg: {
       paddingX: "1rem",
       paddingY: "0.75rem",
@@ -92,7 +102,28 @@ export const buttonTheme = defineStyleConfig({
     },
     tertiary: {},
     ghost: {},
-    feedback: {},
+    feedback: {
+      backgroundColor: colors.green[50],
+      textColor: colors.green[700],
+      border: "1px",
+      borderColor: "transparent",
+      _hover: {
+        backgroundColor: colors.green[100],
+      },
+      _active: {
+        backgroundColor: colors.green[100],
+      },
+      _loading: {
+        backgroundColor: colors.green[100],
+      },
+      _disabled: {
+        textColor: colors.green[300],
+      },
+    },
     danger: {},
+  },
+  defaultProps: {
+    size: "md",
+    variant: "primary",
   },
 });

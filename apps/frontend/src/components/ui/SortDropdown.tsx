@@ -14,7 +14,7 @@ export const SortDropdown = ({ sort, setSort }: { sort: Sort; setSort: Dispatch<
   const { LL } = useI18nContext();
   return (
     <Menu>
-      <MenuButton as={Button} variant={"icon"} size={"fit"}>
+      <MenuButton as={Button} variant={"secondary"} size={"icon"}>
         <Icon as={BsSortDown} />
       </MenuButton>
       <MenuList>

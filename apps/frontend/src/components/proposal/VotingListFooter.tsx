@@ -1,25 +1,26 @@
 import { useI18nContext } from "@/i18n/i18n-react";
-import { InfoBox, infoBoxVariants } from "./ui/InfoBox";
+import { InfoBox, infoBoxVariants } from "../ui/InfoBox";
 import { useFormatDate } from "@/hooks/useFormatDate";
-import { ProposalCardType } from "@/types/proposal";
 import { IoArrowForward } from "react-icons/io5";
 import { MdOutlineHowToVote } from "react-icons/md";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { Button, ButtonProps, Flex, Link, Text, useBreakpointValue } from "@chakra-ui/react";
 import { DAppKitWalletButton, useWallet } from "@vechain/vechain-kit";
 import { VotingItemVariant } from "./VotingItem";
+import { FiCheckSquare, FiUserCheck } from "react-icons/fi";
+import { useProposal } from "./ProposalProvider";
+import { getVotingVariant } from "@/utils/voting";
 
-export const VotingListFooter = ({
-  proposal,
-  votingNotStarted,
-  votingVariant,
-}: {
-  votingVariant: VotingItemVariant;
-  proposal: ProposalCardType;
-  votingNotStarted: boolean;
-}) => {
+export const VotingListFooter = () => {
+  const { proposal } = useProposal();
+  const { account } = useWallet();
   const { LL } = useI18nContext();
   const { formattedProposalDate } = useFormatDate();
+  const votingVariant: VotingItemVariant = useMemo(() => getVotingVariant(proposal.status), [proposal.status]);
+  const votingNotStarted = useMemo(
+    () => proposal.status === "upcoming" || (proposal.status === "voting" && !account?.address),
+    [proposal.status, account?.address],
+  );
 
   const onSubmit = useCallback(() => {
     //TODO: add submit logic
@@ -50,7 +51,6 @@ const VotingFooterAction = ({
   onSubmit: () => void;
   votingVariant: VotingItemVariant;
 }) => {
-  const { LL } = useI18nContext();
   const { account } = useWallet();
   if (!account?.address) return <ConnectButton />;
 
@@ -60,14 +60,25 @@ const VotingFooterAction = ({
     case "result-win":
       return <VotedChip />;
     case "result-lost":
-      return <Button>{LL.proposal.see_all_voters()}</Button>;
+      return <VotingAllVoters />;
   }
+};
+
+const VotingAllVoters = () => {
+  const { LL } = useI18nContext();
+  //TODO: add all voters modal
+  return (
+    <Button variant={"secondary"}>
+      <FiUserCheck />
+      {LL.proposal.see_all_voters()}
+    </Button>
+  );
 };
 
 const VotingSubmit = (props: ButtonProps) => {
   const { LL } = useI18nContext();
   return (
-    <Button alignSelf={"center"} gap={2} {...props}>
+    <Button {...props}>
       {LL.submit()} <IoArrowForward />
     </Button>
   );
@@ -75,9 +86,13 @@ const VotingSubmit = (props: ButtonProps) => {
 
 const VotedChip = () => {
   const { LL } = useI18nContext();
+  //TODO: see your vote modal
   return (
     <Flex alignItems={"center"} gap={3}>
-      <Button variant={"ghost"}>{LL.voted()}</Button>
+      <Button variant={"feedback"}>
+        {LL.voted()}
+        <FiCheckSquare />
+      </Button>
       <Link color={"primary.500"}>{LL.proposal.see_your_vote()}</Link>
     </Flex>
   );
@@ -85,27 +100,16 @@ const VotedChip = () => {
 
 const VotingPower = ({ votingPower }: { votingPower: number }) => {
   const { LL } = useI18nContext();
+  //TODO: add voting power modal
   return (
     <Flex alignItems={"center"} gap={3}>
       <Text fontSize={12} fontWeight={600} color={"gray.500"}>
         {LL.voting_power()}
       </Text>
-      <Text
-        borderRadius={8}
-        paddingX={3}
-        paddingY={2}
-        display={"flex"}
-        gap={3}
-        alignItems={"center"}
-        borderWidth={1}
-        borderColor={"gray.200"}
-        bg={"white"}
-        color={"gray.600"}
-        fontSize={14}
-        fontWeight={600}>
+      <Button variant={"secondary"}>
         <MdOutlineHowToVote size={20} />
         {votingPower}
-      </Text>
+      </Button>
     </Flex>
   );
 };

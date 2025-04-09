@@ -49,14 +49,7 @@ export const Proposals = () => {
             <Icon as={MdOutlineHowToVote} width={8} height={8} color={"primary.600"} marginRight={2} />
             {LL.proposals.title()}
           </Heading>
-          <Button
-            as={Link}
-            href="/create-proposal"
-            marginLeft={"auto"}
-            gap={3}
-            color={"white"}
-            bgColor={"primary.500"}
-            _hover={{ bgColor: "primary.700" }}>
+          <Button as={Link} href="/create-proposal" marginLeft={"auto"}>
             <Icon as={CiCirclePlus} width={6} height={6} />
             {LL.proposals.create()}
           </Button>
@@ -128,6 +121,14 @@ const BasePanel = ({ children }: PropsWithChildren) => {
 };
 
 const ProposalCard = ({ isVoted, status, title, endDate, startDate, id }: ProposalCardType) => {
+  const variant = useMemo(() => {
+    switch (status) {
+      case "min-not-reached":
+        return "rejected";
+      default:
+        return status;
+    }
+  }, [status]);
   return (
     <Flex
       width={"100%"}
@@ -142,7 +143,7 @@ const ProposalCard = ({ isVoted, status, title, endDate, startDate, id }: Propos
       alignItems={"center"}>
       <Flex width={"100%"} direction={"column"} gap={6}>
         <Flex gap={4} alignItems={"center"}>
-          <IconBadge variant={status} />
+          <IconBadge variant={variant} />
           {isVoted && <Status text={"Voted"} marginLeft={"auto"} />}
         </Flex>
         <Flex gap={4} alignItems={"start"} direction={"column"}>

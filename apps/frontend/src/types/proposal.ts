@@ -33,7 +33,15 @@ export type CustomChoiceOptions =
 
 export type VotingChoices = SingleChoiceOptions | CustomChoiceOptions;
 
-export type ProposalStatus = "draft" | "upcoming" | "voting" | "approved" | "executed" | "canceled" | "rejected";
+export type ProposalStatus =
+  | "draft"
+  | "upcoming"
+  | "voting"
+  | "approved"
+  | "executed"
+  | "canceled"
+  | "rejected"
+  | "min-not-reached";
 
 export type ProposalCardType = {
   id: string;
@@ -41,7 +49,6 @@ export type ProposalCardType = {
   createdAt: Date;
   headerImage: string;
   status: ProposalStatus;
-  isVoted: boolean;
   title: string;
   description: string;
   startDate: Date;

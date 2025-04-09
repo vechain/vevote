@@ -28,12 +28,12 @@ const variants = (isSelected: boolean) => ({
     borderWidth: 2,
   }),
   "result-lost": defineStyle({
-    bg: "white",
+    bg: isSelected ? "gray.100" : "white",
     borderColor: isSelected ? "gray.500" : "transparent",
     borderWidth: 2,
   }),
   "result-win": defineStyle({
-    bg: "primary.100",
+    bg: isSelected ? "primary.100" : "white",
     borderColor: isSelected ? "primary.500" : "transparent",
     borderWidth: 3,
   }),
@@ -45,6 +45,8 @@ export const VotingItem = ({ isSelected, kind, label, variant, onClick, isMostVo
   }, [onClick, variant]);
   return (
     <Button
+      variant={"tertiary"}
+      _focus={{ boxShadow: "none" }}
       transition={"all 0.2s"}
       height={"100%"}
       display={"flex"}

@@ -1,14 +1,16 @@
 import { useI18nContext } from "@/i18n/i18n-react";
-import { ProposalCardType, VotingEnum } from "@/types/proposal";
+import { VotingEnum } from "@/types/proposal";
 import { Box, BoxProps, Flex, Heading, Text } from "@chakra-ui/react";
 import { PropsWithChildren } from "react";
 import { MdOutlineHowToVote } from "react-icons/md";
+import { useProposal } from "./ProposalProvider";
 import { VotingMultipleOptions, VotingSingleChoice, VotingSingleOption } from "./VotingList";
 
-export const VotingSection = ({ proposal }: { proposal: ProposalCardType }) => {
+export const VotingSection = () => {
+  const { proposal } = useProposal();
   return (
     <VotingSectionContainer>
-      <VotingSectionHeader question={proposal.question} />
+      <VotingSectionHeader />
       <VotingSectionContent>
         {proposal.votingType === VotingEnum.SINGLE_CHOICE && <VotingSingleChoice proposal={proposal} />}
         {proposal.votingType === VotingEnum.SINGLE_OPTION && <VotingSingleOption proposal={proposal} />}
@@ -20,17 +22,14 @@ export const VotingSection = ({ proposal }: { proposal: ProposalCardType }) => {
 
 const VotingSectionContainer = ({ children }: PropsWithChildren) => {
   return (
-    <Flex flexDirection={"column"} width={"100%"} borderRadius={16} background={"gray.100"}>
+    <Flex flexDirection={"column"} width={"100%"} borderRadius={16} background={"gray.50"}>
       {children}
     </Flex>
   );
 };
 
-type VotingSectionHeaderProps = {
-  question: string;
-};
-
-const VotingSectionHeader = ({ question }: VotingSectionHeaderProps) => {
+const VotingSectionHeader = () => {
+  const { proposal } = useProposal();
   const { LL } = useI18nContext();
   return (
     <SectionLimiter borderBottomWidth={2} borderBottomColor={"gray.300"}>
@@ -47,7 +46,7 @@ const VotingSectionHeader = ({ question }: VotingSectionHeaderProps) => {
           {LL.voting()}
         </Heading>
         <Text fontSize={24} color={"gray.600"} fontWeight={500}>
-          {question}
+          {proposal.question}
         </Text>
       </Flex>
     </SectionLimiter>

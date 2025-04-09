@@ -1,12 +1,22 @@
 import { Flex, Heading, Text } from "@chakra-ui/react";
-import { IconBadge } from "./ui/IconBadge";
-import { ProposalCardType } from "@/types/proposal";
+import { IconBadge } from "../ui/IconBadge";
+import { useMemo } from "react";
+import { useProposal } from "./ProposalProvider";
 
-export const ProposalInfos = ({ proposal }: { proposal: ProposalCardType }) => {
+export const ProposalInfos = () => {
+  const { proposal } = useProposal();
+  const infoVariant = useMemo(() => {
+    switch (proposal.status) {
+      case "min-not-reached":
+        return "rejected";
+      default:
+        return proposal.status;
+    }
+  }, [proposal.status]);
   return (
     <>
       <Flex flexDirection={"column"} gap={6} alignItems={"start"}>
-        <IconBadge variant={proposal.status} />
+        <IconBadge variant={infoVariant} />
         <Heading fontSize={32} fontWeight={600} color="primary.700">
           {proposal.title}
         </Heading>

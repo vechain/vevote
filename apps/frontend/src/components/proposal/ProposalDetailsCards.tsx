@@ -1,18 +1,19 @@
 import { useFormatDate } from "@/hooks/useFormatDate";
 import { useI18nContext } from "@/i18n/i18n-react";
-import { ProposalCardType } from "@/types/proposal";
 import { Flex, Grid, Heading, Icon, Link, Text } from "@chakra-ui/react";
-import { CopyLink } from "./ui/CopyLink";
+import { CopyLink } from "../ui/CopyLink";
 import { formatAddress } from "@/utils/address";
 import { LuCalendarCheck, LuUsers } from "react-icons/lu";
 import { PropsWithChildren } from "react";
 import { MdOutlineArrowOutward } from "react-icons/md";
 import { FaRegEdit } from "react-icons/fa";
 import { IconType } from "react-icons";
+import { useProposal } from "./ProposalProvider";
 
 const VECHAIN_EXPLORER_URL = process.env.PUBLIC_VECHAIN_EXPLORER_URL ?? "https://explore-testnet.vechain.org"; //todo: add env variable
 
-export const ProposalDetailsCards = ({ proposal }: { proposal: ProposalCardType }) => {
+export const ProposalDetailsCards = () => {
+  const { proposal } = useProposal();
   const { LL } = useI18nContext();
 
   const { formattedProposalDate } = useFormatDate();
@@ -88,7 +89,7 @@ type DetailsCardsItemProps = PropsWithChildren<{
 
 const DetailsCardsItem = ({ icon, title, children }: DetailsCardsItemProps) => {
   return (
-    <Flex flexDirection={"column"} padding={10} gap={6} alignItems={"start"} borderRadius={16} bg={"gray.100"}>
+    <Flex flexDirection={"column"} padding={10} gap={6} alignItems={"start"} borderRadius={16} bg={"gray.50"}>
       <Heading fontSize={20} fontWeight={600} color="primary.700" display={"flex"} gap={4} alignItems={"center"}>
         <Icon as={icon} boxSize={6} color="primary.700" />
         {title}
