@@ -120,7 +120,7 @@ const BasePanel = ({ children }: PropsWithChildren) => {
   );
 };
 
-const ProposalCard = ({ isVoted, status, title, endDate, startDate, id }: ProposalCardType) => {
+const ProposalCard = ({ status, title, endDate, startDate, id }: ProposalCardType) => {
   const variant = useMemo(() => {
     switch (status) {
       case "min-not-reached":
@@ -128,6 +128,10 @@ const ProposalCard = ({ isVoted, status, title, endDate, startDate, id }: Propos
       default:
         return status;
     }
+  }, [status]);
+
+  const isVoted = useMemo(() => {
+    return ["approved", "executed"].includes(status);
   }, [status]);
   return (
     <Flex

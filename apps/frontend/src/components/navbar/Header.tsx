@@ -1,22 +1,21 @@
-import { Box, Flex, Heading, Image } from "@chakra-ui/react";
-import { PropsWithChildren, RefObject, useRef } from "react";
 import { useI18nContext } from "@/i18n/i18n-react";
+import { Box, Flex, Heading, Image } from "@chakra-ui/react";
+import { PropsWithChildren } from "react";
 import { Navbar } from "./Navbar";
 
 export const ProposalsHeader = () => {
-  const triggerNavbarRef = useRef<HTMLDivElement | null>(null);
   return (
     <>
-      <Navbar triggerNavbarRef={triggerNavbarRef} />
-      <Banner triggerNavbarRef={triggerNavbarRef} />
+      <Navbar />
+      <Banner />
     </>
   );
 };
 
-export const Banner = ({ triggerNavbarRef }: { triggerNavbarRef: RefObject<HTMLDivElement> | null }) => {
+export const Banner = () => {
   const { LL } = useI18nContext();
   return (
-    <Box ref={triggerNavbarRef} padding={20} bg={"primary.700"}>
+    <Box padding={20} bg={"primary.700"}>
       <Flex
         alignItems={"center"}
         gap={20}
