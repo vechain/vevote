@@ -1,6 +1,9 @@
 name: Deploy Frontend to Vercel & Release
 
 on:
+  push:
+    tags:
+      - v.*
   workflow_dispatch:
     inputs:
       deployment-environment:
@@ -13,7 +16,7 @@ on:
 jobs:
   setup-environment:
     name: Set Up Environment Variables
-    if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'push' || github.event.workflow_run.conclusion == 'success' }}
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'push'}}
     runs-on: ubuntu-latest
     outputs:
       ENVIRONMENT: ${{ steps.set-vars.outputs.ENVIRONMENT }}
@@ -29,12 +32,9 @@ jobs:
           elif [[ "${{ github.event_name }}" == 'workflow_dispatch' && "${{ github.ref_name }}" == v.* ]]; then
             echo "VERSION=${{ github.ref_name }}" >> $GITHUB_OUTPUT
           elif [[ "${{ github.event_name }}" == 'push' ]]; then
-            echo "VERSION=latest" >> $GITHUB_OUTPUT
-          elif [[ "${{ github.event.workflow_run.conclusion }}" == 'success' ]]; then
-            echo "VERSION=${{ github.sha }}" >> $GITHUB_OUTPUT
+            echo "VERSION=${{ github.ref_name }}" >> $GITHUB_OUTPUT
           else
-            echo "Unrecognised version. Please select an existing version tag to deploy."
-            exit 1
+            echo "VERSION=latest" >> $GITHUB_OUTPUT
           fi
   check-existing-release:
     name: Check Existing Releases
@@ -86,8 +86,15 @@ jobs:
           latest_release=$(curl -s -H "Authorization: token ${{ github.token }}" \
             https://api.github.com/repos/${{ github.repository }}/releases/latest | jq -r '.tag_name')
           echo "Latest release: ${latest_release}"
+          if [ "$latest_release" == "null" ]; then
           gh release create "${tag}" \
+            --repo="${{ github.repository }}" \
+            --title="Release ${tag}" \
+            --generate-notes
+          else
+            gh release create "${tag}" \
               --repo="${{ github.repository }}" \
               --title="Release ${tag}" \
               --generate-notes \
               --notes-start-tag "${latest_release}"
+          fi
