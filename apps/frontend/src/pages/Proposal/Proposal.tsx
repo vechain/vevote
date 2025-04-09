@@ -54,6 +54,8 @@ export const Proposal = () => {
           <ProposalInfoBox />
         </PageContainer.Header>
         {proposal.status !== "canceled" && <VotingSection />}
+        {/* todo: Add Buy a node info box */}
+        {/* <BuyANode/> */}
       </PageContainer>
     </ProposalProvider>
   );

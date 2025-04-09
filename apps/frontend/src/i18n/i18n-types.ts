@@ -169,6 +169,68 @@ type RootTranslation = {
 		 * S​e​e​ ​a​l​l​ ​v​o​t​e​r​s
 		 */
 		see_all_voters: string
+		info_box: {
+			info: {
+				/**
+				 * M​i​n​i​m​u​m​ ​p​a​r​t​i​c​i​p​a​t​i​o​n
+				 */
+				title: string
+				/**
+				 * A​ ​m​i​n​i​m​u​m​ ​o​f​ ​3​0​%​ ​p​a​r​t​i​c​i​p​a​t​i​o​n​ ​m​u​s​t​ ​b​e​ ​r​e​a​c​h​e​d​ ​t​o​ ​v​a​l​i​d​a​t​e​ ​t​h​e​ ​v​o​t​i​n​g​ ​o​f​ ​t​h​e​ ​p​r​o​p​o​s​a​l​ ​a​n​d​ ​g​e​t​ ​a​p​p​r​o​v​a​l​.
+				 */
+				description: string
+			}
+			approved: {
+				/**
+				 * M​i​n​i​m​u​m​ ​p​a​r​t​i​c​i​p​a​t​i​o​n​ ​r​e​a​c​h​e​d
+				 */
+				title: string
+				/**
+				 * T​h​e​ ​v​o​t​i​n​g​ ​p​a​r​t​i​c​i​p​a​t​i​o​n​ ​r​e​a​c​h​e​d​ ​t​h​e​ ​m​i​n​i​m​u​m​ ​r​e​q​u​i​r​e​d​ ​o​f​ ​3​0​%​ ​t​o​ ​g​e​t​ ​a​p​p​r​o​v​a​l​.
+				 */
+				description: string
+			}
+			executed: {
+				/**
+				 * P​r​o​p​o​s​a​l​ ​A​p​p​r​o​v​e​d​ ​a​n​d​ ​E​x​e​c​u​t​e​d
+				 */
+				title: string
+				/**
+				 * T​h​e​ ​v​o​t​i​n​g​ ​a​p​p​r​o​v​e​d​ ​t​h​e​ ​p​r​o​p​o​s​a​l​ ​a​n​d​ ​t​h​e​ ​a​c​t​i​o​n​s​ ​h​a​v​e​ ​b​e​e​n​ ​e​x​e​c​u​t​e​d​.
+				 */
+				description: string
+			}
+			'min-not-reached': {
+				/**
+				 * M​i​n​i​m​u​m​ ​p​a​r​t​i​c​i​p​a​t​i​o​n​ ​n​o​t​ ​r​e​a​c​h​e​d
+				 */
+				title: string
+				/**
+				 * T​h​e​ ​v​o​t​i​n​g​ ​p​a​r​t​i​c​i​p​a​t​i​o​n​ ​d​i​d​n​’​t​ ​r​e​a​c​h​e​d​ ​t​h​e​ ​m​i​n​i​m​u​m​ ​r​e​q​u​i​r​e​d​ ​o​f​ ​3​0​%​ ​t​o​ ​g​e​t​ ​a​p​p​r​o​v​a​l​.
+				 */
+				description: string
+			}
+			rejected: {
+				/**
+				 * P​r​o​p​o​s​a​l​ ​R​e​j​e​c​t​e​d
+				 */
+				title: string
+				/**
+				 * T​h​e​ ​p​r​o​p​o​s​a​l​ ​d​i​d​n​’​t​ ​g​e​t​ ​e​n​o​u​g​h​ ​v​o​t​e​s​ ​i​n​ ​f​a​v​o​r​ ​t​o​ ​g​e​t​ ​a​p​p​r​o​v​a​l​.
+				 */
+				description: string
+			}
+			canceled: {
+				/**
+				 * P​r​o​p​o​s​a​l​ ​C​a​n​c​e​l​e​d
+				 */
+				title: string
+				/**
+				 * T​h​e​ ​p​r​o​p​o​s​a​l​ ​w​a​s​ ​c​a​n​c​e​l​e​d​ ​b​y​ ​V​e​C​h​a​i​n​ ​o​r​ ​t​h​e​ ​p​r​o​p​o​s​e​r​ ​b​y​ ​t​h​e​ ​f​o​l​l​o​w​i​n​g​ ​r​e​a​s​o​n​:
+				 */
+				description: string
+			}
+		}
 		create: {
 			/**
 			 * C​r​e​a​t​e​ ​P​r​o​p​o​s​a​l
@@ -478,6 +540,68 @@ export type TranslationFunctions = {
 		 * See all voters
 		 */
 		see_all_voters: () => LocalizedString
+		info_box: {
+			info: {
+				/**
+				 * Minimum participation
+				 */
+				title: () => LocalizedString
+				/**
+				 * A minimum of 30% participation must be reached to validate the voting of the proposal and get approval.
+				 */
+				description: () => LocalizedString
+			}
+			approved: {
+				/**
+				 * Minimum participation reached
+				 */
+				title: () => LocalizedString
+				/**
+				 * The voting participation reached the minimum required of 30% to get approval.
+				 */
+				description: () => LocalizedString
+			}
+			executed: {
+				/**
+				 * Proposal Approved and Executed
+				 */
+				title: () => LocalizedString
+				/**
+				 * The voting approved the proposal and the actions have been executed.
+				 */
+				description: () => LocalizedString
+			}
+			'min-not-reached': {
+				/**
+				 * Minimum participation not reached
+				 */
+				title: () => LocalizedString
+				/**
+				 * The voting participation didn’t reached the minimum required of 30% to get approval.
+				 */
+				description: () => LocalizedString
+			}
+			rejected: {
+				/**
+				 * Proposal Rejected
+				 */
+				title: () => LocalizedString
+				/**
+				 * The proposal didn’t get enough votes in favor to get approval.
+				 */
+				description: () => LocalizedString
+			}
+			canceled: {
+				/**
+				 * Proposal Canceled
+				 */
+				title: () => LocalizedString
+				/**
+				 * The proposal was canceled by VeChain or the proposer by the following reason:
+				 */
+				description: () => LocalizedString
+			}
+		}
 		create: {
 			/**
 			 * Create Proposal

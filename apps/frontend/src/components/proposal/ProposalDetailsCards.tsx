@@ -10,7 +10,7 @@ import { FaRegEdit } from "react-icons/fa";
 import { IconType } from "react-icons";
 import { useProposal } from "./ProposalProvider";
 
-const VECHAIN_EXPLORER_URL = process.env.PUBLIC_VECHAIN_EXPLORER_URL ?? "https://explore-testnet.vechain.org"; //todo: add env variable
+const VECHAIN_EXPLORER_URL = "https://explore-testnet.vechain.org"; //todo: add env variable
 
 export const ProposalDetailsCards = () => {
   const { proposal } = useProposal();

@@ -45,6 +45,33 @@ const en = {
     voting_will_start: "Voting will start {date:string}",
     see_your_vote: "See your vote details",
     see_all_voters: "See all voters",
+    info_box: {
+      info: {
+        title: "Minimum participation",
+        description:
+          "A minimum of 30% participation must be reached to validate the voting of the proposal and get approval.",
+      },
+      approved: {
+        title: "Minimum participation reached",
+        description: "The voting participation reached the minimum required of 30% to get approval.",
+      },
+      executed: {
+        title: "Proposal Approved and Executed",
+        description: "The voting approved the proposal and the actions have been executed.",
+      },
+      "min-not-reached": {
+        title: "Minimum participation not reached",
+        description: "The voting participation didn’t reached the minimum required of 30% to get approval.",
+      },
+      rejected: {
+        title: "Proposal Rejected",
+        description: "The proposal didn’t get enough votes in favor to get approval.",
+      },
+      canceled: {
+        title: "Proposal Canceled",
+        description: "The proposal was canceled by VeChain or the proposer by the following reason:",
+      },
+    },
     create: {
       title: "Create Proposal",
       steps: "{current:number} of {total:number}",

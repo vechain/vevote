@@ -106,6 +106,7 @@ const VotesSection = ({
 }) => {
   const isProgressDisabled = useMemo(() => variant === "voting" && !isSelected, [variant, isSelected]);
   const { LL } = useI18nContext();
+  //todo: the percentage of votes should be calculated based on the total votes
   const votesPercentage = useMemo(() => (votes / 100) * 100, [votes]);
   return (
     <Flex gap={10} alignItems={"center"} justifyContent={"space-between"} width={"100%"}>

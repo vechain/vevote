@@ -55,9 +55,9 @@ const VotingSectionHeader = () => {
 
 const VotingSectionContent = ({ children }: PropsWithChildren) => {
   return (
-    <Box paddingY={10} paddingX={11} maxWidth={"864px"} marginX={"auto"} width={"100%"}>
+    <SectionLimiter maxWidth={"864px"} marginX={"auto"} width={"100%"}>
       {children}
-    </Box>
+    </SectionLimiter>
   );
 };
 
