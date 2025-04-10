@@ -6,6 +6,7 @@ import { useWallet } from "@vechain/vechain-kit";
 import { formatAddress } from "@/utils/address";
 import { MdOutlineArrowOutward } from "react-icons/md";
 import { useMemo } from "react";
+import { useI18nContext } from "@/i18n/i18n-react";
 
 const VECHAIN_EXPLORER_URL = "https://explore-testnet.vechain.org"; //todo: add env variable
 
@@ -17,8 +18,10 @@ type NodeItemType = {
 type NodesList = NodeItemType[];
 
 export const VotingPowerModal = ({ votingPower }: { votingPower: number }) => {
+  const { LL } = useI18nContext();
   const { isOpen, onClose, onOpen } = useDisclosure();
 
+  //todo: get nodes list from blockchain
   const nodesList = useMemo(
     () => [
       {
@@ -60,7 +63,7 @@ export const VotingPowerModal = ({ votingPower }: { votingPower: number }) => {
       </Button>
       <ModalSkeleton isOpen={isOpen} onClose={onClose}>
         <ModalHeader>
-          <ModalTitle title={"Voting Power"} icon={MdOutlineHowToVote} />
+          <ModalTitle title={LL.proposal.voting_power.title()} icon={MdOutlineHowToVote} />
         </ModalHeader>
         <ModalBody>
           <Flex flexDirection={"column"} gap={8}>
@@ -74,10 +77,10 @@ export const VotingPowerModal = ({ votingPower }: { votingPower: number }) => {
               </Flex>
               <Flex padding={4} borderRadius={12} background={"primary.100"} flexDirection={"column"} gap={3}>
                 <Text fontSize={14} color={"gray.600"}>
-                  {"Your voting power was calculated at the time of the snapshot 29/03/2025 - 00h00m."}
+                  {LL.proposal.voting_power.calculation({ snapshot: "29/03/2025 - 00h00m" })}
                 </Text>
                 <Text color={"gray.600"} fontWeight={500} display={"flex"} gap={2} alignItems={"center"}>
-                  {"Block #"}
+                  {LL.block()}
                   <Link
                     display={"flex"}
                     gap={2}
@@ -101,10 +104,11 @@ export const VotingPowerModal = ({ votingPower }: { votingPower: number }) => {
 
 const VotingWallet = () => {
   const { account } = useWallet();
+  const { LL } = useI18nContext();
 
   return (
     <Text display={"inline-flex"} alignItems={"center"} gap={2} color={"gray.600"}>
-      {"Wallet:"}
+      {`${LL.wallet()}:`}
       <CopyLink isExternal textToCopy={account?.address} color={"primary.500"} fontWeight={500}>
         {formatAddress(account?.address || "")}
       </CopyLink>
@@ -113,10 +117,11 @@ const VotingWallet = () => {
 };
 
 const NodesHeader = () => {
+  const { LL } = useI18nContext();
   return (
     <Flex alignItems={"center"} justifyContent={"space-between"} fontSize={14} fontWeight={600} color={"gray.500"}>
-      <Text>{"Node"}</Text>
-      <Text>{"Voting Power"}</Text>
+      <Text>{LL.node()}</Text>
+      <Text>{LL.proposal.voting_power.title()}</Text>
     </Flex>
   );
 };
@@ -150,6 +155,7 @@ const NodeItem = ({
 };
 
 const NodesFooter = ({ totalVotingPower }: { totalVotingPower: number }) => {
+  const { LL } = useI18nContext();
   return (
     <Flex
       paddingY={1.5}
@@ -158,7 +164,7 @@ const NodesFooter = ({ totalVotingPower }: { totalVotingPower: number }) => {
       fontWeight={600}
       alignItems={"center"}
       justifyContent={"space-between"}>
-      <Text>{"Total Voting Power"}</Text>
+      <Text>{LL.proposal.voting_power.total_voting_power()}</Text>
       <Text>{totalVotingPower}</Text>
     </Flex>
   );

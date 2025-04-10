@@ -105,6 +105,18 @@ type RootTranslation = {
 	 * V​o​t​e​d
 	 */
 	voted: string
+	/**
+	 * W​a​l​l​e​t
+	 */
+	wallet: string
+	/**
+	 * B​l​o​c​k​ ​#
+	 */
+	block: string
+	/**
+	 * N​o​d​e
+	 */
+	node: string
 	home: {
 		/**
 		 * H​o​m​e
@@ -230,6 +242,21 @@ type RootTranslation = {
 				 */
 				description: string
 			}
+		}
+		voting_power: {
+			/**
+			 * V​o​t​i​n​g​ ​P​o​w​e​r
+			 */
+			title: string
+			/**
+			 * Y​o​u​r​ ​v​o​t​i​n​g​ ​p​o​w​e​r​ ​w​a​s​ ​c​a​l​c​u​l​a​t​e​d​ ​a​t​ ​t​h​e​ ​t​i​m​e​ ​o​f​ ​t​h​e​ ​s​n​a​p​s​h​o​t​ ​{​s​n​a​p​s​h​o​t​}​.
+			 * @param {string} snapshot
+			 */
+			calculation: RequiredParams<'snapshot'>
+			/**
+			 * T​o​t​a​l​ ​v​o​t​i​n​g​ ​p​o​w​e​r
+			 */
+			total_voting_power: string
 		}
 		create: {
 			/**
@@ -477,6 +504,18 @@ export type TranslationFunctions = {
 	 * Voted
 	 */
 	voted: () => LocalizedString
+	/**
+	 * Wallet
+	 */
+	wallet: () => LocalizedString
+	/**
+	 * Block #
+	 */
+	block: () => LocalizedString
+	/**
+	 * Node
+	 */
+	node: () => LocalizedString
 	home: {
 		/**
 		 * Home
@@ -601,6 +640,20 @@ export type TranslationFunctions = {
 				 */
 				description: () => LocalizedString
 			}
+		}
+		voting_power: {
+			/**
+			 * Voting Power
+			 */
+			title: () => LocalizedString
+			/**
+			 * Your voting power was calculated at the time of the snapshot {snapshot}.
+			 */
+			calculation: (arg: { snapshot: string }) => LocalizedString
+			/**
+			 * Total voting power
+			 */
+			total_voting_power: () => LocalizedString
 		}
 		create: {
 			/**

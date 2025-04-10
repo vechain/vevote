@@ -24,6 +24,9 @@ const en = {
   submit: "Submit",
   voting_power: "Voting Power",
   voted: "Voted",
+  wallet: "Wallet",
+  block: "Block #",
+  node: "Node",
   home: {
     title: "Home",
     go_to_proposals: "Go to proposals",
@@ -71,6 +74,11 @@ const en = {
         title: "Proposal Canceled",
         description: "The proposal was canceled by VeChain or the proposer by the following reason:",
       },
+    },
+    voting_power: {
+      title: "Voting Power",
+      calculation: "Your voting power was calculated at the time of the snapshot {snapshot:string}.",
+      total_voting_power: "Total voting power",
     },
     create: {
       title: "Create Proposal",
