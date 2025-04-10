@@ -19,7 +19,7 @@ const defaultVariant = definePartsStyle({
   },
   overlay: {
     backdropFilter: "blur(15px)",
-    backgroundColor: "rgba(23, 13, 69, 0.25)",
+    background: "rgba(23, 13, 69, 0.65)",
   },
   header: {
     fontSize: "30px",
@@ -31,7 +31,7 @@ const defaultVariant = definePartsStyle({
   footer: resetModalItemsStyle.color,
 });
 
-export const ModalStyle = defineMultiStyleConfig({
+export const modalTheme = defineMultiStyleConfig({
   variants: { default: defaultVariant },
   sizes: {
     default: {

@@ -101,7 +101,19 @@ export const buttonTheme = defineStyleConfig({
       },
     },
     tertiary: {},
-    ghost: {},
+    ghost: {
+      _hover: {
+        background: "transparent",
+        color: "blue.500",
+      },
+      _active: {
+        background: "transparent",
+        color: "blue.500",
+      },
+      _focus: {
+        boxShadow: "none",
+      },
+    },
     feedback: {
       backgroundColor: colors.green[50],
       textColor: colors.green[700],

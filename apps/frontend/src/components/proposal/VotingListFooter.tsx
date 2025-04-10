@@ -2,7 +2,6 @@ import { useI18nContext } from "@/i18n/i18n-react";
 import { InfoBox, infoBoxVariants } from "../ui/InfoBox";
 import { useFormatDate } from "@/hooks/useFormatDate";
 import { IoArrowForward } from "react-icons/io5";
-import { MdOutlineHowToVote } from "react-icons/md";
 import { useCallback, useMemo } from "react";
 import { Button, ButtonProps, Flex, Link, Text, useBreakpointValue } from "@chakra-ui/react";
 import { DAppKitWalletButton, useWallet } from "@vechain/vechain-kit";
@@ -10,6 +9,7 @@ import { VotingItemVariant } from "./VotingItem";
 import { FiCheckSquare, FiUserCheck } from "react-icons/fi";
 import { useProposal } from "./ProposalProvider";
 import { getVotingVariant } from "@/utils/voting";
+import { VotingPowerModal } from "./VotingPowerModal";
 
 export const VotingListFooter = () => {
   const { proposal } = useProposal();
@@ -100,16 +100,12 @@ const VotedChip = () => {
 
 const VotingPower = ({ votingPower }: { votingPower: number }) => {
   const { LL } = useI18nContext();
-  //TODO: add voting power modal
   return (
     <Flex alignItems={"center"} gap={3}>
       <Text fontSize={12} fontWeight={600} color={"gray.500"}>
         {LL.voting_power()}
       </Text>
-      <Button variant={"secondary"}>
-        <MdOutlineHowToVote size={20} />
-        {votingPower}
-      </Button>
+      <VotingPowerModal votingPower={votingPower} />
     </Flex>
   );
 };

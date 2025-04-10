@@ -2,8 +2,10 @@ import {
   Modal as BaseModal,
   ColorProps,
   Flex,
+  Heading,
   Icon,
   ModalBody,
+  ModalCloseButton,
   ModalContent,
   ModalHeader,
   ModalOverlay,
@@ -14,9 +16,12 @@ import { IconType } from "react-icons/lib";
 
 export const ModalSkeleton = ({ children, ...props }: ModalProps) => {
   return (
-    <BaseModal {...props}>
+    <BaseModal isCentered {...props}>
       <ModalOverlay />
-      <ModalContent>{children}</ModalContent>
+      <ModalContent>
+        <ModalCloseButton />
+        {children}
+      </ModalContent>
     </BaseModal>
   );
 };
@@ -50,5 +55,14 @@ export const MessageModal = ({
         <ModalBody>{children}</ModalBody>
       </ModalContent>
     </BaseModal>
+  );
+};
+
+export const ModalTitle = ({ title, icon }: { title: string; icon?: IconType }) => {
+  return (
+    <Heading fontSize={20} fontWeight={600} color={"primary.600"} display={"flex"} alignItems={"center"} gap={2}>
+      {icon && <Icon as={icon} color={"primary.600"} />}
+      {title}
+    </Heading>
   );
 };

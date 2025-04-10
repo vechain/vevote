@@ -15,7 +15,7 @@ export const CopyLink = ({
   return (
     <Flex gap={2} alignItems={"center"}>
       <Link {...props} />
-      <Button onClick={copy} variant="outline" colorScheme="blue" size="sm">
+      <Button onClick={copy} variant="ghost" minWidth={"fit-content"} color={props.color}>
         <LuCopy />
       </Button>
     </Flex>
