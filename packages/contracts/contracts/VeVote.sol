@@ -180,6 +180,14 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
   }
 
   /**
+   * @notice See {IVeVote-getNodeVoteWeight}.
+   */
+  function getNodeVoteWeight(uint256 nodeId) external view returns (uint256) {
+    VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
+    return VeVoteVoteLogic.getNodeVoteWeight($, nodeId);
+  }
+
+  /**
    * @notice See {IVeVote-state}.
    * @return VeVoteTypes.ProposalState The current state of the proposal
    */

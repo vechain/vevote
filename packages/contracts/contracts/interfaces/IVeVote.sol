@@ -274,6 +274,13 @@ interface IVeVote is IERC165, IERC6372 {
   function getVoteWeight(address account) external view returns (uint256);
 
   /**
+   * @notice Retrieves the voting power of a node.
+   * @param nodeId The ID of the node.
+   * @return The voting power of the node.
+   */
+  function getNodeVoteWeight(uint256 nodeId) external view returns (uint256);
+
+  /**
    * @notice Returns the hash of a proposal.
    * @param proposer The address of the proposer.
    * @param startTime The time when the proposal starts.
@@ -453,12 +460,11 @@ interface IVeVote is IERC165, IERC6372 {
    */
   function cancel(uint256 proposalId) external returns (uint256);
 
-
   /**
    * @notice Cancels a proposal.
    * @dev Allows the proposer or an admin to cancel a proposal before execution.
    * @param proposalId The ID of the proposal to cancel.
-    * @param reason The reason for canceling the proposal.
+   * @param reason The reason for canceling the proposal.
    * @return The proposal ID.
    */
   function cancelWithReason(uint256 proposalId, string calldata reason) external returns (uint256);
