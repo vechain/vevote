@@ -730,6 +730,34 @@ describe("VeVote", function () {
         "Test Reason"
       )
     })
+
+    it("Should return the correct node vote weight", async function () {
+      const { vevote, nodeManagement, 
+        strengthHolder,
+        thunderHolder,
+        mjolnirHolder,
+        veThorXHolder,
+        strengthXHolder,
+        thunderXHolder,
+        mjolnirXHolder,
+        flashHolder,
+        lighteningHolder,
+        dawnHolder,
+        validatorHolder,
+       } = await getOrDeployContractInstances({ forceDeploy: false })
+
+     expect(await vevote.getNodeVoteWeight(1)).to.equal(100) // Strength node
+     expect(await vevote.getNodeVoteWeight(2)).to.equal(500) // Thunder node
+     expect(await vevote.getNodeVoteWeight(3)).to.equal(1500) // Mjolnir node
+     expect(await vevote.getNodeVoteWeight(4)).to.equal(90) // VeThorX
+     expect(await vevote.getNodeVoteWeight(5)).to.equal(240) // StrengthX
+     expect(await vevote.getNodeVoteWeight(6)).to.equal(840) // ThunderX
+     expect(await vevote.getNodeVoteWeight(7)).to.equal(2340) // MjolnirX
+     expect(await vevote.getNodeVoteWeight(8)).to.equal(20) // Flash
+     expect(await vevote.getNodeVoteWeight(9)).to.equal(5) // Lightning
+     expect(await vevote.getNodeVoteWeight(10)).to.equal(1) // Dawn
+     expect(await vevote.getNodeVoteWeight(11)).to.equal(5000) // Validator
+    })
   })
 
   describe("Proposal Execution", function () {
