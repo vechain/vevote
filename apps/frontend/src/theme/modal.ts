@@ -10,6 +10,7 @@ const resetModalItemsStyle = {
 
 const defaultVariant = definePartsStyle({
   dialog: {
+    padding: "40px",
     bg: "white",
     borderRadius: "16px",
     display: "flex",
@@ -32,6 +33,7 @@ const defaultVariant = definePartsStyle({
 });
 
 export const modalTheme = defineMultiStyleConfig({
+  baseStyle: defaultVariant,
   variants: { default: defaultVariant },
   sizes: {
     default: {

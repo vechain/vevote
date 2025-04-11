@@ -18,6 +18,7 @@ const en = {
   and: "and",
   one: "one",
   voting: "Voting",
+  voters: "Voters",
   most_voted: "Most voted",
   votes: "Votes",
   percentage: "%",
@@ -79,6 +80,23 @@ const en = {
       title: "Voting Power",
       calculation: "Your voting power was calculated at the time of the snapshot {snapshot:string}.",
       total_voting_power: "Total voting power",
+    },
+    voters_table: {
+      filters: {
+        search_by_address: "Search by address...",
+        voting_options: "Voting options",
+        node: "Node",
+        sort_by: "Sort by",
+      },
+      header: {
+        date: "Date",
+        address: "Address",
+        node: "Node",
+        node_id: "Node ID",
+        voting_power: "Voting Power",
+        voted_option: "Voted option",
+        transaction_id: "Transaction ID",
+      },
     },
     create: {
       title: "Create Proposal",

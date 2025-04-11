@@ -7,19 +7,21 @@ import { formatAddress } from "@/utils/address";
 import { MdOutlineArrowOutward } from "react-icons/md";
 import { useMemo } from "react";
 import { useI18nContext } from "@/i18n/i18n-react";
+import { useFormatDate } from "@/hooks/useFormatDate";
 
 const VECHAIN_EXPLORER_URL = "https://explore-testnet.vechain.org"; //todo: add env variable
 
-type NodeItemType = {
+type NodeItemProps = {
   multiplier: number;
   nodeName: string;
   votingPower: number;
 };
-type NodesList = NodeItemType[];
+type NodesListProps = NodeItemProps[];
 
 export const VotingPowerModal = ({ votingPower }: { votingPower: number }) => {
   const { LL } = useI18nContext();
   const { isOpen, onClose, onOpen } = useDisclosure();
+  const { formattedProposalDate } = useFormatDate();
 
   //todo: get nodes list from blockchain
   const nodesList = useMemo(
@@ -47,6 +49,7 @@ export const VotingPowerModal = ({ votingPower }: { votingPower: number }) => {
     return nodesList.reduce((acc, node) => acc + node.votingPower, 0);
   }, [nodesList]);
 
+  //todo: get block info from blockchain
   const block = useMemo(
     () => ({
       id: "0x0146e719f72cf2ef3e7baaefcb3a96c6d6c9d13111c2610155241ff634c5f80a",
@@ -54,6 +57,9 @@ export const VotingPowerModal = ({ votingPower }: { votingPower: number }) => {
     }),
     [],
   );
+
+  //todo: get snapshot date from blockchain
+  const snapshot = useMemo(() => formattedProposalDate(new Date("2023-10-01T00:00:00Z")), [formattedProposalDate]);
 
   return (
     <>
@@ -77,7 +83,7 @@ export const VotingPowerModal = ({ votingPower }: { votingPower: number }) => {
               </Flex>
               <Flex padding={4} borderRadius={12} background={"primary.100"} flexDirection={"column"} gap={3}>
                 <Text fontSize={14} color={"gray.600"}>
-                  {LL.proposal.voting_power.calculation({ snapshot: "29/03/2025 - 00h00m" })}
+                  {LL.proposal.voting_power.calculation({ snapshot })}
                 </Text>
                 <Text color={"gray.600"} fontWeight={500} display={"flex"} gap={2} alignItems={"center"}>
                   {LL.block()}
@@ -126,7 +132,7 @@ const NodesHeader = () => {
   );
 };
 
-const NodesList = ({ nodesList }: { nodesList: NodesList }) => {
+const NodesList = ({ nodesList }: { nodesList: NodesListProps }) => {
   return (
     <Flex flexDirection={"column"} borderBottomWidth={1} borderColor={"gray.200"}>
       {nodesList.map((node, index) => (

@@ -82,6 +82,10 @@ type RootTranslation = {
 	 */
 	voting: string
 	/**
+	 * V​o​t​e​r​s
+	 */
+	voters: string
+	/**
 	 * M​o​s​t​ ​v​o​t​e​d
 	 */
 	most_voted: string
@@ -257,6 +261,56 @@ type RootTranslation = {
 			 * T​o​t​a​l​ ​v​o​t​i​n​g​ ​p​o​w​e​r
 			 */
 			total_voting_power: string
+		}
+		voters_table: {
+			filters: {
+				/**
+				 * S​e​a​r​c​h​ ​b​y​ ​a​d​d​r​e​s​s​.​.​.
+				 */
+				search_by_address: string
+				/**
+				 * V​o​t​i​n​g​ ​o​p​t​i​o​n​s
+				 */
+				voting_options: string
+				/**
+				 * N​o​d​e
+				 */
+				node: string
+				/**
+				 * S​o​r​t​ ​b​y
+				 */
+				sort_by: string
+			}
+			header: {
+				/**
+				 * D​a​t​e
+				 */
+				date: string
+				/**
+				 * A​d​d​r​e​s​s
+				 */
+				address: string
+				/**
+				 * N​o​d​e
+				 */
+				node: string
+				/**
+				 * N​o​d​e​ ​I​D
+				 */
+				node_id: string
+				/**
+				 * V​o​t​i​n​g​ ​P​o​w​e​r
+				 */
+				voting_power: string
+				/**
+				 * V​o​t​e​d​ ​o​p​t​i​o​n
+				 */
+				voted_option: string
+				/**
+				 * T​r​a​n​s​a​c​t​i​o​n​ ​I​D
+				 */
+				transaction_id: string
+			}
 		}
 		create: {
 			/**
@@ -481,6 +535,10 @@ export type TranslationFunctions = {
 	 */
 	voting: () => LocalizedString
 	/**
+	 * Voters
+	 */
+	voters: () => LocalizedString
+	/**
 	 * Most voted
 	 */
 	most_voted: () => LocalizedString
@@ -654,6 +712,56 @@ export type TranslationFunctions = {
 			 * Total voting power
 			 */
 			total_voting_power: () => LocalizedString
+		}
+		voters_table: {
+			filters: {
+				/**
+				 * Search by address...
+				 */
+				search_by_address: () => LocalizedString
+				/**
+				 * Voting options
+				 */
+				voting_options: () => LocalizedString
+				/**
+				 * Node
+				 */
+				node: () => LocalizedString
+				/**
+				 * Sort by
+				 */
+				sort_by: () => LocalizedString
+			}
+			header: {
+				/**
+				 * Date
+				 */
+				date: () => LocalizedString
+				/**
+				 * Address
+				 */
+				address: () => LocalizedString
+				/**
+				 * Node
+				 */
+				node: () => LocalizedString
+				/**
+				 * Node ID
+				 */
+				node_id: () => LocalizedString
+				/**
+				 * Voting Power
+				 */
+				voting_power: () => LocalizedString
+				/**
+				 * Voted option
+				 */
+				voted_option: () => LocalizedString
+				/**
+				 * Transaction ID
+				 */
+				transaction_id: () => LocalizedString
+			}
 		}
 		create: {
 			/**

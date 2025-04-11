@@ -12,6 +12,7 @@ import { buttonTheme } from "@/theme/button";
 import { radioTheme } from "@/theme/radio";
 import { checkboxTheme } from "@/theme/checkbox";
 import { modalTheme } from "@/theme/modal";
+import { tableTheme } from "@/theme/table";
 
 const config: ThemeConfig = {
   initialColorMode: "light",
@@ -35,6 +36,7 @@ const theme = extendTheme({
     Radio: radioTheme,
     Checkbox: checkboxTheme,
     Modal: modalTheme,
+    Table: tableTheme,
   },
 });
 
