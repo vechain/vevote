@@ -322,6 +322,7 @@ library VeVoteVoteLogic {
     (bool success, uint256 nodeWeight) = Math.tryMul(baseVotingPower, self.nodeMultiplier[nodeLevel]);
     if (!success) {
       revert VotePowerOverflow();
+    }
 
     // Return the node weight divided by the scale
     return nodeWeight / VOTING_MULTIPLER_SCALE;
