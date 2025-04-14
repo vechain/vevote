@@ -59,7 +59,10 @@ export const VotingPowerModal = ({ votingPower }: { votingPower: number }) => {
   );
 
   //todo: get snapshot date from blockchain
-  const snapshot = useMemo(() => formattedProposalDate(new Date("2023-10-01T00:00:00Z")), [formattedProposalDate]);
+  const snapshot = useMemo(
+    () => formattedProposalDate(new Date("2023-10-01T00:00:00Z")) || "",
+    [formattedProposalDate],
+  );
 
   return (
     <>
