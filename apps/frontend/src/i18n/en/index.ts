@@ -34,6 +34,7 @@ const en = {
   node: "Node",
   go_back: "Go back",
   optional: "Optional",
+  buy_a_node: "Buy a Node",
   home: {
     title: "Home",
     go_to_proposals: "Go to proposals",
@@ -56,6 +57,9 @@ const en = {
     see_your_vote: "See your vote details",
     see_all_voters: "See all voters",
     mark_as_executed: "Mark as executed",
+    buy_another_node: "Buy another node to increase your voting power on future proposals.",
+    buy_a_node:
+      "Voting is only possible for Node holders. Buy a node to vote on future proposals or increase your voting power.",
     cancel_proposal: {
       title: "Cancel proposal",
       description:

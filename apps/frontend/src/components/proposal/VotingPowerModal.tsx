@@ -138,27 +138,13 @@ const NodesHeader = () => {
 const NodesList = ({ nodesList }: { nodesList: NodesListProps }) => {
   return (
     <Flex flexDirection={"column"} borderBottomWidth={1} borderColor={"gray.200"}>
-      {nodesList.map((node, index) => (
-        <NodeItem key={index} multiplier={node.multiplier} nodeName={node.nodeName} votingPower={node.votingPower} />
+      {nodesList.map(({ multiplier, nodeName, votingPower }, index) => (
+        <Flex key={index} alignItems={"center"} color={"gray.600"} paddingY={1.5} gap={8}>
+          <Text>{`${multiplier}x`}</Text>
+          <Text flex={1}>{nodeName}</Text>
+          <Text>{votingPower}</Text>
+        </Flex>
       ))}
-    </Flex>
-  );
-};
-
-const NodeItem = ({
-  multiplier,
-  nodeName,
-  votingPower,
-}: {
-  multiplier: number;
-  nodeName: string;
-  votingPower: number;
-}) => {
-  return (
-    <Flex alignItems={"center"} color={"gray.600"} paddingY={1.5} gap={8}>
-      <Text>{`${multiplier}x`}</Text>
-      <Text flex={1}>{nodeName}</Text>
-      <Text>{votingPower}</Text>
     </Flex>
   );
 };

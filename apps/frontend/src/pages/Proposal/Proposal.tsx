@@ -17,6 +17,7 @@ import { FiCheckSquare } from "react-icons/fi";
 import { DeleteEditProposal } from "@/components/proposal/DeleteEditProposal";
 import { CancelEditProposal } from "@/components/proposal/CancelEditProposal";
 import { useWallet } from "@vechain/vechain-kit";
+import { BuyANode } from "@/components/proposal/BuyANode";
 
 export const Proposal = () => {
   const { LL } = useI18nContext();
@@ -60,8 +61,7 @@ export const Proposal = () => {
           <ProposalInfoBox />
         </PageContainer.Header>
         {proposal.status !== "canceled" && <VotingSection />}
-        {/* todo: Add Buy a node info box */}
-        {/* <BuyANode/> */}
+        <BuyANode />
       </PageContainer>
     </ProposalProvider>
   );

@@ -145,6 +145,10 @@ type RootTranslation = {
 	 * O​p​t​i​o​n​a​l
 	 */
 	optional: string
+	/**
+	 * B​u​y​ ​a​ ​N​o​d​e
+	 */
+	buy_a_node: string
 	home: {
 		/**
 		 * H​o​m​e
@@ -213,6 +217,14 @@ type RootTranslation = {
 		 * M​a​r​k​ ​a​s​ ​e​x​e​c​u​t​e​d
 		 */
 		mark_as_executed: string
+		/**
+		 * B​u​y​ ​a​n​o​t​h​e​r​ ​n​o​d​e​ ​t​o​ ​i​n​c​r​e​a​s​e​ ​y​o​u​r​ ​v​o​t​i​n​g​ ​p​o​w​e​r​ ​o​n​ ​f​u​t​u​r​e​ ​p​r​o​p​o​s​a​l​s​.
+		 */
+		buy_another_node: string
+		/**
+		 * V​o​t​i​n​g​ ​i​s​ ​o​n​l​y​ ​p​o​s​s​i​b​l​e​ ​f​o​r​ ​N​o​d​e​ ​h​o​l​d​e​r​s​.​ ​B​u​y​ ​a​ ​n​o​d​e​ ​t​o​ ​v​o​t​e​ ​o​n​ ​f​u​t​u​r​e​ ​p​r​o​p​o​s​a​l​s​ ​o​r​ ​i​n​c​r​e​a​s​e​ ​y​o​u​r​ ​v​o​t​i​n​g​ ​p​o​w​e​r​.
+		 */
+		buy_a_node: string
 		cancel_proposal: {
 			/**
 			 * C​a​n​c​e​l​ ​p​r​o​p​o​s​a​l
@@ -666,6 +678,10 @@ export type TranslationFunctions = {
 	 * Optional
 	 */
 	optional: () => LocalizedString
+	/**
+	 * Buy a Node
+	 */
+	buy_a_node: () => LocalizedString
 	home: {
 		/**
 		 * Home
@@ -733,6 +749,14 @@ export type TranslationFunctions = {
 		 * Mark as executed
 		 */
 		mark_as_executed: () => LocalizedString
+		/**
+		 * Buy another node to increase your voting power on future proposals.
+		 */
+		buy_another_node: () => LocalizedString
+		/**
+		 * Voting is only possible for Node holders. Buy a node to vote on future proposals or increase your voting power.
+		 */
+		buy_a_node: () => LocalizedString
 		cancel_proposal: {
 			/**
 			 * Cancel proposal
