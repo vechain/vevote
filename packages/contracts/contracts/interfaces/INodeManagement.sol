@@ -140,5 +140,14 @@ interface INodeManagement {
    * @param user The address of the user to check.
    * @return NodeInfo[] Array of node information structures.
    */
-  function getUsersNodesWithLevelInfo(address user) external view returns (VechainNodesDataTypes.NodeLevelInfo[] memory);
+  function getUsersNodesWithLevelInfo(
+    address user
+  ) external view returns (VechainNodesDataTypes.NodeLevelInfo[] memory);
+
+  /**
+   * @notice Retrieves the node level information for a given node ID.
+   * @param nodeId The ID of the node.
+   * @return VechainNodesDataTypes.NodeLevelInfo The node level information.
+   */
+  function getNodeLevelInfo(uint256 nodeId) external view returns (VechainNodesDataTypes.NodeLevelInfo memory);
 }

@@ -3,6 +3,7 @@
 pragma solidity 0.8.20;
 
 import { VeVoteStorageTypes } from "./VeVoteStorageTypes.sol";
+import { VeVoteClockLogic } from "./VeVoteClockLogic.sol";
 import { VeVoteStateLogic } from "./VeVoteStateLogic.sol";
 import { VeVoteTypes } from "./VeVoteTypes.sol";
 import { VechainNodesDataTypes } from "../../libraries/VechainNodesDataTypes.sol";
@@ -165,6 +166,22 @@ library VeVoteVoteLogic {
   }
 
   /**
+   * @notice Retrieves the voting power of a node.
+   * @param self The storage reference for the VeVoteStorage.
+   * @param nodeId The ID of the node.
+   * @return The voting power of the node.
+   */
+  function getNodeVoteWeight(
+    VeVoteStorageTypes.VeVoteStorage storage self,
+    uint256 nodeId
+  ) external view returns (uint256) {
+    VechainNodesDataTypes.NodeLevelInfo memory nodeInfo = self.nodeManagement.getNodeLevelInfo(nodeId);
+    return
+      _getNodeWeight(self, nodeInfo.minBalance, nodeInfo.nodeLevel) /
+      _voteWeightDenominator(self, VeVoteClockLogic.clock());
+  }
+
+  /**
    * @notice Retrieves the votes for a proposal.
    * @param self The storage reference for the VeVoteStorage.
    * @param proposalId The ID of the proposal.
@@ -176,14 +193,15 @@ library VeVoteVoteLogic {
     bytes32[] storage choices = self.proposals[proposalId].choices;
     uint256 numChoices = choices.length;
 
+    uint256 denominator = _voteWeightDenominator(self, self.proposals[proposalId].voteStart);
+
     results = new VeVoteTypes.ProposalVoteResult[](numChoices);
 
     // Iterate over each choice and calculate the normalized weight
     for (uint8 i = 0; i < numChoices; i++) {
       // Determine the normalized weight of the vote -> There could still be rounding errors here due to the fact users split their vote and vote smallest voting weight being 1
       // TODO: Double check team are aware if we keep smallest votimg weight as 1 this could hapepn.
-      uint256 normalizedWeight = self.voteTally[proposalId][i] /
-        _voteWeightDenominator(self, self.proposals[proposalId].voteStart);
+      uint256 normalizedWeight = self.voteTally[proposalId][i] / denominator;
 
       // Store the result in the array
       results[i] = VeVoteTypes.ProposalVoteResult({
@@ -266,16 +284,10 @@ library VeVoteVoteLogic {
           continue;
         }
 
-        // Calculate base voting power
-        uint256 baseVotingPower = nodes[i].minBalance;
+        uint256 nodeWeight = _getNodeWeight(self, nodes[i].minBalance, nodes[i].nodeLevel);
 
-        // Use tryMul to prevent overflow
-        (bool success, uint256 nodeWeight) = Math.tryMul(baseVotingPower, self.nodeMultiplier[nodes[i].nodeLevel]);
-        if (!success) {
-          revert VotePowerOverflow();
-        }
-        // Apply node weight to users total voting power, divided by the scale
-        weight += nodeWeight / VOTING_MULTIPLER_SCALE;
+        // Apply node weight to users total voting power
+        weight += nodeWeight;
       }
     }
   }
@@ -296,5 +308,23 @@ library VeVoteVoteLogic {
       revert VoteWeightDenominatorZero();
     }
     return baseNodeVetRequirement;
+  }
+
+  function _getNodeWeight(
+    VeVoteStorageTypes.VeVoteStorage storage self,
+    uint256 minBalance,
+    VechainNodesDataTypes.NodeStrengthLevel nodeLevel
+  ) private view returns (uint256) {
+    // Calculate base voting power
+    uint256 baseVotingPower = minBalance;
+
+    // Use tryMul to prevent overflow
+    (bool success, uint256 nodeWeight) = Math.tryMul(baseVotingPower, self.nodeMultiplier[nodeLevel]);
+    if (!success) {
+      revert VotePowerOverflow();
+    }
+
+    // Return the node weight divided by the scale
+    return nodeWeight / VOTING_MULTIPLER_SCALE;
   }
 }
