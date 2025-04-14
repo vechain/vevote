@@ -1,5 +1,6 @@
 import { useShowNavbar } from "@/hooks/useShowNavbar";
 import { Box, BoxProps, Flex, FlexProps, Image, useBreakpointValue } from "@chakra-ui/react";
+import { Box, BoxProps, Flex, FlexProps, Image, useBreakpointValue } from "@chakra-ui/react";
 import { DAppKitWalletButton } from "@vechain/vechain-kit";
 import { PropsWithChildren, useMemo } from "react";
 

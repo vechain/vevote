@@ -26,7 +26,7 @@ export const useFormatDate = () => {
   }, []);
 
   const formattedProposalDate = useCallback((date?: Date) => {
-    if (!date) return "";
+    if (!date) return;
     return dayjs(date).format("DD/MM/YYYY - HH[h]:mm[m]");
   }, []);
   return {
