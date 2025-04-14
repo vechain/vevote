@@ -30,6 +30,10 @@ type RootTranslation = {
 	 */
 	end: string
 	/**
+	 * E​d​i​t
+	 */
+	edit: string
+	/**
 	 * O​n
 	 */
 	on: string
@@ -94,6 +98,14 @@ type RootTranslation = {
 	 */
 	votes: string
 	/**
+	 * D​e​l​e​t​e
+	 */
+	'delete': string
+	/**
+	 * C​a​n​c​e​l
+	 */
+	cancel: string
+	/**
 	 * %
 	 */
 	percentage: string
@@ -110,6 +122,10 @@ type RootTranslation = {
 	 */
 	voted: string
 	/**
+	 * V​o​t​e
+	 */
+	vote: string
+	/**
 	 * W​a​l​l​e​t
 	 */
 	wallet: string
@@ -121,6 +137,14 @@ type RootTranslation = {
 	 * N​o​d​e
 	 */
 	node: string
+	/**
+	 * G​o​ ​b​a​c​k
+	 */
+	go_back: string
+	/**
+	 * O​p​t​i​o​n​a​l
+	 */
+	optional: string
 	home: {
 		/**
 		 * H​o​m​e
@@ -185,6 +209,50 @@ type RootTranslation = {
 		 * S​e​e​ ​a​l​l​ ​v​o​t​e​r​s
 		 */
 		see_all_voters: string
+		/**
+		 * M​a​r​k​ ​a​s​ ​e​x​e​c​u​t​e​d
+		 */
+		mark_as_executed: string
+		cancel_proposal: {
+			/**
+			 * C​a​n​c​e​l​ ​p​r​o​p​o​s​a​l
+			 */
+			title: string
+			/**
+			 * C​a​n​c​e​l​i​n​g​ ​t​h​e​ ​p​r​o​p​o​s​a​l​ ​m​e​a​n​s​ ​i​t​ ​t​h​e​ ​v​o​t​i​n​g​ ​w​i​l​l​ ​n​o​t​ ​t​a​k​e​ ​p​l​a​c​e​ ​a​n​d​ ​t​h​e​ ​p​r​o​p​o​s​a​l​ ​w​i​l​l​ ​n​o​t​ ​h​a​v​e​ ​n​o​ ​r​e​s​u​l​t​s​.
+			 */
+			description: string
+			/**
+			 * R​e​a​s​o​n
+			 */
+			reason: string
+			/**
+			 * W​r​i​t​e​ ​t​h​e​ ​r​e​a​s​o​n​ ​f​o​r​ ​c​a​n​c​e​l​l​a​t​i​o​n​.​.​.
+			 */
+			reason_placeholder: string
+		}
+		delete_proposal: {
+			/**
+			 * D​e​l​e​t​e​ ​p​r​o​p​o​s​a​l
+			 */
+			title: string
+			/**
+			 * I​f​ ​y​o​u​ ​d​e​l​e​t​e​ ​t​h​i​s​ ​d​r​a​f​t​,​ ​a​l​l​ ​t​h​e​ ​i​n​f​o​r​m​a​t​i​o​n​ ​o​f​ ​t​h​e​ ​p​r​o​p​o​s​a​l​ ​w​i​l​l​ ​n​o​t​ ​b​e​ ​p​o​s​s​i​b​l​e​ ​t​o​ ​r​e​c​o​v​e​r​ ​a​n​y​m​o​r​e​.
+			 */
+			description: string
+			/**
+			 * A​r​e​ ​y​o​u​ ​s​u​r​e​ ​y​o​u​ ​w​a​n​t​ ​t​o​ ​d​e​l​e​t​e​ ​i​t​?
+			 */
+			confirmation: string
+			/**
+			 * N​o​,​ ​g​o​ ​b​a​c​k
+			 */
+			no_go_back: string
+			/**
+			 * Y​e​s​,​ ​D​e​l​e​t​e​ ​P​r​o​p​o​s​a​l
+			 */
+			yes_delete: string
+		}
 		info_box: {
 			info: {
 				/**
@@ -483,6 +551,10 @@ export type TranslationFunctions = {
 	 */
 	end: () => LocalizedString
 	/**
+	 * Edit
+	 */
+	edit: () => LocalizedString
+	/**
 	 * On
 	 */
 	on: () => LocalizedString
@@ -547,6 +619,14 @@ export type TranslationFunctions = {
 	 */
 	votes: () => LocalizedString
 	/**
+	 * Delete
+	 */
+	'delete': () => LocalizedString
+	/**
+	 * Cancel
+	 */
+	cancel: () => LocalizedString
+	/**
 	 * %
 	 */
 	percentage: () => LocalizedString
@@ -563,6 +643,10 @@ export type TranslationFunctions = {
 	 */
 	voted: () => LocalizedString
 	/**
+	 * Vote
+	 */
+	vote: () => LocalizedString
+	/**
 	 * Wallet
 	 */
 	wallet: () => LocalizedString
@@ -574,6 +658,14 @@ export type TranslationFunctions = {
 	 * Node
 	 */
 	node: () => LocalizedString
+	/**
+	 * Go back
+	 */
+	go_back: () => LocalizedString
+	/**
+	 * Optional
+	 */
+	optional: () => LocalizedString
 	home: {
 		/**
 		 * Home
@@ -637,6 +729,50 @@ export type TranslationFunctions = {
 		 * See all voters
 		 */
 		see_all_voters: () => LocalizedString
+		/**
+		 * Mark as executed
+		 */
+		mark_as_executed: () => LocalizedString
+		cancel_proposal: {
+			/**
+			 * Cancel proposal
+			 */
+			title: () => LocalizedString
+			/**
+			 * Canceling the proposal means it the voting will not take place and the proposal will not have no results.
+			 */
+			description: () => LocalizedString
+			/**
+			 * Reason
+			 */
+			reason: () => LocalizedString
+			/**
+			 * Write the reason for cancellation...
+			 */
+			reason_placeholder: () => LocalizedString
+		}
+		delete_proposal: {
+			/**
+			 * Delete proposal
+			 */
+			title: () => LocalizedString
+			/**
+			 * If you delete this draft, all the information of the proposal will not be possible to recover anymore.
+			 */
+			description: () => LocalizedString
+			/**
+			 * Are you sure you want to delete it?
+			 */
+			confirmation: () => LocalizedString
+			/**
+			 * No, go back
+			 */
+			no_go_back: () => LocalizedString
+			/**
+			 * Yes, Delete Proposal
+			 */
+			yes_delete: () => LocalizedString
+		}
 		info_box: {
 			info: {
 				/**

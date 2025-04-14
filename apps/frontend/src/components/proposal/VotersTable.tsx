@@ -1,10 +1,11 @@
 import { createColumnHelper } from "@tanstack/react-table";
 import { VoteItem } from "./VotersModal";
-import { Link, Text } from "@chakra-ui/react";
+import { defineStyle, Link, Text } from "@chakra-ui/react";
 import { formatAddress } from "@/utils/address";
 import { CopyLink } from "../ui/CopyLink";
 import { MdOutlineArrowOutward } from "react-icons/md";
 import dayjs from "dayjs";
+import { useMemo } from "react";
 
 const VECHAIN_EXPLORER_URL = "https://explore-testnet.vechain.org"; //todo: add env variable
 
@@ -40,9 +41,29 @@ const AddressCell = ({ value }: { value: string }) => {
   );
 };
 
+const votedOptionCellVariants = {
+  yes: defineStyle({
+    background: "green.100",
+    color: "green.700",
+  }),
+  no: defineStyle({
+    background: "red.100",
+    color: "red.700",
+  }),
+  default: defineStyle({
+    background: "gray.100",
+    color: "gray.700",
+  }),
+};
+
 const VotedOptionCell = ({ value }: { value: string }) => {
+  const variant = useMemo(() => {
+    if (value === "Yes") return votedOptionCellVariants.yes;
+    if (value === "No") return votedOptionCellVariants.no;
+    return votedOptionCellVariants.default;
+  }, [value]);
   return (
-    <Text fontWeight={500} color={"primary.500"} fontSize={12}>
+    <Text {...variant} textAlign={"center"} fontWeight={500} fontSize={12} borderRadius={4} p={1}>
       {value}
     </Text>
   );

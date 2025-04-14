@@ -43,6 +43,7 @@ export const VotingSingleChoice = ({
 
 export const VotingSingleOption = ({ proposal }: GenericVotingOptions<VotingEnum.SINGLE_OPTION, string[]>) => {
   const [selectedOption, setSelectedOption] = useState<number | undefined>(undefined);
+
   const votingVariant: VotingItemVariant = useMemo(() => getVotingVariant(proposal.status), [proposal.status]);
 
   return (
@@ -66,6 +67,7 @@ export const VotingSingleOption = ({ proposal }: GenericVotingOptions<VotingEnum
 
 export const VotingMultipleOptions = ({ proposal }: GenericVotingOptions<VotingEnum.MULTIPLE_OPTIONS, string[]>) => {
   const [selectedOptions, setSelectedOptions] = useState<number[]>([]);
+
   const votingVariant: VotingItemVariant = useMemo(() => getVotingVariant(proposal.status), [proposal.status]);
 
   const handleSelectedOptions = useCallback(

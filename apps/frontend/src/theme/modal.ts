@@ -15,7 +15,7 @@ const defaultVariant = definePartsStyle({
     borderRadius: "16px",
     display: "flex",
     flexDirection: "column",
-    gap: "40px",
+    gap: "32px",
     boxShadow: "0px 2px 6px 0px rgba(0, 0, 0, 0.07)",
   },
   overlay: {

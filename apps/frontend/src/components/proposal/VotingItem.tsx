@@ -3,6 +3,7 @@ import { VotingEnum } from "@/types/proposal";
 import { Box, Button, Checkbox, defineStyle, Flex, Radio, Text } from "@chakra-ui/react";
 import { useCallback, useMemo } from "react";
 import { motion } from "framer-motion";
+import { useWallet } from "@vechain/vechain-kit";
 
 export type VotingItemVariant = "upcoming" | "voting" | "result-lost" | "result-win";
 
@@ -40,9 +41,11 @@ const variants = (isSelected: boolean) => ({
 });
 
 export const VotingItem = ({ isSelected, kind, label, variant, onClick, isMostVoted, votes }: VotingItemProps) => {
+  const { account } = useWallet();
   const handleClick = useCallback(() => {
+    if (!account?.address) return;
     if (variant === "voting") onClick?.();
-  }, [onClick, variant]);
+  }, [onClick, variant, account?.address]);
   return (
     <Button
       variant={"tertiary"}

@@ -1,10 +1,8 @@
 import {
   Modal as BaseModal,
   ColorProps,
-  Flex,
   Heading,
   Icon,
-  ModalBody,
   ModalCloseButton,
   ModalContent,
   ModalHeader,
@@ -26,33 +24,24 @@ export const ModalSkeleton = ({ children, ...props }: ModalProps) => {
   );
 };
 
-type MessageModalProps = Omit<ModalProps, "variant" | "onClose"> & {
+type MessageModalProps = Omit<ModalProps, "variant"> & {
   icon: IconType;
   title?: string;
-  description?: string;
   iconColor?: ColorProps["color"];
 };
 
-export const MessageModal = ({
-  children,
-  title,
-  description,
-  icon,
-  iconColor = "primary.500",
-  ...props
-}: MessageModalProps) => {
+export const MessageModal = ({ children, title, icon, iconColor = "primary.500", ...props }: MessageModalProps) => {
   return (
-    <BaseModal onClose={() => {}} closeOnOverlayClick={false} isCentered {...props}>
+    <BaseModal isCentered {...props}>
       <ModalOverlay />
-      <ModalContent>
+      <ModalContent gap={2}>
         <ModalHeader textAlign={"center"} display={"flex"} flexDirection={"column"} alignItems={"center"}>
-          <Icon color={iconColor} size={"xl"} as={icon} paddingBottom={4} />
-          <Flex flexDirection={"column"} gap={2}>
-            <Text variant={"subtitle"}>{title}</Text>
-            <Text variant={"paragraph"}>{description}</Text>
-          </Flex>
+          <Icon color={iconColor} size={"xl"} as={icon} paddingBottom={6} />
+          <Text fontSize={20} color={"gray.600"} fontWeight={600}>
+            {title}
+          </Text>
         </ModalHeader>
-        <ModalBody>{children}</ModalBody>
+        {children}
       </ModalContent>
     </BaseModal>
   );

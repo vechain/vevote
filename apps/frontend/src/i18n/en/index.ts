@@ -5,6 +5,7 @@ const en = {
   back: "Back",
   start: "Start",
   end: "End",
+  edit: "Edit",
   on: "On",
   all: "All",
   finished: "Finished",
@@ -21,13 +22,18 @@ const en = {
   voters: "Voters",
   most_voted: "Most voted",
   votes: "Votes",
+  delete: "Delete",
+  cancel: "Cancel",
   percentage: "%",
   submit: "Submit",
   voting_power: "Voting Power",
   voted: "Voted",
+  vote: "Vote",
   wallet: "Wallet",
   block: "Block #",
   node: "Node",
+  go_back: "Go back",
+  optional: "Optional",
   home: {
     title: "Home",
     go_to_proposals: "Go to proposals",
@@ -49,6 +55,22 @@ const en = {
     voting_will_start: "Voting will start {date:string}",
     see_your_vote: "See your vote details",
     see_all_voters: "See all voters",
+    mark_as_executed: "Mark as executed",
+    cancel_proposal: {
+      title: "Cancel proposal",
+      description:
+        "Canceling the proposal means it the voting will not take place and the proposal will not have no results.",
+      reason: "Reason",
+      reason_placeholder: "Write the reason for cancellation...",
+    },
+    delete_proposal: {
+      title: "Delete proposal",
+      description:
+        "If you delete this draft, all the information of the proposal will not be possible to recover anymore.",
+      confirmation: "Are you sure you want to delete it?",
+      no_go_back: "No, go back",
+      yes_delete: "Yes, Delete Proposal",
+    },
     info_box: {
       info: {
         title: "Minimum participation",
