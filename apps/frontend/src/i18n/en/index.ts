@@ -1,13 +1,29 @@
 import type { BaseTranslation } from "../i18n-types.js";
 
 const en = {
+  homepage: "Homepage",
+  back: "Back",
   start: "Start",
   end: "End",
+  on: "On",
   all: "All",
   finished: "Finished",
   show_more: "Show more",
   exit: "Exit",
   next: "Next",
+  learn_more: "Learn more",
+  see_details: "See details",
+  select: "Select",
+  select_between: "Select between",
+  and: "and",
+  one: "one",
+  voting: "Voting",
+  most_voted: "Most voted",
+  votes: "Votes",
+  percentage: "%",
+  submit: "Submit",
+  voting_power: "Voting Power",
+  voted: "Voted",
   home: {
     title: "Home",
     go_to_proposals: "Go to proposals",
@@ -15,7 +31,47 @@ const en = {
   field_errors: {
     required: "Required",
   },
+  voting_list: {
+    voting_options: "Voting options:",
+    option_to_vote: "option to vote:",
+  },
   proposal: {
+    title: "Proposal",
+    proposed_by: "Proposed by",
+    voting_calendar: "Voting calendar",
+    who_can_vote: "Who can vote",
+    vechain_foundation: "VeChain Foundation",
+    node_holders: "Node holders with voting power will be able to vote on this proposal.",
+    voting_will_start: "Voting will start {date:string}",
+    see_your_vote: "See your vote details",
+    see_all_voters: "See all voters",
+    info_box: {
+      info: {
+        title: "Minimum participation",
+        description:
+          "A minimum of 30% participation must be reached to validate the voting of the proposal and get approval.",
+      },
+      approved: {
+        title: "Minimum participation reached",
+        description: "The voting participation reached the minimum required of 30% to get approval.",
+      },
+      executed: {
+        title: "Proposal Approved and Executed",
+        description: "The voting approved the proposal and the actions have been executed.",
+      },
+      "min-not-reached": {
+        title: "Minimum participation not reached",
+        description: "The voting participation didn’t reached the minimum required of 30% to get approval.",
+      },
+      rejected: {
+        title: "Proposal Rejected",
+        description: "The proposal didn’t get enough votes in favor to get approval.",
+      },
+      canceled: {
+        title: "Proposal Canceled",
+        description: "The proposal was canceled by VeChain or the proposer by the following reason:",
+      },
+    },
     create: {
       title: "Create Proposal",
       steps: "{current:number} of {total:number}",

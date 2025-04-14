@@ -17,6 +17,7 @@ import dayjs from "dayjs";
 import { mockProposals } from "@/utils/mock";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { Pagination } from "@/components/ui/Pagination";
+import { ProposalsHeader } from "@/components/navbar/Header";
 
 const ITEMS_PER_PAGE = 6;
 
@@ -40,52 +41,48 @@ export const Proposals = () => {
   }, [proposalsBySearch]);
 
   return (
-    <PageContainer>
-      <PageContainer.Header>
-        <Heading fontSize={32} fontWeight={600} color="primary.600" display={"flex"} alignItems={"center"} gap={6}>
-          <Icon as={MdOutlineHowToVote} width={8} height={8} color={"primary.600"} marginRight={2} />
-          {LL.proposals.title()}
-        </Heading>
-        <Button
-          as={Link}
-          href="/create-proposal"
-          marginLeft={"auto"}
-          gap={3}
-          color={"white"}
-          bgColor={"primary.500"}
-          _hover={{ bgColor: "primary.700" }}>
-          <Icon as={CiCirclePlus} width={6} height={6} />
-          {LL.proposals.create()}
-        </Button>
-      </PageContainer.Header>
-      <PageContainer.Content>
-        <Tabs>
-          <Flex>
-            <TabList>
-              <Tab>{LL.all()}</Tab>
-              <Tab>{LL.badge.voting()}</Tab>
-              <Tab>{LL.badge.upcoming()}</Tab>
-              <Tab>{LL.finished()}</Tab>
-            </TabList>
-            <Flex marginLeft={"auto"} gap={4} alignItems={"center"}>
-              <SearchInput
-                value={searchValue}
-                onChange={e => setSearchValue(e.target.value)}
-                placeholder={LL.proposals.search_placeholder()}
-              />
-              <SortDropdown sort={sort} setSort={setSort} />
+    <>
+      <ProposalsHeader />
+      <PageContainer>
+        <PageContainer.Header>
+          <Heading fontSize={32} fontWeight={600} color="primary.600" display={"flex"} alignItems={"center"} gap={6}>
+            <Icon as={MdOutlineHowToVote} width={8} height={8} color={"primary.600"} marginRight={2} />
+            {LL.proposals.title()}
+          </Heading>
+          <Button as={Link} href="/create-proposal" marginLeft={"auto"}>
+            <Icon as={CiCirclePlus} width={6} height={6} />
+            {LL.proposals.create()}
+          </Button>
+        </PageContainer.Header>
+        <PageContainer.Content>
+          <Tabs>
+            <Flex>
+              <TabList>
+                <Tab>{LL.all()}</Tab>
+                <Tab>{LL.badge.voting()}</Tab>
+                <Tab>{LL.badge.upcoming()}</Tab>
+                <Tab>{LL.finished()}</Tab>
+              </TabList>
+              <Flex marginLeft={"auto"} gap={4} alignItems={"center"}>
+                <SearchInput
+                  value={searchValue}
+                  onChange={e => setSearchValue(e.target.value)}
+                  placeholder={LL.proposals.search_placeholder()}
+                />
+                <SortDropdown sort={sort} setSort={setSort} />
+              </Flex>
             </Flex>
-          </Flex>
 
-          <TabPanels>
-            <ProposalsPanel proposals={proposalsByTabStatus.all} />
-            <ProposalsPanel proposals={proposalsByTabStatus.voting} />
-            <ProposalsPanel proposals={proposalsByTabStatus.upcoming} />
-            <ProposalsPanel proposals={proposalsByTabStatus.finished} />
-          </TabPanels>
-        </Tabs>
-      </PageContainer.Content>
-    </PageContainer>
+            <TabPanels>
+              <ProposalsPanel proposals={proposalsByTabStatus.all} />
+              <ProposalsPanel proposals={proposalsByTabStatus.voting} />
+              <ProposalsPanel proposals={proposalsByTabStatus.upcoming} />
+              <ProposalsPanel proposals={proposalsByTabStatus.finished} />
+            </TabPanels>
+          </Tabs>
+        </PageContainer.Content>
+      </PageContainer>
+    </>
   );
 };
 
@@ -123,7 +120,19 @@ const BasePanel = ({ children }: PropsWithChildren) => {
   );
 };
 
-const ProposalCard = ({ isVoted, status, title, endDate, startDate }: ProposalCardType) => {
+const ProposalCard = ({ status, title, endDate, startDate, id }: ProposalCardType) => {
+  const variant = useMemo(() => {
+    switch (status) {
+      case "min-not-reached":
+        return "rejected";
+      default:
+        return status;
+    }
+  }, [status]);
+
+  const isVoted = useMemo(() => {
+    return ["approved", "executed"].includes(status);
+  }, [status]);
   return (
     <Flex
       width={"100%"}
@@ -138,7 +147,7 @@ const ProposalCard = ({ isVoted, status, title, endDate, startDate }: ProposalCa
       alignItems={"center"}>
       <Flex width={"100%"} direction={"column"} gap={6}>
         <Flex gap={4} alignItems={"center"}>
-          <IconBadge variant={status} />
+          <IconBadge variant={variant} />
           {isVoted && <Status text={"Voted"} marginLeft={"auto"} />}
         </Flex>
         <Flex gap={4} alignItems={"start"} direction={"column"}>
@@ -148,7 +157,7 @@ const ProposalCard = ({ isVoted, status, title, endDate, startDate }: ProposalCa
           <DateItem startDate={startDate} endDate={endDate} status={status} />
         </Flex>
       </Flex>
-      <Link paddingX={0} bg={"transparent"} _hover={{ bg: "transparent" }}>
+      <Link paddingX={0} bg={"transparent"} _hover={{ bg: "transparent" }} href={`/proposal/${id}`}>
         <Icon as={FaChevronRight} width={4} height={4} color={"gray.500"} />
       </Link>
     </Flex>

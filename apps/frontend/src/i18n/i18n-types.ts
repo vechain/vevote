@@ -14,6 +14,14 @@ export type Translations = RootTranslation
 
 type RootTranslation = {
 	/**
+	 * H​o​m​e​p​a​g​e
+	 */
+	homepage: string
+	/**
+	 * B​a​c​k
+	 */
+	back: string
+	/**
 	 * S​t​a​r​t
 	 */
 	start: string
@@ -21,6 +29,10 @@ type RootTranslation = {
 	 * E​n​d
 	 */
 	end: string
+	/**
+	 * O​n
+	 */
+	on: string
 	/**
 	 * A​l​l
 	 */
@@ -41,6 +53,58 @@ type RootTranslation = {
 	 * N​e​x​t
 	 */
 	next: string
+	/**
+	 * L​e​a​r​n​ ​m​o​r​e
+	 */
+	learn_more: string
+	/**
+	 * S​e​e​ ​d​e​t​a​i​l​s
+	 */
+	see_details: string
+	/**
+	 * S​e​l​e​c​t
+	 */
+	select: string
+	/**
+	 * S​e​l​e​c​t​ ​b​e​t​w​e​e​n
+	 */
+	select_between: string
+	/**
+	 * a​n​d
+	 */
+	and: string
+	/**
+	 * o​n​e
+	 */
+	one: string
+	/**
+	 * V​o​t​i​n​g
+	 */
+	voting: string
+	/**
+	 * M​o​s​t​ ​v​o​t​e​d
+	 */
+	most_voted: string
+	/**
+	 * V​o​t​e​s
+	 */
+	votes: string
+	/**
+	 * %
+	 */
+	percentage: string
+	/**
+	 * S​u​b​m​i​t
+	 */
+	submit: string
+	/**
+	 * V​o​t​i​n​g​ ​P​o​w​e​r
+	 */
+	voting_power: string
+	/**
+	 * V​o​t​e​d
+	 */
+	voted: string
 	home: {
 		/**
 		 * H​o​m​e
@@ -57,7 +121,116 @@ type RootTranslation = {
 		 */
 		required: string
 	}
+	voting_list: {
+		/**
+		 * V​o​t​i​n​g​ ​o​p​t​i​o​n​s​:
+		 */
+		voting_options: string
+		/**
+		 * o​p​t​i​o​n​ ​t​o​ ​v​o​t​e​:
+		 */
+		option_to_vote: string
+	}
 	proposal: {
+		/**
+		 * P​r​o​p​o​s​a​l
+		 */
+		title: string
+		/**
+		 * P​r​o​p​o​s​e​d​ ​b​y
+		 */
+		proposed_by: string
+		/**
+		 * V​o​t​i​n​g​ ​c​a​l​e​n​d​a​r
+		 */
+		voting_calendar: string
+		/**
+		 * W​h​o​ ​c​a​n​ ​v​o​t​e
+		 */
+		who_can_vote: string
+		/**
+		 * V​e​C​h​a​i​n​ ​F​o​u​n​d​a​t​i​o​n
+		 */
+		vechain_foundation: string
+		/**
+		 * N​o​d​e​ ​h​o​l​d​e​r​s​ ​w​i​t​h​ ​v​o​t​i​n​g​ ​p​o​w​e​r​ ​w​i​l​l​ ​b​e​ ​a​b​l​e​ ​t​o​ ​v​o​t​e​ ​o​n​ ​t​h​i​s​ ​p​r​o​p​o​s​a​l​.
+		 */
+		node_holders: string
+		/**
+		 * V​o​t​i​n​g​ ​w​i​l​l​ ​s​t​a​r​t​ ​{​d​a​t​e​}
+		 * @param {string} date
+		 */
+		voting_will_start: RequiredParams<'date'>
+		/**
+		 * S​e​e​ ​y​o​u​r​ ​v​o​t​e​ ​d​e​t​a​i​l​s
+		 */
+		see_your_vote: string
+		/**
+		 * S​e​e​ ​a​l​l​ ​v​o​t​e​r​s
+		 */
+		see_all_voters: string
+		info_box: {
+			info: {
+				/**
+				 * M​i​n​i​m​u​m​ ​p​a​r​t​i​c​i​p​a​t​i​o​n
+				 */
+				title: string
+				/**
+				 * A​ ​m​i​n​i​m​u​m​ ​o​f​ ​3​0​%​ ​p​a​r​t​i​c​i​p​a​t​i​o​n​ ​m​u​s​t​ ​b​e​ ​r​e​a​c​h​e​d​ ​t​o​ ​v​a​l​i​d​a​t​e​ ​t​h​e​ ​v​o​t​i​n​g​ ​o​f​ ​t​h​e​ ​p​r​o​p​o​s​a​l​ ​a​n​d​ ​g​e​t​ ​a​p​p​r​o​v​a​l​.
+				 */
+				description: string
+			}
+			approved: {
+				/**
+				 * M​i​n​i​m​u​m​ ​p​a​r​t​i​c​i​p​a​t​i​o​n​ ​r​e​a​c​h​e​d
+				 */
+				title: string
+				/**
+				 * T​h​e​ ​v​o​t​i​n​g​ ​p​a​r​t​i​c​i​p​a​t​i​o​n​ ​r​e​a​c​h​e​d​ ​t​h​e​ ​m​i​n​i​m​u​m​ ​r​e​q​u​i​r​e​d​ ​o​f​ ​3​0​%​ ​t​o​ ​g​e​t​ ​a​p​p​r​o​v​a​l​.
+				 */
+				description: string
+			}
+			executed: {
+				/**
+				 * P​r​o​p​o​s​a​l​ ​A​p​p​r​o​v​e​d​ ​a​n​d​ ​E​x​e​c​u​t​e​d
+				 */
+				title: string
+				/**
+				 * T​h​e​ ​v​o​t​i​n​g​ ​a​p​p​r​o​v​e​d​ ​t​h​e​ ​p​r​o​p​o​s​a​l​ ​a​n​d​ ​t​h​e​ ​a​c​t​i​o​n​s​ ​h​a​v​e​ ​b​e​e​n​ ​e​x​e​c​u​t​e​d​.
+				 */
+				description: string
+			}
+			'min-not-reached': {
+				/**
+				 * M​i​n​i​m​u​m​ ​p​a​r​t​i​c​i​p​a​t​i​o​n​ ​n​o​t​ ​r​e​a​c​h​e​d
+				 */
+				title: string
+				/**
+				 * T​h​e​ ​v​o​t​i​n​g​ ​p​a​r​t​i​c​i​p​a​t​i​o​n​ ​d​i​d​n​’​t​ ​r​e​a​c​h​e​d​ ​t​h​e​ ​m​i​n​i​m​u​m​ ​r​e​q​u​i​r​e​d​ ​o​f​ ​3​0​%​ ​t​o​ ​g​e​t​ ​a​p​p​r​o​v​a​l​.
+				 */
+				description: string
+			}
+			rejected: {
+				/**
+				 * P​r​o​p​o​s​a​l​ ​R​e​j​e​c​t​e​d
+				 */
+				title: string
+				/**
+				 * T​h​e​ ​p​r​o​p​o​s​a​l​ ​d​i​d​n​’​t​ ​g​e​t​ ​e​n​o​u​g​h​ ​v​o​t​e​s​ ​i​n​ ​f​a​v​o​r​ ​t​o​ ​g​e​t​ ​a​p​p​r​o​v​a​l​.
+				 */
+				description: string
+			}
+			canceled: {
+				/**
+				 * P​r​o​p​o​s​a​l​ ​C​a​n​c​e​l​e​d
+				 */
+				title: string
+				/**
+				 * T​h​e​ ​p​r​o​p​o​s​a​l​ ​w​a​s​ ​c​a​n​c​e​l​e​d​ ​b​y​ ​V​e​C​h​a​i​n​ ​o​r​ ​t​h​e​ ​p​r​o​p​o​s​e​r​ ​b​y​ ​t​h​e​ ​f​o​l​l​o​w​i​n​g​ ​r​e​a​s​o​n​:
+				 */
+				description: string
+			}
+		}
 		create: {
 			/**
 			 * C​r​e​a​t​e​ ​P​r​o​p​o​s​a​l
@@ -213,6 +386,14 @@ type RootTranslation = {
 
 export type TranslationFunctions = {
 	/**
+	 * Homepage
+	 */
+	homepage: () => LocalizedString
+	/**
+	 * Back
+	 */
+	back: () => LocalizedString
+	/**
 	 * Start
 	 */
 	start: () => LocalizedString
@@ -220,6 +401,10 @@ export type TranslationFunctions = {
 	 * End
 	 */
 	end: () => LocalizedString
+	/**
+	 * On
+	 */
+	on: () => LocalizedString
 	/**
 	 * All
 	 */
@@ -240,6 +425,58 @@ export type TranslationFunctions = {
 	 * Next
 	 */
 	next: () => LocalizedString
+	/**
+	 * Learn more
+	 */
+	learn_more: () => LocalizedString
+	/**
+	 * See details
+	 */
+	see_details: () => LocalizedString
+	/**
+	 * Select
+	 */
+	select: () => LocalizedString
+	/**
+	 * Select between
+	 */
+	select_between: () => LocalizedString
+	/**
+	 * and
+	 */
+	and: () => LocalizedString
+	/**
+	 * one
+	 */
+	one: () => LocalizedString
+	/**
+	 * Voting
+	 */
+	voting: () => LocalizedString
+	/**
+	 * Most voted
+	 */
+	most_voted: () => LocalizedString
+	/**
+	 * Votes
+	 */
+	votes: () => LocalizedString
+	/**
+	 * %
+	 */
+	percentage: () => LocalizedString
+	/**
+	 * Submit
+	 */
+	submit: () => LocalizedString
+	/**
+	 * Voting Power
+	 */
+	voting_power: () => LocalizedString
+	/**
+	 * Voted
+	 */
+	voted: () => LocalizedString
 	home: {
 		/**
 		 * Home
@@ -256,7 +493,115 @@ export type TranslationFunctions = {
 		 */
 		required: () => LocalizedString
 	}
+	voting_list: {
+		/**
+		 * Voting options:
+		 */
+		voting_options: () => LocalizedString
+		/**
+		 * option to vote:
+		 */
+		option_to_vote: () => LocalizedString
+	}
 	proposal: {
+		/**
+		 * Proposal
+		 */
+		title: () => LocalizedString
+		/**
+		 * Proposed by
+		 */
+		proposed_by: () => LocalizedString
+		/**
+		 * Voting calendar
+		 */
+		voting_calendar: () => LocalizedString
+		/**
+		 * Who can vote
+		 */
+		who_can_vote: () => LocalizedString
+		/**
+		 * VeChain Foundation
+		 */
+		vechain_foundation: () => LocalizedString
+		/**
+		 * Node holders with voting power will be able to vote on this proposal.
+		 */
+		node_holders: () => LocalizedString
+		/**
+		 * Voting will start {date}
+		 */
+		voting_will_start: (arg: { date: string }) => LocalizedString
+		/**
+		 * See your vote details
+		 */
+		see_your_vote: () => LocalizedString
+		/**
+		 * See all voters
+		 */
+		see_all_voters: () => LocalizedString
+		info_box: {
+			info: {
+				/**
+				 * Minimum participation
+				 */
+				title: () => LocalizedString
+				/**
+				 * A minimum of 30% participation must be reached to validate the voting of the proposal and get approval.
+				 */
+				description: () => LocalizedString
+			}
+			approved: {
+				/**
+				 * Minimum participation reached
+				 */
+				title: () => LocalizedString
+				/**
+				 * The voting participation reached the minimum required of 30% to get approval.
+				 */
+				description: () => LocalizedString
+			}
+			executed: {
+				/**
+				 * Proposal Approved and Executed
+				 */
+				title: () => LocalizedString
+				/**
+				 * The voting approved the proposal and the actions have been executed.
+				 */
+				description: () => LocalizedString
+			}
+			'min-not-reached': {
+				/**
+				 * Minimum participation not reached
+				 */
+				title: () => LocalizedString
+				/**
+				 * The voting participation didn’t reached the minimum required of 30% to get approval.
+				 */
+				description: () => LocalizedString
+			}
+			rejected: {
+				/**
+				 * Proposal Rejected
+				 */
+				title: () => LocalizedString
+				/**
+				 * The proposal didn’t get enough votes in favor to get approval.
+				 */
+				description: () => LocalizedString
+			}
+			canceled: {
+				/**
+				 * Proposal Canceled
+				 */
+				title: () => LocalizedString
+				/**
+				 * The proposal was canceled by VeChain or the proposer by the following reason:
+				 */
+				description: () => LocalizedString
+			}
+		}
 		create: {
 			/**
 			 * Create Proposal

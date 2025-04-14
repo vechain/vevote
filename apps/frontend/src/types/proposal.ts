@@ -1,13 +1,3 @@
-export type ProposalStatus = "draft" | "upcoming" | "voting" | "approved" | "executed" | "canceled" | "rejected";
-
-export type ProposalCardType = {
-  status: ProposalStatus;
-  isVoted: boolean;
-  title: string;
-  startDate?: Date;
-  endDate?: Date;
-};
-
 export enum CreateProposalStep {
   VOTING_DETAILS,
   VOTING_SETUP,
@@ -31,9 +21,38 @@ export type SingleChoiceOptions = {
   votingOptions: SingleChoiceEnum[];
 };
 
-export type CustomChoiceOptions = {
-  votingType: Extract<VotingEnum, VotingEnum.SINGLE_OPTION | VotingEnum.MULTIPLE_OPTIONS>;
-  votingOptions: Record<string, string>[];
-};
+export type CustomChoiceOptions =
+  | {
+      votingType: VotingEnum.SINGLE_OPTION;
+      votingOptions: string[];
+    }
+  | {
+      votingType: VotingEnum.MULTIPLE_OPTIONS;
+      votingOptions: string[];
+    };
 
 export type VotingChoices = SingleChoiceOptions | CustomChoiceOptions;
+
+export type ProposalStatus =
+  | "draft"
+  | "upcoming"
+  | "voting"
+  | "approved"
+  | "executed"
+  | "canceled"
+  | "rejected"
+  | "min-not-reached";
+
+export type ProposalCardType = {
+  id: string;
+  proposer: string;
+  createdAt: Date;
+  headerImage: string;
+  status: ProposalStatus;
+  title: string;
+  description: string;
+  startDate: Date;
+  endDate: Date;
+  question: string;
+  maxSelection: number;
+} & VotingChoices;
