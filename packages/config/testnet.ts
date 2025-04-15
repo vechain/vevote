@@ -1,44 +1,44 @@
-import { AppConfig } from "."
-const config: AppConfig = {
-  environment: "testnet",
-  basePath: "https://example.org",
-  vevoteContractAddress: "0x785c29703F6D2B0bD1DE0eA924fb1eAbF8914b5a",
-  vechainNodesContractAddress: "0x3f5cd240773b04B11a59eD43C267C7F0FEAc2b02",
-  nodeManagementContractAddress: "0xb81E9C5f9644Dec9e5e3Cac86b4461A222072302",
-  nodeUrl: "https://testnet.vechain.org",
-  network: {
-    id: "testnet",
-    name: "testnet",
-    type: "test",
-    defaultNet: true,
-    urls: [
+import { AppConfig } from "." 
+ const config: AppConfig = {
+  "environment": "testnet",
+  "basePath": "https://example.org",
+  "vevoteContractAddress": "0x9198005340ce96d1994E9fDEccE595cEe2051C54",
+  "vechainNodesContractAddress": "0x365282124Ff66A5f38A82B3717C0203Fb1E2701D",
+  "nodeManagementContractAddress": "0x4E31b0235d9B86810759658a1884Ccd9b7AC451E",
+  "nodeUrl": "https://testnet.vechain.org",
+  "network": {
+    "id": "testnet",
+    "name": "testnet",
+    "type": "test",
+    "defaultNet": true,
+    "urls": [
       "https://testnet.vechain.org",
       "https://vethor-node-test.vechaindev.com",
       "https://sync-testnet.veblocks.net",
-      "https://testnet.vecha.in",
+      "https://testnet.vecha.in"
     ],
-    explorerUrl: "https://insight.vecha.in/#/test",
-    blockTime: 10000,
-    genesis: {
-      number: 0,
-      id: "0x000000000b2bce3c70bc649a02749e8687721b09ed2e15997f466536b20bb127",
-      size: 170,
-      parentID: "0xffffffff00000000000000000000000000000000000000000000000000000000",
-      timestamp: 1530014400,
-      gasLimit: 10000000,
-      beneficiary: "0x0000000000000000000000000000000000000000",
-      gasUsed: 0,
-      totalScore: 0,
-      txsRoot: "0x45b0cfc220ceec5b7c1c62c4d4193d38e4eba48e8815729ce75f9c0ab0e4c1c0",
-      txsFeatures: 0,
-      stateRoot: "0x4ec3af0acbad1ae467ad569337d2fe8576fe303928d35b8cdd91de47e9ac84bb",
-      receiptsRoot: "0x45b0cfc220ceec5b7c1c62c4d4193d38e4eba48e8815729ce75f9c0ab0e4c1c0",
-      signer: "0x0000000000000000000000000000000000000000",
-      isTrunk: true,
-      transactions: [],
-    },
+    "explorerUrl": "https://insight.vecha.in/#/test",
+    "blockTime": 10000,
+    "genesis": {
+      "number": 0,
+      "id": "0x000000000b2bce3c70bc649a02749e8687721b09ed2e15997f466536b20bb127",
+      "size": 170,
+      "parentID": "0xffffffff00000000000000000000000000000000000000000000000000000000",
+      "timestamp": 1530014400,
+      "gasLimit": 10000000,
+      "beneficiary": "0x0000000000000000000000000000000000000000",
+      "gasUsed": 0,
+      "totalScore": 0,
+      "txsRoot": "0x45b0cfc220ceec5b7c1c62c4d4193d38e4eba48e8815729ce75f9c0ab0e4c1c0",
+      "txsFeatures": 0,
+      "stateRoot": "0x4ec3af0acbad1ae467ad569337d2fe8576fe303928d35b8cdd91de47e9ac84bb",
+      "receiptsRoot": "0x45b0cfc220ceec5b7c1c62c4d4193d38e4eba48e8815729ce75f9c0ab0e4c1c0",
+      "signer": "0x0000000000000000000000000000000000000000",
+      "isTrunk": true,
+      "transactions": []
+    }
   },
-  ipfsPinningService: "https://api.dev.gateway-proxy.vechain.org/api/v1/pinning/pinFileToIPFS",
-  ipfsFetchingService: "https://api.dev.gateway-proxy.vechain.org/ipfs",
-}
-export default config
+  "ipfsPinningService": "https://api.dev.gateway-proxy.vechain.org/api/v1/pinning/pinFileToIPFS",
+  "ipfsFetchingService": "https://api.dev.gateway-proxy.vechain.org/ipfs"
+};
+  export default config;
