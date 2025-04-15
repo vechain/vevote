@@ -3,7 +3,7 @@ import { createMultiStyleConfigHelpers } from "@chakra-ui/react";
 
 const { defineMultiStyleConfig, definePartsStyle } = createMultiStyleConfigHelpers(parts.keys);
 
-const primaryStyle = definePartsStyle({
+const baseStyle = definePartsStyle({
   button: {
     bg: "gray.50",
     color: "gray.600",
@@ -20,6 +20,7 @@ const primaryStyle = definePartsStyle({
     boxShadow: "0px 0px 10px 0px gray.600",
   },
   item: {
+    fontSize: "16px",
     color: "gray.600",
     paddingX: "16px",
     paddingY: "12px",
@@ -34,10 +35,5 @@ const primaryStyle = definePartsStyle({
 });
 
 export const dropdownTheme = defineMultiStyleConfig({
-  variants: {
-    primary: primaryStyle,
-  },
-  defaultProps: {
-    variant: "primary",
-  },
+  baseStyle,
 });

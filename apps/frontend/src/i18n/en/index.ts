@@ -5,6 +5,7 @@ const en = {
   back: "Back",
   start: "Start",
   end: "End",
+  edit: "Edit",
   on: "On",
   all: "All",
   finished: "Finished",
@@ -18,12 +19,22 @@ const en = {
   and: "and",
   one: "one",
   voting: "Voting",
+  voters: "Voters",
   most_voted: "Most voted",
   votes: "Votes",
+  delete: "Delete",
+  cancel: "Cancel",
   percentage: "%",
   submit: "Submit",
   voting_power: "Voting Power",
   voted: "Voted",
+  vote: "Vote",
+  wallet: "Wallet",
+  block: "Block #",
+  node: "Node",
+  go_back: "Go back",
+  optional: "Optional",
+  buy_a_node: "Buy a Node",
   home: {
     title: "Home",
     go_to_proposals: "Go to proposals",
@@ -45,6 +56,25 @@ const en = {
     voting_will_start: "Voting will start {date:string}",
     see_your_vote: "See your vote details",
     see_all_voters: "See all voters",
+    mark_as_executed: "Mark as executed",
+    buy_another_node: "Buy another node to increase your voting power on future proposals.",
+    buy_a_node:
+      "Voting is only possible for Node holders. Buy a node to vote on future proposals or increase your voting power.",
+    cancel_proposal: {
+      title: "Cancel proposal",
+      description:
+        "Canceling the proposal means it the voting will not take place and the proposal will not have no results.",
+      reason: "Reason",
+      reason_placeholder: "Write the reason for cancellation...",
+    },
+    delete_proposal: {
+      title: "Delete proposal",
+      description:
+        "If you delete this draft, all the information of the proposal will not be possible to recover anymore.",
+      confirmation: "Are you sure you want to delete it?",
+      no_go_back: "No, go back",
+      yes_delete: "Yes, Delete Proposal",
+    },
     info_box: {
       info: {
         title: "Minimum participation",
@@ -70,6 +100,28 @@ const en = {
       canceled: {
         title: "Proposal Canceled",
         description: "The proposal was canceled by VeChain or the proposer by the following reason:",
+      },
+    },
+    voting_power: {
+      title: "Voting Power",
+      calculation: "Your voting power was calculated at the time of the snapshot {snapshot:string}.",
+      total_voting_power: "Total voting power",
+    },
+    voters_table: {
+      filters: {
+        search_by_address: "Search by address...",
+        voting_options: "Voting options",
+        node: "Node",
+        sort_by: "Sort by",
+      },
+      header: {
+        date: "Date",
+        address: "Address",
+        node: "Node",
+        node_id: "Node ID",
+        voting_power: "Voting Power",
+        voted_option: "Voted option",
+        transaction_id: "Transaction ID",
       },
     },
     create: {

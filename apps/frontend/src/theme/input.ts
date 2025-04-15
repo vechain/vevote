@@ -10,7 +10,7 @@ export const paddingInput = defineStyle({
 
 const smallInput = defineStyle({
   width: "222px",
-  height: "48px",
+  height: "40px",
   ...paddingInput,
 });
 

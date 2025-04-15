@@ -29,9 +29,11 @@ const NavbarInnerContainer = ({ children, ...restProps }: FlexProps) => {
       marginX={"auto"}
       justifyContent={"space-between"}
       alignItems={"center"}
+      gap={6}
       {...restProps}>
       {children}
       <DAppKitWalletButton
+        style={{ whiteSpace: "nowrap" }}
         mobile={useBreakpointValue({
           base: true,
           md: false,
@@ -57,6 +59,7 @@ export const Navbar = () => {
   );
 };
 
+//todo: get from provider
 const isAdmin = true;
 
 export const ProposalNavbar = ({ children }: PropsWithChildren) => {

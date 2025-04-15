@@ -1,4 +1,13 @@
-import { Button, Icon, Menu, MenuButton, MenuItemOption, MenuList, MenuOptionGroup } from "@chakra-ui/react";
+import {
+  Button,
+  Icon,
+  Menu,
+  MenuButton,
+  MenuButtonProps,
+  MenuItemOption,
+  MenuList,
+  MenuOptionGroup,
+} from "@chakra-ui/react";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { Dispatch, SetStateAction } from "react";
 import { BsSortDown } from "react-icons/bs";
@@ -10,11 +19,15 @@ export enum Sort {
   LeastParticipant = "least_participant",
 }
 
-export const SortDropdown = ({ sort, setSort }: { sort: Sort; setSort: Dispatch<SetStateAction<Sort>> }) => {
+export const SortDropdown = ({
+  sort,
+  setSort,
+  ...restProps
+}: Omit<MenuButtonProps, "children"> & { sort: Sort; setSort: Dispatch<SetStateAction<Sort>> }) => {
   const { LL } = useI18nContext();
   return (
     <Menu>
-      <MenuButton as={Button} variant={"secondary"} size={"icon"}>
+      <MenuButton as={Button} variant={"secondary"} size={"icon"} {...restProps}>
         <Icon as={BsSortDown} />
       </MenuButton>
       <MenuList>

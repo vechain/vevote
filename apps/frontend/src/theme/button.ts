@@ -63,7 +63,7 @@ export const buttonTheme = defineStyleConfig({
   },
   variants: {
     primary: {
-      backgroundColor: colors.primary[500],
+      backgroundColor: colors.primary[700],
       textColor: colors.gray[50],
       _hover: {
         backgroundColor: colors.primary[400],
@@ -101,7 +101,19 @@ export const buttonTheme = defineStyleConfig({
       },
     },
     tertiary: {},
-    ghost: {},
+    ghost: {
+      _hover: {
+        background: "transparent",
+        color: "blue.500",
+      },
+      _active: {
+        background: "transparent",
+        color: "blue.500",
+      },
+      _focus: {
+        boxShadow: "none",
+      },
+    },
     feedback: {
       backgroundColor: colors.green[50],
       textColor: colors.green[700],
@@ -120,10 +132,27 @@ export const buttonTheme = defineStyleConfig({
         textColor: colors.green[300],
       },
     },
-    danger: {},
+    danger: {
+      backgroundColor: colors.red[50],
+      textColor: colors.red[700],
+      border: "1px",
+      borderColor: "transparent",
+      _hover: {
+        backgroundColor: colors.red[100],
+      },
+      _active: {
+        backgroundColor: colors.red[100],
+      },
+      _loading: {
+        backgroundColor: colors.red[100],
+      },
+      _disabled: {
+        textColor: colors.red[300],
+      },
+    },
   },
   defaultProps: {
-    size: "md",
+    size: "lg",
     variant: "primary",
   },
 });
