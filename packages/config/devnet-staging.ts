@@ -12,7 +12,7 @@ import { AppConfig } from "."
     "type": "test",
     "defaultNet": true,
     "urls": [
-      "https://galactica.green.dev.node.vechain.org/"
+      "https://galactica.live.dev.node.vechain.org"
     ],
     "explorerUrl": "https://insight.vecha.in/#/main",
     "blockTime": 10000,
