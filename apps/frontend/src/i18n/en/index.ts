@@ -35,6 +35,7 @@ const en = {
   go_back: "Go back",
   optional: "Optional",
   buy_a_node: "Buy a Node",
+  filed_length: "{current:number}/{max:number}",
   home: {
     title: "Home",
     go_to_proposals: "Go to proposals",
@@ -130,6 +131,16 @@ const en = {
       voting_details_desc: "Add the main details and setup the calendar",
       voting_setup_desc: "Define the voting setup details",
       voting_summary_desc: "Review all the details before publishing",
+      details_form: {
+        title: "Title",
+        title_placeholder: "What’s the proposal title?",
+        description: "Description",
+        description_placeholder: "Add a description...",
+        header_image: "Header image",
+        voting_calendar: "Voting calendar",
+        select_date: "Select date",
+        select_time: "Select time",
+      },
     },
   },
   proposals: {

@@ -149,6 +149,12 @@ type RootTranslation = {
 	 * B​u​y​ ​a​ ​N​o​d​e
 	 */
 	buy_a_node: string
+	/**
+	 * {​c​u​r​r​e​n​t​}​/​{​m​a​x​}
+	 * @param {number} current
+	 * @param {number} max
+	 */
+	filed_length: RequiredParams<'current' | 'max'>
 	home: {
 		/**
 		 * H​o​m​e
@@ -415,6 +421,40 @@ type RootTranslation = {
 			 * R​e​v​i​e​w​ ​a​l​l​ ​t​h​e​ ​d​e​t​a​i​l​s​ ​b​e​f​o​r​e​ ​p​u​b​l​i​s​h​i​n​g
 			 */
 			voting_summary_desc: string
+			details_form: {
+				/**
+				 * T​i​t​l​e
+				 */
+				title: string
+				/**
+				 * W​h​a​t​’​s​ ​t​h​e​ ​p​r​o​p​o​s​a​l​ ​t​i​t​l​e​?
+				 */
+				title_placeholder: string
+				/**
+				 * D​e​s​c​r​i​p​t​i​o​n
+				 */
+				description: string
+				/**
+				 * A​d​d​ ​a​ ​d​e​s​c​r​i​p​t​i​o​n​.​.​.
+				 */
+				description_placeholder: string
+				/**
+				 * H​e​a​d​e​r​ ​i​m​a​g​e
+				 */
+				header_image: string
+				/**
+				 * V​o​t​i​n​g​ ​c​a​l​e​n​d​a​r
+				 */
+				voting_calendar: string
+				/**
+				 * S​e​l​e​c​t​ ​d​a​t​e
+				 */
+				select_date: string
+				/**
+				 * S​e​l​e​c​t​ ​t​i​m​e
+				 */
+				select_time: string
+			}
 		}
 	}
 	proposals: {
@@ -682,6 +722,10 @@ export type TranslationFunctions = {
 	 * Buy a Node
 	 */
 	buy_a_node: () => LocalizedString
+	/**
+	 * {current}/{max}
+	 */
+	filed_length: (arg: { current: number, max: number }) => LocalizedString
 	home: {
 		/**
 		 * Home
@@ -944,6 +988,40 @@ export type TranslationFunctions = {
 			 * Review all the details before publishing
 			 */
 			voting_summary_desc: () => LocalizedString
+			details_form: {
+				/**
+				 * Title
+				 */
+				title: () => LocalizedString
+				/**
+				 * What’s the proposal title?
+				 */
+				title_placeholder: () => LocalizedString
+				/**
+				 * Description
+				 */
+				description: () => LocalizedString
+				/**
+				 * Add a description...
+				 */
+				description_placeholder: () => LocalizedString
+				/**
+				 * Header image
+				 */
+				header_image: () => LocalizedString
+				/**
+				 * Voting calendar
+				 */
+				voting_calendar: () => LocalizedString
+				/**
+				 * Select date
+				 */
+				select_date: () => LocalizedString
+				/**
+				 * Select time
+				 */
+				select_time: () => LocalizedString
+			}
 		}
 	}
 	proposals: {
