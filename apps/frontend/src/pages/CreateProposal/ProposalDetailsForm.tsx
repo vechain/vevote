@@ -4,10 +4,11 @@ import { z } from "zod";
 import { zodFile } from "@/utils/zod";
 import { useMemo } from "react";
 import { useCreateProposal } from "./CreateProposalProvider";
-import { FormControl, Input, Textarea } from "@chakra-ui/react";
+import { FormControl, Input } from "@chakra-ui/react";
 import { Label } from "@/components/ui/Label";
 import { InputMessage } from "@/components/ui/InputMessage";
 import { useI18nContext } from "@/i18n/i18n-react";
+import { TextEditorControlled } from "./controllers/TextEditorControlled";
 
 const TITLE_MAX_CHARS = 60;
 
@@ -17,7 +18,7 @@ export const ProposalDetailsForm = () => {
   const LLDetailsForm = LL.proposal.create.details_form;
   const schema = z.object({
     title: z.string(),
-    description: z.string(),
+    description: z.array(z.object({})),
     headerImage: zodFile.optional(),
     startDate: z.date(),
     endDate: z.date(),
@@ -26,7 +27,7 @@ export const ProposalDetailsForm = () => {
   const defaultValues = useMemo(
     () => ({
       title: proposalDetails?.title || "",
-      description: proposalDetails?.description || "",
+      description: proposalDetails?.description || [],
       headerImage: proposalDetails?.headerImage,
       startDate: proposalDetails?.startDate,
       endDate: proposalDetails?.endDate,
@@ -53,16 +54,8 @@ export const ProposalDetailsForm = () => {
             </FormControl>
             <FormControl isInvalid={Boolean(errors.description)}>
               <Label label={LLDetailsForm.description()} />
-              <Textarea
-                width={"full"}
-                placeholder={LLDetailsForm.description_placeholder()}
-                {...register("description")}
-              />
+              <TextEditorControlled<z.infer<typeof schema>> name="description" />
               <InputMessage error={errors.description?.message} />
-            </FormControl>
-            <FormControl isInvalid={Boolean(errors.headerImage)}>
-              <Label label={LLDetailsForm.header_image()} />
-              <Textarea width={"full"} {...register("headerImage")} />
             </FormControl>
           </CreateFormWrapper>
         );

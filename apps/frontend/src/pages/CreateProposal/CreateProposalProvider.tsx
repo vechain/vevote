@@ -3,7 +3,7 @@ import { createContext, Dispatch, PropsWithChildren, SetStateAction, useContext,
 
 type ProposalDetails = {
   title: string;
-  description: string;
+  description: Record<string,string | Record<string,string>>[];
   headerImage: File;
   startDate: Date;
   endDate: Date;
