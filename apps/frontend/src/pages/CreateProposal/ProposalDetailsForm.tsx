@@ -4,12 +4,13 @@ import { z } from "zod";
 import { zodFile } from "@/utils/zod";
 import { useMemo } from "react";
 import { useCreateProposal } from "./CreateProposalProvider";
-import { FormControl, Input } from "@chakra-ui/react";
+import { Button, Flex, FormControl, Input, Text } from "@chakra-ui/react";
 import { Label } from "@/components/ui/Label";
 import { InputMessage } from "@/components/ui/InputMessage";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { TextEditorControlled } from "./controllers/TextEditorControlled";
 import { ImageUploadControlled } from "./controllers/ImageUploadControlled";
+import { DateTimeInputControlled } from "./controllers/DateTimeInputControlled";
 
 const TITLE_MAX_CHARS = 60;
 
@@ -62,6 +63,31 @@ export const ProposalDetailsForm = () => {
               <Label label={LLDetailsForm.header_image()} />
               <ImageUploadControlled name="headerImage" />
             </FormControl>
+
+            <Flex flexDirection={"column"} gap={4}>
+              <Label label={LLDetailsForm.voting_calendar()} />
+
+              <FormControl isInvalid={Boolean(errors.startDate)}>
+                <Text color={"gray.600"} fontWeight={600} paddingBottom={2}>
+                  {LL.start()}
+                </Text>
+                <DateTimeInputControlled name={"startDate"} />
+                <InputMessage error={errors.startDate?.message} />
+              </FormControl>
+
+              <FormControl isInvalid={Boolean(errors.endDate)}>
+                <Text color={"gray.600"} fontWeight={600} paddingBottom={2}>
+                  {LL.end()}{" "}
+                </Text>
+                <DateTimeInputControlled name={"endDate"} />
+                <InputMessage error={errors.endDate?.message} />
+              </FormControl>
+            </Flex>
+
+            <Flex justifyContent={"space-between"}>
+              <Button variant={"secondary"}>{LL.back()}</Button>
+              <Button type="submit">{LL.next()}</Button>
+            </Flex>
           </CreateFormWrapper>
         );
       }}

@@ -6,7 +6,7 @@ import { CreateProposalContent } from "./CreateProposalContent";
 export const CreateProposal = () => {
   return (
     <CreateProposalProvider>
-      <PageContainer variant="full" padding={0}>
+      <PageContainer variant="full" padding={0} gap={0}>
         <CreateProposalNavigation />
         <CreateProposalContent />
       </PageContainer>
