@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/Label";
 import { InputMessage } from "@/components/ui/InputMessage";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { TextEditorControlled } from "./controllers/TextEditorControlled";
+import { ImageUploadControlled } from "./controllers/ImageUploadControlled";
 
 const TITLE_MAX_CHARS = 60;
 
@@ -56,6 +57,10 @@ export const ProposalDetailsForm = () => {
               <Label label={LLDetailsForm.description()} />
               <TextEditorControlled<z.infer<typeof schema>> name="description" />
               <InputMessage error={errors.description?.message} />
+            </FormControl>
+            <FormControl isInvalid={Boolean(errors.headerImage)}>
+              <Label label={LLDetailsForm.header_image()} />
+              <ImageUploadControlled name="headerImage" />
             </FormControl>
           </CreateFormWrapper>
         );

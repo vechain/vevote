@@ -44,6 +44,7 @@
     "quill": "2.0.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-dropzone": "^14.3.8",
     "react-hook-form": "^7.52.0",
     "react-router-dom": "^7.4.1",
     "typesafe-i18n": "^5.26.2",

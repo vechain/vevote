@@ -155,6 +155,15 @@ type RootTranslation = {
 	 * @param {number} max
 	 */
 	filed_length: RequiredParams<'current' | 'max'>
+	/**
+	 * U​p​l​o​a​d
+	 */
+	upload: string
+	/**
+	 * I​m​a​g​e​ ​s​i​z​e​ ​s​h​o​u​l​d​ ​b​e​ ​1​2​8​0​x​5​1​2​p​x​ ​(​r​a​t​i​o​ ​3​:​1​)​.​ ​J​P​G​,​ ​P​N​G​ ​o​r​ ​S​V​G​ ​o​f​ ​m​a​x​i​m​u​m​ ​o​f​ ​{​s​i​z​e​}​M​B​.
+	 * @param {number} size
+	 */
+	file_upload_description: RequiredParams<'size'>
 	home: {
 		/**
 		 * H​o​m​e
@@ -170,6 +179,10 @@ type RootTranslation = {
 		 * R​e​q​u​i​r​e​d
 		 */
 		required: string
+		/**
+		 * I​n​v​a​l​i​d​ ​f​o​r​m​a​t
+		 */
+		invalid_format: string
 	}
 	voting_list: {
 		/**
@@ -726,6 +739,14 @@ export type TranslationFunctions = {
 	 * {current}/{max}
 	 */
 	filed_length: (arg: { current: number, max: number }) => LocalizedString
+	/**
+	 * Upload
+	 */
+	upload: () => LocalizedString
+	/**
+	 * Image size should be 1280x512px (ratio 3:1). JPG, PNG or SVG of maximum of {size}MB.
+	 */
+	file_upload_description: (arg: { size: number }) => LocalizedString
 	home: {
 		/**
 		 * Home
@@ -741,6 +762,10 @@ export type TranslationFunctions = {
 		 * Required
 		 */
 		required: () => LocalizedString
+		/**
+		 * Invalid format
+		 */
+		invalid_format: () => LocalizedString
 	}
 	voting_list: {
 		/**
