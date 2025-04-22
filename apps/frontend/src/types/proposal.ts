@@ -21,10 +21,15 @@ export type SingleChoiceOptions = {
   votingOptions: SingleChoiceEnum[];
 };
 
-export type CustomChoiceOptions = {
-  votingType: VotingEnum.SINGLE_OPTION | VotingEnum.MULTIPLE_OPTIONS;
-  votingOptions: string[];
-};
+export type CustomChoiceOptions =
+  | {
+      votingType: VotingEnum.SINGLE_OPTION;
+      votingOptions: string[];
+    }
+  | {
+      votingType: VotingEnum.MULTIPLE_OPTIONS;
+      votingOptions: string[];
+    };
 
 export type VotingChoices = SingleChoiceOptions | CustomChoiceOptions;
 
