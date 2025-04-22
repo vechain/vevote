@@ -1,31 +1,43 @@
-import { CreateProposalStep, VotingChoices } from "@/types/proposal";
+import { CreateProposalStep, VotingChoices, VotingEnum } from "@/types/proposal";
+import { ZodFile } from "@/utils/zod";
 import { createContext, Dispatch, PropsWithChildren, SetStateAction, useContext, useMemo, useState } from "react";
+
+export type ProposalDescription = Record<string, string | Record<string, string>>;
 
 type ProposalDetails = {
   title: string;
-  description: Record<string,string | Record<string,string>>[];
-  headerImage: File;
-  startDate: Date;
-  endDate: Date;
-  minParticipant: `${number}%`;
+  description: ProposalDescription[];
+  headerImage?: ZodFile;
+  startDate?: Date;
+  endDate?: Date;
+  minParticipant?: `${number}%`;
   question: string;
 } & VotingChoices;
+
+const DEFAULT_PROPOSAL: ProposalDetails = {
+  title: "",
+  description: [],
+  question: "",
+  votingType: VotingEnum.SINGLE_CHOICE,
+  votingOptions: [],
+};
 
 export type CreateProposalContextType = {
   step: CreateProposalStep;
   setStep: Dispatch<SetStateAction<CreateProposalStep>>;
-  proposalDetails?: ProposalDetails;
-  setProposalDetails: Dispatch<SetStateAction<ProposalDetails | undefined>>;
+  proposalDetails: ProposalDetails;
+  setProposalDetails: Dispatch<SetStateAction<ProposalDetails>>;
 };
 
 export const CreateProposalContext = createContext<CreateProposalContextType>({
+  proposalDetails: DEFAULT_PROPOSAL,
   setProposalDetails: () => {},
   step: CreateProposalStep.VOTING_DETAILS,
   setStep: () => {},
 });
 
 export const CreateProposalProvider = ({ children }: PropsWithChildren) => {
-  const [proposalDetails, setProposalDetails] = useState<ProposalDetails | undefined>();
+  const [proposalDetails, setProposalDetails] = useState<ProposalDetails>(DEFAULT_PROPOSAL);
   const [step, setStep] = useState<CreateProposalStep>(CreateProposalStep.VOTING_DETAILS);
 
   const value = useMemo(

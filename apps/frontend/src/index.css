@@ -1,22 +1,26 @@
-@import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
-
+@import url("https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap");
 
 body {
   margin: 0;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
 }
 
-h1, h2, h3, h4, h5, h6 {
-  font-family: 'Rubik Variable', sans-serif;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Rubik Variable", sans-serif;
 }
 
 .ql-toolbar.ql-snow {
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
   padding: 16px 16px;
-  background-color: #F1F2F3;
-  border-color: #E2E8F0;
+  background-color: #f1f2f3;
+  border-color: #e2e8f0;
 }
 
 .ql-container.ql-snow {
@@ -25,22 +29,40 @@ h1, h2, h3, h4, h5, h6 {
   padding: 16px 16px;
   min-height: 112px;
   background-color: white;
-  border-color: #E2E8F0;
-  font-size: 16px
+  border-color: #e2e8f0;
+  font-size: 16px;
 }
 
 .ql-container.ql-snow .ql-formats {
   display: block;
 }
 
-.ql-toolbar.ql-snow .ql-bold,.ql-italic,.ql-underline,.ql-strike,.ql-list,.ql-link {
-  margin: 8px;
+.ql-toolbar.ql-snow .ql-bold,
+.ql-toolbar.ql-snow .ql-italic,
+.ql-toolbar.ql-snow .ql-underline,
+.ql-toolbar.ql-snow .ql-strike,
+.ql-toolbar.ql-snow .ql-list,
+.ql-toolbar.ql-snow .ql-link {
+  margin: 0px 6px;
+  padding: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #525860
+  color: #525860;
+  width: 32px;
+  height: 32px;
 }
 
-.ql-toolbar.ql-snow (.ql-bold,.ql-italic,.ql-underline,.ql-strike,.ql-list,.ql-link) svg {
-  stroke-width: 0.5px
+.ql-snow.ql-toolbar button:hover,
+.ql-snow.ql-toolbar button:focus,
+.ql-snow.ql-toolbar button.ql-active,
+.ql-snow.ql-toolbar .ql-picker-label:hover,
+.ql-snow.ql-toolbar .ql-picker-label.ql-active,
+.ql-snow.ql-toolbar .ql-picker-item:hover,
+.ql-snow.ql-toolbar .ql-picker-item.ql-selected {
+  color: #525860;
+  background: #d2d5d9;
+  border-radius: 6px;
+  width: 32px;
+  height: 32px;
 }

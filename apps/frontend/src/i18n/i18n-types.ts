@@ -160,10 +160,19 @@ type RootTranslation = {
 	 */
 	upload: string
 	/**
-	 * I​m​a​g​e​ ​s​i​z​e​ ​s​h​o​u​l​d​ ​b​e​ ​1​2​8​0​x​5​1​2​p​x​ ​(​r​a​t​i​o​ ​3​:​1​)​.​ ​J​P​G​,​ ​P​N​G​ ​o​r​ ​S​V​G​ ​o​f​ ​m​a​x​i​m​u​m​ ​o​f​ ​{​s​i​z​e​}​M​B​.
+	 * I​m​a​g​e​ ​s​i​z​e​ ​s​h​o​u​l​d​ ​b​e​ ​1​2​8​0​x​5​1​2​p​x​ ​(​r​a​t​i​o​ ​3​:​1​)​.​
+​J​P​G​,​ ​P​N​G​ ​o​r​ ​S​V​G​ ​o​f​ ​m​a​x​i​m​u​m​ ​o​f​ ​{​s​i​z​e​}​M​B​.
 	 * @param {number} size
 	 */
 	file_upload_description: RequiredParams<'size'>
+	/**
+	 * S​e​l​e​c​t​ ​d​a​t​e
+	 */
+	select_date: string
+	/**
+	 * S​e​l​e​c​t​ ​t​i​m​e
+	 */
+	select_time: string
 	home: {
 		/**
 		 * H​o​m​e
@@ -183,6 +192,14 @@ type RootTranslation = {
 		 * I​n​v​a​l​i​d​ ​f​o​r​m​a​t
 		 */
 		invalid_format: string
+		/**
+		 * T​h​e​ ​e​n​d​ ​d​a​t​e​ ​m​u​s​t​ ​b​e​ ​a​f​t​e​r​ ​t​h​e​ ​s​t​a​r​t​ ​d​a​t​e
+		 */
+		end_before_start: string
+		/**
+		 * T​h​e​ ​e​n​d​ ​d​a​t​e​ ​m​u​s​t​ ​b​e​ ​i​n​ ​t​h​e​ ​f​u​t​u​r​e
+		 */
+		end_before_today: string
 	}
 	voting_list: {
 		/**
@@ -459,14 +476,6 @@ type RootTranslation = {
 				 * V​o​t​i​n​g​ ​c​a​l​e​n​d​a​r
 				 */
 				voting_calendar: string
-				/**
-				 * S​e​l​e​c​t​ ​d​a​t​e
-				 */
-				select_date: string
-				/**
-				 * S​e​l​e​c​t​ ​t​i​m​e
-				 */
-				select_time: string
 			}
 		}
 	}
@@ -744,9 +753,18 @@ export type TranslationFunctions = {
 	 */
 	upload: () => LocalizedString
 	/**
-	 * Image size should be 1280x512px (ratio 3:1). JPG, PNG or SVG of maximum of {size}MB.
+	 * Image size should be 1280x512px (ratio 3:1).
+JPG, PNG or SVG of maximum of {size}MB.
 	 */
 	file_upload_description: (arg: { size: number }) => LocalizedString
+	/**
+	 * Select date
+	 */
+	select_date: () => LocalizedString
+	/**
+	 * Select time
+	 */
+	select_time: () => LocalizedString
 	home: {
 		/**
 		 * Home
@@ -766,6 +784,14 @@ export type TranslationFunctions = {
 		 * Invalid format
 		 */
 		invalid_format: () => LocalizedString
+		/**
+		 * The end date must be after the start date
+		 */
+		end_before_start: () => LocalizedString
+		/**
+		 * The end date must be in the future
+		 */
+		end_before_today: () => LocalizedString
 	}
 	voting_list: {
 		/**
@@ -1038,14 +1064,6 @@ export type TranslationFunctions = {
 				 * Voting calendar
 				 */
 				voting_calendar: () => LocalizedString
-				/**
-				 * Select date
-				 */
-				select_date: () => LocalizedString
-				/**
-				 * Select time
-				 */
-				select_time: () => LocalizedString
 			}
 		}
 	}

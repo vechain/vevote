@@ -99,7 +99,7 @@ const DefaultFileUpload = ({ isDisabled, getRootProps, getInputProps }: FileUplo
   const { LL } = useI18nContext();
   return (
     <Flex paddingTop={"8px"} flexDirection={"column"} gap={"24px"}>
-      <Text fontSize={14} color={"gray.500"}>
+      <Text fontSize={14} color={"gray.500"} whiteSpace={"pre"}>
         {LL.file_upload_description({ size: bytesToMB(MAX_SIZE) })}
       </Text>
 

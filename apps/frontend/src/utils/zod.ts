@@ -5,6 +5,27 @@ export const requiredString = z.string().min(1, { message: LL.field_errors.requi
 
 export const optionalUrl = z.union([z.string().url().nullish(), z.literal("")]);
 
+export const zodStartEndDates = z
+  .object({
+    startDate: z.date(),
+    endDate: z.date(),
+  })
+  .superRefine((data, ctx) => {
+    const today = new Date();
+    if (data.startDate >= data.endDate)
+      ctx.addIssue({
+        code: "custom",
+        message: LL.field_errors.end_before_start(),
+        path: ["endDate"],
+      });
+    else if (data.endDate <= today)
+      ctx.addIssue({
+        code: "custom",
+        message: LL.field_errors.end_before_today(),
+        path: ["endDate"],
+      });
+  });
+
 export const zodFile = z.object({
   type: z.string(),
   name: z.string(),

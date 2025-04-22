@@ -38,7 +38,9 @@ const en = {
   filed_length: "{current:number}/{max:number}",
   upload: "Upload",
   file_upload_description:
-    "Image size should be 1280x512px (ratio 3:1). JPG, PNG or SVG of maximum of {size:number}MB.",
+    "Image size should be 1280x512px (ratio 3:1).\nJPG, PNG or SVG of maximum of {size:number}MB.",
+  select_date: "Select date",
+  select_time: "Select time",
   home: {
     title: "Home",
     go_to_proposals: "Go to proposals",
@@ -46,6 +48,8 @@ const en = {
   field_errors: {
     required: "Required",
     invalid_format: "Invalid format",
+    end_before_start: "The end date must be after the start date",
+    end_before_today: "The end date must be in the future",
   },
   voting_list: {
     voting_options: "Voting options:",
@@ -142,8 +146,6 @@ const en = {
         description_placeholder: "Add a description...",
         header_image: "Header image",
         voting_calendar: "Voting calendar",
-        select_date: "Select date",
-        select_time: "Select time",
       },
     },
   },
