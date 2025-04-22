@@ -10,7 +10,7 @@
     "test:hardhat": "hardhat test --network hardhat",
     "test:coverage:solidity": "hardhat coverage --testfiles ./test/**/*test.ts",
     "coverage:report": "nyc report --reporter=lcov --reporter=text --reporter=html --temp-dir=./coverage",
-    "compile": "npx hardhat compile",
+    "compile": "hardhat compile",
     "deploy": "npx hardhat run scripts/deploy",
     "deploy:devnet-staging": "npx hardhat run scripts/deploy --network vechain_devnet",
     "deploy:testnet": "npx hardhat run scripts/deploy --network vechain_testnet",
