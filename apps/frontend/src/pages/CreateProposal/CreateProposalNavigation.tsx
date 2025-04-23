@@ -22,7 +22,11 @@ export const CreateProposalNavigation = () => {
     }
   }, [LL.proposal.create, step]);
   return (
-    <PageContainer.Header paddingX={20} paddingY={10} boxShadow={"0px 0px 12px 1px rgba(0,0,0,0.06)"}>
+    <PageContainer.Header
+      paddingX={20}
+      paddingY={10}
+      boxShadow={"0px 0px 12px 1px rgba(0,0,0,0.06)"}
+      background={"white"}>
       <Flex flexDirection={"column"} alignItems={"start"} gap={6}>
         <Heading fontSize={30} fontWeight={600} color="primary.700">
           {LL.proposal.create.title()}

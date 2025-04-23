@@ -21,6 +21,9 @@ import { ProposalsHeader } from "@/components/navbar/Header";
 
 const ITEMS_PER_PAGE = 6;
 
+//todo: get from user provider
+const isAdmin = true;
+
 export const Proposals = () => {
   const [sort, setSort] = useState<Sort>(Sort.Newest);
   const [searchValue, setSearchValue] = useState<string>("");
@@ -49,10 +52,12 @@ export const Proposals = () => {
             <Icon as={MdOutlineHowToVote} width={8} height={8} color={"primary.600"} marginRight={2} />
             {LL.proposals.title()}
           </Heading>
-          <Button as={Link} href="/create-proposal" marginLeft={"auto"}>
-            <Icon as={CiCirclePlus} width={6} height={6} />
-            {LL.proposals.create()}
-          </Button>
+          {isAdmin && (
+            <Button as={Link} href="/create-proposal" marginLeft={"auto"}>
+              <Icon as={CiCirclePlus} width={6} height={6} />
+              {LL.proposals.create()}
+            </Button>
+          )}
         </PageContainer.Header>
         <PageContainer.Content>
           <Tabs>

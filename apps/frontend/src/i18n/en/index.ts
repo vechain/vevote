@@ -35,12 +35,21 @@ const en = {
   go_back: "Go back",
   optional: "Optional",
   buy_a_node: "Buy a Node",
+  filed_length: "{current:number}/{max:number}",
+  upload: "Upload",
+  file_upload_description:
+    "Image size should be 1280x512px (ratio 3:1).\nJPG, PNG or SVG of maximum of {size:number}MB.",
+  select_date: "Select date",
+  select_time: "Select time",
   home: {
     title: "Home",
     go_to_proposals: "Go to proposals",
   },
   field_errors: {
     required: "Required",
+    invalid_format: "Invalid format",
+    end_before_start: "The end date must be after the start date",
+    end_before_today: "The end date must be in the future",
   },
   voting_list: {
     voting_options: "Voting options:",
@@ -130,6 +139,14 @@ const en = {
       voting_details_desc: "Add the main details and setup the calendar",
       voting_setup_desc: "Define the voting setup details",
       voting_summary_desc: "Review all the details before publishing",
+      details_form: {
+        title: "Title",
+        title_placeholder: "What’s the proposal title?",
+        description: "Description",
+        description_placeholder: "Add a description...",
+        header_image: "Header image",
+        voting_calendar: "Voting calendar",
+      },
     },
   },
   proposals: {

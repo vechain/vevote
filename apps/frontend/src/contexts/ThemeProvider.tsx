@@ -20,6 +20,24 @@ const config: ThemeConfig = {
 };
 
 const theme = extendTheme({
+  styles: {
+    global: () => ({
+      ":root": {
+        "input::-webkit-calendar-picker-indicator": {
+          background: "transparent",
+          color: "transparent",
+          cursor: "pointer",
+          width: "100%",
+          height: "auto",
+          position: "absolute",
+          bottom: "0",
+          left: "0",
+          right: "0",
+          top: "0",
+        },
+      },
+    }),
+  },
   colors,
   config,
   fonts,

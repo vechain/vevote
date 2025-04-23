@@ -2,6 +2,7 @@ import React, { PropsWithChildren } from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
+import "quill/dist/quill.core.css";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import { persister, queryClient } from "./utils/queryClient.ts";
 import { getConfig } from "@repo/config";

@@ -149,6 +149,30 @@ type RootTranslation = {
 	 * B​u​y​ ​a​ ​N​o​d​e
 	 */
 	buy_a_node: string
+	/**
+	 * {​c​u​r​r​e​n​t​}​/​{​m​a​x​}
+	 * @param {number} current
+	 * @param {number} max
+	 */
+	filed_length: RequiredParams<'current' | 'max'>
+	/**
+	 * U​p​l​o​a​d
+	 */
+	upload: string
+	/**
+	 * I​m​a​g​e​ ​s​i​z​e​ ​s​h​o​u​l​d​ ​b​e​ ​1​2​8​0​x​5​1​2​p​x​ ​(​r​a​t​i​o​ ​3​:​1​)​.​
+​J​P​G​,​ ​P​N​G​ ​o​r​ ​S​V​G​ ​o​f​ ​m​a​x​i​m​u​m​ ​o​f​ ​{​s​i​z​e​}​M​B​.
+	 * @param {number} size
+	 */
+	file_upload_description: RequiredParams<'size'>
+	/**
+	 * S​e​l​e​c​t​ ​d​a​t​e
+	 */
+	select_date: string
+	/**
+	 * S​e​l​e​c​t​ ​t​i​m​e
+	 */
+	select_time: string
 	home: {
 		/**
 		 * H​o​m​e
@@ -164,6 +188,18 @@ type RootTranslation = {
 		 * R​e​q​u​i​r​e​d
 		 */
 		required: string
+		/**
+		 * I​n​v​a​l​i​d​ ​f​o​r​m​a​t
+		 */
+		invalid_format: string
+		/**
+		 * T​h​e​ ​e​n​d​ ​d​a​t​e​ ​m​u​s​t​ ​b​e​ ​a​f​t​e​r​ ​t​h​e​ ​s​t​a​r​t​ ​d​a​t​e
+		 */
+		end_before_start: string
+		/**
+		 * T​h​e​ ​e​n​d​ ​d​a​t​e​ ​m​u​s​t​ ​b​e​ ​i​n​ ​t​h​e​ ​f​u​t​u​r​e
+		 */
+		end_before_today: string
 	}
 	voting_list: {
 		/**
@@ -415,6 +451,32 @@ type RootTranslation = {
 			 * R​e​v​i​e​w​ ​a​l​l​ ​t​h​e​ ​d​e​t​a​i​l​s​ ​b​e​f​o​r​e​ ​p​u​b​l​i​s​h​i​n​g
 			 */
 			voting_summary_desc: string
+			details_form: {
+				/**
+				 * T​i​t​l​e
+				 */
+				title: string
+				/**
+				 * W​h​a​t​’​s​ ​t​h​e​ ​p​r​o​p​o​s​a​l​ ​t​i​t​l​e​?
+				 */
+				title_placeholder: string
+				/**
+				 * D​e​s​c​r​i​p​t​i​o​n
+				 */
+				description: string
+				/**
+				 * A​d​d​ ​a​ ​d​e​s​c​r​i​p​t​i​o​n​.​.​.
+				 */
+				description_placeholder: string
+				/**
+				 * H​e​a​d​e​r​ ​i​m​a​g​e
+				 */
+				header_image: string
+				/**
+				 * V​o​t​i​n​g​ ​c​a​l​e​n​d​a​r
+				 */
+				voting_calendar: string
+			}
 		}
 	}
 	proposals: {
@@ -682,6 +744,27 @@ export type TranslationFunctions = {
 	 * Buy a Node
 	 */
 	buy_a_node: () => LocalizedString
+	/**
+	 * {current}/{max}
+	 */
+	filed_length: (arg: { current: number, max: number }) => LocalizedString
+	/**
+	 * Upload
+	 */
+	upload: () => LocalizedString
+	/**
+	 * Image size should be 1280x512px (ratio 3:1).
+JPG, PNG or SVG of maximum of {size}MB.
+	 */
+	file_upload_description: (arg: { size: number }) => LocalizedString
+	/**
+	 * Select date
+	 */
+	select_date: () => LocalizedString
+	/**
+	 * Select time
+	 */
+	select_time: () => LocalizedString
 	home: {
 		/**
 		 * Home
@@ -697,6 +780,18 @@ export type TranslationFunctions = {
 		 * Required
 		 */
 		required: () => LocalizedString
+		/**
+		 * Invalid format
+		 */
+		invalid_format: () => LocalizedString
+		/**
+		 * The end date must be after the start date
+		 */
+		end_before_start: () => LocalizedString
+		/**
+		 * The end date must be in the future
+		 */
+		end_before_today: () => LocalizedString
 	}
 	voting_list: {
 		/**
@@ -944,6 +1039,32 @@ export type TranslationFunctions = {
 			 * Review all the details before publishing
 			 */
 			voting_summary_desc: () => LocalizedString
+			details_form: {
+				/**
+				 * Title
+				 */
+				title: () => LocalizedString
+				/**
+				 * What’s the proposal title?
+				 */
+				title_placeholder: () => LocalizedString
+				/**
+				 * Description
+				 */
+				description: () => LocalizedString
+				/**
+				 * Add a description...
+				 */
+				description_placeholder: () => LocalizedString
+				/**
+				 * Header image
+				 */
+				header_image: () => LocalizedString
+				/**
+				 * Voting calendar
+				 */
+				voting_calendar: () => LocalizedString
+			}
 		}
 	}
 	proposals: {
