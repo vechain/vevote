@@ -38,7 +38,7 @@ export const CreateProposalContext = createContext<CreateProposalContextType>({
 
 export const CreateProposalProvider = ({ children }: PropsWithChildren) => {
   const [proposalDetails, setProposalDetails] = useState<ProposalDetails>(DEFAULT_PROPOSAL);
-  const [step, setStep] = useState<CreateProposalStep>(CreateProposalStep.VOTING_DETAILS);
+  const [step, setStep] = useState<CreateProposalStep>(CreateProposalStep.VOTING_SETUP); //todo: re-default to details step
 
   const value = useMemo(
     () => ({ proposalDetails, setProposalDetails, step, setStep }),

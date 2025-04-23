@@ -41,6 +41,7 @@ const en = {
     "Image size should be 1280x512px (ratio 3:1).\nJPG, PNG or SVG of maximum of {size:number}MB.",
   select_date: "Select date",
   select_time: "Select time",
+  maximum: "Maximum",
   home: {
     title: "Home",
     go_to_proposals: "Go to proposals",
@@ -146,6 +147,32 @@ const en = {
         description_placeholder: "Add a description...",
         header_image: "Header image",
         voting_calendar: "Voting calendar",
+      },
+      setup_form: {
+        voting_type: "Voting type",
+        voting_type_subtitle: "Select the type",
+        voting_question: "Voting Question",
+        voting_question_subtitle: "This question should provide exact context to the voting options:",
+        voting_question_placeholder: "Write the question...",
+        voting_limit: "Voting limit",
+        voting_limit_subtitle: "Define the maximum amount of options allowed per voter:",
+        voting_options: "Voting options",
+        voting_options_subtitle: "Add between 2 and 30 options to vote:",
+        add_new_option: "Add new option",
+        voting_types: {
+          single_choice: {
+            title: "Single choice",
+            subtitle: "Yes / No / Abstain",
+          },
+          single_option: {
+            title: "Single choice",
+            subtitle: "Voter can select 1 of multiple options",
+          },
+          multi_options: {
+            title: "Multiple choice",
+            subtitle: "Voter can select 1 or more options",
+          },
+        },
       },
     },
   },

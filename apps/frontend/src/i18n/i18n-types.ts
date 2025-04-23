@@ -173,6 +173,10 @@ type RootTranslation = {
 	 * S​e​l​e​c​t​ ​t​i​m​e
 	 */
 	select_time: string
+	/**
+	 * M​a​x​i​m​u​m
+	 */
+	maximum: string
 	home: {
 		/**
 		 * H​o​m​e
@@ -477,6 +481,80 @@ type RootTranslation = {
 				 */
 				voting_calendar: string
 			}
+			setup_form: {
+				/**
+				 * V​o​t​i​n​g​ ​t​y​p​e
+				 */
+				voting_type: string
+				/**
+				 * S​e​l​e​c​t​ ​t​h​e​ ​t​y​p​e
+				 */
+				voting_type_subtitle: string
+				/**
+				 * V​o​t​i​n​g​ ​Q​u​e​s​t​i​o​n
+				 */
+				voting_question: string
+				/**
+				 * T​h​i​s​ ​q​u​e​s​t​i​o​n​ ​s​h​o​u​l​d​ ​p​r​o​v​i​d​e​ ​e​x​a​c​t​ ​c​o​n​t​e​x​t​ ​t​o​ ​t​h​e​ ​v​o​t​i​n​g​ ​o​p​t​i​o​n​s​:
+				 */
+				voting_question_subtitle: string
+				/**
+				 * W​r​i​t​e​ ​t​h​e​ ​q​u​e​s​t​i​o​n​.​.​.
+				 */
+				voting_question_placeholder: string
+				/**
+				 * V​o​t​i​n​g​ ​l​i​m​i​t
+				 */
+				voting_limit: string
+				/**
+				 * D​e​f​i​n​e​ ​t​h​e​ ​m​a​x​i​m​u​m​ ​a​m​o​u​n​t​ ​o​f​ ​o​p​t​i​o​n​s​ ​a​l​l​o​w​e​d​ ​p​e​r​ ​v​o​t​e​r​:
+				 */
+				voting_limit_subtitle: string
+				/**
+				 * V​o​t​i​n​g​ ​o​p​t​i​o​n​s
+				 */
+				voting_options: string
+				/**
+				 * A​d​d​ ​b​e​t​w​e​e​n​ ​2​ ​a​n​d​ ​3​0​ ​o​p​t​i​o​n​s​ ​t​o​ ​v​o​t​e​:
+				 */
+				voting_options_subtitle: string
+				/**
+				 * A​d​d​ ​n​e​w​ ​o​p​t​i​o​n
+				 */
+				add_new_option: string
+				voting_types: {
+					single_choice: {
+						/**
+						 * S​i​n​g​l​e​ ​c​h​o​i​c​e
+						 */
+						title: string
+						/**
+						 * Y​e​s​ ​/​ ​N​o​ ​/​ ​A​b​s​t​a​i​n
+						 */
+						subtitle: string
+					}
+					single_option: {
+						/**
+						 * S​i​n​g​l​e​ ​c​h​o​i​c​e
+						 */
+						title: string
+						/**
+						 * V​o​t​e​r​ ​c​a​n​ ​s​e​l​e​c​t​ ​1​ ​o​f​ ​m​u​l​t​i​p​l​e​ ​o​p​t​i​o​n​s
+						 */
+						subtitle: string
+					}
+					multi_options: {
+						/**
+						 * M​u​l​t​i​p​l​e​ ​c​h​o​i​c​e
+						 */
+						title: string
+						/**
+						 * V​o​t​e​r​ ​c​a​n​ ​s​e​l​e​c​t​ ​1​ ​o​r​ ​m​o​r​e​ ​o​p​t​i​o​n​s
+						 */
+						subtitle: string
+					}
+				}
+			}
 		}
 	}
 	proposals: {
@@ -765,6 +843,10 @@ JPG, PNG or SVG of maximum of {size}MB.
 	 * Select time
 	 */
 	select_time: () => LocalizedString
+	/**
+	 * Maximum
+	 */
+	maximum: () => LocalizedString
 	home: {
 		/**
 		 * Home
@@ -1064,6 +1146,80 @@ JPG, PNG or SVG of maximum of {size}MB.
 				 * Voting calendar
 				 */
 				voting_calendar: () => LocalizedString
+			}
+			setup_form: {
+				/**
+				 * Voting type
+				 */
+				voting_type: () => LocalizedString
+				/**
+				 * Select the type
+				 */
+				voting_type_subtitle: () => LocalizedString
+				/**
+				 * Voting Question
+				 */
+				voting_question: () => LocalizedString
+				/**
+				 * This question should provide exact context to the voting options:
+				 */
+				voting_question_subtitle: () => LocalizedString
+				/**
+				 * Write the question...
+				 */
+				voting_question_placeholder: () => LocalizedString
+				/**
+				 * Voting limit
+				 */
+				voting_limit: () => LocalizedString
+				/**
+				 * Define the maximum amount of options allowed per voter:
+				 */
+				voting_limit_subtitle: () => LocalizedString
+				/**
+				 * Voting options
+				 */
+				voting_options: () => LocalizedString
+				/**
+				 * Add between 2 and 30 options to vote:
+				 */
+				voting_options_subtitle: () => LocalizedString
+				/**
+				 * Add new option
+				 */
+				add_new_option: () => LocalizedString
+				voting_types: {
+					single_choice: {
+						/**
+						 * Single choice
+						 */
+						title: () => LocalizedString
+						/**
+						 * Yes / No / Abstain
+						 */
+						subtitle: () => LocalizedString
+					}
+					single_option: {
+						/**
+						 * Single choice
+						 */
+						title: () => LocalizedString
+						/**
+						 * Voter can select 1 of multiple options
+						 */
+						subtitle: () => LocalizedString
+					}
+					multi_options: {
+						/**
+						 * Multiple choice
+						 */
+						title: () => LocalizedString
+						/**
+						 * Voter can select 1 or more options
+						 */
+						subtitle: () => LocalizedString
+					}
+				}
 			}
 		}
 	}

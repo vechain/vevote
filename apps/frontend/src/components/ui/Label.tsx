@@ -29,7 +29,7 @@ const Message = ({ message, ...props }: { message: string } & TextProps) => {
 
 const Subtitle = ({ label, ...props }: { label: string } & TextProps) => {
   return (
-    <Text fontSize={"14px"} color={"gray.500"} alignSelf={"stretch"} paddingBottom={"16px"} {...props}>
+    <Text color={"gray.500"} alignSelf={"stretch"} paddingBottom={"16px"} {...props}>
       {label}
     </Text>
   );
