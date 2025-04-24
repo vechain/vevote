@@ -5,6 +5,7 @@ import { zodFile, zodStartEndDates } from "@/utils/zod";
 import { z } from "zod";
 
 export const TITLE_MAX_CHARS = 60;
+export const QUESTION_MAX_CHAR = 60;
 
 export const proposalDetailsSchema = z
   .object({
@@ -16,24 +17,24 @@ export const proposalDetailsSchema = z
 
 export type ProposalDetailsSchema = z.infer<typeof proposalDetailsSchema>;
 
-const proposalSingleChoiceSchema = z.object({
+export const proposalSingleChoiceSchema = z.object({
   votingType: z.literal(VotingEnum.SINGLE_CHOICE),
-  votingQuestion: z.string().min(1),
+  votingQuestion: z.string().min(1, { message: LL.field_errors.required() }).max(QUESTION_MAX_CHAR),
   votingOptions: z.array(z.nativeEnum(SingleChoiceEnum)),
 });
 
 const baseOptions = z.object({
-  votingQuestion: z.string().min(1),
-  votingLimit: z.number(),
+  votingQuestion: z.string().min(1, { message: LL.field_errors.required() }).max(QUESTION_MAX_CHAR),
   votingOptions: z.array(z.string()),
 });
 
-const proposalSingleOptionSchema = baseOptions.extend({
+export const proposalSingleOptionSchema = baseOptions.extend({
   votingType: z.literal(VotingEnum.SINGLE_OPTION),
 });
 
-const proposalMultipleOptionSchema = baseOptions.extend({
+export const proposalMultipleOptionSchema = baseOptions.extend({
   votingType: z.literal(VotingEnum.MULTIPLE_OPTIONS),
+  votingLimit: z.number(),
 });
 
 export const proposalSetupSchema = z.discriminatedUnion("votingType", [
@@ -41,5 +42,8 @@ export const proposalSetupSchema = z.discriminatedUnion("votingType", [
   proposalSingleOptionSchema,
   proposalMultipleOptionSchema,
 ]);
+export type ProposalSingleChoiceSchema = z.infer<typeof proposalSingleChoiceSchema>;
+export type ProposalSingleOptionSchema = z.infer<typeof proposalSingleOptionSchema>;
+export type ProposalMultipleOptionSchema = z.infer<typeof proposalMultipleOptionSchema>;
 
 export type ProposalSetupSchema = z.infer<typeof proposalSetupSchema>;

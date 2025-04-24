@@ -177,6 +177,11 @@ type RootTranslation = {
 	 * M​a​x​i​m​u​m
 	 */
 	maximum: string
+	/**
+	 * O​p​t​i​o​n​ ​{​i​n​d​e​x​}
+	 * @param {number} index
+	 */
+	number_option: RequiredParams<'index'>
 	home: {
 		/**
 		 * H​o​m​e
@@ -455,6 +460,10 @@ type RootTranslation = {
 			 * R​e​v​i​e​w​ ​a​l​l​ ​t​h​e​ ​d​e​t​a​i​l​s​ ​b​e​f​o​r​e​ ​p​u​b​l​i​s​h​i​n​g
 			 */
 			voting_summary_desc: string
+			/**
+			 * A​d​d​ ​n​e​w​ ​o​p​t​i​o​n
+			 */
+			add_new_option: string
 			details_form: {
 				/**
 				 * T​i​t​l​e
@@ -515,6 +524,10 @@ type RootTranslation = {
 				 */
 				voting_options: string
 				/**
+				 * T​h​e​ ​“​s​i​n​g​l​e​ ​c​h​o​i​c​e​”​ ​v​o​t​i​n​g​ ​t​y​p​e​ ​o​n​l​y​ ​a​l​l​o​w​s​ ​t​h​e​ ​v​o​t​e​r​ ​t​o​ ​s​e​l​e​c​t​:
+				 */
+				voting_choice_subtitle: string
+				/**
 				 * A​d​d​ ​b​e​t​w​e​e​n​ ​2​ ​a​n​d​ ​3​0​ ​o​p​t​i​o​n​s​ ​t​o​ ​v​o​t​e​:
 				 */
 				voting_options_subtitle: string
@@ -522,6 +535,10 @@ type RootTranslation = {
 				 * A​d​d​ ​n​e​w​ ​o​p​t​i​o​n
 				 */
 				add_new_option: string
+				/**
+				 * W​r​i​t​e​ ​t​h​e​ ​v​o​t​i​n​g​ ​o​p​t​i​o​n​.​.​.
+				 */
+				voting_option_placeholder: string
 				voting_types: {
 					single_choice: {
 						/**
@@ -847,6 +864,10 @@ JPG, PNG or SVG of maximum of {size}MB.
 	 * Maximum
 	 */
 	maximum: () => LocalizedString
+	/**
+	 * Option {index}
+	 */
+	number_option: (arg: { index: number }) => LocalizedString
 	home: {
 		/**
 		 * Home
@@ -1121,6 +1142,10 @@ JPG, PNG or SVG of maximum of {size}MB.
 			 * Review all the details before publishing
 			 */
 			voting_summary_desc: () => LocalizedString
+			/**
+			 * Add new option
+			 */
+			add_new_option: () => LocalizedString
 			details_form: {
 				/**
 				 * Title
@@ -1181,6 +1206,10 @@ JPG, PNG or SVG of maximum of {size}MB.
 				 */
 				voting_options: () => LocalizedString
 				/**
+				 * The “single choice” voting type only allows the voter to select:
+				 */
+				voting_choice_subtitle: () => LocalizedString
+				/**
 				 * Add between 2 and 30 options to vote:
 				 */
 				voting_options_subtitle: () => LocalizedString
@@ -1188,6 +1217,10 @@ JPG, PNG or SVG of maximum of {size}MB.
 				 * Add new option
 				 */
 				add_new_option: () => LocalizedString
+				/**
+				 * Write the voting option...
+				 */
+				voting_option_placeholder: () => LocalizedString
 				voting_types: {
 					single_choice: {
 						/**

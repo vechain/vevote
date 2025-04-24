@@ -42,6 +42,7 @@ const en = {
   select_date: "Select date",
   select_time: "Select time",
   maximum: "Maximum",
+  number_option: "Option {index:number}",
   home: {
     title: "Home",
     go_to_proposals: "Go to proposals",
@@ -140,6 +141,7 @@ const en = {
       voting_details_desc: "Add the main details and setup the calendar",
       voting_setup_desc: "Define the voting setup details",
       voting_summary_desc: "Review all the details before publishing",
+      add_new_option: "Add new option",
       details_form: {
         title: "Title",
         title_placeholder: "What’s the proposal title?",
@@ -157,8 +159,10 @@ const en = {
         voting_limit: "Voting limit",
         voting_limit_subtitle: "Define the maximum amount of options allowed per voter:",
         voting_options: "Voting options",
+        voting_choice_subtitle: "The “single choice” voting type only allows the voter to select:",
         voting_options_subtitle: "Add between 2 and 30 options to vote:",
         add_new_option: "Add new option",
+        voting_option_placeholder: "Write the voting option...",
         voting_types: {
           single_choice: {
             title: "Single choice",

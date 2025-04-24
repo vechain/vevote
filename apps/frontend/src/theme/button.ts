@@ -100,7 +100,23 @@ export const buttonTheme = defineStyleConfig({
         border: "0px",
       },
     },
-    tertiary: {},
+    tertiary: {
+      backgroundColor: colors.gray[200],
+      textColor: colors.gray[600],
+      _hover: {
+        borderColor: colors.gray[300],
+      },
+      _active: {
+        borderColor: colors.gray[200],
+      },
+      _loading: {
+        borderColor: colors.gray[700],
+      },
+      _disabled: {
+        backgroundColor: colors.gray[100],
+        textColor: colors.gray[400],
+      },
+    },
     ghost: {
       _hover: {
         background: "transparent",
