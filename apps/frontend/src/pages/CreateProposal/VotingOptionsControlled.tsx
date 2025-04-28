@@ -8,6 +8,7 @@ import { FieldErrors, useFieldArray, useFormContext } from "react-hook-form";
 import { GoPlus } from "react-icons/go";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { RxDragHandleDots2 } from "react-icons/rx";
+import { v4 as uuidv4 } from "uuid";
 
 export const VotingOptionsControlled = () => {
   const { LL } = useI18nContext();
@@ -24,7 +25,7 @@ export const VotingOptionsControlled = () => {
   });
 
   const onAddOption = useCallback(() => {
-    append({});
+    append({ id: uuidv4(), value: "" });
   }, [append]);
 
   const sensors = useSensors(useSensor(PointerSensor));

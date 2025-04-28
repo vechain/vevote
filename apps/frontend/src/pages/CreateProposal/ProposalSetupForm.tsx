@@ -10,7 +10,7 @@ import {
 } from "@/schema/createProposalSchema";
 import { CreateProposalStep, VotingEnum } from "@/types/proposal";
 import { Box, Button, Flex, FormControl, Input, Text } from "@chakra-ui/react";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { IoArrowBack, IoArrowForward } from "react-icons/io5";
 import { VotingTypeSelectControlled } from "./controllers/VotingTypeSelectControlled";
 import { CreateFormWrapper } from "./CreateFormWrapper";
@@ -27,17 +27,18 @@ export const ProposalSetupForm = () => {
 
   const defaultValues = useMemo(() => ({ ...proposalDetails }), [proposalDetails]);
 
-  const onSubmit = (values: ProposalSetupSchema) => {
-    console.log(values);
-    setProposalDetails({ ...proposalDetails, ...values });
-  };
+  const onSubmit = useCallback(
+    (values: ProposalSetupSchema) => {
+      setProposalDetails({ ...proposalDetails, ...values });
+      setStep(CreateProposalStep.VOTING_SUMMARY);
+    },
+    [proposalDetails, setProposalDetails, setStep],
+  );
   return (
     <FormSkeleton schema={proposalSetupSchema} defaultValues={defaultValues} onSubmit={onSubmit}>
       {({ errors, register, watch }) => {
         const { votingQuestion, votingType, votingOptions } = watch();
         const nextDisabled = votingOptions.filter(Boolean).length < 2;
-
-        console.log(errors);
 
         return (
           <CreateFormWrapper>
