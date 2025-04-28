@@ -21,7 +21,7 @@ export type SingleChoiceOptions = {
   votingOptions: SingleChoiceEnum[];
 };
 
-type BaseOption = {
+export type BaseOption = {
   id: string;
   value: string;
 };
