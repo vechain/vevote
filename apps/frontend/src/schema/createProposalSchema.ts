@@ -23,16 +23,25 @@ export const proposalSingleChoiceSchema = z.object({
   votingOptions: z.array(z.nativeEnum(SingleChoiceEnum)),
 });
 
-const baseOptions = z.object({
+export const proposalSingleOptionSchema = z.object({
   votingQuestion: z.string().min(1, { message: LL.field_errors.required() }).max(QUESTION_MAX_CHAR),
-  votingOptions: z.array(z.string().min(1, { message: "" })),
-});
-
-export const proposalSingleOptionSchema = baseOptions.extend({
+  votingOptions: z
+    .object({
+      id: z.string(),
+      value: z.string().min(1, { message: "" }),
+    })
+    .array(),
   votingType: z.literal(VotingEnum.SINGLE_OPTION),
 });
 
-export const proposalMultipleOptionSchema = baseOptions.extend({
+export const proposalMultipleOptionSchema = z.object({
+  votingQuestion: z.string().min(1, { message: LL.field_errors.required() }).max(QUESTION_MAX_CHAR),
+  votingOptions: z
+    .object({
+      id: z.string(),
+      value: z.string().min(1, { message: "" }),
+    })
+    .array(),
   votingType: z.literal(VotingEnum.MULTIPLE_OPTIONS),
   votingLimit: z.number(),
 });

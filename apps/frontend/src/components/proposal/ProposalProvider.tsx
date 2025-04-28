@@ -1,5 +1,5 @@
+import { defaultSingleChoice } from "@/pages/CreateProposal/CreateProposalProvider";
 import { ProposalCardType, VotingEnum } from "@/types/proposal";
-import { defaultSingleChoice } from "@/utils/mock";
 import { createContext, PropsWithChildren, useContext } from "react";
 
 export const ProposalContext = createContext<{ proposal: ProposalCardType }>({

@@ -21,14 +21,19 @@ export type SingleChoiceOptions = {
   votingOptions: SingleChoiceEnum[];
 };
 
+type BaseOption = {
+  id: string;
+  value: string;
+};
+
 export type CustomChoiceOptions =
   | {
       votingType: VotingEnum.SINGLE_OPTION;
-      votingOptions: string[];
+      votingOptions: BaseOption[];
     }
   | {
       votingType: VotingEnum.MULTIPLE_OPTIONS;
-      votingOptions: string[];
+      votingOptions: BaseOption[];
     };
 
 export type VotingChoices = SingleChoiceOptions | CustomChoiceOptions;

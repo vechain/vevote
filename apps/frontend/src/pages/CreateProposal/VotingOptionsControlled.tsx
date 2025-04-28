@@ -1,48 +1,36 @@
 import { useI18nContext } from "@/i18n/i18n-react";
-import { ProposalMultipleOptionSchema, ProposalSingleOptionSchema } from "@/schema/createProposalSchema";
 import { Button, Flex, FormControl, Input, Text } from "@chakra-ui/react";
-import { ChangeEventHandler, useCallback, useEffect, useMemo, useRef } from "react";
-import { Controller, useFormContext } from "react-hook-form";
-import { RxDragHandleDots2 } from "react-icons/rx";
-4;
-import { RiDeleteBin6Line } from "react-icons/ri";
-import { GoPlus } from "react-icons/go";
-import { DndContext, closestCenter, PointerSensor, useSensor, useSensors, DndContextProps } from "@dnd-kit/core";
+import { closestCenter, DndContext, DndContextProps, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { arrayMove, SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-
-const DEFAULT_OPTIONS = ["", ""];
+import { MouseEventHandler, useCallback, useMemo } from "react";
+import { FieldErrors, useFieldArray, useFormContext } from "react-hook-form";
+import { GoPlus } from "react-icons/go";
+import { RiDeleteBin6Line } from "react-icons/ri";
+import { RxDragHandleDots2 } from "react-icons/rx";
 
 export const VotingOptionsControlled = () => {
-  const { control } = useFormContext<ProposalMultipleOptionSchema | ProposalSingleOptionSchema>();
-
-  return (
-    <Controller
-      name={"votingOptions"}
-      control={control}
-      render={({ field: { value, onChange } }) => {
-        const defaultValue = value.length === 0 ? DEFAULT_OPTIONS : value;
-        return <VotingOptions options={defaultValue} onChange={onChange} />;
-      }}
-    />
-  );
-};
-
-const VotingOptions = ({ options, onChange }: { options: string[]; onChange: (newValues: string[]) => void }) => {
   const { LL } = useI18nContext();
+  const { control } = useFormContext();
 
-  const handleChange = useCallback(
-    (newValue: string, index: number) => {
-      const newOptions = [...options];
-      newOptions[index] = newValue;
-      onChange(newOptions);
+  const {
+    fields: options,
+    append,
+    remove,
+    swap,
+  } = useFieldArray({
+    name: "votingOptions",
+    control,
+  });
+
+  const onAddOption: MouseEventHandler<HTMLButtonElement> = useCallback(
+    e => {
+      e.preventDefault();
+      e.stopPropagation();
+      append({});
     },
-    [onChange, options],
+    [append],
   );
-
-  const onAddOption = useCallback(() => {
-    onChange([...options, ""]);
-  }, [onChange, options]);
 
   const sensors = useSensors(useSensor(PointerSensor));
 
@@ -50,37 +38,30 @@ const VotingOptions = ({ options, onChange }: { options: string[]; onChange: (ne
     const { active, over } = event;
 
     if (active.id !== over?.id) {
-      const oldIndex = options.findIndex((_, i) => `${i}-${options[i]}` === active.id);
-      const newIndex = options.findIndex((_, i) => `${i}-${options[i]}` === over?.id);
-      const newOptions = arrayMove(options, oldIndex, newIndex);
-      onChange(newOptions);
+      const oldIndex = options.findIndex(option => option.id === active.id);
+      const newIndex = options.findIndex(option => option.id === over?.id);
+      arrayMove(options, oldIndex, newIndex);
+      swap(oldIndex, newIndex);
     }
   };
 
   const handleDelete = useCallback(
     (index: number) => {
-      const newOptions = options.filter((_, i) => i !== index);
-      onChange(newOptions);
+      remove(index);
     },
-    [onChange, options],
+    [remove],
   );
 
   return (
     <Flex flexDirection={"column"} alignItems={"start"} gap={6} width="full">
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-        <SortableContext items={options.map((value, i) => `${i}-${value}`)} strategy={verticalListSortingStrategy}>
+        <SortableContext items={options.map(value => value.id)} strategy={verticalListSortingStrategy}>
           {options.map((value, index) => (
-            <SortableVotingOption
-              key={`${index}-${value}`}
-              index={index}
-              value={value}
-              onChange={e => handleChange(e.currentTarget.value, index)}
-              onDelete={() => handleDelete(index)}
-            />
+            <SortableVotingOption key={value.id} id={value.id} index={index} onDelete={() => handleDelete(index)} />
           ))}
         </SortableContext>
       </DndContext>
-      <Button variant={"tertiary"} onClick={onAddOption} width={"full"}>
+      <Button type="button" variant={"tertiary"} onClick={onAddOption} width={"full"}>
         <GoPlus size={24} />
         {LL.proposal.create.add_new_option()}
       </Button>
@@ -88,21 +69,16 @@ const VotingOptions = ({ options, onChange }: { options: string[]; onChange: (ne
   );
 };
 
-const SortableVotingOption = ({
-  index,
-  value,
-  onChange,
-  onDelete,
-}: {
-  index: number;
-  value: string;
-  onDelete: () => void;
-  onChange: ChangeEventHandler<HTMLInputElement>;
-}) => {
+const SortableVotingOption = ({ index, onDelete, id }: { index: number; onDelete: () => void; id: string }) => {
   const { LL } = useI18nContext();
-  const inputRef = useRef<HTMLInputElement | null>(null);
+  const {
+    register,
+    formState: { errors },
+  } = useFormContext();
 
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: `${index}-${value}` });
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
+    id,
+  });
 
   const style = useMemo(
     () => ({
@@ -112,12 +88,6 @@ const SortableVotingOption = ({
     }),
     [transform, transition],
   );
-
-  useEffect(() => {
-    if (inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, [value]);
 
   return (
     <Flex ref={setNodeRef} style={style} alignItems={"end"} gap={2}>
@@ -142,17 +112,16 @@ const SortableVotingOption = ({
           {LL.number_option({ index: index + 1 })}
         </Text>
         <Flex width={"full"} gap={2}>
-          <FormControl isInvalid={Boolean(!value)}>
+          <FormControl isInvalid={Boolean((errors.votingOptions as FieldErrors)?.[index])}>
             <Input
-              ref={inputRef}
               placeholder={LL.proposal.create.setup_form.voting_option_placeholder()}
               size={"md"}
               width={"full"}
-              value={value}
-              onChange={onChange}
               flex={1}
+              {...register(`votingOptions.${index}.value`)}
             />
           </FormControl>
+
           {index > 1 && (
             <Button onClick={onDelete} variant={"tertiary"} size={"fit"} width={"48px"}>
               <RiDeleteBin6Line size={24} />

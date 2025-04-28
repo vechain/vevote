@@ -14,12 +14,11 @@ import { useMemo } from "react";
 import { IoArrowBack, IoArrowForward } from "react-icons/io5";
 import { VotingTypeSelectControlled } from "./controllers/VotingTypeSelectControlled";
 import { CreateFormWrapper } from "./CreateFormWrapper";
-import { useCreateProposal } from "./CreateProposalProvider";
+import { defaultSingleChoice, useCreateProposal } from "./CreateProposalProvider";
 import { InputMessage } from "@/components/ui/InputMessage";
 import { useFormContext } from "react-hook-form";
 import { InputIncrementControlled } from "./controllers/InputLimitControlled";
 import { VotingOptionsControlled } from "./VotingOptionsControlled";
-import { defaultSingleChoice } from "@/utils/mock";
 
 export const ProposalSetupForm = () => {
   const { proposalDetails, setStep, setProposalDetails } = useCreateProposal();
@@ -36,8 +35,9 @@ export const ProposalSetupForm = () => {
     <FormSkeleton schema={proposalSetupSchema} defaultValues={defaultValues} onSubmit={onSubmit}>
       {({ errors, register, watch }) => {
         const { votingQuestion, votingType, votingOptions } = watch();
-
         const nextDisabled = votingOptions.filter(Boolean).length < 2;
+
+        console.log(errors);
 
         return (
           <CreateFormWrapper>
@@ -116,15 +116,12 @@ const SingleChoiceFields = () => {
 const SingleOptionsFields = () => {
   const { LL } = useI18nContext();
   const LLSetupForm = LL.proposal.create.setup_form;
-  const {
-    formState: { errors },
-  } = useFormContext<ProposalMultipleOptionSchema>();
   return (
-    <FormControl isInvalid={Boolean(errors?.votingOptions)}>
+    <>
       <Label label={LLSetupForm.voting_options()} />
       <Label.Subtitle label={LLSetupForm.voting_options_subtitle()} />
       <VotingOptionsControlled />
-    </FormControl>
+    </>
   );
 };
 
@@ -142,8 +139,7 @@ const MultipleOptionFields = () => {
         <Label fontSize={16} label={LL.maximum()} />
         <InputIncrementControlled />
       </FormControl>
-
-      <FormControl isInvalid={Boolean(errors?.votingOptions)}>
+      <FormControl>
         <Label label={LLSetupForm.voting_options()} />
         <Label.Subtitle label={LLSetupForm.voting_options_subtitle()} />
         <VotingOptionsControlled />

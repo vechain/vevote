@@ -1,10 +1,10 @@
 import { useI18nContext } from "@/i18n/i18n-react";
 import { ProposalSetupSchema } from "@/schema/createProposalSchema";
 import { VotingEnum } from "@/types/proposal";
-import { defaultSingleChoice } from "@/utils/mock";
 import { Button, Flex, Radio, Text } from "@chakra-ui/react";
 import { useMemo } from "react";
 import { Controller, useFormContext } from "react-hook-form";
+import { defaultMultiOptionsChoice, defaultSingleChoice } from "../CreateProposalProvider";
 
 export const VotingTypeSelectControlled = () => {
   const { LL } = useI18nContext();
@@ -47,7 +47,7 @@ export const VotingTypeSelectControlled = () => {
                   onClick={() => {
                     onChange(t.kind);
                     if (t.kind === VotingEnum.SINGLE_CHOICE) setValue("votingOptions", defaultSingleChoice);
-                    if (t.kind !== VotingEnum.SINGLE_CHOICE) setValue("votingOptions", []);
+                    if (t.kind !== VotingEnum.SINGLE_CHOICE) setValue("votingOptions", defaultMultiOptionsChoice);
                   }}
                   key={i}
                   {...t}

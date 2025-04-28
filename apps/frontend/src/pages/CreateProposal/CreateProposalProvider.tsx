@@ -1,7 +1,19 @@
-import { CreateProposalStep, VotingChoices, VotingEnum } from "@/types/proposal";
-import { defaultSingleChoice } from "@/utils/mock";
+import { CreateProposalStep, SingleChoiceEnum, VotingChoices, VotingEnum } from "@/types/proposal";
 import { ZodFile } from "@/utils/zod";
 import { createContext, Dispatch, PropsWithChildren, SetStateAction, useContext, useMemo, useState } from "react";
+import { v4 as uuidv4 } from "uuid";
+
+export const defaultSingleChoice = [SingleChoiceEnum.YES, SingleChoiceEnum.NO, SingleChoiceEnum.ABSTAIN];
+export const defaultMultiOptionsChoice = [
+  {
+    id: uuidv4(),
+    value: "",
+  },
+  {
+    id: uuidv4(),
+    value: "",
+  },
+];
 
 export type ProposalDescription = Record<string, string | Record<string, string>>;
 
