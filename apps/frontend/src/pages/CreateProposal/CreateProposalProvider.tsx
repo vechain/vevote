@@ -1,4 +1,5 @@
 import { CreateProposalStep, VotingChoices, VotingEnum } from "@/types/proposal";
+import { defaultSingleChoice } from "@/utils/mock";
 import { ZodFile } from "@/utils/zod";
 import { createContext, Dispatch, PropsWithChildren, SetStateAction, useContext, useMemo, useState } from "react";
 
@@ -10,7 +11,7 @@ type ProposalDetails = {
   headerImage?: ZodFile;
   startDate?: Date;
   endDate?: Date;
-  minParticipant?: `${number}%`;
+  votingLimit?: number;
   question: string;
 } & VotingChoices;
 
@@ -18,8 +19,9 @@ const DEFAULT_PROPOSAL: ProposalDetails = {
   title: "",
   description: [],
   question: "",
+  votingLimit: 1,
   votingType: VotingEnum.SINGLE_CHOICE,
-  votingOptions: [],
+  votingOptions: defaultSingleChoice,
 };
 
 export type CreateProposalContextType = {

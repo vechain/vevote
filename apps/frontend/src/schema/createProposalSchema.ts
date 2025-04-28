@@ -25,7 +25,7 @@ export const proposalSingleChoiceSchema = z.object({
 
 const baseOptions = z.object({
   votingQuestion: z.string().min(1, { message: LL.field_errors.required() }).max(QUESTION_MAX_CHAR),
-  votingOptions: z.array(z.string()),
+  votingOptions: z.array(z.string().min(1, { message: "" })),
 });
 
 export const proposalSingleOptionSchema = baseOptions.extend({

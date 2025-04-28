@@ -1,5 +1,7 @@
 import { useI18nContext } from "@/i18n/i18n-react";
+import { ProposalSetupSchema } from "@/schema/createProposalSchema";
 import { VotingEnum } from "@/types/proposal";
+import { defaultSingleChoice } from "@/utils/mock";
 import { Button, Flex, Radio, Text } from "@chakra-ui/react";
 import { useMemo } from "react";
 import { Controller, useFormContext } from "react-hook-form";
@@ -8,7 +10,7 @@ export const VotingTypeSelectControlled = () => {
   const { LL } = useI18nContext();
   const LLVotingTypes = LL.proposal.create.setup_form.voting_types;
 
-  const { control } = useFormContext();
+  const { control, setValue } = useFormContext<ProposalSetupSchema>();
 
   const types = useMemo(
     () => [
@@ -39,7 +41,18 @@ export const VotingTypeSelectControlled = () => {
         return (
           <Flex flexDirection={"column"} gap={2}>
             {types.map((t, i) => {
-              return <VotingTypeItem selected={value} onClick={() => onChange(t.kind)} key={i} {...t} />;
+              return (
+                <VotingTypeItem
+                  selected={value}
+                  onClick={() => {
+                    onChange(t.kind);
+                    if (t.kind === VotingEnum.SINGLE_CHOICE) setValue("votingOptions", defaultSingleChoice);
+                    if (t.kind !== VotingEnum.SINGLE_CHOICE) setValue("votingOptions", []);
+                  }}
+                  key={i}
+                  {...t}
+                />
+              );
             })}
           </Flex>
         );

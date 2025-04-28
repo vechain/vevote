@@ -1,6 +1,6 @@
 import { useI18nContext } from "@/i18n/i18n-react";
 import { ProposalMultipleOptionSchema, ProposalSingleOptionSchema } from "@/schema/createProposalSchema";
-import { Button, Flex, Input, Text } from "@chakra-ui/react";
+import { Button, Flex, FormControl, Input, Text } from "@chakra-ui/react";
 import { ChangeEventHandler, useCallback, useEffect, useMemo, useRef } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import { RxDragHandleDots2 } from "react-icons/rx";
@@ -142,15 +142,17 @@ const SortableVotingOption = ({
           {LL.number_option({ index: index + 1 })}
         </Text>
         <Flex width={"full"} gap={2}>
-          <Input
-            ref={inputRef}
-            placeholder={LL.proposal.create.setup_form.voting_option_placeholder()}
-            size={"md"}
-            width={"full"}
-            value={value}
-            onChange={onChange}
-            flex={1}
-          />
+          <FormControl isInvalid={Boolean(!value)}>
+            <Input
+              ref={inputRef}
+              placeholder={LL.proposal.create.setup_form.voting_option_placeholder()}
+              size={"md"}
+              width={"full"}
+              value={value}
+              onChange={onChange}
+              flex={1}
+            />
+          </FormControl>
           {index > 1 && (
             <Button onClick={onDelete} variant={"tertiary"} size={"fit"} width={"48px"}>
               <RiDeleteBin6Line size={24} />

@@ -22,19 +22,22 @@ import { VotingOptionsControlled } from "./VotingOptionsControlled";
 import { defaultSingleChoice } from "@/utils/mock";
 
 export const ProposalSetupForm = () => {
-  const { proposalDetails, setStep } = useCreateProposal();
+  const { proposalDetails, setStep, setProposalDetails } = useCreateProposal();
   const { LL } = useI18nContext();
   const LLSetupForm = LL.proposal.create.setup_form;
 
   const defaultValues = useMemo(() => ({ ...proposalDetails }), [proposalDetails]);
 
   const onSubmit = (values: ProposalSetupSchema) => {
-    console.log("values", values);
+    console.log(values);
+    setProposalDetails({ ...proposalDetails, ...values });
   };
   return (
     <FormSkeleton schema={proposalSetupSchema} defaultValues={defaultValues} onSubmit={onSubmit}>
       {({ errors, register, watch }) => {
-        const { votingQuestion, votingType } = watch();
+        const { votingQuestion, votingType, votingOptions } = watch();
+
+        const nextDisabled = votingOptions.filter(Boolean).length < 2;
 
         return (
           <CreateFormWrapper>
@@ -59,15 +62,15 @@ export const ProposalSetupForm = () => {
             </FormControl>
 
             {votingType === VotingEnum.SINGLE_CHOICE && <SingleChoiceFields />}
-            {votingType === VotingEnum.SINGLE_OPTION && <MultipleOptionsFields />}
-            {votingType === VotingEnum.MULTIPLE_OPTIONS && <MultipleOptionsFields />}
+            {votingType === VotingEnum.SINGLE_OPTION && <SingleOptionsFields />}
+            {votingType === VotingEnum.MULTIPLE_OPTIONS && <MultipleOptionFields />}
 
             <Flex justifyContent={"space-between"}>
               <Button variant={"secondary"} onClick={() => setStep(CreateProposalStep.VOTING_DETAILS)}>
                 <IoArrowBack />
                 {LL.back()}
               </Button>
-              <Button type="submit">
+              <Button type="submit" isDisabled={nextDisabled}>
                 {LL.next()}
                 <IoArrowForward />
               </Button>
@@ -76,30 +79,6 @@ export const ProposalSetupForm = () => {
         );
       }}
     </FormSkeleton>
-  );
-};
-
-const MultipleOptionsFields = () => {
-  const { LL } = useI18nContext();
-  const LLSetupForm = LL.proposal.create.setup_form;
-  const {
-    formState: { errors },
-  } = useFormContext<ProposalMultipleOptionSchema>();
-  return (
-    <>
-      <FormControl isInvalid={Boolean(errors?.votingLimit)}>
-        <Label label={LLSetupForm.voting_limit()} />
-        <Label.Subtitle label={LLSetupForm.voting_limit_subtitle()} />
-        <Label fontSize={16} label={LL.maximum()} />
-        <InputIncrementControlled />
-      </FormControl>
-
-      <FormControl isInvalid={Boolean(errors?.votingOptions)}>
-        <Label label={LLSetupForm.voting_options()} />
-        <Label.Subtitle label={LLSetupForm.voting_options_subtitle()} />
-        <VotingOptionsControlled />
-      </FormControl>
-    </>
   );
 };
 
@@ -129,6 +108,45 @@ const SingleChoiceFields = () => {
             </Box>
           ))}
         </Flex>
+      </FormControl>
+    </>
+  );
+};
+
+const SingleOptionsFields = () => {
+  const { LL } = useI18nContext();
+  const LLSetupForm = LL.proposal.create.setup_form;
+  const {
+    formState: { errors },
+  } = useFormContext<ProposalMultipleOptionSchema>();
+  return (
+    <FormControl isInvalid={Boolean(errors?.votingOptions)}>
+      <Label label={LLSetupForm.voting_options()} />
+      <Label.Subtitle label={LLSetupForm.voting_options_subtitle()} />
+      <VotingOptionsControlled />
+    </FormControl>
+  );
+};
+
+const MultipleOptionFields = () => {
+  const { LL } = useI18nContext();
+  const LLSetupForm = LL.proposal.create.setup_form;
+  const {
+    formState: { errors },
+  } = useFormContext<ProposalMultipleOptionSchema>();
+  return (
+    <>
+      <FormControl isInvalid={Boolean(errors?.votingLimit)}>
+        <Label label={LLSetupForm.voting_limit()} />
+        <Label.Subtitle label={LLSetupForm.voting_limit_subtitle()} />
+        <Label fontSize={16} label={LL.maximum()} />
+        <InputIncrementControlled />
+      </FormControl>
+
+      <FormControl isInvalid={Boolean(errors?.votingOptions)}>
+        <Label label={LLSetupForm.voting_options()} />
+        <Label.Subtitle label={LLSetupForm.voting_options_subtitle()} />
+        <VotingOptionsControlled />
       </FormControl>
     </>
   );
