@@ -3,7 +3,7 @@ import { Button, Flex, FormControl, Input, Text } from "@chakra-ui/react";
 import { closestCenter, DndContext, DndContextProps, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { arrayMove, SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { MouseEventHandler, useCallback, useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { FieldErrors, useFieldArray, useFormContext } from "react-hook-form";
 import { GoPlus } from "react-icons/go";
 import { RiDeleteBin6Line } from "react-icons/ri";
@@ -23,14 +23,9 @@ export const VotingOptionsControlled = () => {
     control,
   });
 
-  const onAddOption: MouseEventHandler<HTMLButtonElement> = useCallback(
-    e => {
-      e.preventDefault();
-      e.stopPropagation();
-      append({});
-    },
-    [append],
-  );
+  const onAddOption = useCallback(() => {
+    append({});
+  }, [append]);
 
   const sensors = useSensors(useSensor(PointerSensor));
 
@@ -45,19 +40,12 @@ export const VotingOptionsControlled = () => {
     }
   };
 
-  const handleDelete = useCallback(
-    (index: number) => {
-      remove(index);
-    },
-    [remove],
-  );
-
   return (
     <Flex flexDirection={"column"} alignItems={"start"} gap={6} width="full">
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <SortableContext items={options.map(value => value.id)} strategy={verticalListSortingStrategy}>
           {options.map((value, index) => (
-            <SortableVotingOption key={value.id} id={value.id} index={index} onDelete={() => handleDelete(index)} />
+            <SortableVotingOption key={value.id} id={value.id} index={index} onDelete={() => remove(index)} />
           ))}
         </SortableContext>
       </DndContext>

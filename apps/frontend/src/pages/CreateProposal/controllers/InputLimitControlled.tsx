@@ -4,7 +4,7 @@ import { Controller, useFormContext } from "react-hook-form";
 
 const MIN_CHOICE_ALLOWED = 1;
 
-export const InputIncrementControlled = () => {
+export const InputLimitControlled = () => {
   const { control } = useFormContext<ProposalMultipleOptionSchema>();
   return (
     <Controller

@@ -17,7 +17,7 @@ import { CreateFormWrapper } from "./CreateFormWrapper";
 import { defaultSingleChoice, useCreateProposal } from "./CreateProposalProvider";
 import { InputMessage } from "@/components/ui/InputMessage";
 import { useFormContext } from "react-hook-form";
-import { InputIncrementControlled } from "./controllers/InputLimitControlled";
+import { InputLimitControlled } from "./controllers/InputLimitControlled";
 import { VotingOptionsControlled } from "./VotingOptionsControlled";
 
 export const ProposalSetupForm = () => {
@@ -137,7 +137,7 @@ const MultipleOptionFields = () => {
         <Label label={LLSetupForm.voting_limit()} />
         <Label.Subtitle label={LLSetupForm.voting_limit_subtitle()} />
         <Label fontSize={16} label={LL.maximum()} />
-        <InputIncrementControlled />
+        <InputLimitControlled />
       </FormControl>
       <FormControl>
         <Label label={LLSetupForm.voting_options()} />
