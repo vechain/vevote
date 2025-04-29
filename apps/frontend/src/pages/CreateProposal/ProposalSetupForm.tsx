@@ -118,11 +118,11 @@ const SingleOptionsFields = () => {
   const { LL } = useI18nContext();
   const LLSetupForm = LL.proposal.create.setup_form;
   return (
-    <>
+    <FormControl>
       <Label label={LLSetupForm.voting_options()} />
       <Label.Subtitle label={LLSetupForm.voting_options_subtitle()} />
       <VotingOptionsControlled />
-    </>
+    </FormControl>
   );
 };
 
