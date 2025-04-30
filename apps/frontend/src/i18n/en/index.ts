@@ -195,6 +195,16 @@ const en = {
           },
         },
       },
+      summary_form: {
+        main_details: {
+          title: "Main details",
+        },
+        voting_setup: {
+          title: "Voting setup",
+        },
+        preview: "Preview",
+        publish_proposal: "Public Proposal",
+      },
     },
   },
   proposals: {

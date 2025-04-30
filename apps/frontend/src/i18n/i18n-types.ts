@@ -616,6 +616,28 @@ type RootTranslation = {
 					}
 				}
 			}
+			summary_form: {
+				main_details: {
+					/**
+					 * M​a​i​n​ ​d​e​t​a​i​l​s
+					 */
+					title: string
+				}
+				voting_setup: {
+					/**
+					 * V​o​t​i​n​g​ ​s​e​t​u​p
+					 */
+					title: string
+				}
+				/**
+				 * P​r​e​v​i​e​w
+				 */
+				preview: string
+				/**
+				 * P​u​b​l​i​c​ ​P​r​o​p​o​s​a​l
+				 */
+				publish_proposal: string
+			}
 		}
 	}
 	proposals: {
@@ -1341,6 +1363,28 @@ JPG, PNG or SVG of maximum of {size}MB.
 						subtitle: () => LocalizedString
 					}
 				}
+			}
+			summary_form: {
+				main_details: {
+					/**
+					 * Main details
+					 */
+					title: () => LocalizedString
+				}
+				voting_setup: {
+					/**
+					 * Voting setup
+					 */
+					title: () => LocalizedString
+				}
+				/**
+				 * Preview
+				 */
+				preview: () => LocalizedString
+				/**
+				 * Public Proposal
+				 */
+				publish_proposal: () => LocalizedString
 			}
 		}
 	}
