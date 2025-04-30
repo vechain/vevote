@@ -20,7 +20,7 @@ export const ProposalContext = createContext<{ proposal: ProposalCardType }>({
     title: "",
     startDate: new Date(),
     endDate: new Date(),
-    question: "",
+    votingQuestion: "",
     votingType: VotingEnum.SINGLE_CHOICE,
     votingOptions: defaultSingleChoice,
   },
