@@ -1,11 +1,11 @@
 import { PageContainer } from "@/components/PageContainer";
-import { Box, Button, Flex, Heading, Link, Text } from "@chakra-ui/react";
-import { useCreateProposal } from "./CreateProposalProvider";
 import { useI18nContext } from "@/i18n/i18n-react";
-import { useMemo } from "react";
-import { motion } from "framer-motion";
 import { CreateProposalStep } from "@/types/proposal";
-import { IoMdClose } from "react-icons/io";
+import { Box, Flex, Heading, Text } from "@chakra-ui/react";
+import { motion } from "framer-motion";
+import { useMemo } from "react";
+import { useCreateProposal } from "./CreateProposalProvider";
+import { ExitButton } from "./ExitButton";
 
 export const CreateProposalNavigation = () => {
   const { step } = useCreateProposal();
@@ -38,10 +38,7 @@ export const CreateProposalNavigation = () => {
           </Text>
         </Flex>
       </Flex>
-      <Button as={Link} href="/proposals" marginLeft={"auto"} alignItems={"center"} gap={2}>
-        {LL.exit()}
-        <IoMdClose />
-      </Button>
+      <ExitButton />
     </PageContainer.Header>
   );
 };

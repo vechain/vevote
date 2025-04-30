@@ -1,21 +1,21 @@
-import React, { PropsWithChildren } from "react";
-import ReactDOM from "react-dom/client";
-import App from "./App.tsx";
-import "./index.css";
-import "quill/dist/quill.core.css";
-import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
-import { persister, queryClient } from "./utils/queryClient.ts";
 import { getConfig } from "@repo/config";
-import { VeChainKitProvider } from "@vechain/vechain-kit";
+import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import { WalletConnectOptions } from "@vechain/dapp-kit-react";
-import { ThemeProvider } from "./contexts/ThemeProvider.tsx";
-import { useEffect, useState } from "react";
-import { Locales } from "./i18n/i18n-types";
-import { loadLocale } from "./i18n/i18n-util.sync";
-import { detectLocale } from "./i18n/i18n-util";
+import { VeChainKitProvider } from "@vechain/vechain-kit";
+import "quill/dist/quill.core.css";
+import React, { PropsWithChildren, useEffect, useState } from "react";
+import ReactDOM from "react-dom/client";
 import { localStorageDetector, navigatorDetector } from "typesafe-i18n/detectors";
-import { loadLocaleAsync } from "./i18n/i18n-util.async";
+import App from "./App.tsx";
 import { I18nProvider } from "./contexts/I18nProvider.tsx";
+import { ThemeProvider } from "./contexts/ThemeProvider.tsx";
+import { Locales } from "./i18n/i18n-types";
+import { detectLocale } from "./i18n/i18n-util";
+import { loadLocaleAsync } from "./i18n/i18n-util.async";
+import { loadLocale } from "./i18n/i18n-util.sync";
+import "./index.css";
+import { CreateProposalProvider } from "./pages/CreateProposal/CreateProposalProvider.tsx";
+import { persister, queryClient } from "./utils/queryClient.ts";
 
 loadLocale("en");
 
@@ -60,7 +60,9 @@ const Providers = ({ children }: PropsWithChildren) => {
           network={{
             type: config.network.type,
           }}>
-          <ThemeProvider>{children}</ThemeProvider>
+          <ThemeProvider>
+            <CreateProposalProvider>{children}</CreateProposalProvider>
+          </ThemeProvider>
         </VeChainKitProvider>
       </PersistQueryClientProvider>
     </I18nProvider>

@@ -1,6 +1,18 @@
-import { CreateProposalStep, SingleChoiceEnum, VotingChoices, VotingEnum } from "@/types/proposal";
+import { useDraftProposal } from "@/hooks/useDraftProposal";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
+import { CreateProposalStep, ProposalCardType, SingleChoiceEnum, VotingChoices, VotingEnum } from "@/types/proposal";
 import { ZodFile } from "@/utils/zod";
-import { createContext, Dispatch, PropsWithChildren, SetStateAction, useContext, useMemo, useState } from "react";
+import { Op } from "quill";
+import {
+  createContext,
+  Dispatch,
+  PropsWithChildren,
+  SetStateAction,
+  useCallback,
+  useContext,
+  useMemo,
+  useState,
+} from "react";
 import { v4 as uuidv4 } from "uuid";
 
 export const defaultSingleChoice = [SingleChoiceEnum.YES, SingleChoiceEnum.NO, SingleChoiceEnum.ABSTAIN];
@@ -15,9 +27,9 @@ export const defaultMultiOptionsChoice = [
   },
 ];
 
-export type ProposalDescription = Record<string, string | Record<string, string>>;
+export type ProposalDescription = Op;
 
-type ProposalDetails = {
+export type ProposalDetails = {
   title: string;
   description: ProposalDescription[];
   headerImage?: ZodFile;
@@ -41,6 +53,8 @@ export type CreateProposalContextType = {
   setStep: Dispatch<SetStateAction<CreateProposalStep>>;
   proposalDetails: ProposalDetails;
   setProposalDetails: Dispatch<SetStateAction<ProposalDetails>>;
+  saveDraftProposal: () => Promise<void>;
+  draftProposal: ProposalCardType | null;
 };
 
 export const CreateProposalContext = createContext<CreateProposalContextType>({
@@ -48,15 +62,26 @@ export const CreateProposalContext = createContext<CreateProposalContextType>({
   setProposalDetails: () => {},
   step: CreateProposalStep.VOTING_DETAILS,
   setStep: () => {},
+  saveDraftProposal: async () => {},
+  draftProposal: null,
 });
 
 export const CreateProposalProvider = ({ children }: PropsWithChildren) => {
-  const [proposalDetails, setProposalDetails] = useState<ProposalDetails>(DEFAULT_PROPOSAL);
+  const { fromDraftToProposal, fromProposalToDraft } = useDraftProposal();
+  const [draftProposal, setDraftProposal] = useLocalStorage<ProposalCardType | null>("draft-proposal", null);
+  const [proposalDetails, setProposalDetails] = useState<ProposalDetails>(
+    fromDraftToProposal(draftProposal, DEFAULT_PROPOSAL),
+  );
   const [step, setStep] = useState<CreateProposalStep>(CreateProposalStep.VOTING_DETAILS);
 
+  const saveDraftProposal = useCallback(async () => {
+    const draft = await fromProposalToDraft(proposalDetails);
+    return setDraftProposal(draft);
+  }, [fromProposalToDraft, proposalDetails, setDraftProposal]);
+
   const value = useMemo(
-    () => ({ proposalDetails, setProposalDetails, step, setStep }),
-    [proposalDetails, setProposalDetails, step, setStep],
+    () => ({ proposalDetails, setProposalDetails, step, setStep, draftProposal, saveDraftProposal }),
+    [proposalDetails, step, saveDraftProposal, draftProposal],
   );
 
   return <CreateProposalContext.Provider value={value}>{children}</CreateProposalContext.Provider>;

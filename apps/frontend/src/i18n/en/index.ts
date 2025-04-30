@@ -43,6 +43,7 @@ const en = {
   select_time: "Select time",
   maximum: "Maximum",
   number_option: "Option {index:number}",
+  continue: "Continue",
   home: {
     title: "Home",
     go_to_proposals: "Go to proposals",
@@ -142,6 +143,17 @@ const en = {
       voting_setup_desc: "Define the voting setup details",
       voting_summary_desc: "Review all the details before publishing",
       add_new_option: "Add new option",
+      exit_proposal: {
+        title: "Exit proposal creation",
+        description:
+          "By exiting you lose all the information written or you can save this proposal as a draft and finish later?",
+        exit_button: "Exit proposal",
+        save_button: "Save draft",
+      },
+      draft_saved: {
+        title: "Draft saved!",
+        description: "The proposal draft has been saved successfully and can now be continued later.",
+      },
       details_form: {
         title: "Title",
         title_placeholder: "What’s the proposal title?",

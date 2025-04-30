@@ -1,3 +1,5 @@
+import { ProposalDetails } from "@/pages/CreateProposal/CreateProposalProvider";
+
 export enum CreateProposalStep {
   VOTING_DETAILS,
   VOTING_SETUP,
@@ -48,16 +50,9 @@ export type ProposalStatus =
   | "rejected"
   | "min-not-reached";
 
-export type ProposalCardType = {
+export type ProposalCardType = ProposalDetails & {
   id: string;
+  status: ProposalStatus;
   proposer: string;
   createdAt: Date;
-  headerImage: string;
-  status: ProposalStatus;
-  title: string;
-  description: string;
-  startDate: Date;
-  endDate: Date;
-  question: string;
-  maxSelection: number;
-} & VotingChoices;
+};

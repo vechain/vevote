@@ -182,6 +182,10 @@ type RootTranslation = {
 	 * @param {number} index
 	 */
 	number_option: RequiredParams<'index'>
+	/**
+	 * C​o​n​t​i​n​u​e
+	 */
+	'continue': string
 	home: {
 		/**
 		 * H​o​m​e
@@ -464,6 +468,34 @@ type RootTranslation = {
 			 * A​d​d​ ​n​e​w​ ​o​p​t​i​o​n
 			 */
 			add_new_option: string
+			exit_proposal: {
+				/**
+				 * E​x​i​t​ ​p​r​o​p​o​s​a​l​ ​c​r​e​a​t​i​o​n
+				 */
+				title: string
+				/**
+				 * B​y​ ​e​x​i​t​i​n​g​ ​y​o​u​ ​l​o​s​e​ ​a​l​l​ ​t​h​e​ ​i​n​f​o​r​m​a​t​i​o​n​ ​w​r​i​t​t​e​n​ ​o​r​ ​y​o​u​ ​c​a​n​ ​s​a​v​e​ ​t​h​i​s​ ​p​r​o​p​o​s​a​l​ ​a​s​ ​a​ ​d​r​a​f​t​ ​a​n​d​ ​f​i​n​i​s​h​ ​l​a​t​e​r​?
+				 */
+				description: string
+				/**
+				 * E​x​i​t​ ​p​r​o​p​o​s​a​l
+				 */
+				exit_button: string
+				/**
+				 * S​a​v​e​ ​d​r​a​f​t
+				 */
+				save_button: string
+			}
+			draft_saved: {
+				/**
+				 * D​r​a​f​t​ ​s​a​v​e​d​!
+				 */
+				title: string
+				/**
+				 * T​h​e​ ​p​r​o​p​o​s​a​l​ ​d​r​a​f​t​ ​h​a​s​ ​b​e​e​n​ ​s​a​v​e​d​ ​s​u​c​c​e​s​s​f​u​l​l​y​ ​a​n​d​ ​c​a​n​ ​n​o​w​ ​b​e​ ​c​o​n​t​i​n​u​e​d​ ​l​a​t​e​r​.
+				 */
+				description: string
+			}
 			details_form: {
 				/**
 				 * T​i​t​l​e
@@ -868,6 +900,10 @@ JPG, PNG or SVG of maximum of {size}MB.
 	 * Option {index}
 	 */
 	number_option: (arg: { index: number }) => LocalizedString
+	/**
+	 * Continue
+	 */
+	'continue': () => LocalizedString
 	home: {
 		/**
 		 * Home
@@ -1146,6 +1182,34 @@ JPG, PNG or SVG of maximum of {size}MB.
 			 * Add new option
 			 */
 			add_new_option: () => LocalizedString
+			exit_proposal: {
+				/**
+				 * Exit proposal creation
+				 */
+				title: () => LocalizedString
+				/**
+				 * By exiting you lose all the information written or you can save this proposal as a draft and finish later?
+				 */
+				description: () => LocalizedString
+				/**
+				 * Exit proposal
+				 */
+				exit_button: () => LocalizedString
+				/**
+				 * Save draft
+				 */
+				save_button: () => LocalizedString
+			}
+			draft_saved: {
+				/**
+				 * Draft saved!
+				 */
+				title: () => LocalizedString
+				/**
+				 * The proposal draft has been saved successfully and can now be continued later.
+				 */
+				description: () => LocalizedString
+			}
 			details_form: {
 				/**
 				 * Title
