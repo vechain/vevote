@@ -186,6 +186,10 @@ type RootTranslation = {
 	 * C​o​n​t​i​n​u​e
 	 */
 	'continue': string
+	/**
+	 * D​e​s​c​r​i​p​t​i​o​n
+	 */
+	description: string
 	home: {
 		/**
 		 * H​o​m​e
@@ -477,6 +481,14 @@ type RootTranslation = {
 				 * B​y​ ​e​x​i​t​i​n​g​ ​y​o​u​ ​l​o​s​e​ ​a​l​l​ ​t​h​e​ ​i​n​f​o​r​m​a​t​i​o​n​ ​w​r​i​t​t​e​n​ ​o​r​ ​y​o​u​ ​c​a​n​ ​s​a​v​e​ ​t​h​i​s​ ​p​r​o​p​o​s​a​l​ ​a​s​ ​a​ ​d​r​a​f​t​ ​a​n​d​ ​f​i​n​i​s​h​ ​l​a​t​e​r​?
 				 */
 				description: string
+				/**
+				 * Y​o​u​ ​w​i​l​l​ ​l​o​s​e​ ​a​l​l​ ​e​n​t​e​r​e​d​ ​i​n​f​o​r​m​a​t​i​o​n​ ​i​f​ ​y​o​u​ ​e​x​i​t​ ​n​o​w​.​ ​S​a​v​i​n​g​ ​a​s​ ​a​ ​d​r​a​f​t​ ​i​s​ ​o​n​l​y​ ​a​v​a​i​l​a​b​l​e​ ​o​n​ ​t​h​e​ ​f​i​n​a​l​ ​s​t​e​p​ ​o​f​ ​t​h​e​ ​f​o​r​m​.
+				 */
+				description_last_step: string
+				/**
+				 * B​e​ ​a​w​a​r​e​ ​t​h​a​t​ ​a​ ​d​r​a​f​t​ ​p​r​o​p​o​s​a​l​ ​a​l​r​e​a​d​y​ ​e​x​i​s​t​s​.​ ​S​a​v​i​n​g​ ​n​o​w​ ​w​i​l​l​ ​o​v​e​r​w​r​i​t​e​ ​y​o​u​r​ ​p​r​e​v​i​o​u​s​ ​d​r​a​f​t​.
+				 */
+				description_draft_exist: string
 				/**
 				 * E​x​i​t​ ​p​r​o​p​o​s​a​l
 				 */
@@ -904,6 +916,10 @@ JPG, PNG or SVG of maximum of {size}MB.
 	 * Continue
 	 */
 	'continue': () => LocalizedString
+	/**
+	 * Description
+	 */
+	description: () => LocalizedString
 	home: {
 		/**
 		 * Home
@@ -1191,6 +1207,14 @@ JPG, PNG or SVG of maximum of {size}MB.
 				 * By exiting you lose all the information written or you can save this proposal as a draft and finish later?
 				 */
 				description: () => LocalizedString
+				/**
+				 * You will lose all entered information if you exit now. Saving as a draft is only available on the final step of the form.
+				 */
+				description_last_step: () => LocalizedString
+				/**
+				 * Be aware that a draft proposal already exists. Saving now will overwrite your previous draft.
+				 */
+				description_draft_exist: () => LocalizedString
 				/**
 				 * Exit proposal
 				 */

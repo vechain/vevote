@@ -74,7 +74,7 @@ export const VotingMultipleOptions = ({
 
   const handleSelectedOptions = useCallback(
     (index: number) => {
-      const maxSelection = proposal.maxSelection;
+      const maxSelection = proposal.votingLimit ?? 2;
       if (selectedOptions.length >= maxSelection && !selectedOptions.includes(index)) return;
       setSelectedOptions(prevSelectedOptions => {
         if (prevSelectedOptions.includes(index)) {
@@ -84,7 +84,7 @@ export const VotingMultipleOptions = ({
         }
       });
     },
-    [proposal.maxSelection, selectedOptions],
+    [proposal.votingLimit, selectedOptions],
   );
 
   return (
@@ -151,7 +151,7 @@ const VotingTitle = () => {
         {LL.and()}
       </Text>
       <Text color="gray.700" textDecoration={"underline"}>
-        {proposal.maxSelection}
+        {proposal.votingLimit ?? 2}
       </Text>
       <Text fontWeight={500} color="gray.500">
         {LL.voting_list.option_to_vote()}

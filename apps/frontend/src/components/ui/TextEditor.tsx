@@ -31,7 +31,7 @@ icons["link"] = linkIcon;
 type EditorProps = {
   readOnly?: boolean;
   defaultValue?: Delta;
-  onTextChange: (props: { delta: Delta; oldContent: Delta; source: EmitterSource }) => void;
+  onTextChange?: (props: { delta: Delta; oldContent: Delta; source: EmitterSource }) => void;
   onSelectionChange?: (props: { range: Range | null; oldRange: Range | null; source: EmitterSource }) => void;
 };
 

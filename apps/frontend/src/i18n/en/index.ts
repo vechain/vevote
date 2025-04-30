@@ -44,6 +44,7 @@ const en = {
   maximum: "Maximum",
   number_option: "Option {index:number}",
   continue: "Continue",
+  description: "Description",
   home: {
     title: "Home",
     go_to_proposals: "Go to proposals",
@@ -147,6 +148,10 @@ const en = {
         title: "Exit proposal creation",
         description:
           "By exiting you lose all the information written or you can save this proposal as a draft and finish later?",
+        description_last_step:
+          "You will lose all entered information if you exit now. Saving as a draft is only available on the final step of the form.",
+        description_draft_exist:
+          "Be aware that a draft proposal already exists. Saving now will overwrite your previous draft.",
         exit_button: "Exit proposal",
         save_button: "Save draft",
       },

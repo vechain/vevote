@@ -46,7 +46,7 @@ const VotingSectionHeader = () => {
           {LL.voting()}
         </Heading>
         <Text fontSize={24} color={"gray.600"} fontWeight={500}>
-          {proposal.question}
+          {proposal.votingQuestion}
         </Text>
       </Flex>
     </SectionLimiter>

@@ -36,13 +36,13 @@ export type ProposalDetails = {
   startDate?: Date;
   endDate?: Date;
   votingLimit?: number;
-  question: string;
+  votingQuestion: string;
 } & VotingChoices;
 
-const DEFAULT_PROPOSAL: ProposalDetails = {
+export const DEFAULT_PROPOSAL: ProposalDetails = {
   title: "",
   description: [],
-  question: "",
+  votingQuestion: "",
   votingLimit: 1,
   votingType: VotingEnum.SINGLE_CHOICE,
   votingOptions: defaultSingleChoice,
@@ -54,6 +54,7 @@ export type CreateProposalContextType = {
   proposalDetails: ProposalDetails;
   setProposalDetails: Dispatch<SetStateAction<ProposalDetails>>;
   saveDraftProposal: () => Promise<void>;
+  removeDraftProposal: () => void;
   draftProposal: ProposalCardType | null;
 };
 
@@ -63,15 +64,17 @@ export const CreateProposalContext = createContext<CreateProposalContextType>({
   step: CreateProposalStep.VOTING_DETAILS,
   setStep: () => {},
   saveDraftProposal: async () => {},
+  removeDraftProposal: () => {},
   draftProposal: null,
 });
 
 export const CreateProposalProvider = ({ children }: PropsWithChildren) => {
-  const { fromDraftToProposal, fromProposalToDraft } = useDraftProposal();
-  const [draftProposal, setDraftProposal] = useLocalStorage<ProposalCardType | null>("draft-proposal", null);
-  const [proposalDetails, setProposalDetails] = useState<ProposalDetails>(
-    fromDraftToProposal(draftProposal, DEFAULT_PROPOSAL),
+  const { fromProposalToDraft } = useDraftProposal();
+  const [draftProposal, setDraftProposal, removeDraftProposal] = useLocalStorage<ProposalCardType | null>(
+    "draft-proposal",
+    null,
   );
+  const [proposalDetails, setProposalDetails] = useState<ProposalDetails>(DEFAULT_PROPOSAL);
   const [step, setStep] = useState<CreateProposalStep>(CreateProposalStep.VOTING_DETAILS);
 
   const saveDraftProposal = useCallback(async () => {
@@ -80,8 +83,16 @@ export const CreateProposalProvider = ({ children }: PropsWithChildren) => {
   }, [fromProposalToDraft, proposalDetails, setDraftProposal]);
 
   const value = useMemo(
-    () => ({ proposalDetails, setProposalDetails, step, setStep, draftProposal, saveDraftProposal }),
-    [proposalDetails, step, saveDraftProposal, draftProposal],
+    () => ({
+      proposalDetails,
+      setProposalDetails,
+      step,
+      setStep,
+      draftProposal,
+      saveDraftProposal,
+      removeDraftProposal,
+    }),
+    [proposalDetails, step, saveDraftProposal, draftProposal, removeDraftProposal],
   );
 
   return <CreateProposalContext.Provider value={value}>{children}</CreateProposalContext.Provider>;

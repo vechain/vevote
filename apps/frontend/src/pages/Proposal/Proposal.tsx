@@ -28,9 +28,9 @@ export const Proposal = () => {
 
   //todo: replace with real data
   const proposal = useMemo(() => {
-    if (params.id === "draft") return draftProposal;
+    if (params.proposalId === "draft") return draftProposal;
     return mockProposals.find(proposal => proposal.id === params.proposalId);
-  }, [draftProposal, params.id, params.proposalId]);
+  }, [draftProposal, params.proposalId]);
 
   if (!proposal) return <div>Proposal not found</div>;
 

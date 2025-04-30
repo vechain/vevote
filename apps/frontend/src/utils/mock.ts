@@ -5,6 +5,28 @@ import { Delta } from "quill";
 
 const mockMultiOptions = defaultMultiOptionsChoice.map((v, i) => ({ ...v, value: `option${i + 1}` }));
 
+const mockDesc = new Delta([
+  {
+    attributes: {
+      bold: true,
+    },
+    insert: "Galactica ",
+  },
+  {
+    insert:
+      "is the first of three stages of the VeChain Renaissance - a revolutionary technical roadmap and generational leap for the protocol. Galactica begins a process that will ultimately upgrade VeChainThor’s tokenomic, governance and technical capabilities, placing community at the core and tying rewards to network contributions.\n(To review technical changes, including the massive upgrades to VeChain’s tokenomic model, see our recent release ",
+  },
+  {
+    attributes: {
+      link: "www.google.com",
+    },
+    insert: "here",
+  },
+  {
+    insert: ").\n",
+  },
+]);
+
 export const mockProposals: ProposalCardType[] = [
   {
     id: "1",
@@ -18,16 +40,11 @@ export const mockProposals: ProposalCardType[] = [
       url: "/images/proposal_example.png",
     },
     status: "voting",
-    description: new Delta([
-      {
-        insert:
-          "Galactica is the first of three stages of the VeChain Renaissance - a revolutionary technical roadmap and generational leap for the protocol. Galactica begins a process that will ultimately upgrade VeChainThor’s tokenomic, governance and technical capabilities, placing community at the core and tying rewards to network contributions. (To review technical changes, including the massive upgrades to VeChain’s tokenomic model, see our recent release here",
-      },
-    ]).ops,
+    description: mockDesc.ops,
     title: "All-Stakeholder Voting Proposal: Galactica Launch & Governance Upgrade",
     startDate: dayjs().subtract(1, "day").toDate(),
     endDate: dayjs().add(5, "day").toDate(),
-    question: "Do you agree with the voting proposal Galactica launch & Governance upgrade?",
+    votingQuestion: "Do you agree with the voting proposal Galactica launch & Governance upgrade?",
     votingType: VotingEnum.SINGLE_CHOICE,
     votingOptions: defaultSingleChoice,
   },
@@ -43,16 +60,11 @@ export const mockProposals: ProposalCardType[] = [
       url: "/images/proposal_example.png",
     },
     status: "voting",
-    description: new Delta([
-      {
-        insert:
-          "Galactica is the first of three stages of the VeChain Renaissance - a revolutionary technical roadmap and generational leap for the protocol. Galactica begins a process that will ultimately upgrade VeChainThor’s tokenomic, governance and technical capabilities, placing community at the core and tying rewards to network contributions. (To review technical changes, including the massive upgrades to VeChain’s tokenomic model, see our recent release here",
-      },
-    ]).ops,
+    description: mockDesc.ops,
     title: "All-Stakeholder Voting Proposal: Galactica Launch & Governance Upgrade",
     startDate: dayjs().subtract(2, "day").toDate(),
     endDate: dayjs().add(3, "day").toDate(),
-    question: "Do you agree with the voting proposal Galactica launch & Governance upgrade?",
+    votingQuestion: "Do you agree with the voting proposal Galactica launch & Governance upgrade?",
     votingType: VotingEnum.SINGLE_OPTION,
     votingOptions: mockMultiOptions,
   },
@@ -68,18 +80,11 @@ export const mockProposals: ProposalCardType[] = [
       url: "/images/proposal_example.png",
     },
     status: "voting",
-    description: new Delta([
-      {
-        insert:
-          "Galactica is the first of three stages of the VeChain Renaissance - a revolutionary technical roadmap and generational leap for the protocol. Galactica begins a process that will ultimately upgrade VeChainThor’s tokenomic, governance and technical capabilities, placing community at the core and tying rewards to network contributions. (To review technical changes, including the massive upgrades to VeChain’s tokenomic model, see our recent release here",
-      },
-    ]).ops,
-
+    description: mockDesc.ops,
     title: "All-Stakeholder Voting Proposal: Galactica Launch & Governance Upgrade",
-
     startDate: dayjs().subtract(3, "day").toDate(),
     endDate: dayjs().add(1, "day").toDate(),
-    question: "Do you agree with the voting proposal Galactica launch & Governance upgrade?",
+    votingQuestion: "Do you agree with the voting proposal Galactica launch & Governance upgrade?",
     votingType: VotingEnum.MULTIPLE_OPTIONS,
     votingOptions: mockMultiOptions,
   },
@@ -95,17 +100,11 @@ export const mockProposals: ProposalCardType[] = [
       url: "/images/proposal_example.png",
     },
     status: "executed",
-    description: new Delta([
-      {
-        insert:
-          "Galactica is the first of three stages of the VeChain Renaissance - a revolutionary technical roadmap and generational leap for the protocol. Galactica begins a process that will ultimately upgrade VeChainThor’s tokenomic, governance and technical capabilities, placing community at the core and tying rewards to network contributions. (To review technical changes, including the massive upgrades to VeChain’s tokenomic model, see our recent release here",
-      },
-    ]).ops,
+    description: mockDesc.ops,
     title: "All-Stakeholder Voting Proposal: Galactica Launch & Governance Upgrade",
-
     startDate: dayjs().subtract(4, "day").toDate(),
     endDate: dayjs().subtract(3, "day").toDate(),
-    question: "Do you agree with the voting proposal Galactica launch & Governance upgrade?",
+    votingQuestion: "Do you agree with the voting proposal Galactica launch & Governance upgrade?",
     votingType: VotingEnum.SINGLE_CHOICE,
     votingOptions: defaultSingleChoice,
   },
@@ -121,16 +120,11 @@ export const mockProposals: ProposalCardType[] = [
       url: "/images/proposal_example.png",
     },
     status: "rejected",
-    description: new Delta([
-      {
-        insert:
-          "Galactica is the first of three stages of the VeChain Renaissance - a revolutionary technical roadmap and generational leap for the protocol. Galactica begins a process that will ultimately upgrade VeChainThor’s tokenomic, governance and technical capabilities, placing community at the core and tying rewards to network contributions. (To review technical changes, including the massive upgrades to VeChain’s tokenomic model, see our recent release here",
-      },
-    ]).ops,
+    description: mockDesc.ops,
     title: "All-Stakeholder Voting Proposal: Galactica Launch & Governance Upgrade",
     startDate: dayjs().subtract(4, "day").toDate(),
     endDate: dayjs().subtract(3, "day").toDate(),
-    question: "Do you agree with the voting proposal Galactica launch & Governance upgrade?",
+    votingQuestion: "Do you agree with the voting proposal Galactica launch & Governance upgrade?",
     votingType: VotingEnum.SINGLE_CHOICE,
     votingOptions: defaultSingleChoice,
   },
@@ -146,16 +140,11 @@ export const mockProposals: ProposalCardType[] = [
       url: "/images/proposal_example.png",
     },
     status: "canceled",
-    description: new Delta([
-      {
-        insert:
-          "Galactica is the first of three stages of the VeChain Renaissance - a revolutionary technical roadmap and generational leap for the protocol. Galactica begins a process that will ultimately upgrade VeChainThor’s tokenomic, governance and technical capabilities, placing community at the core and tying rewards to network contributions. (To review technical changes, including the massive upgrades to VeChain’s tokenomic model, see our recent release here",
-      },
-    ]).ops,
+    description: mockDesc.ops,
     title: "All-Stakeholder Voting Proposal: Galactica Launch & Governance Upgrade",
     endDate: dayjs().subtract(3, "day").toDate(),
     startDate: dayjs().subtract(3, "day").toDate(),
-    question: "Do you agree with the voting proposal Galactica launch & Governance upgrade?",
+    votingQuestion: "Do you agree with the voting proposal Galactica launch & Governance upgrade?",
     votingType: VotingEnum.SINGLE_CHOICE,
     votingOptions: defaultSingleChoice,
   },
@@ -171,16 +160,11 @@ export const mockProposals: ProposalCardType[] = [
       url: "/images/proposal_example.png",
     },
     status: "upcoming",
-    description: new Delta([
-      {
-        insert:
-          "Galactica is the first of three stages of the VeChain Renaissance - a revolutionary technical roadmap and generational leap for the protocol. Galactica begins a process that will ultimately upgrade VeChainThor’s tokenomic, governance and technical capabilities, placing community at the core and tying rewards to network contributions. (To review technical changes, including the massive upgrades to VeChain’s tokenomic model, see our recent release here",
-      },
-    ]).ops,
+    description: mockDesc.ops,
     title: "All-Stakeholder Voting Proposal: Galactica Launch & Governance Upgrade",
     startDate: dayjs().add(1, "day").toDate(),
     endDate: dayjs().add(2, "day").toDate(),
-    question: "Do you agree with the voting proposal Galactica launch & Governance upgrade?",
+    votingQuestion: "Do you agree with the voting proposal Galactica launch & Governance upgrade?",
     votingType: VotingEnum.MULTIPLE_OPTIONS,
     votingOptions: mockMultiOptions,
   },
@@ -196,16 +180,11 @@ export const mockProposals: ProposalCardType[] = [
       url: "/images/proposal_example.png",
     },
     status: "min-not-reached",
-    description: new Delta([
-      {
-        insert:
-          "Galactica is the first of three stages of the VeChain Renaissance - a revolutionary technical roadmap and generational leap for the protocol. Galactica begins a process that will ultimately upgrade VeChainThor’s tokenomic, governance and technical capabilities, placing community at the core and tying rewards to network contributions. (To review technical changes, including the massive upgrades to VeChain’s tokenomic model, see our recent release here",
-      },
-    ]).ops,
+    description: mockDesc.ops,
     title: "All-Stakeholder Voting Proposal: Galactica Launch & Governance Upgrade",
     endDate: dayjs().subtract(3, "day").toDate(),
     startDate: dayjs().subtract(3, "day").toDate(),
-    question: "Do you agree with the voting proposal Galactica launch & Governance upgrade?",
+    votingQuestion: "Do you agree with the voting proposal Galactica launch & Governance upgrade?",
     votingType: VotingEnum.SINGLE_CHOICE,
     votingOptions: defaultSingleChoice,
   },
@@ -221,16 +200,11 @@ export const mockProposals: ProposalCardType[] = [
       url: "/images/proposal_example.png",
     },
     status: "approved",
-    description: new Delta([
-      {
-        insert:
-          "Galactica is the first of three stages of the VeChain Renaissance - a revolutionary technical roadmap and generational leap for the protocol. Galactica begins a process that will ultimately upgrade VeChainThor’s tokenomic, governance and technical capabilities, placing community at the core and tying rewards to network contributions. (To review technical changes, including the massive upgrades to VeChain’s tokenomic model, see our recent release here",
-      },
-    ]).ops,
+    description: mockDesc.ops,
     title: "All-Stakeholder Voting Proposal: Galactica Launch & Governance Upgrade",
     startDate: dayjs().subtract(4, "day").toDate(),
     endDate: dayjs().subtract(3, "day").toDate(),
-    question: "Do you agree with the voting proposal Galactica launch & Governance upgrade?",
+    votingQuestion: "Do you agree with the voting proposal Galactica launch & Governance upgrade?",
     votingType: VotingEnum.SINGLE_CHOICE,
     votingOptions: defaultSingleChoice,
   },

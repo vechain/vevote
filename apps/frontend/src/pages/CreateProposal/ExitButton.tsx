@@ -2,11 +2,12 @@ import { MessageModal } from "@/components/ui/ModalSkeleton";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { Routes } from "@/types/routes";
 import { Button, ModalFooter, Text, useDisclosure } from "@chakra-ui/react";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { IoMdClose } from "react-icons/io";
 import { LuLogOut } from "react-icons/lu";
 import { useNavigate } from "react-router";
 import { useCreateProposal } from "./CreateProposalProvider";
+import { CreateProposalStep } from "@/types/proposal";
 
 export const ExitButton = () => {
   const { LL } = useI18nContext();
@@ -15,7 +16,7 @@ export const ExitButton = () => {
 
   const navigate = useNavigate();
 
-  const { saveDraftProposal } = useCreateProposal();
+  const { saveDraftProposal, step, draftProposal } = useCreateProposal();
 
   const onExit = useCallback(() => navigate(Routes.HOME), [navigate]);
   const onSave = useCallback(async () => {
@@ -25,9 +26,13 @@ export const ExitButton = () => {
 
   const onContinue = useCallback(() => {
     onSavedClose();
-    // navigate(`${Routes.PROPOSAL}/draft`);
-    onExit();
-  }, [onExit, onSavedClose]);
+    navigate(`${Routes.PROPOSAL}/draft`);
+  }, [navigate, onSavedClose]);
+
+  const exitDescription = useMemo(() => {
+    if (step === CreateProposalStep.VOTING_SUMMARY) return LL.proposal.create.exit_proposal.description();
+    return LL.proposal.create.exit_proposal.description_last_step();
+  }, [LL.proposal.create.exit_proposal, step]);
 
   return (
     <>
@@ -42,15 +47,23 @@ export const ExitButton = () => {
         iconColor={"red.600"}
         title={LL.proposal.create.exit_proposal.title()}>
         <Text textAlign={"center"} fontSize={14} color={"gray.600"}>
-          {LL.proposal.create.exit_proposal.description()}
+          {exitDescription}
         </Text>
+        {draftProposal && step === CreateProposalStep.VOTING_SUMMARY && (
+          <Text textAlign={"center"} fontSize={14} color={"red.500"}>
+            {LL.proposal.create.exit_proposal.description_draft_exist()}
+          </Text>
+        )}
+
         <ModalFooter width={"full"} gap={4} justifyContent={"space-between"} mt={7}>
           <Button width={"full"} variant={"danger"} onClick={onExit}>
             {LL.proposal.create.exit_proposal.exit_button()}
           </Button>
-          <Button width={"full"} variant={"tertiary"} onClick={onSave}>
-            {LL.proposal.create.exit_proposal.save_button()}
-          </Button>
+          {step === CreateProposalStep.VOTING_SUMMARY && (
+            <Button width={"full"} variant={"tertiary"} onClick={onSave}>
+              {LL.proposal.create.exit_proposal.save_button()}
+            </Button>
+          )}
         </ModalFooter>
       </MessageModal>
       <MessageModal
