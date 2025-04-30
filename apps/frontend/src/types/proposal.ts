@@ -1,3 +1,5 @@
+import { ProposalDetails } from "@/pages/CreateProposal/CreateProposalProvider";
+
 export enum CreateProposalStep {
   VOTING_DETAILS,
   VOTING_SETUP,
@@ -21,14 +23,19 @@ export type SingleChoiceOptions = {
   votingOptions: SingleChoiceEnum[];
 };
 
+export type BaseOption = {
+  id: string;
+  value: string;
+};
+
 export type CustomChoiceOptions =
   | {
       votingType: VotingEnum.SINGLE_OPTION;
-      votingOptions: string[];
+      votingOptions: BaseOption[];
     }
   | {
       votingType: VotingEnum.MULTIPLE_OPTIONS;
-      votingOptions: string[];
+      votingOptions: BaseOption[];
     };
 
 export type VotingChoices = SingleChoiceOptions | CustomChoiceOptions;
@@ -43,16 +50,9 @@ export type ProposalStatus =
   | "rejected"
   | "min-not-reached";
 
-export type ProposalCardType = {
+export type ProposalCardType = ProposalDetails & {
   id: string;
+  status: ProposalStatus;
   proposer: string;
   createdAt: Date;
-  headerImage: string;
-  status: ProposalStatus;
-  title: string;
-  description: string;
-  startDate: Date;
-  endDate: Date;
-  question: string;
-  maxSelection: number;
-} & VotingChoices;
+};

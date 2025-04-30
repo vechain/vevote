@@ -18,17 +18,19 @@ import { DeleteEditProposal } from "@/components/proposal/DeleteEditProposal";
 import { CancelEditProposal } from "@/components/proposal/CancelEditProposal";
 import { useWallet } from "@vechain/vechain-kit";
 import { BuyANode } from "@/components/proposal/BuyANode";
+import { useCreateProposal } from "../CreateProposal/CreateProposalProvider";
 
 export const Proposal = () => {
   const { LL } = useI18nContext();
+  const { draftProposal } = useCreateProposal();
   const { account } = useWallet();
   const params = useParams();
 
   //todo: replace with real data
-  const proposal = useMemo(
-    () => mockProposals.find(proposal => proposal.id === params.proposalId),
-    [params.proposalId],
-  );
+  const proposal = useMemo(() => {
+    if (params.proposalId === "draft") return draftProposal;
+    return mockProposals.find(proposal => proposal.id === params.proposalId);
+  }, [draftProposal, params.proposalId]);
 
   if (!proposal) return <div>Proposal not found</div>;
 
@@ -48,7 +50,7 @@ export const Proposal = () => {
       </ProposalNavbar>
       <PageContainer paddingTop={"200px"}>
         <Image
-          src={proposal.headerImage}
+          src={proposal.headerImage?.url}
           borderRadius={16}
           alt="Proposal Header"
           width={"100%"}

@@ -1,16 +1,15 @@
-import { Flex, FormLabel, Text, TextProps } from "@chakra-ui/react";
+import { Flex, FormLabel, Text, TextProps, FormLabelProps } from "@chakra-ui/react";
 import { useI18nContext } from "@/i18n/i18n-react";
-import { PropsWithChildren } from "react";
 
-type LabelProps = PropsWithChildren<{
+type LabelProps = FormLabelProps & {
   label: string;
   isOptional?: boolean;
-}>;
-const Label = ({ label, isOptional, children }: LabelProps) => {
+};
+const Label = ({ label, isOptional, children, ...rest }: LabelProps) => {
   const { LL } = useI18nContext();
   return (
     <Flex gap={"8px"}>
-      <FormLabel flex={1} fontSize={20} color={"gray.600"} fontWeight={600}>
+      <FormLabel flex={1} fontSize={20} color={"gray.600"} fontWeight={600} {...rest}>
         {label}
       </FormLabel>
       {children && children}
@@ -29,7 +28,7 @@ const Message = ({ message, ...props }: { message: string } & TextProps) => {
 
 const Subtitle = ({ label, ...props }: { label: string } & TextProps) => {
   return (
-    <Text fontSize={"14px"} color={"gray.500"} alignSelf={"stretch"} paddingBottom={"16px"} {...props}>
+    <Text color={"gray.500"} alignSelf={"stretch"} paddingBottom={"16px"} {...props}>
       {label}
     </Text>
   );

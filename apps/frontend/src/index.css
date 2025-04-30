@@ -30,7 +30,13 @@ h6 {
   min-height: 112px;
   background-color: white;
   border-color: #e2e8f0;
-  font-size: 16px;
+  font-size: 18px;
+  line-height: 28px;
+  color: #525860;
+}
+
+.ql-container.ql-snow [data-placeholder]:before {
+  font-family: "Inter", sans-serif;
 }
 
 .ql-container.ql-snow .ql-formats {
@@ -65,4 +71,16 @@ h6 {
   border-radius: 6px;
   width: 32px;
   height: 32px;
+}
+
+.ql-container.ql-snow.ql-disabled {
+  border: none;
+  padding: 0;
+  min-height: auto;
+  background-color: transparent;
+  border-color: none;
+}
+
+.ql-container.ql-snow.ql-disabled .ql-editor {
+  padding: 0;
 }

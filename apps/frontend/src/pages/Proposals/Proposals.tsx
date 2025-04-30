@@ -18,6 +18,7 @@ import { mockProposals } from "@/utils/mock";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { Pagination } from "@/components/ui/Pagination";
 import { ProposalsHeader } from "@/components/navbar/Header";
+import { useCreateProposal } from "../CreateProposal/CreateProposalProvider";
 
 const ITEMS_PER_PAGE = 6;
 
@@ -25,14 +26,16 @@ const ITEMS_PER_PAGE = 6;
 const isAdmin = true;
 
 export const Proposals = () => {
+  const { draftProposal } = useCreateProposal();
   const [sort, setSort] = useState<Sort>(Sort.Newest);
   const [searchValue, setSearchValue] = useState<string>("");
   const { LL } = useI18nContext();
 
   const proposalsBySearch = useMemo(() => {
     const searchLower = searchValue.toLowerCase();
-    return mockProposals.filter(({ title }) => title.toLowerCase().includes(searchLower));
-  }, [searchValue]);
+    const mockAndDraft = draftProposal ? [draftProposal, ...mockProposals] : mockProposals;
+    return mockAndDraft.filter(({ title }) => title.toLowerCase().includes(searchLower));
+  }, [draftProposal, searchValue]);
 
   const proposalsByTabStatus = useMemo(() => {
     return {

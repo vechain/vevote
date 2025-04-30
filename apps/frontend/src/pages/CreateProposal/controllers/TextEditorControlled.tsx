@@ -1,5 +1,5 @@
 import { TextEditor } from "@/components/ui/TextEditor";
-import Quill, { Delta } from "quill";
+import Quill from "quill";
 import { useRef } from "react";
 import { Controller, FieldValues, Path, useFormContext } from "react-hook-form";
 
@@ -15,13 +15,14 @@ export const TextEditorControlled = <T extends FieldValues>({ name }: TextEditor
     <Controller
       name={name}
       control={control}
-      render={({ field: { onChange, value } }) => (
+      render={({ field: { onChange }, formState: { defaultValues } }) => (
         <TextEditor
           ref={quillRef}
           readOnly={false}
-          defaultValue={new Delta(JSON.parse(JSON.stringify(value)))}
-          onTextChange={({ delta, oldContent }) => {
-            onChange([...oldContent.ops, ...delta.ops]);
+          defaultValue={defaultValues?.["description"]}
+          onTextChange={({ oldContent, delta }) => {
+            const newContent = oldContent.compose(delta);
+            onChange(newContent.ops);
           }}
         />
       )}

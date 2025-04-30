@@ -41,6 +41,10 @@ const en = {
     "Image size should be 1280x512px (ratio 3:1).\nJPG, PNG or SVG of maximum of {size:number}MB.",
   select_date: "Select date",
   select_time: "Select time",
+  maximum: "Maximum",
+  number_option: "Option {index:number}",
+  continue: "Continue",
+  description: "Description",
   home: {
     title: "Home",
     go_to_proposals: "Go to proposals",
@@ -139,6 +143,22 @@ const en = {
       voting_details_desc: "Add the main details and setup the calendar",
       voting_setup_desc: "Define the voting setup details",
       voting_summary_desc: "Review all the details before publishing",
+      add_new_option: "Add new option",
+      exit_proposal: {
+        title: "Exit proposal creation",
+        description:
+          "By exiting you lose all the information written or you can save this proposal as a draft and finish later?",
+        description_last_step:
+          "You will lose all entered information if you exit now. Saving as a draft is only available on the final step of the form.",
+        description_draft_exist:
+          "Be aware that a draft proposal already exists. Saving now will overwrite your previous draft.",
+        exit_button: "Exit proposal",
+        save_button: "Save draft",
+      },
+      draft_saved: {
+        title: "Draft saved!",
+        description: "The proposal draft has been saved successfully and can now be continued later.",
+      },
       details_form: {
         title: "Title",
         title_placeholder: "What’s the proposal title?",
@@ -146,6 +166,34 @@ const en = {
         description_placeholder: "Add a description...",
         header_image: "Header image",
         voting_calendar: "Voting calendar",
+      },
+      setup_form: {
+        voting_type: "Voting type",
+        voting_type_subtitle: "Select the type",
+        voting_question: "Voting Question",
+        voting_question_subtitle: "This question should provide exact context to the voting options:",
+        voting_question_placeholder: "Write the question...",
+        voting_limit: "Voting limit",
+        voting_limit_subtitle: "Define the maximum amount of options allowed per voter:",
+        voting_options: "Voting options",
+        voting_choice_subtitle: "The “single choice” voting type only allows the voter to select:",
+        voting_options_subtitle: "Add between 2 and 30 options to vote:",
+        add_new_option: "Add new option",
+        voting_option_placeholder: "Write the voting option...",
+        voting_types: {
+          single_choice: {
+            title: "Single choice",
+            subtitle: "Yes / No / Abstain",
+          },
+          single_option: {
+            title: "Single choice",
+            subtitle: "Voter can select 1 of multiple options",
+          },
+          multi_options: {
+            title: "Multiple choice",
+            subtitle: "Voter can select 1 or more options",
+          },
+        },
       },
     },
   },

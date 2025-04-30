@@ -1,5 +1,5 @@
 import { useI18nContext } from "@/i18n/i18n-react";
-import { ProposalCardType, SingleChoiceEnum, VotingEnum } from "@/types/proposal";
+import { BaseOption, ProposalCardType, SingleChoiceEnum, VotingEnum } from "@/types/proposal";
 import { Flex, Text } from "@chakra-ui/react";
 import { useWallet } from "@vechain/vechain-kit";
 import { useCallback, useMemo, useState } from "react";
@@ -41,7 +41,7 @@ export const VotingSingleChoice = ({
   );
 };
 
-export const VotingSingleOption = ({ proposal }: GenericVotingOptions<VotingEnum.SINGLE_OPTION, string[]>) => {
+export const VotingSingleOption = ({ proposal }: GenericVotingOptions<VotingEnum.SINGLE_OPTION, BaseOption[]>) => {
   const [selectedOption, setSelectedOption] = useState<number | undefined>(undefined);
 
   const votingVariant: VotingItemVariant = useMemo(() => getVotingVariant(proposal.status), [proposal.status]);
@@ -52,7 +52,7 @@ export const VotingSingleOption = ({ proposal }: GenericVotingOptions<VotingEnum
       {proposal.votingOptions.map((option, index) => (
         <VotingItem
           key={index}
-          label={option}
+          label={option.value}
           isSelected={selectedOption === index}
           kind={VotingEnum.SINGLE_OPTION}
           variant={votingVariant}
@@ -65,14 +65,16 @@ export const VotingSingleOption = ({ proposal }: GenericVotingOptions<VotingEnum
   );
 };
 
-export const VotingMultipleOptions = ({ proposal }: GenericVotingOptions<VotingEnum.MULTIPLE_OPTIONS, string[]>) => {
+export const VotingMultipleOptions = ({
+  proposal,
+}: GenericVotingOptions<VotingEnum.MULTIPLE_OPTIONS, BaseOption[]>) => {
   const [selectedOptions, setSelectedOptions] = useState<number[]>([]);
 
   const votingVariant: VotingItemVariant = useMemo(() => getVotingVariant(proposal.status), [proposal.status]);
 
   const handleSelectedOptions = useCallback(
     (index: number) => {
-      const maxSelection = proposal.maxSelection;
+      const maxSelection = proposal.votingLimit ?? 2;
       if (selectedOptions.length >= maxSelection && !selectedOptions.includes(index)) return;
       setSelectedOptions(prevSelectedOptions => {
         if (prevSelectedOptions.includes(index)) {
@@ -82,7 +84,7 @@ export const VotingMultipleOptions = ({ proposal }: GenericVotingOptions<VotingE
         }
       });
     },
-    [proposal.maxSelection, selectedOptions],
+    [proposal.votingLimit, selectedOptions],
   );
 
   return (
@@ -91,7 +93,7 @@ export const VotingMultipleOptions = ({ proposal }: GenericVotingOptions<VotingE
       {proposal.votingOptions.map((option, index) => (
         <VotingItem
           key={index}
-          label={option}
+          label={option.value}
           isSelected={selectedOptions.includes(index)}
           kind={VotingEnum.MULTIPLE_OPTIONS}
           variant={votingVariant}
@@ -149,7 +151,7 @@ const VotingTitle = () => {
         {LL.and()}
       </Text>
       <Text color="gray.700" textDecoration={"underline"}>
-        {proposal.maxSelection}
+        {proposal.votingLimit ?? 2}
       </Text>
       <Text fontWeight={500} color="gray.500">
         {LL.voting_list.option_to_vote()}

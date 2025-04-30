@@ -173,6 +173,23 @@ type RootTranslation = {
 	 * S​e​l​e​c​t​ ​t​i​m​e
 	 */
 	select_time: string
+	/**
+	 * M​a​x​i​m​u​m
+	 */
+	maximum: string
+	/**
+	 * O​p​t​i​o​n​ ​{​i​n​d​e​x​}
+	 * @param {number} index
+	 */
+	number_option: RequiredParams<'index'>
+	/**
+	 * C​o​n​t​i​n​u​e
+	 */
+	'continue': string
+	/**
+	 * D​e​s​c​r​i​p​t​i​o​n
+	 */
+	description: string
 	home: {
 		/**
 		 * H​o​m​e
@@ -451,6 +468,46 @@ type RootTranslation = {
 			 * R​e​v​i​e​w​ ​a​l​l​ ​t​h​e​ ​d​e​t​a​i​l​s​ ​b​e​f​o​r​e​ ​p​u​b​l​i​s​h​i​n​g
 			 */
 			voting_summary_desc: string
+			/**
+			 * A​d​d​ ​n​e​w​ ​o​p​t​i​o​n
+			 */
+			add_new_option: string
+			exit_proposal: {
+				/**
+				 * E​x​i​t​ ​p​r​o​p​o​s​a​l​ ​c​r​e​a​t​i​o​n
+				 */
+				title: string
+				/**
+				 * B​y​ ​e​x​i​t​i​n​g​ ​y​o​u​ ​l​o​s​e​ ​a​l​l​ ​t​h​e​ ​i​n​f​o​r​m​a​t​i​o​n​ ​w​r​i​t​t​e​n​ ​o​r​ ​y​o​u​ ​c​a​n​ ​s​a​v​e​ ​t​h​i​s​ ​p​r​o​p​o​s​a​l​ ​a​s​ ​a​ ​d​r​a​f​t​ ​a​n​d​ ​f​i​n​i​s​h​ ​l​a​t​e​r​?
+				 */
+				description: string
+				/**
+				 * Y​o​u​ ​w​i​l​l​ ​l​o​s​e​ ​a​l​l​ ​e​n​t​e​r​e​d​ ​i​n​f​o​r​m​a​t​i​o​n​ ​i​f​ ​y​o​u​ ​e​x​i​t​ ​n​o​w​.​ ​S​a​v​i​n​g​ ​a​s​ ​a​ ​d​r​a​f​t​ ​i​s​ ​o​n​l​y​ ​a​v​a​i​l​a​b​l​e​ ​o​n​ ​t​h​e​ ​f​i​n​a​l​ ​s​t​e​p​ ​o​f​ ​t​h​e​ ​f​o​r​m​.
+				 */
+				description_last_step: string
+				/**
+				 * B​e​ ​a​w​a​r​e​ ​t​h​a​t​ ​a​ ​d​r​a​f​t​ ​p​r​o​p​o​s​a​l​ ​a​l​r​e​a​d​y​ ​e​x​i​s​t​s​.​ ​S​a​v​i​n​g​ ​n​o​w​ ​w​i​l​l​ ​o​v​e​r​w​r​i​t​e​ ​y​o​u​r​ ​p​r​e​v​i​o​u​s​ ​d​r​a​f​t​.
+				 */
+				description_draft_exist: string
+				/**
+				 * E​x​i​t​ ​p​r​o​p​o​s​a​l
+				 */
+				exit_button: string
+				/**
+				 * S​a​v​e​ ​d​r​a​f​t
+				 */
+				save_button: string
+			}
+			draft_saved: {
+				/**
+				 * D​r​a​f​t​ ​s​a​v​e​d​!
+				 */
+				title: string
+				/**
+				 * T​h​e​ ​p​r​o​p​o​s​a​l​ ​d​r​a​f​t​ ​h​a​s​ ​b​e​e​n​ ​s​a​v​e​d​ ​s​u​c​c​e​s​s​f​u​l​l​y​ ​a​n​d​ ​c​a​n​ ​n​o​w​ ​b​e​ ​c​o​n​t​i​n​u​e​d​ ​l​a​t​e​r​.
+				 */
+				description: string
+			}
 			details_form: {
 				/**
 				 * T​i​t​l​e
@@ -476,6 +533,88 @@ type RootTranslation = {
 				 * V​o​t​i​n​g​ ​c​a​l​e​n​d​a​r
 				 */
 				voting_calendar: string
+			}
+			setup_form: {
+				/**
+				 * V​o​t​i​n​g​ ​t​y​p​e
+				 */
+				voting_type: string
+				/**
+				 * S​e​l​e​c​t​ ​t​h​e​ ​t​y​p​e
+				 */
+				voting_type_subtitle: string
+				/**
+				 * V​o​t​i​n​g​ ​Q​u​e​s​t​i​o​n
+				 */
+				voting_question: string
+				/**
+				 * T​h​i​s​ ​q​u​e​s​t​i​o​n​ ​s​h​o​u​l​d​ ​p​r​o​v​i​d​e​ ​e​x​a​c​t​ ​c​o​n​t​e​x​t​ ​t​o​ ​t​h​e​ ​v​o​t​i​n​g​ ​o​p​t​i​o​n​s​:
+				 */
+				voting_question_subtitle: string
+				/**
+				 * W​r​i​t​e​ ​t​h​e​ ​q​u​e​s​t​i​o​n​.​.​.
+				 */
+				voting_question_placeholder: string
+				/**
+				 * V​o​t​i​n​g​ ​l​i​m​i​t
+				 */
+				voting_limit: string
+				/**
+				 * D​e​f​i​n​e​ ​t​h​e​ ​m​a​x​i​m​u​m​ ​a​m​o​u​n​t​ ​o​f​ ​o​p​t​i​o​n​s​ ​a​l​l​o​w​e​d​ ​p​e​r​ ​v​o​t​e​r​:
+				 */
+				voting_limit_subtitle: string
+				/**
+				 * V​o​t​i​n​g​ ​o​p​t​i​o​n​s
+				 */
+				voting_options: string
+				/**
+				 * T​h​e​ ​“​s​i​n​g​l​e​ ​c​h​o​i​c​e​”​ ​v​o​t​i​n​g​ ​t​y​p​e​ ​o​n​l​y​ ​a​l​l​o​w​s​ ​t​h​e​ ​v​o​t​e​r​ ​t​o​ ​s​e​l​e​c​t​:
+				 */
+				voting_choice_subtitle: string
+				/**
+				 * A​d​d​ ​b​e​t​w​e​e​n​ ​2​ ​a​n​d​ ​3​0​ ​o​p​t​i​o​n​s​ ​t​o​ ​v​o​t​e​:
+				 */
+				voting_options_subtitle: string
+				/**
+				 * A​d​d​ ​n​e​w​ ​o​p​t​i​o​n
+				 */
+				add_new_option: string
+				/**
+				 * W​r​i​t​e​ ​t​h​e​ ​v​o​t​i​n​g​ ​o​p​t​i​o​n​.​.​.
+				 */
+				voting_option_placeholder: string
+				voting_types: {
+					single_choice: {
+						/**
+						 * S​i​n​g​l​e​ ​c​h​o​i​c​e
+						 */
+						title: string
+						/**
+						 * Y​e​s​ ​/​ ​N​o​ ​/​ ​A​b​s​t​a​i​n
+						 */
+						subtitle: string
+					}
+					single_option: {
+						/**
+						 * S​i​n​g​l​e​ ​c​h​o​i​c​e
+						 */
+						title: string
+						/**
+						 * V​o​t​e​r​ ​c​a​n​ ​s​e​l​e​c​t​ ​1​ ​o​f​ ​m​u​l​t​i​p​l​e​ ​o​p​t​i​o​n​s
+						 */
+						subtitle: string
+					}
+					multi_options: {
+						/**
+						 * M​u​l​t​i​p​l​e​ ​c​h​o​i​c​e
+						 */
+						title: string
+						/**
+						 * V​o​t​e​r​ ​c​a​n​ ​s​e​l​e​c​t​ ​1​ ​o​r​ ​m​o​r​e​ ​o​p​t​i​o​n​s
+						 */
+						subtitle: string
+					}
+				}
 			}
 		}
 	}
@@ -765,6 +904,22 @@ JPG, PNG or SVG of maximum of {size}MB.
 	 * Select time
 	 */
 	select_time: () => LocalizedString
+	/**
+	 * Maximum
+	 */
+	maximum: () => LocalizedString
+	/**
+	 * Option {index}
+	 */
+	number_option: (arg: { index: number }) => LocalizedString
+	/**
+	 * Continue
+	 */
+	'continue': () => LocalizedString
+	/**
+	 * Description
+	 */
+	description: () => LocalizedString
 	home: {
 		/**
 		 * Home
@@ -1039,6 +1194,46 @@ JPG, PNG or SVG of maximum of {size}MB.
 			 * Review all the details before publishing
 			 */
 			voting_summary_desc: () => LocalizedString
+			/**
+			 * Add new option
+			 */
+			add_new_option: () => LocalizedString
+			exit_proposal: {
+				/**
+				 * Exit proposal creation
+				 */
+				title: () => LocalizedString
+				/**
+				 * By exiting you lose all the information written or you can save this proposal as a draft and finish later?
+				 */
+				description: () => LocalizedString
+				/**
+				 * You will lose all entered information if you exit now. Saving as a draft is only available on the final step of the form.
+				 */
+				description_last_step: () => LocalizedString
+				/**
+				 * Be aware that a draft proposal already exists. Saving now will overwrite your previous draft.
+				 */
+				description_draft_exist: () => LocalizedString
+				/**
+				 * Exit proposal
+				 */
+				exit_button: () => LocalizedString
+				/**
+				 * Save draft
+				 */
+				save_button: () => LocalizedString
+			}
+			draft_saved: {
+				/**
+				 * Draft saved!
+				 */
+				title: () => LocalizedString
+				/**
+				 * The proposal draft has been saved successfully and can now be continued later.
+				 */
+				description: () => LocalizedString
+			}
 			details_form: {
 				/**
 				 * Title
@@ -1064,6 +1259,88 @@ JPG, PNG or SVG of maximum of {size}MB.
 				 * Voting calendar
 				 */
 				voting_calendar: () => LocalizedString
+			}
+			setup_form: {
+				/**
+				 * Voting type
+				 */
+				voting_type: () => LocalizedString
+				/**
+				 * Select the type
+				 */
+				voting_type_subtitle: () => LocalizedString
+				/**
+				 * Voting Question
+				 */
+				voting_question: () => LocalizedString
+				/**
+				 * This question should provide exact context to the voting options:
+				 */
+				voting_question_subtitle: () => LocalizedString
+				/**
+				 * Write the question...
+				 */
+				voting_question_placeholder: () => LocalizedString
+				/**
+				 * Voting limit
+				 */
+				voting_limit: () => LocalizedString
+				/**
+				 * Define the maximum amount of options allowed per voter:
+				 */
+				voting_limit_subtitle: () => LocalizedString
+				/**
+				 * Voting options
+				 */
+				voting_options: () => LocalizedString
+				/**
+				 * The “single choice” voting type only allows the voter to select:
+				 */
+				voting_choice_subtitle: () => LocalizedString
+				/**
+				 * Add between 2 and 30 options to vote:
+				 */
+				voting_options_subtitle: () => LocalizedString
+				/**
+				 * Add new option
+				 */
+				add_new_option: () => LocalizedString
+				/**
+				 * Write the voting option...
+				 */
+				voting_option_placeholder: () => LocalizedString
+				voting_types: {
+					single_choice: {
+						/**
+						 * Single choice
+						 */
+						title: () => LocalizedString
+						/**
+						 * Yes / No / Abstain
+						 */
+						subtitle: () => LocalizedString
+					}
+					single_option: {
+						/**
+						 * Single choice
+						 */
+						title: () => LocalizedString
+						/**
+						 * Voter can select 1 of multiple options
+						 */
+						subtitle: () => LocalizedString
+					}
+					multi_options: {
+						/**
+						 * Multiple choice
+						 */
+						title: () => LocalizedString
+						/**
+						 * Voter can select 1 or more options
+						 */
+						subtitle: () => LocalizedString
+					}
+				}
 			}
 		}
 	}

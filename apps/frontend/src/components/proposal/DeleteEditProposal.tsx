@@ -4,12 +4,26 @@ import { FiMinusCircle } from "react-icons/fi";
 import { MessageModal } from "../ui/ModalSkeleton";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { useCallback } from "react";
+import { DEFAULT_PROPOSAL, useCreateProposal } from "@/pages/CreateProposal/CreateProposalProvider";
+import { useDraftProposal } from "@/hooks/useDraftProposal";
+import { useNavigate } from "react-router-dom";
+import { Routes } from "@/types/routes";
 
 export const DeleteEditProposal = () => {
+  const { LL } = useI18nContext();
+  const navigate = useNavigate();
+  const { draftProposal, setProposalDetails } = useCreateProposal();
+  const { fromDraftToProposal } = useDraftProposal();
+  const onEdit = useCallback(() => {
+    setProposalDetails(fromDraftToProposal(draftProposal, DEFAULT_PROPOSAL));
+    navigate(Routes.CREATE_PROPOSAL);
+  }, [draftProposal, fromDraftToProposal, navigate, setProposalDetails]);
   return (
     <>
       <DeleteProposal />
-      <Button variant={"secondary"}>{"Edit"}</Button>
+      <Button variant={"secondary"} onClick={onEdit}>
+        {LL.edit()}
+      </Button>
     </>
   );
 };
@@ -17,11 +31,14 @@ export const DeleteEditProposal = () => {
 export const DeleteProposal = () => {
   const { LL } = useI18nContext();
   const { isOpen, onClose, onOpen } = useDisclosure();
+  const navigate = useNavigate();
 
-  //todo: implement deletion
+  const { removeDraftProposal } = useCreateProposal();
+
   const onDelete = useCallback(() => {
-    console.log("delete");
-  }, []);
+    removeDraftProposal();
+    navigate(Routes.HOME);
+  }, [navigate, removeDraftProposal]);
   return (
     <>
       <Button variant="danger" onClick={onOpen}>

@@ -31,7 +31,7 @@ icons["link"] = linkIcon;
 type EditorProps = {
   readOnly?: boolean;
   defaultValue?: Delta;
-  onTextChange: (props: { delta: Delta; oldContent: Delta; source: EmitterSource }) => void;
+  onTextChange?: (props: { delta: Delta; oldContent: Delta; source: EmitterSource }) => void;
   onSelectionChange?: (props: { range: Range | null; oldRange: Range | null; source: EmitterSource }) => void;
 };
 
@@ -42,7 +42,7 @@ const TextEditor = forwardRef<Quill, EditorProps>(
     const containerRef = useRef<HTMLDivElement>(null);
     const quillInstance = useRef<Quill | null>(null);
 
-    useImperativeHandle(ref, () => quillInstance.current!, []);
+    useImperativeHandle(ref, () => quillInstance.current!, [quillInstance]);
 
     const onTextChangeRef = useRef(onTextChange);
     const onSelectionChangeRef = useRef(onSelectionChange);
@@ -95,7 +95,7 @@ const TextEditor = forwardRef<Quill, EditorProps>(
         container.innerHTML = ""; // Cleanup
       };
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [readOnly]);
+    }, [readOnly, quillInstance]);
 
     useEffect(() => {
       quillInstance.current?.enable(!readOnly);
