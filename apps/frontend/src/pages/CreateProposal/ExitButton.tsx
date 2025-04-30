@@ -20,9 +20,10 @@ export const ExitButton = () => {
 
   const onExit = useCallback(() => navigate(Routes.HOME), [navigate]);
   const onSave = useCallback(async () => {
+    onExitClose();
     await saveDraftProposal();
     onSavedOpen();
-  }, [saveDraftProposal, onSavedOpen]);
+  }, [onExitClose, saveDraftProposal, onSavedOpen]);
 
   const onContinue = useCallback(() => {
     onSavedClose();
