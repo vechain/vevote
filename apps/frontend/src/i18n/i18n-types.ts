@@ -622,12 +622,43 @@ type RootTranslation = {
 					 * M​a​i​n​ ​d​e​t​a​i​l​s
 					 */
 					title: string
+					/**
+					 * C​a​l​e​n​d​a​r
+					 */
+					calendar: string
 				}
 				voting_setup: {
 					/**
 					 * V​o​t​i​n​g​ ​s​e​t​u​p
 					 */
 					title: string
+					/**
+					 * Q​u​e​s​t​i​o​n
+					 */
+					question: string
+					/**
+					 * T​y​p​e
+					 */
+					type: string
+					/**
+					 * M​a​x​i​m​u​m​ ​-​ ​{​l​i​m​i​t​}​ ​o​p​t​i​o​n​s
+					 * @param {number} limit
+					 */
+					maximum: RequiredParams<'limit'>
+					types: {
+						/**
+						 * S​i​n​g​l​e​ ​c​h​o​i​c​e​ ​-​ ​Y​e​s​ ​/​ ​N​o​ ​/​ ​A​b​s​t​a​i​n
+						 */
+						SINGLE_CHOICE: string
+						/**
+						 * S​i​n​g​l​e​ ​c​h​o​i​c​e​ ​-​ ​M​u​l​t​i​p​l​e​ ​v​o​t​i​n​g​ ​o​p​t​i​o​n​s
+						 */
+						SINGLE_OPTION: string
+						/**
+						 * M​u​l​t​i​p​l​e​ ​c​h​o​i​c​e​ ​-​ ​M​u​l​t​i​p​l​e​ ​v​o​t​i​n​g​ ​o​p​t​i​o​n​s
+						 */
+						MULTIPLE_OPTIONS: string
+					}
 				}
 				/**
 				 * P​r​e​v​i​e​w
@@ -1370,12 +1401,42 @@ JPG, PNG or SVG of maximum of {size}MB.
 					 * Main details
 					 */
 					title: () => LocalizedString
+					/**
+					 * Calendar
+					 */
+					calendar: () => LocalizedString
 				}
 				voting_setup: {
 					/**
 					 * Voting setup
 					 */
 					title: () => LocalizedString
+					/**
+					 * Question
+					 */
+					question: () => LocalizedString
+					/**
+					 * Type
+					 */
+					type: () => LocalizedString
+					/**
+					 * Maximum - {limit} options
+					 */
+					maximum: (arg: { limit: number }) => LocalizedString
+					types: {
+						/**
+						 * Single choice - Yes / No / Abstain
+						 */
+						SINGLE_CHOICE: () => LocalizedString
+						/**
+						 * Single choice - Multiple voting options
+						 */
+						SINGLE_OPTION: () => LocalizedString
+						/**
+						 * Multiple choice - Multiple voting options
+						 */
+						MULTIPLE_OPTIONS: () => LocalizedString
+					}
 				}
 				/**
 				 * Preview

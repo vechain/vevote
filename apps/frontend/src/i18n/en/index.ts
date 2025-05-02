@@ -198,9 +198,18 @@ const en = {
       summary_form: {
         main_details: {
           title: "Main details",
+          calendar: "Calendar",
         },
         voting_setup: {
           title: "Voting setup",
+          question: "Question",
+          type: "Type",
+          maximum: "Maximum - {limit:number} options",
+          types: {
+            SINGLE_CHOICE: "Single choice - Yes / No / Abstain",
+            SINGLE_OPTION: "Single choice - Multiple voting options",
+            MULTIPLE_OPTIONS: "Multiple choice - Multiple voting options",
+          },
         },
         preview: "Preview",
         publish_proposal: "Public Proposal",

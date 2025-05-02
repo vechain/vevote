@@ -6,7 +6,7 @@ import { CreateFormWrapper } from "./CreateFormWrapper";
 import { useCreateProposal } from "./CreateProposalProvider";
 import { SummaryCard } from "./SummaryCard";
 import { Button, Flex } from "@chakra-ui/react";
-import { CreateProposalStep } from "@/types/proposal";
+import { CreateProposalStep, VotingEnum } from "@/types/proposal";
 import { IoArrowBack } from "react-icons/io5";
 
 export const ProposalSummaryForm = () => {
@@ -30,28 +30,41 @@ export const ProposalSummaryForm = () => {
               <SummaryCard.BaseItem
                 label={LL.proposal.create.details_form.description()}
                 value={proposalDetails.description.map(op => op.insert).join("")}
+                lineClamp={5}
               />
-              <SummaryCard.BaseItem
+              <SummaryCard.ImageItem
                 label={LL.proposal.create.details_form.header_image()}
-                value={proposalDetails.title}
+                value={proposalDetails.headerImage}
               />
-              <SummaryCard.BaseItem
+              <SummaryCard.CalendarItem
                 label={LL.proposal.create.details_form.voting_calendar()}
-                value={proposalDetails.title}
+                startDate={proposalDetails.startDate}
+                endDate={proposalDetails.endDate}
               />
             </SummaryCard>
+
             <SummaryCard title={LL.proposal.create.summary_form.voting_setup.title()}>
               <SummaryCard.BaseItem
-                label={LL.proposal.create.setup_form.voting_type()}
-                value={proposalDetails.votingType}
+                label={LL.proposal.create.summary_form.voting_setup.type()}
+                value={LL.proposal.create.summary_form.voting_setup.types[proposalDetails.votingType]()}
               />
               <SummaryCard.BaseItem
-                label={LL.proposal.create.setup_form.voting_question()}
+                label={LL.proposal.create.summary_form.voting_setup.question()}
                 value={proposalDetails.votingQuestion}
+                lineClamp={3}
               />
-              <SummaryCard.BaseItem
+
+              {proposalDetails.votingType === VotingEnum.MULTIPLE_OPTIONS && proposalDetails.votingLimit && (
+                <SummaryCard.BaseItem
+                  label={LL.proposal.create.setup_form.voting_limit()}
+                  value={LL.proposal.create.summary_form.voting_setup.maximum({ limit: proposalDetails.votingLimit })}
+                />
+              )}
+
+              <SummaryCard.OptionsItem
                 label={LL.proposal.create.setup_form.voting_options()}
-                value={proposalDetails.votingOptions.join(" / ")}
+                votingType={proposalDetails.votingType}
+                votingOptions={proposalDetails.votingOptions}
               />
             </SummaryCard>
 
