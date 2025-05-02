@@ -190,6 +190,10 @@ type RootTranslation = {
 	 * D​e​s​c​r​i​p​t​i​o​n
 	 */
 	description: string
+	/**
+	 * P​r​e​v​i​e​w
+	 */
+	preview: string
 	home: {
 		/**
 		 * H​o​m​e
@@ -661,11 +665,7 @@ type RootTranslation = {
 					}
 				}
 				/**
-				 * P​r​e​v​i​e​w
-				 */
-				preview: string
-				/**
-				 * P​u​b​l​i​c​ ​P​r​o​p​o​s​a​l
+				 * P​u​b​l​i​s​h​ ​P​r​o​p​o​s​a​l
 				 */
 				publish_proposal: string
 			}
@@ -973,6 +973,10 @@ JPG, PNG or SVG of maximum of {size}MB.
 	 * Description
 	 */
 	description: () => LocalizedString
+	/**
+	 * Preview
+	 */
+	preview: () => LocalizedString
 	home: {
 		/**
 		 * Home
@@ -1439,11 +1443,7 @@ JPG, PNG or SVG of maximum of {size}MB.
 					}
 				}
 				/**
-				 * Preview
-				 */
-				preview: () => LocalizedString
-				/**
-				 * Public Proposal
+				 * Publish Proposal
 				 */
 				publish_proposal: () => LocalizedString
 			}

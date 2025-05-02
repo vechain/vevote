@@ -45,6 +45,7 @@ const en = {
   number_option: "Option {index:number}",
   continue: "Continue",
   description: "Description",
+  preview: "Preview",
   home: {
     title: "Home",
     go_to_proposals: "Go to proposals",
@@ -211,8 +212,7 @@ const en = {
             MULTIPLE_OPTIONS: "Multiple choice - Multiple voting options",
           },
         },
-        preview: "Preview",
-        publish_proposal: "Public Proposal",
+        publish_proposal: "Publish Proposal",
       },
     },
   },

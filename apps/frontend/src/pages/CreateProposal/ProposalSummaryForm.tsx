@@ -7,7 +7,8 @@ import { useCreateProposal } from "./CreateProposalProvider";
 import { SummaryCard } from "./SummaryCard";
 import { Button, Flex } from "@chakra-ui/react";
 import { CreateProposalStep, VotingEnum } from "@/types/proposal";
-import { IoArrowBack } from "react-icons/io5";
+import { IoArrowBack, IoEyeOutline } from "react-icons/io5";
+import { PublishButton } from "./PublishButton";
 
 export const ProposalSummaryForm = () => {
   const { LL } = useI18nContext();
@@ -68,15 +69,17 @@ export const ProposalSummaryForm = () => {
               />
             </SummaryCard>
 
-            <Flex justifyContent={"space-between"}>
+            <Flex gap={4} marginTop={20}>
               <Button variant={"secondary"} onClick={() => setStep(CreateProposalStep.VOTING_SETUP)}>
                 <IoArrowBack />
                 {LL.back()}
               </Button>
-              {/* <Button type="submit" isDisabled={nextDisabled}>
-                {LL.next()}
-                <IoArrowForward  />
-              </Button> */}
+              <Button variant={"secondary"} marginLeft={"auto"}>
+                <IoEyeOutline />
+
+                {LL.preview()}
+              </Button>
+              <PublishButton />
             </Flex>
           </CreateFormWrapper>
         );
