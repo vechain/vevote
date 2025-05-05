@@ -1,19 +1,18 @@
 import { FormSkeleton } from "@/components/ui/FormSkeleton";
 import { useI18nContext } from "@/i18n/i18n-react";
+import { CreateProposalStep, VotingEnum } from "@/types/proposal";
+import { Button, Flex } from "@chakra-ui/react";
 import { useMemo } from "react";
+import { IoArrowBack, IoEyeOutline } from "react-icons/io5";
 import { z } from "zod";
 import { CreateFormWrapper } from "./CreateFormWrapper";
 import { useCreateProposal } from "./CreateProposalProvider";
-import { SummaryCard } from "./SummaryCard";
-import { Button, Flex } from "@chakra-ui/react";
-import { CreateProposalStep, VotingEnum } from "@/types/proposal";
-import { IoArrowBack, IoEyeOutline } from "react-icons/io5";
 import { PublishButton } from "./PublishButton";
+import { SummaryCard } from "./SummaryCard";
 
 export const ProposalSummaryForm = () => {
   const { LL } = useI18nContext();
-  const { proposalDetails, setStep } = useCreateProposal();
-
+  const { proposalDetails, setStep, setOpenPreview } = useCreateProposal();
   const schema = z.object({});
 
   const defaultValues = useMemo(() => ({ ...proposalDetails }), [proposalDetails]);
@@ -58,7 +57,9 @@ export const ProposalSummaryForm = () => {
               {proposalDetails.votingType === VotingEnum.MULTIPLE_OPTIONS && proposalDetails.votingLimit && (
                 <SummaryCard.BaseItem
                   label={LL.proposal.create.setup_form.voting_limit()}
-                  value={LL.proposal.create.summary_form.voting_setup.maximum({ limit: proposalDetails.votingLimit })}
+                  value={LL.proposal.create.summary_form.voting_setup.maximum({
+                    limit: proposalDetails.votingLimit,
+                  })}
                 />
               )}
 
@@ -74,9 +75,8 @@ export const ProposalSummaryForm = () => {
                 <IoArrowBack />
                 {LL.back()}
               </Button>
-              <Button variant={"secondary"} marginLeft={"auto"}>
+              <Button variant={"secondary"} marginLeft={"auto"} onClick={() => setOpenPreview(true)}>
                 <IoEyeOutline />
-
                 {LL.preview()}
               </Button>
               <PublishButton />

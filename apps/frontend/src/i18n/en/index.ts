@@ -46,6 +46,7 @@ const en = {
   continue: "Continue",
   description: "Description",
   preview: "Preview",
+  close: "Close",
   home: {
     title: "Home",
     go_to_proposals: "Go to proposals",
@@ -139,6 +140,7 @@ const en = {
       },
     },
     create: {
+      previewing: "Previewing proposal",
       title: "Create Proposal",
       steps: "{current:number} of {total:number}",
       voting_details_desc: "Add the main details and setup the calendar",

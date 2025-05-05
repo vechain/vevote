@@ -194,6 +194,10 @@ type RootTranslation = {
 	 * P​r​e​v​i​e​w
 	 */
 	preview: string
+	/**
+	 * C​l​o​s​e
+	 */
+	close: string
 	home: {
 		/**
 		 * H​o​m​e
@@ -450,6 +454,10 @@ type RootTranslation = {
 			}
 		}
 		create: {
+			/**
+			 * P​r​e​v​i​e​w​i​n​g​ ​p​r​o​p​o​s​a​l
+			 */
+			previewing: string
 			/**
 			 * C​r​e​a​t​e​ ​P​r​o​p​o​s​a​l
 			 */
@@ -977,6 +985,10 @@ JPG, PNG or SVG of maximum of {size}MB.
 	 * Preview
 	 */
 	preview: () => LocalizedString
+	/**
+	 * Close
+	 */
+	close: () => LocalizedString
 	home: {
 		/**
 		 * Home
@@ -1231,6 +1243,10 @@ JPG, PNG or SVG of maximum of {size}MB.
 			}
 		}
 		create: {
+			/**
+			 * Previewing proposal
+			 */
+			previewing: () => LocalizedString
 			/**
 			 * Create Proposal
 			 */

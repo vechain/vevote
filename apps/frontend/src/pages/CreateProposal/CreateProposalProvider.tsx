@@ -56,6 +56,8 @@ export type CreateProposalContextType = {
   saveDraftProposal: () => Promise<void>;
   removeDraftProposal: () => void;
   draftProposal: ProposalCardType | null;
+  openPreview: boolean;
+  setOpenPreview: Dispatch<SetStateAction<boolean>>;
 };
 
 export const CreateProposalContext = createContext<CreateProposalContextType>({
@@ -66,10 +68,13 @@ export const CreateProposalContext = createContext<CreateProposalContextType>({
   saveDraftProposal: async () => {},
   removeDraftProposal: () => {},
   draftProposal: null,
+  openPreview: false,
+  setOpenPreview: () => {},
 });
 
 export const CreateProposalProvider = ({ children }: PropsWithChildren) => {
   const { fromProposalToDraft } = useDraftProposal();
+  const [openPreview, setOpenPreview] = useState(false);
   const [draftProposal, setDraftProposal, removeDraftProposal] = useLocalStorage<ProposalCardType | null>(
     "draft-proposal",
     null,
@@ -91,8 +96,10 @@ export const CreateProposalProvider = ({ children }: PropsWithChildren) => {
       draftProposal,
       saveDraftProposal,
       removeDraftProposal,
+      openPreview,
+      setOpenPreview,
     }),
-    [proposalDetails, step, saveDraftProposal, draftProposal, removeDraftProposal],
+    [proposalDetails, step, saveDraftProposal, draftProposal, removeDraftProposal, openPreview, setOpenPreview],
   );
 
   return <CreateProposalContext.Provider value={value}>{children}</CreateProposalContext.Provider>;
