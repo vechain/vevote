@@ -6,12 +6,8 @@ import { PropsWithChildren, useMemo } from "react";
 import { GoArrowRight } from "react-icons/go";
 import { CiCalendar, CiClock1 } from "react-icons/ci";
 import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc";
-import timezone from "dayjs/plugin/timezone";
 import { BaseOption, VotingChoices, VotingEnum } from "@/types/proposal";
-
-dayjs.extend(utc);
-dayjs.extend(timezone);
+import { getTimeZone } from "@/utils/timezone";
 
 const SummaryCard = ({ title, children }: PropsWithChildren<{ title: string }>) => {
   return (
@@ -82,14 +78,7 @@ const CalendarItem = ({ label, startDate, endDate }: { label: string; startDate?
   const { LL } = useI18nContext();
 
   const timeZone = useMemo(() => {
-    const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    const now = dayjs().tz(userTimeZone);
-    const offset = now.format("Z");
-
-    const match = offset.match(/^([+-])(\d{2}):\d{2}$/);
-    const shortOffset = match ? `${match[1]}${parseInt(match[2], 10)}` : "+0";
-
-    return `(GMT${shortOffset} ${userTimeZone})`;
+    return getTimeZone();
   }, []);
 
   return (
