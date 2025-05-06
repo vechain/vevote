@@ -56,7 +56,7 @@ export const ProposalPreview = () => {
             <Text display={"flex"} fontSize={"14px"} color={"primary.200"} alignItems={"center"} gap={1}>
               {LL.homepage()} <IoArrowForward /> {LL.proposal.title()}
             </Text>
-            {account?.address && <ProposalNavbarActions />}
+            <ProposalNavbarActions />
             <DAppKitWalletButton
               style={{ whiteSpace: "nowrap" }}
               mobile={useBreakpointValue({
