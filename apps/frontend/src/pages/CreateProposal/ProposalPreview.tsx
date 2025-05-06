@@ -5,7 +5,7 @@ import { ProposalProvider } from "@/components/proposal/ProposalProvider";
 import { Box, Button, Flex, Heading, Image, Text, useBreakpointValue } from "@chakra-ui/react";
 import { IoArrowBack, IoArrowForward, IoClose } from "react-icons/io5";
 import { PageContainer } from "@/components/PageContainer";
-import { PropsWithChildren, useMemo } from "react";
+import { PropsWithChildren, useEffect, useMemo } from "react";
 import { ProposalInfos } from "@/components/proposal/ProposalInfos";
 import { ProposalDetailsCards } from "@/components/proposal/ProposalDetailsCards";
 import { ProposalInfoBox } from "@/components/proposal/ProposalInfoBox";
@@ -29,6 +29,10 @@ export const ProposalPreview = () => {
       } as const),
     [proposalDetails, account?.address],
   );
+
+  useEffect(() => {
+    if (typeof window !== "undefined") window.scrollTo({ top: 0 });
+  }, []);
 
   return (
     <PreviewWrapper>
@@ -132,10 +136,12 @@ const PreviewWrapper = ({ children }: PropsWithChildren) => {
         justifyContent={"center"}
         background={"white"}
         width={"fit-content"}
+        height={"fit-content"}
         marginX={"auto"}
         flexDirection={"column"}
         marginTop={140}
-        position={"relative"}>
+        position={"relative"}
+        pointerEvents={"none"}>
         {children}
       </Flex>
     </Flex>
