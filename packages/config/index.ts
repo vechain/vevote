@@ -1,7 +1,7 @@
 import localConfig from "./local"
 import testnetConfig from "./testnet"
 import mainnetConfig from "./mainnet"
-import devnetStagingConfig from "./devnet-staging"
+import testnetStagingConfig from "./testnet-staging"
 import { EnvConfig, getContractsConfig } from "./contracts"
 import { Network } from "@repo/constants"
 
@@ -23,7 +23,7 @@ export const getConfig = (env?: EnvConfig): AppConfig => {
   if (appEnv === "local") return localConfig
   if (appEnv === "e2e") return localConfig
   if (appEnv === "testnet") return testnetConfig
-  if (appEnv === "devnet-staging") return devnetStagingConfig
+  if (appEnv === "testnet-staging") return testnetStagingConfig
   if (appEnv === "mainnet") return mainnetConfig
   throw new Error(`Unsupported VITE_APP_ENV ${appEnv}`)
 }
