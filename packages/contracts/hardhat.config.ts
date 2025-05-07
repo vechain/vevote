@@ -18,7 +18,7 @@ const config: HardhatUserConfig = {
 const getEnvMnemonic = () => {
   const isStagingEnv = process.env.VITE_APP_ENV === "testnet-staging"
 
-  const mnemonic = isStagingEnv ? process.env.DEVNET_STAGING_MNEMONIC : process.env.MNEMONIC
+  const mnemonic = isStagingEnv ? process.env.TESTNET_STAGING_MNEMONIC : process.env.MNEMONIC
 
   return mnemonic ?? ""
 }

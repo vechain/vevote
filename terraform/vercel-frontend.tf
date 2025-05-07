@@ -25,8 +25,8 @@ resource "vercel_project" "vevote_frontend" {
       target = ["production", "preview", "development"]
     },
     {
-      key    = "DEVNET_STAGING_MNEMONIC"
-      value  = local.config.all_environments.devnet_staging_mnemonic
+      key    = "TESTNET_STAGING_MNEMONIC"
+      value  = local.config.all_environments.TESTNET_STAGING_MNEMONIC
       target = ["production", "preview"]
     },
     {
@@ -46,8 +46,8 @@ resource "vercel_project" "vevote_frontend" {
       target = ["production", "preview", "development"]
     },
     {
-      key    = "DEVNET_STAGING_MNEMONIC"
-      value  = local.config.all_environments.devnet_staging_mnemonic
+      key    = "TESTNET_STAGING_MNEMONIC"
+      value  = local.config.all_environments.TESTNET_STAGING_MNEMONIC
       target = ["production", "preview"]
     },
     {
