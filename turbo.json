@@ -7,7 +7,7 @@
     "MNEMONIC",
     "IS_TEST_COVERAGE",
     "NEXT_DEVNET_URL",
-    "DEVNET_STAGING_MNEMONIC",
+    "TESTNET_STAGING_MNEMONIC",
     "PUBLIC_VECHAIN_EXPLORER_URL"
   ],
   "pipeline": {
@@ -89,8 +89,8 @@
     "deploy": {
       "dependsOn": ["^deploy", "@repo/config#check-or-generate-local-config"]
     },
-    "deploy:devnet-staging": {
-      "dependsOn": ["^deploy:devnet-staging"]
+    "deploy:testnet-staging": {
+      "dependsOn": ["^deploy:testnet-staging"]
     },
     "deploy:testnet": {
       "dependsOn": ["^deploy:testnet"]

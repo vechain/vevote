@@ -4,9 +4,9 @@ import { createLocalConfig } from "./envs/local";
 import { createE2EConfig } from "./envs/e2e";
 import { createTestnetConfig } from "./envs/testnet";
 import { createMainnetConfig } from "./envs/mainnet";
-import { createDevnetStagingConfig } from "./envs/devnetStaging";
+import { createTestnetStagingConfig } from "./envs/testnetStaging";
 
-export const EnvConfigValues = ["local", "e2e", "testnet", "mainnet", "devnet-staging"] as const;
+export const EnvConfigValues = ["local", "e2e", "testnet", "mainnet", "testnet-staging"] as const;
 export type EnvConfig = (typeof EnvConfigValues)[number];
 
 export function getContractsConfig(env: EnvConfig) {
@@ -19,8 +19,8 @@ export function getContractsConfig(env: EnvConfig) {
       return createTestnetConfig();
     case "mainnet":
       return createMainnetConfig();
-    case "devnet-staging":
-      return createDevnetStagingConfig();
+    case "testnet-staging":
+      return createTestnetStagingConfig();
   
 
     default:
