@@ -89,8 +89,8 @@
     "deploy": {
       "dependsOn": ["^deploy", "@repo/config#check-or-generate-local-config"]
     },
-    "deploy:devnet-staging": {
-      "dependsOn": ["^deploy:devnet-staging"]
+    "deploy:testnet-staging": {
+      "dependsOn": ["^deploy:testnet-staging"]
     },
     "deploy:testnet": {
       "dependsOn": ["^deploy:testnet"]

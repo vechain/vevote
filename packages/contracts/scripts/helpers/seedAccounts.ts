@@ -18,7 +18,7 @@ export enum SeedStrategy {
   LINEAR,
 }
 
-const isStagingEnv = process.env.NEXT_PUBLIC_APP_ENV === "devnet-staging"
+const isStagingEnv = process.env.NEXT_PUBLIC_APP_ENV === "testnet-staging"
 
 const PHRASE = (
   isStagingEnv ? process.env.DEVNET_STAGING_MNEMONIC : process.env.MNEMONIC || VECHAIN_DEFAULT_MNEMONIC
