@@ -4,8 +4,8 @@ import { SingleChoiceEnum, VotingEnum } from "@/types/proposal";
 import { zodFile, zodStartEndDates } from "@/utils/zod";
 import { z } from "zod";
 
-export const TITLE_MAX_CHARS = 60;
-export const QUESTION_MAX_CHAR = 60;
+export const TITLE_MAX_CHARS = 120;
+export const QUESTION_MAX_CHAR = 120;
 
 export const proposalDetailsSchema = z
   .object({

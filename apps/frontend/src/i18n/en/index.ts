@@ -45,6 +45,8 @@ const en = {
   number_option: "Option {index:number}",
   continue: "Continue",
   description: "Description",
+  preview: "Preview",
+  close: "Close",
   home: {
     title: "Home",
     go_to_proposals: "Go to proposals",
@@ -138,6 +140,7 @@ const en = {
       },
     },
     create: {
+      previewing: "Previewing proposal",
       title: "Create Proposal",
       steps: "{current:number} of {total:number}",
       voting_details_desc: "Add the main details and setup the calendar",
@@ -194,6 +197,24 @@ const en = {
             subtitle: "Voter can select 1 or more options",
           },
         },
+      },
+      summary_form: {
+        main_details: {
+          title: "Main details",
+          calendar: "Calendar",
+        },
+        voting_setup: {
+          title: "Voting setup",
+          question: "Question",
+          type: "Type",
+          maximum: "Maximum - {limit:number} options",
+          types: {
+            SINGLE_CHOICE: "Single choice - Yes / No / Abstain",
+            SINGLE_OPTION: "Single choice - Multiple voting options",
+            MULTIPLE_OPTIONS: "Multiple choice - Multiple voting options",
+          },
+        },
+        publish_proposal: "Publish Proposal",
       },
     },
   },
