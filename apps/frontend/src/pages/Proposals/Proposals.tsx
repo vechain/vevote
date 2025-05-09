@@ -4,7 +4,7 @@ import { MdOutlineHowToVote } from "react-icons/md";
 import { CiCirclePlus } from "react-icons/ci";
 import { SearchInput } from "@/components/ui/SearchInput";
 import { Sort, SortDropdown } from "@/components/ui/SortDropdown";
-import { PropsWithChildren, useMemo, useState } from "react";
+import { PropsWithChildren, useEffect, useMemo, useState } from "react";
 import { ProposalCardType } from "@/types/proposal";
 import { IconBadge } from "@/components/ui/IconBadge";
 import { Status } from "@/components/ui/Status";
@@ -14,11 +14,11 @@ import { CiCalendar } from "react-icons/ci";
 import { useFormatDate } from "@/hooks/useFormatDate";
 import { FaChevronRight } from "react-icons/fa";
 import dayjs from "dayjs";
-import { mockProposals } from "@/utils/mock";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { Pagination } from "@/components/ui/Pagination";
 import { ProposalsHeader } from "@/components/navbar/Header";
 import { useCreateProposal } from "../CreateProposal/CreateProposalProvider";
+import { useProposalsEvents } from "@/hooks/useProposalsEvents";
 
 const ITEMS_PER_PAGE = 6;
 
@@ -31,13 +31,17 @@ export const Proposals = () => {
   const [searchValue, setSearchValue] = useState<string>("");
   const { LL } = useI18nContext();
 
+  const { proposals } = useProposalsEvents();
+
+  useEffect(() => console.log(proposals));
+
   const proposalsBySearch = useMemo(() => {
     const searchLower = searchValue.toLowerCase();
-    const mockAndDraft = draftProposal ? [draftProposal, ...mockProposals] : mockProposals;
+    const mockAndDraft = draftProposal ? [draftProposal, ...proposals] : proposals;
     return mockAndDraft.filter(({ title }) => title.toLowerCase().includes(searchLower));
-  }, [draftProposal, searchValue]);
+  }, [draftProposal, proposals, searchValue]);
 
-  const proposalsByTabStatus = useMemo(() => {
+  const proposalsByTabStatus: Record<string, ProposalCardType[]> = useMemo(() => {
     return {
       all: proposalsBySearch,
       voting: proposalsBySearch.filter(({ status }) => status === "voting"),

@@ -23,7 +23,9 @@
     "test:coverage:solidity": "dotenv -v VITE_APP_ENV=local -v IS_TEST_COVERAGE=true -e .env.example turbo run test:coverage:solidity",
     "solo-up": "make solo-up",
     "solo-down": "make solo-down",
-    "solo-clean": "make solo-clean"
+    "solo-clean": "make solo-clean",
+    "fe:dev": "yarn workspace frontend dev",
+    "fe:build": "yarn workspace frontend build"
   },
   "devDependencies": {
     "prettier": "^3.2.5",

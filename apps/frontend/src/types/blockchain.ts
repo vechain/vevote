@@ -1,0 +1,25 @@
+export type ProposalMetadata = {
+  title: string;
+  shortDescription: string;
+  markdownDescription: string;
+};
+
+export type ProposalEvent = {
+  proposalId: string;
+  proposer: string;
+  description: string;
+  startTime: string;
+  voteDuration: string;
+  choices: string[];
+  maxSelection: number;
+  minSelection: number;
+};
+
+export enum ProposalState {
+  PENDING,
+  ACTIVE,
+  SUCCEEDED,
+  DEFEATED,
+  CANCELED,
+  EXECUTED,
+}

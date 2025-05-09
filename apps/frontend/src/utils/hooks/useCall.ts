@@ -1,10 +1,8 @@
+import { MethodName } from "@/types/common";
 import { useQuery } from "@tanstack/react-query";
 import { useConnex } from "@vechain/vechain-kit";
 import { Interface } from "ethers";
 import { useCallback, useMemo } from "react";
-
-// Define a type to infer method names from the function definition
-type MethodName<T> = T extends (nameOrSignature: infer U) => any ? U : never;
 
 /**
  * Parameters for the useCall hook.
@@ -16,15 +14,15 @@ export type UseCallParams<T extends Interface> = {
   args?: unknown[]; // Optional arguments for the method
   keyArgs?: unknown[]; // Optional key arguments for the query key
   enabled?: boolean; // Whether the query should be enabled
-  mapResponse?: (_res: Connex.VM.Output & Connex.Thor.Account.WithDecoded) => any; // Optional functon to map the response
+  mapResponse?: (_res: Connex.VM.Output & Connex.Thor.Account.WithDecoded) => unknown; // Optional functon to map the response
 };
 
 /**
  * Custom hook for making contract calls.
- * @param contractInterface - The cotract interface.
+ * @param contractInterface - The contract interface.
  * @param contractAddress - The contract address.
  * @param method - The method name.
- * @param rgs - Optional arguments for the method.
+ * @param args - Optional arguments for the method.
  *@param keyArgs - Optional key arguments for the query key.
  * @param enabled - Whether the query should be enabled.
  * @param mapResponse - Optional function to map the response.
@@ -77,7 +75,7 @@ export const useCall = <T extends Interface>({
 
 export type GetCallKeyParams = {
   method: string;
-  keyArgs?: any[];
+  keyArgs?: unknown[];
 };
 
 export const getCallKey = ({ method, keyArgs = [] }: GetCallKeyParams) => {
