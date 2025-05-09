@@ -1,9 +1,3 @@
-export type ProposalMetadata = {
-  title: string;
-  shortDescription: string;
-  markdownDescription: string;
-};
-
 export type ProposalEvent = {
   proposalId: string;
   proposer: string;

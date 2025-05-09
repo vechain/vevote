@@ -4,7 +4,7 @@ import { MdOutlineHowToVote } from "react-icons/md";
 import { CiCirclePlus } from "react-icons/ci";
 import { SearchInput } from "@/components/ui/SearchInput";
 import { Sort, SortDropdown } from "@/components/ui/SortDropdown";
-import { PropsWithChildren, useEffect, useMemo, useState } from "react";
+import { PropsWithChildren, useMemo, useState } from "react";
 import { ProposalCardType } from "@/types/proposal";
 import { IconBadge } from "@/components/ui/IconBadge";
 import { Status } from "@/components/ui/Status";
@@ -32,8 +32,6 @@ export const Proposals = () => {
   const { LL } = useI18nContext();
 
   const { proposals } = useProposalsEvents();
-
-  useEffect(() => console.log(proposals));
 
   const proposalsBySearch = useMemo(() => {
     const searchLower = searchValue.toLowerCase();

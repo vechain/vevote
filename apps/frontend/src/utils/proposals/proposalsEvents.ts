@@ -2,9 +2,9 @@ import { ProposalEvent } from "@/types/blockchain";
 import { getConfig } from "@repo/config";
 import { VeVote__factory } from "@repo/contracts";
 import { getAllEvents } from "@vechain/vechain-kit";
-import { buildFilterCriteria, getEventMethods } from "../contract";
 import { ProposalCardType } from "@/types/proposal";
 import { fromEventsToProposals } from "./helpers";
+import { buildFilterCriteria, getEventMethods } from "../contract";
 
 const nodeUrl = getConfig(import.meta.env.VITE_APP_ENV).nodeUrl;
 const contractAddress = getConfig(import.meta.env.VITE_APP_ENV).vevoteContractAddress;

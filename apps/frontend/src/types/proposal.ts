@@ -28,10 +28,17 @@ export type BaseOption = {
   value: string;
 };
 
-export type VotingChoices =
-  | { votingType: VotingEnum.SINGLE_CHOICE; votingOptions: SingleChoiceEnum[] }
-  | { votingType: VotingEnum.SINGLE_OPTION; votingOptions: BaseOption[] }
-  | { votingType: VotingEnum.MULTIPLE_OPTIONS; votingOptions: BaseOption[] };
+export type CustomChoiceOptions =
+  | {
+      votingType: VotingEnum.SINGLE_OPTION;
+      votingOptions: BaseOption[];
+    }
+  | {
+      votingType: VotingEnum.MULTIPLE_OPTIONS;
+      votingOptions: BaseOption[];
+    };
+
+export type VotingChoices = SingleChoiceOptions | CustomChoiceOptions;
 
 export type ProposalStatus =
   | "draft"
