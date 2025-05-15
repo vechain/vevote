@@ -5,6 +5,8 @@ import { ethers } from "ethers";
 import { v4 as uuidv4 } from "uuid";
 import { isArraysEqual } from "../array";
 import { defaultSingleChoice } from "@/pages/CreateProposal/CreateProposalProvider";
+import { Delta } from "quill";
+import { IpfsDetails } from "@/types/ipfs";
 
 export const getStatusFromState = (state: ProposalState): ProposalStatus => {
   switch (state) {
@@ -25,14 +27,19 @@ export const getStatusFromState = (state: ProposalState): ProposalStatus => {
   }
 };
 
-export const getStatusParProposal = (proposals?: Omit<ProposalCardType, "status">[]) => {
-  return proposals?.map(p => ({
+export const getStatusParProposalMethod = (proposalIds?: string[]) => {
+  return proposalIds?.map(id => ({
     method: "state" as const,
-    args: [p.id],
+    args: [id],
   }));
 };
 
-export const fromEventsToProposals = (events: ProposalEvent[]): Omit<ProposalCardType, "status">[] => {
+export type FromEventsToProposalsReturnType = ({ ipfsHash: string } & Omit<
+  ProposalCardType,
+  "status" | "description" | "title" | "votingQuestion" | "headerImage"
+>)[];
+
+export const fromEventsToProposals = (events: ProposalEvent[]): FromEventsToProposalsReturnType => {
   return events.map(event => {
     const isSingleOption = Number(event.maxSelection) === 1;
     const decodedChoices = event.choices.map(c => ethers.decodeBytes32String(c));
@@ -53,18 +60,12 @@ export const fromEventsToProposals = (events: ProposalEvent[]): Omit<ProposalCar
       id: event.proposalId,
       proposer: event.proposer,
       createdAt: new Date(),
-      title: "",
-      description: [],
-      votingQuestion: "",
-      startDate: dayjs(event.startTime).toDate(),
-      endDate: dayjs(event.startTime).add(Number(event.voteDuration)).toDate(),
-      headerImage: {
-        type: "image/png",
-        name: "mock image",
-        size: 1,
-        url: "/images/proposal_example.png",
-      },
+      startDate: dayjs(Number(event.startTime) * 1000).toDate(),
+      endDate: dayjs(Number(event.startTime) * 1000)
+        .add(Number(event.voteDuration) * 1000)
+        .toDate(),
       votingLimit: event.maxSelection,
+      ipfsHash: event.description,
     };
 
     switch (votingType) {
@@ -75,5 +76,34 @@ export const fromEventsToProposals = (events: ProposalEvent[]): Omit<ProposalCar
       case VotingEnum.MULTIPLE_OPTIONS:
         return { votingType, votingOptions: parsedChoicesWithId, ...base };
     }
+  });
+};
+
+export const sanitizeImageUrl = (url?: string) => {
+  if (!url) return "";
+  const prefix = "ipfs://";
+  if (url.startsWith(prefix)) return `https://${url.split(prefix)[1]}.ipfs.dweb.link/`;
+  else return url;
+};
+
+export const mergeIpfsDetails = (
+  ipfsData: (IpfsDetails | undefined)[],
+  proposals?: FromEventsToProposalsReturnType,
+) => {
+  return proposals?.map(p => {
+    const currentIpfsProposal = ipfsData.filter(d => (d?.ipfsHash || "") === p.ipfsHash)[0];
+
+    return {
+      ...p,
+      title: currentIpfsProposal?.title || "",
+      description: new Delta(currentIpfsProposal?.markdownDescription || []).ops,
+      votingQuestion: currentIpfsProposal?.shortDescription || "",
+      headerImage: {
+        type: currentIpfsProposal?.headerImage?.type || "",
+        name: currentIpfsProposal?.headerImage?.name || "",
+        size: currentIpfsProposal?.headerImage?.size || 1,
+        url: currentIpfsProposal?.headerImage?.url || "",
+      },
+    };
   });
 };

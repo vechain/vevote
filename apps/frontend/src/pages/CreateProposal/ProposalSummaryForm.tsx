@@ -1,25 +1,46 @@
 import { FormSkeleton } from "@/components/ui/FormSkeleton";
 import { useI18nContext } from "@/i18n/i18n-react";
+import { proposalDetailsSchema, proposalSetupSchema } from "@/schema/createProposalSchema";
 import { CreateProposalStep, VotingEnum } from "@/types/proposal";
 import { Button, Flex } from "@chakra-ui/react";
-import { useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { IoArrowBack, IoEyeOutline } from "react-icons/io5";
 import { z } from "zod";
 import { CreateFormWrapper } from "./CreateFormWrapper";
 import { useCreateProposal } from "./CreateProposalProvider";
 import { PublishButton } from "./PublishButton";
 import { SummaryCard } from "./SummaryCard";
+import { useBuildCreateProposal } from "@/hooks/useBuildCreatePropose";
+import { uploadProposalToIpfs } from "@/utils/ipfs/proposal";
 
 export const ProposalSummaryForm = () => {
   const { LL } = useI18nContext();
   const { proposalDetails, setStep, setOpenPreview } = useCreateProposal();
-  const schema = z.object({});
+  const schema = useMemo(() => proposalDetailsSchema.and(proposalSetupSchema), []);
+
+  const { sendTransaction, ...props } = useBuildCreateProposal();
+
+  useEffect(() => {
+    console.log({ ...props });
+  }, [props]);
 
   const defaultValues = useMemo(() => ({ ...proposalDetails }), [proposalDetails]);
 
-  const onSubmit = (values: z.infer<typeof schema>) => {
-    console.log("values", values);
-  };
+  const onSubmit = useCallback(
+    async (values: z.infer<typeof schema>) => {
+      try {
+        const description = await uploadProposalToIpfs(values);
+        await sendTransaction({
+          ...values,
+          description,
+        });
+      } catch (e) {
+        console.error(e);
+      }
+    },
+    [sendTransaction],
+  );
+
   return (
     <FormSkeleton schema={schema} defaultValues={defaultValues} onSubmit={onSubmit}>
       {() => {

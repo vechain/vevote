@@ -2,9 +2,8 @@ import { ProposalEvent } from "@/types/blockchain";
 import { getConfig } from "@repo/config";
 import { VeVote__factory } from "@repo/contracts";
 import { getAllEvents } from "@vechain/vechain-kit";
-import { ProposalCardType } from "@/types/proposal";
-import { fromEventsToProposals } from "./helpers";
 import { buildFilterCriteria, getEventMethods } from "../contract";
+import { fromEventsToProposals, FromEventsToProposalsReturnType } from "./helpers";
 
 const nodeUrl = getConfig(import.meta.env.VITE_APP_ENV).nodeUrl;
 const contractAddress = getConfig(import.meta.env.VITE_APP_ENV).vevoteContractAddress;
@@ -12,7 +11,7 @@ const contractInterface = VeVote__factory.createInterface();
 
 export const getProposalsEvents = async (
   thor: Connex.Thor,
-): Promise<{ proposals?: Omit<ProposalCardType, "status">[] }> => {
+): Promise<{ proposals: FromEventsToProposalsReturnType }> => {
   try {
     const [proposalCreatedEvent, proposalExecutedEvent, proposalCanceledEvent] = getEventMethods({
       contractInterface,
@@ -25,6 +24,8 @@ export const getProposalsEvents = async (
     });
 
     const events: Connex.Thor.Filter.Row<"event", object>[] = await getAllEvents({ thor, nodeUrl, filterCriteria });
+    //TODO: use sdk once vechain-kit is compatible
+    // const events = subscriptions.getEventSubscriptionUrl(nodeUrl)
 
     const decodedProposalEvents: ProposalEvent[] = events.map(event => {
       switch (event.topics[0]) {
@@ -53,7 +54,9 @@ export const getProposalsEvents = async (
       }
     });
 
-    return { proposals: fromEventsToProposals(decodedProposalEvents) };
+    const partialProposals = fromEventsToProposals(decodedProposalEvents);
+
+    return { proposals: partialProposals };
   } catch (error) {
     console.error(error);
     throw error;

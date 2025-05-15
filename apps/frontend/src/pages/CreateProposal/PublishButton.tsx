@@ -5,7 +5,7 @@ import { GoArrowRight } from "react-icons/go";
 export const PublishButton = () => {
   const { LL } = useI18nContext();
   return (
-    <Button variant={"primary"}>
+    <Button variant={"primary"} type="submit">
       {LL.proposal.create.summary_form.publish_proposal()}
       <GoArrowRight />
     </Button>

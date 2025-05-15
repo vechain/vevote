@@ -1,28 +1,41 @@
 import { ProposalCardType } from "@/types/proposal";
 import { executeMultipleClauses } from "@/utils/contract";
-import { getStatusFromState, getStatusParProposal } from "@/utils/proposals/helpers";
+import { getProposalsFromIpfs } from "@/utils/ipfs/proposal";
+import { getStatusFromState, getStatusParProposalMethod, mergeIpfsDetails } from "@/utils/proposals/helpers";
 import { getProposalsEvents } from "@/utils/proposals/proposalsEvents";
 import { getConfig } from "@repo/config";
 import { VeVote__factory } from "@repo/contracts";
-import { useQuery } from "@tanstack/react-query";
+import { useQueries, useQuery } from "@tanstack/react-query";
 import { useConnex } from "@vechain/vechain-kit";
 import { useMemo } from "react";
 
 const contractAddress = getConfig(import.meta.env.VITE_APP_ENV).vevoteContractAddress;
 const contractInterface = VeVote__factory.createInterface();
 
-/**
- *  Hook to get the proposals events from the governor contract (i.e the proposals created, canceled and executed)
- * @returns  the proposals events
- */
-export const useProposalsEvents = (): { proposals: ProposalCardType[] } => {
+export const useProposalsEvents = () => {
   const { thor } = useConnex();
 
   const { data } = useQuery({
     queryKey: ["proposalsEvents"],
     queryFn: async () => await getProposalsEvents(thor),
     enabled: !!thor,
+    gcTime: 0,
   });
+
+  const ipfsData = useQueries({
+    queries: (data?.proposals || []).map(item => ({
+      queryKey: ["item", item.id],
+      queryFn: async () => await getProposalsFromIpfs(item.ipfsHash),
+      staleTime: 5 * 60 * 1000,
+    })),
+    combine: results => {
+      return results.map(result => result.data || {});
+    },
+  });
+
+  const proposalsData = useMemo(() => {
+    return mergeIpfsDetails(ipfsData, data?.proposals);
+  }, [data?.proposals, ipfsData]);
 
   const { data: proposalsState } = useQuery({
     queryKey: ["proposalsState"],
@@ -30,12 +43,10 @@ export const useProposalsEvents = (): { proposals: ProposalCardType[] } => {
       await executeMultipleClauses({
         contractAddress,
         contractInterface,
-        methodsWithArgs: getStatusParProposal(data?.proposals),
+        methodsWithArgs: getStatusParProposalMethod(proposalsData?.map(d => d.id || "")),
       }),
-    enabled: !!thor,
+    enabled: !!thor && !!proposalsData,
   });
-
-  //TODO: get rest of data from ipfs
 
   const proposals = useMemo(() => {
     const parsedProposalState = proposalsState?.map(r => {
@@ -45,12 +56,12 @@ export const useProposalsEvents = (): { proposals: ProposalCardType[] } => {
     if (!parsedProposalState) return [];
 
     return (
-      (data?.proposals?.map((p, i) => ({
+      (proposalsData?.map((p, i) => ({
         status: parsedProposalState[i],
         ...p,
       })) as ProposalCardType[]) || []
     );
-  }, [data?.proposals, proposalsState]);
+  }, [proposalsData, proposalsState]);
 
   return { proposals };
 };

@@ -6,12 +6,10 @@ import { ProposalInfos } from "@/components/proposal/ProposalInfos";
 import { ProposalProvider, useProposal } from "@/components/proposal/ProposalProvider";
 import { VotingSection } from "@/components/proposal/VotingSection";
 import { useI18nContext } from "@/i18n/i18n-react";
-import { mockProposals } from "@/utils/mock";
 import { Button, Flex, Image, Link, Text } from "@chakra-ui/react";
 import { useMemo } from "react";
 import { IoArrowBack, IoArrowForward } from "react-icons/io5";
 import { useParams } from "react-router";
-
 import { MdOutlineHowToVote } from "react-icons/md";
 import { FiCheckSquare } from "react-icons/fi";
 import { DeleteEditProposal } from "@/components/proposal/DeleteEditProposal";
@@ -19,18 +17,21 @@ import { CancelEditProposal } from "@/components/proposal/CancelEditProposal";
 import { useWallet } from "@vechain/vechain-kit";
 import { BuyANode } from "@/components/proposal/BuyANode";
 import { useCreateProposal } from "../CreateProposal/CreateProposalProvider";
+import { useProposalsEvents } from "@/hooks/useProposalsEvents";
+import { sanitizeImageUrl } from "@/utils/proposals/helpers";
 
 export const Proposal = () => {
   const { LL } = useI18nContext();
   const { draftProposal } = useCreateProposal();
+  const { proposals } = useProposalsEvents();
+
   const { account } = useWallet();
   const params = useParams();
 
-  //todo: replace with real data
   const proposal = useMemo(() => {
     if (params.proposalId === "draft") return draftProposal;
-    return mockProposals.find(proposal => proposal.id === params.proposalId);
-  }, [draftProposal, params.proposalId]);
+    return proposals.find(proposal => proposal.id === params.proposalId);
+  }, [draftProposal, params.proposalId, proposals]);
 
   if (!proposal) return <div>Proposal not found</div>;
 
@@ -50,7 +51,7 @@ export const Proposal = () => {
       </ProposalNavbar>
       <PageContainer paddingTop={"200px"}>
         <Image
-          src={proposal.headerImage?.url}
+          src={sanitizeImageUrl(proposal.headerImage?.url)}
           borderRadius={16}
           alt="Proposal Header"
           width={"100%"}

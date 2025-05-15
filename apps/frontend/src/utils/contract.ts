@@ -9,7 +9,7 @@ const nodeUrl = getConfig(import.meta.env.VITE_APP_ENV).nodeUrl;
 
 export type GetMethodProps<T extends Interface> = {
   contractInterface: T;
-  methods: MethodName<T["getEvent"]>[]; // The method name
+  methods: MethodName<T["getEvent"]>[];
 };
 
 export const getEventMethods = <T extends Interface>({ contractInterface, methods }: GetMethodProps<T>) => {
