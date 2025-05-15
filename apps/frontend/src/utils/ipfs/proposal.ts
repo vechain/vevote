@@ -34,7 +34,6 @@ export const uploadProposalToIpfs = async ({ title, description, votingQuestion,
 
   try {
     const metadataBlob = new Blob([JSON.stringify(updatedMetadata)], { type: "application/json" });
-
     return await uploadBlobToIPFS(metadataBlob, "metadata.json");
   } catch (error) {
     console.error("Error uploading proposal to IPFS:", error);

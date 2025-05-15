@@ -47,6 +47,8 @@ const en = {
   description: "Description",
   preview: "Preview",
   close: "Close",
+  confirm: "Confirm",
+  try_again: "Try Again",
   home: {
     title: "Home",
     go_to_proposals: "Go to proposals",
@@ -215,6 +217,13 @@ const en = {
           },
         },
         publish_proposal: "Publish Proposal",
+        publish_description:
+          'Please note that once the campaign is published, it can only be edited while on "Draft" state, meaning before the voting calendar starts.',
+        publish_sub_description: "Are you sure you want to publish this proposal?",
+        publish_failed: "Publishing failed",
+        publish_failed_description: "The publishing of the proposal couldn’t be completed. Please try again.",
+        publish_success: "Proposal published",
+        publish_success_description: "The proposal has been successfully publish and can now be seen publicly.",
       },
     },
   },
