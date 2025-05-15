@@ -12,8 +12,8 @@ export type ProposalEvent = {
 export enum ProposalState {
   PENDING,
   ACTIVE,
-  SUCCEEDED,
-  DEFEATED,
   CANCELED,
+  DEFEATED,
+  SUCCEEDED,
   EXECUTED,
 }

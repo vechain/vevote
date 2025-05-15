@@ -8,6 +8,11 @@ import { defaultSingleChoice } from "@/pages/CreateProposal/CreateProposalProvid
 import { Delta } from "quill";
 import { IpfsDetails } from "@/types/ipfs";
 
+export type FromEventsToProposalsReturnType = ({ ipfsHash: string } & Omit<
+  ProposalCardType,
+  "status" | "description" | "title" | "votingQuestion" | "headerImage"
+>)[];
+
 export const getStatusFromState = (state: ProposalState): ProposalStatus => {
   switch (state) {
     case ProposalState.PENDING:
@@ -33,11 +38,6 @@ export const getStatusParProposalMethod = (proposalIds?: string[]) => {
     args: [id],
   }));
 };
-
-export type FromEventsToProposalsReturnType = ({ ipfsHash: string } & Omit<
-  ProposalCardType,
-  "status" | "description" | "title" | "votingQuestion" | "headerImage"
->)[];
 
 export const fromEventsToProposals = (events: ProposalEvent[]): FromEventsToProposalsReturnType => {
   return events.map(event => {
@@ -102,7 +102,7 @@ export const mergeIpfsDetails = (
         type: currentIpfsProposal?.headerImage?.type || "",
         name: currentIpfsProposal?.headerImage?.name || "",
         size: currentIpfsProposal?.headerImage?.size || 1,
-        url: currentIpfsProposal?.headerImage?.url || "",
+        url: currentIpfsProposal?.headerImage?.url || "/images/proposal_example.png",
       },
     };
   });

@@ -11,6 +11,7 @@ const contractInterface = VeVote__factory.createInterface();
 
 export const getProposalsEvents = async (
   thor: Connex.Thor,
+  proposalId?: string,
 ): Promise<{ proposals: FromEventsToProposalsReturnType }> => {
   try {
     const [proposalCreatedEvent, proposalExecutedEvent, proposalCanceledEvent] = getEventMethods({
@@ -21,6 +22,7 @@ export const getProposalsEvents = async (
     const filterCriteria = buildFilterCriteria({
       contractAddress,
       events: [proposalCreatedEvent, proposalExecutedEvent, proposalCanceledEvent],
+      proposalId,
     });
 
     const events: Connex.Thor.Filter.Row<"event", object>[] = await getAllEvents({ thor, nodeUrl, filterCriteria });

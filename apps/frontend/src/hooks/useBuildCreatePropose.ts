@@ -29,23 +29,22 @@ export const useBuildCreateProposal = () => {
             ? votingOptions.map(c => ethers.encodeBytes32String(c as string))
             : votingOptions.map(c => ethers.encodeBytes32String((c as BaseOption).value));
 
-        const encodedData = [
-          description,
-          dayjs(startDate).unix(),
-          dayjs(endDate).unix() - dayjs(startDate).unix(),
-          encodedChoices,
-          votingLimit || 1,
-          1,
-        ];
-
         const createProposalClause: EnhancedClause = {
           to: contractAddress,
           value: 0,
-          data: contractInterface.encodeFunctionData("propose", encodedData),
+          data: contractInterface.encodeFunctionData("propose", [
+            description,
+            dayjs(startDate).unix(),
+            dayjs(endDate).unix() - dayjs(startDate).unix(),
+            encodedChoices,
+            votingLimit || 1,
+            1,
+          ]),
           comment: `Create new proposal`,
           abi: JSON.parse(JSON.stringify(contractInterface.getFunction("propose"))),
         };
 
+        //TODO: use sdk once vechain-kit is compatible
         /* ---------- with sdk
         const interfaceJson = contractInterface.getFunction("propose")?.format("full");
         if (!interfaceJson) throw new Error(`Method propose not found`);

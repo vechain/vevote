@@ -17,21 +17,21 @@ import { CancelEditProposal } from "@/components/proposal/CancelEditProposal";
 import { useWallet } from "@vechain/vechain-kit";
 import { BuyANode } from "@/components/proposal/BuyANode";
 import { useCreateProposal } from "../CreateProposal/CreateProposalProvider";
-import { useProposalsEvents } from "@/hooks/useProposalsEvents";
 import { sanitizeImageUrl } from "@/utils/proposals/helpers";
+import { useProposalEvents } from "@/hooks/useProposalEvent";
 
 export const Proposal = () => {
   const { LL } = useI18nContext();
   const { draftProposal } = useCreateProposal();
-  const { proposals } = useProposalsEvents();
-
   const { account } = useWallet();
   const params = useParams();
 
+  const { proposal: proposalData } = useProposalEvents({ proposalId: params.proposalId });
+
   const proposal = useMemo(() => {
     if (params.proposalId === "draft") return draftProposal;
-    return proposals.find(proposal => proposal.id === params.proposalId);
-  }, [draftProposal, params.proposalId, proposals]);
+    return proposalData;
+  }, [draftProposal, params.proposalId, proposalData]);
 
   if (!proposal) return <div>Proposal not found</div>;
 

@@ -25,11 +25,22 @@ export const getEventMethods = <T extends Interface>({ contractInterface, method
   }
 };
 
-export const buildFilterCriteria = ({ contractAddress, events }: { contractAddress: string; events: abi.Event[] }) => {
+export const buildFilterCriteria = ({
+  contractAddress,
+  events,
+  proposalId,
+}: {
+  contractAddress: string;
+  events: abi.Event[];
+  proposalId?: string;
+}) => {
+  const proposalIdBytes = proposalId ? `0x${BigInt(proposalId).toString(16).padStart(64, "0")}` : undefined;
+
   return events.map(ev => {
     return {
       address: contractAddress,
       topic0: ev.signature,
+      topic1: proposalIdBytes,
     };
   });
 };

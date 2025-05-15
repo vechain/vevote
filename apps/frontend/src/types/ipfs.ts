@@ -6,7 +6,7 @@ export type IpfsDetails = {
   headerImage?: {
     name?: string;
     type?: string;
-    size?: string;
+    size?: number;
     url?: string;
   };
 };
