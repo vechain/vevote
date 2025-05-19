@@ -3,12 +3,13 @@ import { mergeIpfsDetails } from "@/utils/proposals/helpers";
 import { getProposalsEvents } from "@/utils/proposals/proposalsEvents";
 import { useQueries, useQuery } from "@tanstack/react-query";
 import { useConnex } from "@vechain/vechain-kit";
+import { useMemo } from "react";
 
 export const useProposalsEvents = () => {
   const { thor } = useConnex();
 
   //proposals from events
-  const { data } = useQuery({
+  const { data, isFetching } = useQuery({
     queryKey: ["proposalsEvents"],
     queryFn: async () => await getProposalsEvents(thor),
     enabled: !!thor,
@@ -31,11 +32,13 @@ export const useProposalsEvents = () => {
   });
 
   //final proposals with status
-  const { data: proposals } = useQuery({
+  const { data: proposals, isFetching: isFinalFetching } = useQuery({
     queryKey: ["proposals"],
     queryFn: async () => await getProposalsWithState(proposalsData),
     enabled: !!thor && !!proposalsData,
   });
 
-  return { proposals: proposals || [] };
+  const loading = useMemo(() => isFinalFetching || isFetching, [isFetching, isFinalFetching]);
+
+  return { proposals: proposals || [], loading };
 };

@@ -10,7 +10,7 @@ export const useProposalEvents = ({ proposalId }: { proposalId?: string }) => {
 
   //proposals from events with id
   const { data } = useQuery({
-    queryKey: ["proposalsEvents"],
+    queryKey: ["proposalEvents"],
     queryFn: async () => await getProposalsEvents(thor, proposalId),
     enabled: !!thor && !!proposalId,
     gcTime: 0,
@@ -27,7 +27,7 @@ export const useProposalEvents = ({ proposalId }: { proposalId?: string }) => {
 
   //final proposal with status
   const { data: proposals } = useQuery({
-    queryKey: ["proposals"],
+    queryKey: ["finalProposal"],
     queryFn: async () => await getProposalsWithState(mergeIpfsDetails([proposalData], data?.proposals)),
     enabled: !!thor && !!proposalData,
   });

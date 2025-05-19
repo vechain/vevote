@@ -206,6 +206,10 @@ type RootTranslation = {
 	 * T​r​y​ ​A​g​a​i​n
 	 */
 	try_again: string
+	/**
+	 * R​e​a​d​ ​f​u​l​l​ ​d​e​s​c​r​i​p​t​i​o​n
+	 */
+	read_full_description: string
 	home: {
 		/**
 		 * H​o​m​e
@@ -1029,6 +1033,10 @@ JPG, PNG or SVG of maximum of {size}MB.
 	 * Try Again
 	 */
 	try_again: () => LocalizedString
+	/**
+	 * Read full description
+	 */
+	read_full_description: () => LocalizedString
 	home: {
 		/**
 		 * Home

@@ -49,6 +49,7 @@ const en = {
   close: "Close",
   confirm: "Confirm",
   try_again: "Try Again",
+  read_full_description: "Read full description",
   home: {
     title: "Home",
     go_to_proposals: "Go to proposals",

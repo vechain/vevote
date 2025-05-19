@@ -31,7 +31,7 @@ export const Proposals = () => {
   const [searchValue, setSearchValue] = useState<string>("");
   const { LL } = useI18nContext();
 
-  const { proposals } = useProposalsEvents();
+  const { proposals, loading } = useProposalsEvents();
 
   const proposalsBySearch = useMemo(() => {
     const searchLower = searchValue.toLowerCase();
@@ -84,10 +84,10 @@ export const Proposals = () => {
             </Flex>
 
             <TabPanels>
-              <ProposalsPanel proposals={proposalsByTabStatus.all} />
-              <ProposalsPanel proposals={proposalsByTabStatus.voting} />
-              <ProposalsPanel proposals={proposalsByTabStatus.upcoming} />
-              <ProposalsPanel proposals={proposalsByTabStatus.finished} />
+              <ProposalsPanel proposals={proposalsByTabStatus.all} loading={loading} />
+              <ProposalsPanel proposals={proposalsByTabStatus.voting} loading={loading} />
+              <ProposalsPanel proposals={proposalsByTabStatus.upcoming} loading={loading} />
+              <ProposalsPanel proposals={proposalsByTabStatus.finished} loading={loading} />
             </TabPanels>
           </Tabs>
         </PageContainer.Content>
@@ -96,7 +96,7 @@ export const Proposals = () => {
   );
 };
 
-const ProposalsPanel = ({ proposals }: { proposals: ProposalCardType[] }) => {
+const ProposalsPanel = ({ proposals, loading }: { proposals: ProposalCardType[]; loading: boolean }) => {
   const { LL } = useI18nContext();
   const [limit, setLimit] = useState<number>(ITEMS_PER_PAGE);
   const filteredProposals = useMemo(() => proposals.filter((_p, i) => i < limit), [proposals, limit]);
@@ -104,7 +104,7 @@ const ProposalsPanel = ({ proposals }: { proposals: ProposalCardType[] }) => {
   return (
     <>
       <BasePanel>
-        {filteredProposals.length > 0 ? (
+        {!loading && filteredProposals.length > 0 ? (
           filteredProposals.map((p, i) => <ProposalCard key={i} {...p} />)
         ) : (
           <EmptyPanel />
