@@ -5,8 +5,9 @@ import { createE2EConfig } from "./envs/e2e";
 import { createTestnetConfig } from "./envs/testnet";
 import { createMainnetConfig } from "./envs/mainnet";
 import { createTestnetStagingConfig } from "./envs/testnetStaging";
+import { createGalacticaTestConfig } from "./envs/galaticaTest";
 
-export const EnvConfigValues = ["local", "e2e", "testnet", "mainnet", "testnet-staging"] as const;
+export const EnvConfigValues = ["local", "e2e", "testnet", "mainnet", "testnet-staging", "galactica-test"] as const;
 export type EnvConfig = (typeof EnvConfigValues)[number];
 
 export function getContractsConfig(env: EnvConfig) {
@@ -21,6 +22,8 @@ export function getContractsConfig(env: EnvConfig) {
       return createMainnetConfig();
     case "testnet-staging":
       return createTestnetStagingConfig();
+    case "galactica-test":
+      return createGalacticaTestConfig();
   
 
     default:
