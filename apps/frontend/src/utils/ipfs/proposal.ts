@@ -3,10 +3,12 @@ import { getConfig } from "@repo/config";
 import axios from "axios";
 import { uploadBlobToIPFS } from "../ipfs";
 import { IpfsDetails } from "@/types/ipfs";
-import { executeMultipleClauses } from "../contract";
+import { executeCall, executeMultipleClauses } from "../contract";
 import { getStatusFromState, getStatusParProposalMethod } from "../proposals/helpers";
 import { VeVote__factory } from "@repo/contracts";
-import { ProposalCardType } from "@/types/proposal";
+import { BaseOption, ProposalCardType, VotingEnum } from "@/types/proposal";
+import { ethers } from "ethers";
+import dayjs from "dayjs";
 
 const IPFS_FETCHING_SERVICE = getConfig(import.meta.env.VITE_APP_ENV).ipfsFetchingService;
 const contractAddress = getConfig(import.meta.env.VITE_APP_ENV).vevoteContractAddress;
@@ -69,4 +71,34 @@ export const getProposalsWithState = async (proposalsData?: Omit<ProposalCardTyp
     console.error(error);
     return [];
   }
+};
+
+export const getHashProposal = async ({
+  description,
+  votingOptions,
+  votingType,
+  endDate,
+  startDate,
+  votingLimit,
+}: Omit<ProposalDetails, "description"> & { description: string }) => {
+  const encodedChoices =
+    votingType === VotingEnum.SINGLE_CHOICE
+      ? votingOptions.map(c => ethers.encodeBytes32String(c as string))
+      : votingOptions.map(c => ethers.encodeBytes32String((c as BaseOption).value));
+
+  const args = [
+    description,
+    dayjs(startDate).unix(),
+    dayjs(endDate).unix() - dayjs(startDate).unix(),
+    encodedChoices,
+    votingLimit || 1,
+    1,
+  ];
+
+  return await executeCall({
+    contractAddress,
+    contractInterface,
+    method: "hashProposal",
+    args,
+  });
 };

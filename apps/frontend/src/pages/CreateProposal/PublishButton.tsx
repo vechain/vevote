@@ -7,8 +7,8 @@ import { FaCheck } from "react-icons/fa6";
 import { IoCloseCircleOutline, IoReloadSharp } from "react-icons/io5";
 import { useBuildCreateProposal } from "@/hooks/useBuildCreatePropose";
 import { useCreateProposal } from "./CreateProposalProvider";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { uploadProposalToIpfs } from "@/utils/ipfs/proposal";
+import { useCallback, useState } from "react";
+import { getHashProposal, uploadProposalToIpfs } from "@/utils/ipfs/proposal";
 
 export const PublishButton = () => {
   const { LL } = useI18nContext();
@@ -17,24 +17,31 @@ export const PublishButton = () => {
   const { isOpen: isSuccessOpen, onClose: onSuccessClose, onOpen: onSuccessOpen } = useDisclosure();
 
   const [isLoading, setIsLoading] = useState(false);
+  const [newProposalId, setNewProposalId] = useState("");
 
   const { proposalDetails } = useCreateProposal();
-  const { sendTransaction, error, txReceipt } = useBuildCreateProposal();
+  const { sendTransaction, error } = useBuildCreateProposal();
 
   const onSubmit = useCallback(async () => {
     try {
       setIsLoading(true);
 
       const description = await uploadProposalToIpfs(proposalDetails);
-      await sendTransaction({
+
+      const data = {
         ...proposalDetails,
         description,
-      });
+      };
+
+      await sendTransaction(data);
       if (error) throw new Error(`Failed to sing transaction`);
+      const res = await getHashProposal(data);
+
+      if (res.success) setNewProposalId(res.result.plain as string);
+
       onPublishClose();
       onSuccessOpen();
     } catch (e) {
-      console.error(e);
       onPublishClose();
       onFailedOpen();
     } finally {
@@ -42,15 +49,7 @@ export const PublishButton = () => {
     }
   }, [error, onFailedOpen, onPublishClose, onSuccessOpen, proposalDetails, sendTransaction]);
 
-  const newProposalId = useMemo(() => {
-    return txReceipt?.outputs?.[0].events?.[0];
-  }, [txReceipt?.outputs]);
-
   const onTryAgain = useCallback(() => onFailedClose(), [onFailedClose]);
-
-  useEffect(() => {
-    console.log("output", txReceipt?.outputs);
-  }, [txReceipt?.outputs]);
 
   return (
     <>

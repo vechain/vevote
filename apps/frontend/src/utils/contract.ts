@@ -75,3 +75,28 @@ export const executeMultipleClauses = async <T extends Interface>({
     throw error;
   }
 };
+
+export const executeCall = async <T extends Interface>({
+  contractAddress,
+  contractInterface,
+  args,
+  method,
+}: {
+  contractAddress: string;
+  contractInterface: T;
+  method: MethodName<T["getFunction"]>;
+  args: unknown[];
+}) => {
+  const thor = ThorClient.at(nodeUrl);
+
+  try {
+    const interfaceJson = contractInterface.getFunction(method)?.format("full");
+    if (!interfaceJson) throw new Error(`Method ${method} not found`);
+    const functionAbi = new ABIFunction(interfaceJson);
+    const results = await thor.contracts.executeCall(contractAddress, functionAbi, args);
+    return results;
+  } catch (error) {
+    console.error("Error calling multiple methods:", error);
+    throw error;
+  }
+};
