@@ -7,7 +7,6 @@ import { useConnex } from "@vechain/vechain-kit";
 
 const getProposals = async (thor: Connex.Thor) => {
   const data = await getProposalsEvents(thor);
-  console.log(data);
   const proposals = data?.proposals;
   const mergedData: IpfsDetails[] = [];
 

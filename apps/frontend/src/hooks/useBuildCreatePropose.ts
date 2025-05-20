@@ -70,15 +70,6 @@ export const useBuildCreateProposal = () => {
     [],
   );
 
-  //TODO refetch proposals
-
-  //   const refetchQueryKeys = useMemo(() => {
-  //     return [
-  //       ['proposalsEvents'],
-  //       getProposalUserDepositQueryKey("allClaimableDeposits", account?.address ?? ""),
-  //     ];
-  //   }, [account?.address]);
-
   return useBuildTransaction({
     clauseBuilder: buildClauses,
   });
