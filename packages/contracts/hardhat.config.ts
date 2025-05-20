@@ -9,17 +9,10 @@ import "solidity-coverage"
 import "solidity-docgen"
 import { EnvConfig } from "@repo/config/contracts"
 import { HDKey } from "@vechain/sdk-core"
+import { getMnemonic } from "./scripts/helpers/env"
 
 const config: HardhatUserConfig = {
   solidity: "0.8.20",
-}
-
-const getEnvMnemonic = () => {
-  const isStagingEnv = process.env.VITE_APP_ENV === "testnet-staging"
-
-  const mnemonic = isStagingEnv ? process.env.TESTNET_STAGING_MNEMONIC : process.env.MNEMONIC
-
-  return mnemonic ?? ""
 }
 
 const getSoloUrl = () => {
@@ -57,7 +50,7 @@ module.exports = {
     vechain_solo: {
       url: getSoloUrl(),
       accounts: {
-        mnemonic: getEnvMnemonic(),
+        mnemonic: getMnemonic(),
         count: 20,
         path: HDKey.VET_DERIVATION_PATH,
       },
@@ -67,7 +60,7 @@ module.exports = {
     vechain_devnet: {
       url: process.env.VECHAIN_URL_DEVNET,
       accounts: {
-        mnemonic: getEnvMnemonic(),
+        mnemonic: getMnemonic(),
         count: 20,
         path: HDKey.VET_DERIVATION_PATH,
       },
@@ -77,7 +70,7 @@ module.exports = {
     vechain_testnet: {
       url: "https://testnet.vechain.org",
       accounts: {
-        mnemonic: getEnvMnemonic(),
+        mnemonic: getMnemonic(),
         count: 20,
         path: HDKey.VET_DERIVATION_PATH,
       },
@@ -87,7 +80,7 @@ module.exports = {
     vechain_mainnet: {
       url: "https://mainnet.vechain.org",
       accounts: {
-        mnemonic: getEnvMnemonic(),
+        mnemonic: getMnemonic(),
         count: 20,
         path: HDKey.VET_DERIVATION_PATH,
       },

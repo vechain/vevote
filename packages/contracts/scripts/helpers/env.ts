@@ -1,7 +1,7 @@
 import { AppEnv } from "@repo/config/contracts"
 
 export const getMnemonic = (): string => {
-  const appEnv = process.env.NEXT_PUBLIC_APP_ENV
+  const appEnv = process.env.VITE_APP_ENV
   let mnemonic: string | undefined
 
   switch (appEnv) {
@@ -18,7 +18,7 @@ export const getMnemonic = (): string => {
 
   if (!mnemonic) {
     throw new Error(
-      `Mnemonic not found for NEXT_PUBLIC_APP_ENV: ${appEnv}. Please ensure the corresponding environment variable (e.g., MNEMONIC, TESTNET_STAGING_MNEMONIC, GALACTICA_TEST_MNEMONIC) is set.`,
+      `Mnemonic not found for VITE_APP_ENV: ${appEnv}. Please ensure the corresponding environment variable (e.g., MNEMONIC, TESTNET_STAGING_MNEMONIC, GALACTICA_TEST_MNEMONIC) is set.`,
     )
   }
 
