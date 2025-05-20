@@ -3,34 +3,21 @@ import { mergeIpfsDetails } from "@/utils/proposals/helpers";
 import { getProposalsEvents } from "@/utils/proposals/proposalsEvents";
 import { useQuery } from "@tanstack/react-query";
 import { useConnex } from "@vechain/vechain-kit";
-import { useMemo } from "react";
+
+const getSingleProposal = async (thor: Connex.Thor, proposalId?: string) => {
+  const data = await getProposalsEvents(thor, proposalId);
+  const proposalData = await getProposalsFromIpfs(data?.proposals?.[0].ipfsHash);
+  return await getProposalsWithState(mergeIpfsDetails([proposalData], data?.proposals));
+};
 
 export const useProposalEvents = ({ proposalId }: { proposalId?: string }) => {
   const { thor } = useConnex();
 
-  //proposals from events with id
-  const { data } = useQuery({
-    queryKey: ["proposalEvents"],
-    queryFn: async () => await getProposalsEvents(thor, proposalId),
+  const { data, error, isLoading } = useQuery({
+    queryKey: ["getSingleProposal"],
+    queryFn: async () => await getSingleProposal(thor, proposalId),
     enabled: !!thor && !!proposalId,
-    gcTime: 0,
   });
 
-  const proposalIpfsHash = useMemo(() => data?.proposals?.[0].ipfsHash || "", [data?.proposals]);
-
-  const { data: proposalData } = useQuery({
-    queryKey: ["singleProposal"],
-    queryFn: async () => await getProposalsFromIpfs(proposalIpfsHash),
-    enabled: !!thor && !!proposalId,
-    gcTime: 0,
-  });
-
-  //final proposal with status
-  const { data: proposals } = useQuery({
-    queryKey: ["finalProposal"],
-    queryFn: async () => await getProposalsWithState(mergeIpfsDetails([proposalData], data?.proposals)),
-    enabled: !!thor && !!proposalData,
-  });
-
-  return { proposal: proposals?.[0] };
+  return { proposal: data?.[0], error, isLoading };
 };

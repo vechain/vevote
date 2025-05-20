@@ -237,6 +237,10 @@ type RootTranslation = {
 		 * T​h​e​ ​e​n​d​ ​d​a​t​e​ ​m​u​s​t​ ​b​e​ ​i​n​ ​t​h​e​ ​f​u​t​u​r​e
 		 */
 		end_before_today: string
+		/**
+		 * T​h​e​ ​s​t​a​r​t​ ​d​a​t​e​ ​m​u​s​t​ ​b​e​ ​i​n​ ​t​h​e​ ​f​u​t​u​r​e
+		 */
+		start_after_today: string
 	}
 	voting_list: {
 		/**
@@ -1064,6 +1068,10 @@ JPG, PNG or SVG of maximum of {size}MB.
 		 * The end date must be in the future
 		 */
 		end_before_today: () => LocalizedString
+		/**
+		 * The start date must be in the future
+		 */
+		start_after_today: () => LocalizedString
 	}
 	voting_list: {
 		/**

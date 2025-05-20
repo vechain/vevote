@@ -59,6 +59,7 @@ const en = {
     invalid_format: "Invalid format",
     end_before_start: "The end date must be after the start date",
     end_before_today: "The end date must be in the future",
+    start_after_today: "The start date must be in the future",
   },
   voting_list: {
     voting_options: "Voting options:",

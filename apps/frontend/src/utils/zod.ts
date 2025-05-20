@@ -18,11 +18,11 @@ export const zodStartEndDates = z
         message: LL.field_errors.end_before_start(),
         path: ["endDate"],
       });
-    else if (data.endDate <= today)
+    else if (data.startDate <= today)
       ctx.addIssue({
         code: "custom",
-        message: LL.field_errors.end_before_today(),
-        path: ["endDate"],
+        message: LL.field_errors.start_after_today(),
+        path: ["startDate"],
       });
   });
 

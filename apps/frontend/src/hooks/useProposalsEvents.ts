@@ -1,44 +1,32 @@
+import { IpfsDetails } from "@/types/ipfs";
 import { getProposalsFromIpfs, getProposalsWithState } from "@/utils/ipfs/proposal";
 import { mergeIpfsDetails } from "@/utils/proposals/helpers";
 import { getProposalsEvents } from "@/utils/proposals/proposalsEvents";
-import { useQueries, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useConnex } from "@vechain/vechain-kit";
-import { useMemo } from "react";
+
+const getProposals = async (thor: Connex.Thor) => {
+  const data = await getProposalsEvents(thor);
+  console.log(data);
+  const proposals = data?.proposals;
+  const mergedData: IpfsDetails[] = [];
+
+  for (let i = 0; i < proposals.length; i++) {
+    const element = await getProposalsFromIpfs(proposals[i].ipfsHash);
+    mergedData.push(element);
+  }
+
+  return await getProposalsWithState(mergeIpfsDetails(mergedData, proposals));
+};
 
 export const useProposalsEvents = () => {
   const { thor } = useConnex();
 
-  //proposals from events
-  const { data, isFetching } = useQuery({
+  const { data: proposals, isLoading } = useQuery({
     queryKey: ["proposalsEvents"],
-    queryFn: async () => await getProposalsEvents(thor),
+    queryFn: async () => await getProposals(thor),
     enabled: !!thor,
-    gcTime: 0,
   });
 
-  //proposals with ipfs data
-  const proposalsData = useQueries({
-    queries: (data?.proposals || []).map(item => ({
-      queryKey: ["item", item.id],
-      queryFn: async () => await getProposalsFromIpfs(item.ipfsHash),
-      staleTime: 5 * 60 * 1000,
-    })),
-    combine: results => {
-      return mergeIpfsDetails(
-        results.map(result => result.data || {}),
-        data?.proposals,
-      );
-    },
-  });
-
-  //final proposals with status
-  const { data: proposals, isFetching: isFinalFetching } = useQuery({
-    queryKey: ["proposals"],
-    queryFn: async () => await getProposalsWithState(proposalsData),
-    enabled: !!thor && !!proposalsData,
-  });
-
-  const loading = useMemo(() => isFinalFetching || isFetching, [isFetching, isFinalFetching]);
-
-  return { proposals: proposals || [], loading };
+  return { proposals: proposals || [], loading: isLoading };
 };
