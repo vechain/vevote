@@ -1,15 +1,14 @@
-import { VECHAIN_URL_SOLO, VECHAIN_URL_MAINNET, VECHAIN_URL_TESTNET } from "@vechain/hardhat-vechain"
 import { HardhatUserConfig } from "hardhat/config"
 import "@nomicfoundation/hardhat-toolbox"
 import "@nomiclabs/hardhat-truffle5"
-import "@vechain/hardhat-vechain"
-import "@vechain/hardhat-ethers"
 import "hardhat-contract-sizer"
+import "@vechain/sdk-hardhat-plugin"
 import "hardhat-ignore-warnings"
 import { getConfig } from "@repo/config"
 import "solidity-coverage"
 import "solidity-docgen"
 import { EnvConfig } from "@repo/config/contracts"
+import { HDKey } from "@vechain/sdk-core"
 
 const config: HardhatUserConfig = {
   solidity: "0.8.20",
@@ -26,7 +25,7 @@ const getEnvMnemonic = () => {
 const getSoloUrl = () => {
   const url = process.env.VITE_APP_ENV
     ? getConfig(process.env.VITE_APP_ENV as EnvConfig).network.urls[0]
-    : VECHAIN_URL_SOLO
+    : "http://localhost:8669";
   return url
 }
 
@@ -60,7 +59,7 @@ module.exports = {
       accounts: {
         mnemonic: getEnvMnemonic(),
         count: 20,
-        path: "m/44'/818'/0'/0",
+        path: HDKey.VET_DERIVATION_PATH,
       },
       restful: true,
       gas: 10000000,
@@ -70,27 +69,27 @@ module.exports = {
       accounts: {
         mnemonic: getEnvMnemonic(),
         count: 20,
-        path: "m/44'/818'/0'/0",
+        path: HDKey.VET_DERIVATION_PATH,
       },
       restful: true,
       gas: 10000000,
     },
     vechain_testnet: {
-      url: VECHAIN_URL_TESTNET,
+      url: "https://testnet.vechain.org",
       accounts: {
         mnemonic: getEnvMnemonic(),
         count: 20,
-        path: "m/44'/818'/0'/0",
+        path: HDKey.VET_DERIVATION_PATH,
       },
       restful: true,
       gas: 10000000,
     },
     vechain_mainnet: {
-      url: VECHAIN_URL_MAINNET,
+      url: "https://mainnet.vechain.org",
       accounts: {
         mnemonic: getEnvMnemonic(),
         count: 20,
-        path: "m/44'/818'/0'/0",
+        path: HDKey.VET_DERIVATION_PATH,
       },
       restful: true,
       gas: 10000000,
