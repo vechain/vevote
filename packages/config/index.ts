@@ -2,6 +2,7 @@ import localConfig from "./local"
 import testnetConfig from "./testnet"
 import mainnetConfig from "./mainnet"
 import testnetStagingConfig from "./testnet-staging"
+import galaticaTestConfig from "./galactica-test"
 import { EnvConfig, getContractsConfig } from "./contracts"
 import { Network } from "@repo/constants"
 
@@ -25,6 +26,7 @@ export const getConfig = (env?: EnvConfig): AppConfig => {
   if (appEnv === "testnet") return testnetConfig
   if (appEnv === "testnet-staging") return testnetStagingConfig
   if (appEnv === "mainnet") return mainnetConfig
+  if (appEnv === "galactica-test") return galaticaTestConfig
   throw new Error(`Unsupported VITE_APP_ENV ${appEnv}`)
 }
 
