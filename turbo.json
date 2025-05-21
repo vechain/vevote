@@ -37,6 +37,11 @@
       "persistent": true,
       "dependsOn": ["^setup-contracts:mainnet"]
     },
+    "dev:galactica-test": {
+      "cache": false,
+      "persistent": true,
+      "dependsOn": ["^setup-contracts:galactica-test"]
+    },
     "setup-contracts": {
       "cache": false,
       "persistent": true,
@@ -57,6 +62,11 @@
       "persistent": true,
       "dependsOn": ["^compile", "@repo/contracts#check-contracts-deployment:mainnet"]
     },
+    "setup-contracts:galactica-test": {
+      "cache": false,
+      "persistent": true,
+      "dependsOn": ["^compile", "@repo/contracts#check-contracts-deployment:galactica-test"]
+    },
     "@repo/config#check-or-generate-local-config": {
       "cache": false
     },
@@ -75,6 +85,9 @@
     "@repo/contracts#check-contracts-deployment:mainnet": {
       "cache": false,
       "dependsOn": ["^compile", "@repo/config#check-or-generate-local-config"]
+    },
+    "@repo/contracts#check-contracts-deployment:galactica-test": {
+      "cache": false
     },
     "clean": {
       "cache": false
@@ -97,6 +110,9 @@
     },
     "deploy:mainnet": {
       "dependsOn": ["^deploy:mainnet"]
+    },
+    "deploy:galactica-test": {
+      "dependsOn": ["^deploy:galactica-test"]
     },
     "test": {
       "cache": false,
