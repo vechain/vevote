@@ -15,7 +15,7 @@ import {DataTypes} from "./DataTypes.sol";
 import {Token} from "./Token.sol";
 import {Clock} from "./Clock.sol";
 import {Errors} from "./Errors.sol";
-import {IStargateNFT} from "../../interfaces/IStargateNFT.sol";
+import {IStargateNFT} from "../../../interfaces/IStargateNFT.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 /// @title VetGeneratedVtho

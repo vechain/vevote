@@ -14,7 +14,7 @@ pragma solidity 0.8.20;
 import {DataTypes} from "./DataTypes.sol";
 import {Token} from "./Token.sol";
 import {Clock} from "./Clock.sol";
-import {IStargateNFT} from "../../interfaces/IStargateNFT.sol";
+import {IStargateNFT} from "../../../interfaces/IStargateNFT.sol";
 import {Errors} from "./Errors.sol";
 import {VetGeneratedVtho} from "./VetGeneratedVtho.sol";
 import {Levels} from "./Levels.sol";

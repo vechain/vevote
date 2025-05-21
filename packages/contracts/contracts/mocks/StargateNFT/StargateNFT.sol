@@ -20,9 +20,9 @@ import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/U
 import {IERC165} from "@openzeppelin/contracts/interfaces/IERC165.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
-import {IStargateNFT} from "../interfaces/IStargateNFT.sol";
-import {ITokenAuction} from "../interfaces/ITokenAuction.sol";
-import {IStargateDelegation} from "../interfaces/IStargateDelegation.sol";
+import {IStargateNFT} from "../../interfaces/IStargateNFT.sol";
+import {ITokenAuction} from "../../interfaces/ITokenAuction.sol";
+import {IStargateDelegation} from "../../interfaces/IStargateDelegation.sol";
 import {DataTypes} from "./libraries/DataTypes.sol";
 import {MintingLogic} from "./libraries/MintingLogic.sol";
 import {Token} from "./libraries/Token.sol";

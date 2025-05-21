@@ -12,7 +12,7 @@
 pragma solidity 0.8.20;
 
 import {DataTypes} from "./DataTypes.sol";
-import {IStargateNFT} from "../../interfaces/IStargateNFT.sol";
+import {IStargateNFT} from "../../../interfaces/IStargateNFT.sol";
 import {Clock} from "./Clock.sol";
 import {Errors} from "./Errors.sol";
 import {Levels} from "./Levels.sol";

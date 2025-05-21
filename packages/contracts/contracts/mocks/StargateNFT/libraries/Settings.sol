@@ -12,9 +12,9 @@
 pragma solidity 0.8.20;
 
 import {DataTypes} from "./DataTypes.sol";
-import {IStargateNFT} from "../../interfaces/IStargateNFT.sol";
-import {IStargateDelegation} from "../../interfaces/IStargateDelegation.sol";
-import {ITokenAuction} from "../../interfaces/ITokenAuction.sol";
+import {IStargateNFT} from "../../../interfaces/IStargateNFT.sol";
+import {IStargateDelegation} from "../../../interfaces/IStargateDelegation.sol";
+import {ITokenAuction} from "../../../interfaces/ITokenAuction.sol";
 import {Errors} from "./Errors.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {Levels} from "./Levels.sol";
