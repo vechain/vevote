@@ -1,0 +1,102 @@
+import { MethodName } from "@/types/common";
+import { getConfig } from "@repo/config";
+import { ThorClient } from "@vechain/sdk-network";
+import { Interface } from "ethers";
+import { abi } from "thor-devkit";
+import { ABIFunction } from "@vechain/sdk-core";
+
+const nodeUrl = getConfig(import.meta.env.VITE_APP_ENV).nodeUrl;
+
+export type GetMethodProps<T extends Interface> = {
+  contractInterface: T;
+  methods: MethodName<T["getEvent"]>[];
+};
+
+export const getEventMethods = <T extends Interface>({ contractInterface, methods }: GetMethodProps<T>) => {
+  try {
+    return methods.map(method => {
+      const contractAbi = contractInterface.getEvent(method);
+      if (!contractAbi) throw new Error(`${method} event not found`);
+      return new abi.Event(contractAbi as unknown as abi.Event.Definition);
+    });
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+};
+
+export const buildFilterCriteria = ({
+  contractAddress,
+  events,
+  proposalId,
+}: {
+  contractAddress: string;
+  events: abi.Event[];
+  proposalId?: string;
+}) => {
+  const proposalIdBytes = proposalId ? `0x${BigInt(proposalId).toString(16).padStart(64, "0")}` : undefined;
+
+  return events.map(ev => {
+    return {
+      address: contractAddress,
+      topic0: ev.signature,
+      topic1: proposalIdBytes,
+    };
+  });
+};
+
+export const executeMultipleClauses = async <T extends Interface>({
+  contractAddress,
+  contractInterface,
+  methodsWithArgs,
+}: {
+  contractAddress: string;
+  contractInterface: T;
+  methodsWithArgs?: { method: MethodName<T["getFunction"]>; args: unknown[] }[];
+}) => {
+  const thor = ThorClient.at(nodeUrl);
+
+  try {
+    const clauses = methodsWithArgs?.map(({ method, args }) => {
+      const interfaceJson = contractInterface.getFunction(method)?.format("full");
+      if (!interfaceJson) throw new Error(`Method ${method} not found`);
+
+      const functionAbi = new ABIFunction(interfaceJson);
+      return thor.contracts.load(contractAddress, [functionAbi.signature]).clause[method](...args);
+    });
+
+    if (!clauses) throw new Error(`Clauses not found`);
+
+    const results = await thor.contracts.executeMultipleClausesCall(clauses);
+
+    return results;
+  } catch (error) {
+    console.error("Error calling multiple methods:", error);
+    throw error;
+  }
+};
+
+export const executeCall = async <T extends Interface>({
+  contractAddress,
+  contractInterface,
+  args,
+  method,
+}: {
+  contractAddress: string;
+  contractInterface: T;
+  method: MethodName<T["getFunction"]>;
+  args: unknown[];
+}) => {
+  const thor = ThorClient.at(nodeUrl);
+
+  try {
+    const interfaceJson = contractInterface.getFunction(method)?.format("full");
+    if (!interfaceJson) throw new Error(`Method ${method} not found`);
+    const functionAbi = new ABIFunction(interfaceJson);
+    const results = await thor.contracts.executeCall(contractAddress, functionAbi, args);
+    return results;
+  } catch (error) {
+    console.error("Error calling multiple methods:", error);
+    throw error;
+  }
+};

@@ -1,7 +1,7 @@
 import { defaultSingleChoice } from "@/pages/CreateProposal/CreateProposalProvider";
 import { ProposalCardType, VotingEnum } from "@/types/proposal";
 import { Delta } from "quill";
-import { createContext, PropsWithChildren, useContext } from "react";
+import { createContext, PropsWithChildren, useContext, useMemo } from "react";
 
 export const ProposalContext = createContext<{ proposal: ProposalCardType }>({
   proposal: {
@@ -27,7 +27,8 @@ export const ProposalContext = createContext<{ proposal: ProposalCardType }>({
 });
 
 export const ProposalProvider = ({ children, proposal }: PropsWithChildren<{ proposal: ProposalCardType }>) => {
-  return <ProposalContext.Provider value={{ proposal }}>{children}</ProposalContext.Provider>;
+  const value = useMemo(() => ({ proposal }), [proposal]);
+  return <ProposalContext.Provider value={value}>{children}</ProposalContext.Provider>;
 };
 
 export const useProposal = () => {

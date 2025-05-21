@@ -16,9 +16,13 @@ export const ExitButton = () => {
 
   const navigate = useNavigate();
 
-  const { saveDraftProposal, step, draftProposal } = useCreateProposal();
+  const { saveDraftProposal, step, draftProposal, setStep } = useCreateProposal();
 
-  const onExit = useCallback(() => navigate(Routes.HOME), [navigate]);
+  const onExit = useCallback(() => {
+    setStep(CreateProposalStep.VOTING_DETAILS);
+    navigate(Routes.HOME);
+  }, [navigate, setStep]);
+
   const onSave = useCallback(async () => {
     onExitClose();
     await saveDraftProposal();
@@ -27,8 +31,9 @@ export const ExitButton = () => {
 
   const onContinue = useCallback(() => {
     onSavedClose();
+    setStep(CreateProposalStep.VOTING_DETAILS);
     navigate(`${Routes.PROPOSAL}/draft`);
-  }, [navigate, onSavedClose]);
+  }, [navigate, onSavedClose, setStep]);
 
   const exitDescription = useMemo(() => {
     if (step === CreateProposalStep.VOTING_SUMMARY) return LL.proposal.create.exit_proposal.description();

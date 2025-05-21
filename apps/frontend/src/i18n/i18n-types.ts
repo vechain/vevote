@@ -198,6 +198,18 @@ type RootTranslation = {
 	 * C​l​o​s​e
 	 */
 	close: string
+	/**
+	 * C​o​n​f​i​r​m
+	 */
+	confirm: string
+	/**
+	 * T​r​y​ ​A​g​a​i​n
+	 */
+	try_again: string
+	/**
+	 * R​e​a​d​ ​f​u​l​l​ ​d​e​s​c​r​i​p​t​i​o​n
+	 */
+	read_full_description: string
 	home: {
 		/**
 		 * H​o​m​e
@@ -225,6 +237,10 @@ type RootTranslation = {
 		 * T​h​e​ ​e​n​d​ ​d​a​t​e​ ​m​u​s​t​ ​b​e​ ​i​n​ ​t​h​e​ ​f​u​t​u​r​e
 		 */
 		end_before_today: string
+		/**
+		 * T​h​e​ ​s​t​a​r​t​ ​d​a​t​e​ ​m​u​s​t​ ​b​e​ ​i​n​ ​t​h​e​ ​f​u​t​u​r​e
+		 */
+		start_after_today: string
 	}
 	voting_list: {
 		/**
@@ -676,6 +692,30 @@ type RootTranslation = {
 				 * P​u​b​l​i​s​h​ ​P​r​o​p​o​s​a​l
 				 */
 				publish_proposal: string
+				/**
+				 * P​l​e​a​s​e​ ​n​o​t​e​ ​t​h​a​t​ ​o​n​c​e​ ​t​h​e​ ​c​a​m​p​a​i​g​n​ ​i​s​ ​p​u​b​l​i​s​h​e​d​,​ ​i​t​ ​c​a​n​ ​o​n​l​y​ ​b​e​ ​e​d​i​t​e​d​ ​w​h​i​l​e​ ​o​n​ ​"​D​r​a​f​t​"​ ​s​t​a​t​e​,​ ​m​e​a​n​i​n​g​ ​b​e​f​o​r​e​ ​t​h​e​ ​v​o​t​i​n​g​ ​c​a​l​e​n​d​a​r​ ​s​t​a​r​t​s​.
+				 */
+				publish_description: string
+				/**
+				 * A​r​e​ ​y​o​u​ ​s​u​r​e​ ​y​o​u​ ​w​a​n​t​ ​t​o​ ​p​u​b​l​i​s​h​ ​t​h​i​s​ ​p​r​o​p​o​s​a​l​?
+				 */
+				publish_sub_description: string
+				/**
+				 * P​u​b​l​i​s​h​i​n​g​ ​f​a​i​l​e​d
+				 */
+				publish_failed: string
+				/**
+				 * T​h​e​ ​p​u​b​l​i​s​h​i​n​g​ ​o​f​ ​t​h​e​ ​p​r​o​p​o​s​a​l​ ​c​o​u​l​d​n​’​t​ ​b​e​ ​c​o​m​p​l​e​t​e​d​.​ ​P​l​e​a​s​e​ ​t​r​y​ ​a​g​a​i​n​.
+				 */
+				publish_failed_description: string
+				/**
+				 * P​r​o​p​o​s​a​l​ ​p​u​b​l​i​s​h​e​d
+				 */
+				publish_success: string
+				/**
+				 * T​h​e​ ​p​r​o​p​o​s​a​l​ ​h​a​s​ ​b​e​e​n​ ​s​u​c​c​e​s​s​f​u​l​l​y​ ​p​u​b​l​i​s​h​ ​a​n​d​ ​c​a​n​ ​n​o​w​ ​b​e​ ​s​e​e​n​ ​p​u​b​l​i​c​l​y​.
+				 */
+				publish_success_description: string
 			}
 		}
 	}
@@ -989,6 +1029,18 @@ JPG, PNG or SVG of maximum of {size}MB.
 	 * Close
 	 */
 	close: () => LocalizedString
+	/**
+	 * Confirm
+	 */
+	confirm: () => LocalizedString
+	/**
+	 * Try Again
+	 */
+	try_again: () => LocalizedString
+	/**
+	 * Read full description
+	 */
+	read_full_description: () => LocalizedString
 	home: {
 		/**
 		 * Home
@@ -1016,6 +1068,10 @@ JPG, PNG or SVG of maximum of {size}MB.
 		 * The end date must be in the future
 		 */
 		end_before_today: () => LocalizedString
+		/**
+		 * The start date must be in the future
+		 */
+		start_after_today: () => LocalizedString
 	}
 	voting_list: {
 		/**
@@ -1462,6 +1518,30 @@ JPG, PNG or SVG of maximum of {size}MB.
 				 * Publish Proposal
 				 */
 				publish_proposal: () => LocalizedString
+				/**
+				 * Please note that once the campaign is published, it can only be edited while on "Draft" state, meaning before the voting calendar starts.
+				 */
+				publish_description: () => LocalizedString
+				/**
+				 * Are you sure you want to publish this proposal?
+				 */
+				publish_sub_description: () => LocalizedString
+				/**
+				 * Publishing failed
+				 */
+				publish_failed: () => LocalizedString
+				/**
+				 * The publishing of the proposal couldn’t be completed. Please try again.
+				 */
+				publish_failed_description: () => LocalizedString
+				/**
+				 * Proposal published
+				 */
+				publish_success: () => LocalizedString
+				/**
+				 * The proposal has been successfully publish and can now be seen publicly.
+				 */
+				publish_success_description: () => LocalizedString
 			}
 		}
 	}

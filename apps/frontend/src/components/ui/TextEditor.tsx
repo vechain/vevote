@@ -65,7 +65,7 @@ const TextEditor = forwardRef<Quill, EditorProps>(
           toolbar: readOnly ? false : toolbarOptions,
         },
         readOnly,
-        placeholder: "    Add description...",
+        placeholder: !readOnly ? "    Add description..." : "",
       });
 
       quillInstance.current = quill;
