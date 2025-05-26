@@ -1,9 +1,18 @@
-import { ProposalEvent } from "@/types/blockchain";
+import { BaseOption, ProposalCardType, VotingEnum } from "@/types/proposal";
+import { buildFilterCriteria, executeCall, executeMultipleClauses, getEventMethods } from "../contract";
+import {
+  fromEventsToProposals,
+  FromEventsToProposalsReturnType,
+  getStatusFromState,
+  getStatusParProposalMethod,
+} from "./helpers";
+import { ProposalDetails } from "@/pages/CreateProposal/CreateProposalProvider";
+import { ethers } from "ethers";
+import dayjs from "dayjs";
 import { getConfig } from "@repo/config";
 import { VeVote__factory } from "@repo/contracts";
 import { getAllEvents } from "@vechain/vechain-kit";
-import { buildFilterCriteria, getEventMethods } from "../contract";
-import { fromEventsToProposals, FromEventsToProposalsReturnType } from "./helpers";
+import { ProposalEvent } from "@/types/blockchain";
 
 const nodeUrl = getConfig(import.meta.env.VITE_APP_ENV).nodeUrl;
 const contractAddress = getConfig(import.meta.env.VITE_APP_ENV).vevoteContractAddress;
@@ -63,4 +72,60 @@ export const getProposalsEvents = async (
     console.error(error);
     throw error;
   }
+};
+
+export const getProposalsWithState = async (proposalsData?: Omit<ProposalCardType, "status">[]) => {
+  try {
+    const proposalsState = await executeMultipleClauses({
+      contractAddress,
+      contractInterface,
+      methodsWithArgs: getStatusParProposalMethod(proposalsData?.map(d => d.id || "")),
+    });
+
+    const parsedProposalState = proposalsState?.map(r => {
+      return getStatusFromState(Number(r.result.plain));
+    });
+
+    return (
+      (proposalsData?.map((p, i) => ({
+        status: parsedProposalState[i],
+        ...p,
+      })) as ProposalCardType[]) || []
+    );
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+};
+
+export const getHashProposal = async ({
+  description,
+  votingOptions,
+  votingType,
+  endDate,
+  startDate,
+  votingLimit,
+  proposer,
+}: Omit<ProposalDetails, "description"> & { description: string; proposer: string }) => {
+  const encodedChoices =
+    votingType === VotingEnum.SINGLE_CHOICE
+      ? votingOptions.map(c => ethers.encodeBytes32String(c as string))
+      : votingOptions.map(c => ethers.encodeBytes32String((c as BaseOption).value));
+
+  const args = [
+    proposer,
+    dayjs(startDate).unix(),
+    dayjs(endDate).unix() - dayjs(startDate).unix(),
+    encodedChoices,
+    description,
+    votingLimit || 1,
+    1,
+  ];
+
+  return await executeCall({
+    contractAddress,
+    contractInterface,
+    method: "hashProposal",
+    args,
+  });
 };

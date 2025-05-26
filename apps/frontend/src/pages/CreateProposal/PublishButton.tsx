@@ -8,7 +8,9 @@ import { IoCloseCircleOutline, IoReloadSharp } from "react-icons/io5";
 import { useBuildCreateProposal } from "@/hooks/useBuildCreatePropose";
 import { useCreateProposal } from "./CreateProposalProvider";
 import { useCallback, useState } from "react";
-import { getHashProposal, uploadProposalToIpfs } from "@/utils/ipfs/proposal";
+import { uploadProposalToIpfs } from "@/utils/ipfs/proposal";
+import { getHashProposal } from "@/utils/proposals/proposalsQueries";
+import { useWallet } from "@vechain/vechain-kit";
 
 export const PublishButton = () => {
   const { LL } = useI18nContext();
@@ -21,6 +23,7 @@ export const PublishButton = () => {
 
   const { proposalDetails } = useCreateProposal();
   const { sendTransaction, error } = useBuildCreateProposal();
+  const { account } = useWallet();
 
   const onSubmit = useCallback(async () => {
     try {
@@ -35,7 +38,7 @@ export const PublishButton = () => {
 
       await sendTransaction(data);
       if (error) throw new Error(`Failed to sing transaction`);
-      const res = await getHashProposal(data);
+      const res = await getHashProposal({ ...data, proposer: account?.address || "" });
 
       if (res.success) setNewProposalId(res.result.plain as string);
 
@@ -47,7 +50,7 @@ export const PublishButton = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [error, onFailedOpen, onPublishClose, onSuccessOpen, proposalDetails, sendTransaction]);
+  }, [account?.address, error, onFailedOpen, onPublishClose, onSuccessOpen, proposalDetails, sendTransaction]);
 
   const onTryAgain = useCallback(() => onFailedClose(), [onFailedClose]);
 
