@@ -55,15 +55,15 @@ export const useCastVote = () => {
   });
 };
 
-export const useVotedChoices = ({ proposalId }: { proposalId?: string }) => {
+export const useVotedChoices = ({ proposalId, enabled }: { proposalId?: string; enabled?: boolean }) => {
   const { account } = useWallet();
   const accountAddress = account?.address;
   const { thor } = useConnex();
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ["votedChoices", proposalId, accountAddress],
+    queryKey: ["votedChoices"],
     queryFn: async () => getVotedChoices(thor, proposalId, accountAddress),
-    enabled: !!proposalId && !!accountAddress,
+    enabled,
   });
   return {
     votedChoices: data?.votedChoices || undefined,
@@ -72,14 +72,19 @@ export const useVotedChoices = ({ proposalId }: { proposalId?: string }) => {
   };
 };
 
-export const useVotesResults = ({ proposalId, size }: { proposalId?: string; size?: number }) => {
-  const { account } = useWallet();
-  const accountAddress = account?.address;
-
+export const useVotesResults = ({
+  proposalId,
+  size,
+  enabled,
+}: {
+  proposalId?: string;
+  size?: number;
+  enabled?: boolean;
+}) => {
   const { data, isLoading, error } = useQuery({
     queryKey: ["votesResults"],
     queryFn: async () => getVotesResults(proposalId, size),
-    enabled: !!proposalId && !!accountAddress,
+    enabled,
   });
 
   return {

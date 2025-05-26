@@ -1,5 +1,5 @@
 import { useI18nContext } from "@/i18n/i18n-react";
-import { BaseOption, ProposalCardType, SingleChoiceEnum, VotingEnum } from "@/types/proposal";
+import { BaseOption, ProposalCardType, ProposalStatus, SingleChoiceEnum, VotingEnum } from "@/types/proposal";
 import { Flex, Text } from "@chakra-ui/react";
 import { useWallet } from "@vechain/vechain-kit";
 import { useCallback, useMemo, useState } from "react";
@@ -19,7 +19,12 @@ type GenericVotingOptions<T, P> = {
 export const VotingSingleChoice = ({
   proposal,
 }: GenericVotingOptions<VotingEnum.SINGLE_CHOICE, SingleChoiceEnum[]>) => {
-  const { votedChoices } = useVotedChoices({ proposalId: proposal.id });
+  const enabled = useMemo(() => {
+    const showResultsArray: ProposalStatus[] = ["approved", "executed", "voting", "rejected"];
+    return showResultsArray.includes(proposal.status);
+  }, [proposal.status]);
+
+  const { votedChoices } = useVotedChoices({ proposalId: proposal.id, enabled });
 
   const initialSelectedOption = useMemo(() => {
     return proposal.votingOptions.map((option, i) => {
@@ -27,7 +32,7 @@ export const VotingSingleChoice = ({
     });
   }, [proposal.votingOptions, votedChoices?.choices]);
 
-  const [selectedOption, setSelectedOption] = useState<SingleChoiceEnum | undefined>(initialSelectedOption[0]);
+  const [selectedOption, setSelectedOption] = useState<SingleChoiceEnum | undefined>(undefined);
 
   const votingVariant: VotingItemVariant = useMemo(() => getVotingVariant(proposal.status), [proposal.status]);
 
@@ -53,7 +58,7 @@ export const VotingSingleChoice = ({
         <VotingItem
           key={index}
           label={option}
-          isSelected={selectedOption === option}
+          isSelected={(initialSelectedOption[0] || selectedOption) === option}
           kind={VotingEnum.SINGLE_CHOICE}
           variant={votingVariant}
           choiceIndex={index + 1}
@@ -66,7 +71,12 @@ export const VotingSingleChoice = ({
 };
 
 export const VotingSingleOption = ({ proposal }: GenericVotingOptions<VotingEnum.SINGLE_OPTION, BaseOption[]>) => {
-  const { votedChoices } = useVotedChoices({ proposalId: proposal.id });
+  const enabled = useMemo(() => {
+    const showResultsArray: ProposalStatus[] = ["approved", "executed", "voting", "rejected"];
+    return showResultsArray.includes(proposal.status);
+  }, [proposal.status]);
+
+  const { votedChoices } = useVotedChoices({ proposalId: proposal.id, enabled });
 
   const initialSelectedOption = useMemo(() => {
     if (!votedChoices) return [];
@@ -78,7 +88,7 @@ export const VotingSingleOption = ({ proposal }: GenericVotingOptions<VotingEnum
       .filter(o => o !== null);
   }, [proposal.votingOptions, votedChoices]);
 
-  const [selectedOption, setSelectedOption] = useState<number | undefined>(initialSelectedOption[0]);
+  const [selectedOption, setSelectedOption] = useState<number | undefined>(undefined);
 
   const votingVariant: VotingItemVariant = useMemo(() => getVotingVariant(proposal.status), [proposal.status]);
 
@@ -104,7 +114,7 @@ export const VotingSingleOption = ({ proposal }: GenericVotingOptions<VotingEnum
         <VotingItem
           key={index}
           label={option.value}
-          isSelected={selectedOption === index}
+          isSelected={(initialSelectedOption[0] || selectedOption) === index}
           kind={VotingEnum.SINGLE_OPTION}
           variant={votingVariant}
           choiceIndex={index + 1}
@@ -119,7 +129,12 @@ export const VotingSingleOption = ({ proposal }: GenericVotingOptions<VotingEnum
 export const VotingMultipleOptions = ({
   proposal,
 }: GenericVotingOptions<VotingEnum.MULTIPLE_OPTIONS, BaseOption[]>) => {
-  const { votedChoices } = useVotedChoices({ proposalId: proposal.id });
+  const enabled = useMemo(() => {
+    const showResultsArray: ProposalStatus[] = ["approved", "executed", "voting", "rejected"];
+    return showResultsArray.includes(proposal.status);
+  }, [proposal.status]);
+
+  const { votedChoices } = useVotedChoices({ proposalId: proposal.id, enabled });
 
   const initialSelectedOption = useMemo(() => {
     if (!votedChoices) return [];
@@ -131,7 +146,7 @@ export const VotingMultipleOptions = ({
       .filter(o => o !== null);
   }, [proposal.votingOptions, votedChoices]);
 
-  const [selectedOptions, setSelectedOptions] = useState<number[]>(initialSelectedOption);
+  const [selectedOptions, setSelectedOptions] = useState<number[]>([]);
 
   const votingVariant: VotingItemVariant = useMemo(() => getVotingVariant(proposal.status), [proposal.status]);
 
@@ -172,7 +187,7 @@ export const VotingMultipleOptions = ({
         <VotingItem
           key={index}
           label={option.value}
-          isSelected={selectedOptions.includes(index)}
+          isSelected={(initialSelectedOption || selectedOptions).includes(index)}
           kind={VotingEnum.MULTIPLE_OPTIONS}
           variant={votingVariant}
           choiceIndex={index + 1}
