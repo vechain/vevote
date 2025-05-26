@@ -64,7 +64,6 @@ export const useVotedChoices = ({ proposalId }: { proposalId?: string }) => {
     queryKey: ["votedChoices", proposalId, accountAddress],
     queryFn: async () => getVotedChoices(thor, proposalId, accountAddress),
     enabled: !!proposalId && !!accountAddress,
-    refetchOnMount: true,
   });
   return {
     votedChoices: data?.votedChoices || undefined,

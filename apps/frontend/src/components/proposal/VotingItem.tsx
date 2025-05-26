@@ -55,8 +55,8 @@ export const VotingItem = ({
   const { proposal } = useProposal();
   const { hasVoted } = useHasVoted({ proposalId: proposal.id });
   const handleClick = useCallback(() => {
-    if (!account?.address || hasVoted) return;
-    if (variant === "voting") onClick?.();
+    if (!account?.address || hasVoted || variant !== "voting") return;
+    onClick?.();
   }, [account?.address, hasVoted, variant, onClick]);
   return (
     <Button

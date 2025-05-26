@@ -117,7 +117,7 @@ export const getHashProposal = async ({
     dayjs(startDate).unix(),
     dayjs(endDate).unix() - dayjs(startDate).unix(),
     encodedChoices,
-    description,
+    ethers.keccak256(ethers.toUtf8Bytes(description)),
     votingLimit || 1,
     1,
   ];
