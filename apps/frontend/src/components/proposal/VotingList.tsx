@@ -2,7 +2,7 @@ import { useI18nContext } from "@/i18n/i18n-react";
 import { BaseOption, ProposalCardType, ProposalStatus, SingleChoiceEnum, VotingEnum } from "@/types/proposal";
 import { Flex, Text } from "@chakra-ui/react";
 import { useWallet } from "@vechain/vechain-kit";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { VotingItem, VotingItemVariant } from "./VotingItem";
 import { VotingListFooter } from "./VotingListFooter";
 import { getVotingVariant } from "@/utils/voting";
@@ -55,8 +55,6 @@ export const VotingSingleChoice = ({
       console.error(e);
     }
   }, [proposal.id, proposal.votingOptions, selectedOption, sendTransaction]);
-
-  useEffect(() => console.log("initialSelectedOption", initialSelectedOption), [initialSelectedOption]);
 
   return (
     <Flex gap={8} alignItems={"start"} flexDirection={"column"} width={"100%"}>
