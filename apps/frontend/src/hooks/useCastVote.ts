@@ -1,25 +1,24 @@
 import { ProposalCardType } from "@/types/proposal";
 import { fromStringToUint256 } from "@/utils/proposals/helpers";
-import { getHasVoted, getVotedChoices, getVotesResults } from "@/utils/proposals/votedQueris";
+import { getVotedChoices, getVotesResults } from "@/utils/proposals/votedQueris";
 import { getConfig } from "@repo/config";
 import { VeVote__factory } from "@repo/contracts";
 import { useQuery } from "@tanstack/react-query";
-import { EnhancedClause, useBuildTransaction, useConnex, useWallet } from "@vechain/vechain-kit";
-import { useCallback } from "react";
+import { EnhancedClause, useBuildTransaction, useWallet } from "@vechain/vechain-kit";
+import { useCallback, useMemo } from "react";
 
 const contractAddress = getConfig(import.meta.env.VITE_APP_ENV).vevoteContractAddress;
 const contractInterface = VeVote__factory.createInterface();
 const hasVotedQueryKey = ["hasVoted"];
 
 export const useHasVoted = ({ proposalId }: { proposalId: string }) => {
-  const { account } = useWallet();
-  const { data } = useQuery({
-    queryKey: hasVotedQueryKey,
-    queryFn: async () => await getHasVoted(proposalId, account?.address),
-    enabled: !!proposalId || !!account?.address,
-  });
+  const { votedChoices } = useVotedChoices({ proposalId, enabled: true });
 
-  return { hasVoted: data || false };
+  const hasVoted = useMemo(() => {
+    if (!votedChoices || votedChoices.length === 0) return false;
+    return votedChoices[0].choices.length > 0;
+  }, [votedChoices]);
+  return { hasVoted };
 };
 
 export const useCastVote = () => {
@@ -33,9 +32,13 @@ export const useCastVote = () => {
         const createProposalClause: EnhancedClause = {
           to: contractAddress,
           value: 0,
-          data: contractInterface.encodeFunctionData("castVote", [fromStringToUint256(id), numberChoices]),
-          comment: `Cast vote`,
-          abi: JSON.parse(JSON.stringify(contractInterface.getFunction("castVote"))),
+          data: contractInterface.encodeFunctionData("castVoteWithReason", [
+            fromStringToUint256(id),
+            numberChoices,
+            "Cast vote with reason",
+          ]),
+          comment: `Cast vote with reason`,
+          abi: JSON.parse(JSON.stringify(contractInterface.getFunction("castVoteWithReason"))),
         };
 
         clauses.push(createProposalClause);
@@ -57,16 +60,14 @@ export const useCastVote = () => {
 
 export const useVotedChoices = ({ proposalId, enabled }: { proposalId?: string; enabled?: boolean }) => {
   const { account } = useWallet();
-  const accountAddress = account?.address;
-  const { thor } = useConnex();
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["votedChoices"],
-    queryFn: async () => getVotedChoices(thor, proposalId, accountAddress),
+    queryFn: async () => getVotedChoices(proposalId, account?.address),
     enabled,
   });
   return {
-    votedChoices: data?.votedChoices || undefined,
+    votedChoices: data?.results?.data,
     isLoading,
     error,
   };
@@ -88,7 +89,7 @@ export const useVotesResults = ({
   });
 
   return {
-    results: data?.results || undefined,
+    results: data?.results,
     isLoading,
     error,
   };

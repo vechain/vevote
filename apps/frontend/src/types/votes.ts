@@ -4,20 +4,36 @@ export type VotedChoices = {
   choices: string[];
 };
 
+export type VotedBaseData = {
+  blockNumber: number;
+  blockTimestamp: number;
+  proposalId: string;
+};
+
+export type Pagination = {
+  hasCount: boolean;
+  countLimit: number;
+  totalPages: number | null;
+  totalElements: number | null;
+  hasNext: boolean;
+};
+
 export type VotedResult = {
-  data: {
-    blockNumber: number;
-    blockTimestamp: number;
-    proposalId: string;
-    choice: number;
-    totalWeight: number;
-    totalVoters: number;
-  }[];
-  pagination: {
-    hasCount: boolean;
-    countLimit: number;
-    totalPages: number | null;
-    totalElements: number | null;
-    hasNext: boolean;
-  };
+  data: VotedBaseData &
+    {
+      choice: number;
+      totalWeight: number;
+      totalVoters: number;
+    }[];
+  pagination: Pagination;
+};
+
+export type VotedComments = {
+  data: VotedBaseData &
+    {
+      choices: number[];
+      weight: number;
+      reason: string;
+    }[];
+  pagination: Pagination;
 };

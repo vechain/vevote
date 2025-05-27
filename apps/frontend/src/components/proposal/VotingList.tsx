@@ -2,7 +2,7 @@ import { useI18nContext } from "@/i18n/i18n-react";
 import { BaseOption, ProposalCardType, ProposalStatus, SingleChoiceEnum, VotingEnum } from "@/types/proposal";
 import { Flex, Text } from "@chakra-ui/react";
 import { useWallet } from "@vechain/vechain-kit";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { VotingItem, VotingItemVariant } from "./VotingItem";
 import { VotingListFooter } from "./VotingListFooter";
 import { getVotingVariant } from "@/utils/voting";
@@ -27,10 +27,15 @@ export const VotingSingleChoice = ({
   const { votedChoices } = useVotedChoices({ proposalId: proposal.id, enabled });
 
   const initialSelectedOption = useMemo(() => {
-    return proposal.votingOptions.map((option, i) => {
-      if (Number(votedChoices?.choices[i] || 0) === 1) return option;
-    });
-  }, [proposal.votingOptions, votedChoices?.choices]);
+    if (!votedChoices || votedChoices.length === 0) return [];
+
+    return proposal.votingOptions
+      .map((option, i) => {
+        if (votedChoices[0].choices.includes(i + 1)) return option;
+        else return null;
+      })
+      .filter(p => p !== null);
+  }, [proposal.votingOptions, votedChoices]);
 
   const [selectedOption, setSelectedOption] = useState<SingleChoiceEnum | undefined>(undefined);
 
@@ -50,6 +55,8 @@ export const VotingSingleChoice = ({
       console.error(e);
     }
   }, [proposal.id, proposal.votingOptions, selectedOption, sendTransaction]);
+
+  useEffect(() => console.log("initialSelectedOption", initialSelectedOption), [initialSelectedOption]);
 
   return (
     <Flex gap={8} alignItems={"start"} flexDirection={"column"} width={"100%"}>
@@ -79,10 +86,10 @@ export const VotingSingleOption = ({ proposal }: GenericVotingOptions<VotingEnum
   const { votedChoices } = useVotedChoices({ proposalId: proposal.id, enabled });
 
   const initialSelectedOption = useMemo(() => {
-    if (!votedChoices) return [];
+    if (!votedChoices || votedChoices.length === 0) return [];
     return proposal.votingOptions
       .map((_, i) => {
-        if (Number(votedChoices.choices[i] || 0) === 1) return i;
+        if (votedChoices[0].choices.includes(i + 1)) return i;
         else return null;
       })
       .filter(o => o !== null);
@@ -137,10 +144,10 @@ export const VotingMultipleOptions = ({
   const { votedChoices } = useVotedChoices({ proposalId: proposal.id, enabled });
 
   const initialSelectedOption = useMemo(() => {
-    if (!votedChoices) return [];
+    if (!votedChoices || votedChoices.length === 0) return [];
     return proposal.votingOptions
       .map((_, i) => {
-        if (Number(votedChoices.choices[i] || 0) === 1) return i;
+        if (votedChoices[0].choices.includes(i + 1)) return i;
         else return null;
       })
       .filter(o => o !== null);
