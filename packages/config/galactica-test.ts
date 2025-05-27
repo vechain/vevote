@@ -37,6 +37,6 @@ const config: AppConfig = {
       transactions: [],
     },
   },
-  indexerUrl: "https://prod-blue-test-api-veworld-alb-337832153.eu-west-1.elb.amazonaws.com/api/v1",
+  indexerUrl: "https://indexer.testnet.vechain.org/api/v1",
 };
 export default config;

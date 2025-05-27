@@ -40,6 +40,6 @@ const config: AppConfig = {
   },
   ipfsPinningService: "https://api.gateway-proxy.vechain.org/api/v1/pinning/pinFileToIPFS",
   ipfsFetchingService: "https://api.gateway-proxy.vechain.org/ipfs",
-  indexerUrl: "https://prod-blue-test-api-veworld-alb-337832153.eu-west-1.elb.amazonaws.com/api/v1",
+  indexerUrl: "https://indexer.testnet.vechain.org/api/v1",
 };
 export default config;
