@@ -1,36 +1,46 @@
-import { HardhatEthersSigner } from "@nomicfoundation/hardhat-ethers/signers"
-import { ethers } from "hardhat"
-import { NodeManagement, TokenAuction, VeVote } from "../../typechain-types"
-import { createLocalConfig } from "@repo/config/contracts/envs/local"
-import { deployProxy } from "../../scripts/helpers"
-import { deployLibraries } from "../../scripts/helpers/deployLibraries"
-import { createNodeHolder } from "./xnode"
+import { HardhatEthersSigner } from "@nomicfoundation/hardhat-ethers/signers";
+import { ethers } from "hardhat";
+import { NodeManagement, StargateDelegation, StargateNFT, TokenAuction, VeVote } from "../../typechain-types";
+import { createLocalConfig } from "@repo/config/contracts/envs/local";
+import {
+  createNodeHolder,
+  deployAndInitializeLatest,
+  deployProxy,
+  deployStargateNFTLibraries,
+  deployUpgradeableWithoutInitialization,
+  initializeProxy,
+  initialTokenLevels,
+  TokenLevelId,
+  vthoRewardPerBlockPerLevel,
+} from "../../scripts/helpers";
+import { deployLibraries } from "../../scripts/helpers/deployLibraries";
 
 interface DeployInstance {
-  admin: HardhatEthersSigner
-  whitelistedAccount: HardhatEthersSigner
-  otherAccount: HardhatEthersSigner
-  strengthHolder: HardhatEthersSigner
-  thunderHolder: HardhatEthersSigner
-  mjolnirHolder: HardhatEthersSigner
-  veThorXHolder: HardhatEthersSigner
-  strengthXHolder: HardhatEthersSigner
-  thunderXHolder: HardhatEthersSigner
-  mjolnirXHolder: HardhatEthersSigner
-  flashHolder: HardhatEthersSigner
-  lighteningHolder: HardhatEthersSigner
-  dawnHolder: HardhatEthersSigner
-  validatorHolder: HardhatEthersSigner
-  otherAccounts: HardhatEthersSigner[]
-  vevote: VeVote
-  nodeManagement: NodeManagement
-  vechainNodesMock: TokenAuction
+  admin: HardhatEthersSigner;
+  whitelistedAccount: HardhatEthersSigner;
+  otherAccount: HardhatEthersSigner;
+  strengthHolder: HardhatEthersSigner;
+  thunderHolder: HardhatEthersSigner;
+  mjolnirHolder: HardhatEthersSigner;
+  veThorXHolder: HardhatEthersSigner;
+  strengthXHolder: HardhatEthersSigner;
+  thunderXHolder: HardhatEthersSigner;
+  mjolnirXHolder: HardhatEthersSigner;
+  flashHolder: HardhatEthersSigner;
+  lighteningHolder: HardhatEthersSigner;
+  dawnHolder: HardhatEthersSigner;
+  validatorHolder: HardhatEthersSigner;
+  otherAccounts: HardhatEthersSigner[];
+  vevote: VeVote;
+  nodeManagement: NodeManagement;
+  vechainNodesMock: TokenAuction;
+  stargateNFT: StargateNFT
 }
 
-let cachedDeployInstance: DeployInstance | undefined = undefined
+let cachedDeployInstance: DeployInstance | undefined = undefined;
 export const getOrDeployContractInstances = async ({ forceDeploy = false, config = createLocalConfig() }) => {
   if (!forceDeploy && cachedDeployInstance !== undefined) {
-    return cachedDeployInstance
+    return cachedDeployInstance;
   }
 
   // Contracts are deployed using the first signer/account by default
@@ -50,35 +60,127 @@ export const getOrDeployContractInstances = async ({ forceDeploy = false, config
     dawnHolder,
     validatorHolder,
     ...otherAccounts
-  ] = await ethers.getSigners()
+  ] = await ethers.getSigners();
 
   // ---------------------- Deploy Libraries ----------------------
   const { veVoteConfigurator, veVoteProposalLogic, veVoteQuoromLogic, veVoteStateLogic, veVoteVoteLogic } =
-    await deployLibraries()
+    await deployLibraries();
 
   // ---------------------- Deploy Mocks ----------------------
 
-  // deploy Mocks
-  const TokenAuctionLock = await ethers.getContractFactory("TokenAuction")
-  const vechainNodesMock = await TokenAuctionLock.deploy()
-  await vechainNodesMock.waitForDeployment()
+  const vthoAddress = "0x0000000000000000000000000000456E65726779";
+  
+  const TokenAuctionLock = await ethers.getContractFactory("TokenAuction");
+  const vechainNodesMock = await TokenAuctionLock.deploy();
+  await vechainNodesMock.waitForDeployment();
 
-  const ClockAuctionLock = await ethers.getContractFactory("ClockAuction")
-  const clockAuctionContract = await ClockAuctionLock.deploy(
-    await vechainNodesMock.getAddress(),
-    await admin.getAddress(),
-  )
+  const ClockAuctionLock = await ethers.getContractFactory("ClockAuction");
+  const clockAuctionContract = await ClockAuctionLock.deploy(await vechainNodesMock.getAddress(), admin);
 
-  await vechainNodesMock.setSaleAuctionAddress(await clockAuctionContract.getAddress())
+  await vechainNodesMock.setSaleAuctionAddress(await clockAuctionContract.getAddress());
 
-  await vechainNodesMock.addOperator(await admin.getAddress())
+  await vechainNodesMock.addOperator(admin.address);
+  const vechainNodesMockAddress = await vechainNodesMock.getAddress();
 
-  const nodeManagement = (await deployProxy(
-    "NodeManagement",
-    [await vechainNodesMock.getAddress(), admin.address, admin.address],
-    undefined,
+  const {
+    StargateNFTClockLib,
+    StargateNFTSettingsLib,
+    StargateNFTTokenLib,
+    StargateNFTMintingLib,
+    StargateNFTVetGeneratedVthoLib,
+    StargateNFTLevelsLib,
+  } = await deployStargateNFTLibraries();
+
+  const stargateNFTProxyAddress = await deployUpgradeableWithoutInitialization(
+    "StargateNFT",
+    {
+      Clock: await StargateNFTClockLib.getAddress(),
+      MintingLogic: await StargateNFTMintingLib.getAddress(),
+      Settings: await StargateNFTSettingsLib.getAddress(),
+      Token: await StargateNFTTokenLib.getAddress(),
+      VetGeneratedVtho: await StargateNFTVetGeneratedVthoLib.getAddress(),
+      Levels: await StargateNFTLevelsLib.getAddress(),
+    },
     false,
-  )) as NodeManagement
+  );
+
+  const stargateDelegationProxyAddress = await deployUpgradeableWithoutInitialization("StargateDelegation", {}, false);
+
+  const stargateNFT = (await initializeProxy(
+    stargateNFTProxyAddress,
+    "StargateNFT",
+    [
+      {
+        tokenCollectionName: "VeChain Node Token",
+        tokenCollectionSymbol: "VNT",
+        baseTokenURI: "ipfs://todo/metadata/",
+        admin: admin.address,
+        upgrader: admin.address,
+        pauser: admin.address,
+        levelOperator: admin.address,
+        legacyNodes: vechainNodesMockAddress,
+        legacyLastTokenId: admin.address,
+        levelsAndSupplies: initialTokenLevels,
+        stargateDelegation: stargateDelegationProxyAddress,
+        vthoToken: vthoAddress,
+      },
+    ],
+    {
+      Clock: await StargateNFTClockLib.getAddress(),
+      MintingLogic: await StargateNFTMintingLib.getAddress(),
+      Settings: await StargateNFTSettingsLib.getAddress(),
+      Token: await StargateNFTTokenLib.getAddress(),
+      VetGeneratedVtho: await StargateNFTVetGeneratedVthoLib.getAddress(),
+      Levels: await StargateNFTLevelsLib.getAddress(),
+    },
+  )) as StargateNFT;
+
+  (await initializeProxy(
+    stargateDelegationProxyAddress,
+    "StargateDelegation",
+    [
+      {
+        upgrader: config.CONTRACTS_ADMIN_ADDRESS,
+        admin: config.CONTRACTS_ADMIN_ADDRESS,
+        stargateNFT: await stargateNFT.getAddress(),
+        vthoToken: vthoAddress,
+        vthoRewardPerBlock: vthoRewardPerBlockPerLevel,
+        delegationPeriod: 10, // 10 blocks"
+        operator: "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+      },
+    ],
+    {},
+  )) as unknown as StargateDelegation;
+
+  const nodeManagement = (await deployAndInitializeLatest(
+    "NodeManagement",
+    [
+      {
+        name: "initialize",
+        args: [vechainNodesMockAddress, admin.address, admin.address],
+      },
+      {
+        name: "initializeV3",
+        args: [await stargateNFT.getAddress()],
+      },
+    ],
+    {},
+    false,
+  )) as NodeManagement;
+
+  // Create mock node holders
+
+  // ---------------------- Create Node Holders ----------------------
+  await createNodeHolder(TokenLevelId.Strength, admin, strengthHolder, stargateNFT);
+  await createNodeHolder(TokenLevelId.Thunder, admin, thunderHolder, stargateNFT);
+  await createNodeHolder(TokenLevelId.Mjolnir, admin, mjolnirHolder, stargateNFT);
+  await createNodeHolder(TokenLevelId.VeThorX, admin, veThorXHolder, stargateNFT);
+  await createNodeHolder(TokenLevelId.StrengthX, admin, strengthXHolder, stargateNFT);
+  await createNodeHolder(TokenLevelId.ThunderX, admin, thunderXHolder, stargateNFT);
+  await createNodeHolder(TokenLevelId.MjolnirX, admin, mjolnirXHolder, stargateNFT);
+  await createNodeHolder(TokenLevelId.Dawn, admin, dawnHolder, stargateNFT);
+  await createNodeHolder(TokenLevelId.Lightning, admin, lighteningHolder, stargateNFT);
+  await createNodeHolder(TokenLevelId.Flash, admin, flashHolder, stargateNFT);
 
   // ---------------------- Deploy Contracts ----------------------
   const vevote = (await deployProxy(
@@ -91,7 +193,7 @@ export const getOrDeployContractInstances = async ({ forceDeploy = false, config
         initialMinVotingDuration: config.INITIAL_MIN_VOTING_DURATION,
         initialMaxChoices: config.INITIAL_MAX_CHOICES,
         nodeManagement: await nodeManagement.getAddress(),
-        vechainNodesContract: await vechainNodesMock.getAddress(),
+        stargateNFT: await stargateNFT.getAddress(),
         baseLevelNode: config.BASE_LEVEL_NODE,
       },
       {
@@ -111,21 +213,7 @@ export const getOrDeployContractInstances = async ({ forceDeploy = false, config
       VeVoteConfigurator: await veVoteConfigurator.getAddress(),
     },
     false,
-  )) as VeVote
-
-  // ---------------------- Create Node Holders ----------------------
-
-  await createNodeHolder(1, strengthHolder, vechainNodesMock)
-  await createNodeHolder(2, thunderHolder, vechainNodesMock)
-  await createNodeHolder(3, mjolnirHolder, vechainNodesMock)
-  await createNodeHolder(4, veThorXHolder, vechainNodesMock)
-  await createNodeHolder(5, strengthXHolder, vechainNodesMock)
-  await createNodeHolder(6, thunderXHolder, vechainNodesMock)
-  await createNodeHolder(7, mjolnirXHolder, vechainNodesMock)
-  await createNodeHolder(8, flashHolder, vechainNodesMock)
-  await createNodeHolder(9, lighteningHolder, vechainNodesMock)
-  await createNodeHolder(10, dawnHolder, vechainNodesMock)
-  await createNodeHolder(11, validatorHolder, vechainNodesMock)
+  )) as VeVote;
 
   cachedDeployInstance = {
     vevote,
@@ -146,6 +234,7 @@ export const getOrDeployContractInstances = async ({ forceDeploy = false, config
     otherAccount,
     otherAccounts,
     vechainNodesMock,
-  }
-  return cachedDeployInstance
-}
+    stargateNFT
+  };
+  return cachedDeployInstance;
+};
