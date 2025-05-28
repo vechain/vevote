@@ -226,6 +226,20 @@ library Levels {
     return _getCirculatingSupplyAtBlock($, _levelId, _blockNumber);
   }
 
+  /// @notice Returns the circulating supply for all levels at a certain block
+  /// @param _blockNumber The block number to get the supply at
+  /// @return circulatingSupplies An array of circulating supply values for all levels, sorted by level id
+  function getLevelsCirculatingSuppliesAtBlock(
+    DataTypes.StargateNFTStorage storage $,
+    uint48 _blockNumber
+  ) external view returns (uint208[] memory) {
+    uint208[] memory circulatingSupplies = new uint208[]($.MAX_LEVEL_ID);
+    for (uint8 i; i < $.MAX_LEVEL_ID; i++) {
+      circulatingSupplies[i] = _getCirculatingSupplyAtBlock($, i + 1, _blockNumber);
+    }
+    return circulatingSupplies;
+  }
+
   // ------------------ Internal functions ------------------ //
 
   /// @dev This is a helper function to validate the level details

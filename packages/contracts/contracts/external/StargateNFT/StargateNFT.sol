@@ -467,6 +467,15 @@ contract StargateNFT is
     return Levels.getCirculatingSupplyAtBlock($, _levelId, _blockNumber);
   }
 
+  /// @notice Returns the circulating supply for all levels at a certain block
+  /// @param _blockNumber The block number to get the supply at
+  /// @return circulatingSupplies An array of circulating supply values for all levels, sorted by level id
+  function getLevelsCirculatingSuppliesAtBlock(uint48 _blockNumber) external view returns (uint208[] memory) {
+    DataTypes.StargateNFTStorage storage $ = _getStargateNFTStorage();
+
+    return Levels.getLevelsCirculatingSuppliesAtBlock($, _blockNumber);
+  }
+
   /// @notice Returns a token for a given token ID
   /// @param _tokenId The ID of the token to get
   /// @return token The token
