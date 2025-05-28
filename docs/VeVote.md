@@ -15,7 +15,7 @@ You’re eligible to vote if:
 - ✅ You **own** a VeChain Node
 - ✅ A Node has been **delegated** to your wallet
 
-Supported Node types include **Validator**, **MjolnirX**, **ThunderX**, **StrengthX**, **VeThorX**, **Mjolnir**, **Thunder**, **Strength**, **Flash**, **Lightning**,  and **Dawn**.
+Supported Node types include **Validator**, **MjolnirX**, **ThunderX**, **StrengthX**, **VeThorX**, **Mjolnir**, **Thunder**, **Strength**, **Flash**, **Lightning**, and **Dawn**.
 
 > 🔐 **Delegation**: Node holders can assign their voting rights to another wallet—enabling trusted representatives to participate in governance.
 
@@ -31,17 +31,18 @@ Each proposal defines:
 - A **minimum** and **maximum** number of options voters can select
 
 Your total voting power is **evenly split** among selected choices:
+
 ```
 Power per Choice = Voting Units ÷ Choices Selected
 ```
 
 Example: ThunderX Node (840 units), selecting 2 options:
+
 ```
 Each option receives 420 units
 ```
 
 ---
-
 
 ## 💪 How Node Type Affects Voting Power
 
@@ -61,6 +62,7 @@ Base Voting Power = Your Node’s VET ÷ 10,000
 ```
 
 Example: Thunder X (5,600,000 VET)
+
 ```
 5,600,000 ÷ 10,000 = 560 base units
 ```
@@ -68,6 +70,7 @@ Example: Thunder X (5,600,000 VET)
 ### 🔁 Step 2: Apply the Multiplier
 
 Each Node tier has a multiplier. Thunder X uses **1.5x**:
+
 ```
 Final Voting Power = Base Units × Multiplier
                    = 560 × 1.5
@@ -77,6 +80,7 @@ Final Voting Power = Base Units × Multiplier
 > 🧑‍💻 Dev Note: In the contract, multipliers are stored as whole numbers scaled by 100 (e.g. 150 = 1.5).
 
 ### ➕ Holding Multiple Nodes
+
 If you hold—or are delegated—more than one Node, your **total voting power** is the sum of all their voting units. For example:
 
 - Thunder X = 840 units
@@ -84,29 +88,27 @@ If you hold—or are delegated—more than one Node, your **total voting power**
 
 🧮 Total = **1,080 voting units**
 
-
 > 📌 When you vote, your combined power is automatically calculated from all eligible Nodes—both owned and delegated—based on the snapshot. You only vote once, and VeVote determines which Nodes are available to you and applies their combined voting power behind the scenes.
 
 ### 📊 Voting Power Table
 
-| Node Type     | VET Required | Multiplier | Voting Units |
-|---------------|--------------|------------|---------------|
-| Validator     | 25,000,000   | 2.0×       | 5,000         |
-| Mjolnir X     | 15,600,000   | 1.5×       | 2,340         |
-| Thunder X     | 5,600,000    | 1.5×       | 840           |
-| Strength X    | 1,600,000    | 1.5×       | 240           |
-| VeThor X      | 600,000      | 1.5×       | 90            |
-| Mjolnir       | 15,000,000   | 1.0×       | 1,500         |
-| Thunder       | 5,000,000    | 1.0×       | 500           |
-| Strength      | 1,000,000    | 1.0×       | 100           |
-| Flash*        | 200,000      | 1.0×       | 20            |
-| Lightning*    | 50,000       | 1.0×       | 5             |
-| Dawn*         | 10,000       | 1.0×       | 1             |
-
+| Node Type   | VET Required | Multiplier | Voting Units |
+| ----------- | ------------ | ---------- | ------------ |
+| Validator   | 25,000,000   | 2.0×       | 5,000        |
+| Mjolnir X   | 15,600,000   | 1.5×       | 2,340        |
+| Thunder X   | 5,600,000    | 1.5×       | 840          |
+| Strength X  | 1,600,000    | 1.5×       | 240          |
+| VeThor X    | 600,000      | 1.5×       | 90           |
+| Mjolnir     | 15,000,000   | 1.0×       | 1,500        |
+| Thunder     | 5,000,000    | 1.0×       | 500          |
+| Strength    | 1,000,000    | 1.0×       | 100          |
+| Flash\*     | 200,000      | 1.0×       | 20           |
+| Lightning\* | 50,000       | 1.0×       | 5            |
+| Dawn\*      | 10,000       | 1.0×       | 1            |
 
 ### 🕒 When Is Voting Power Counted?
 
-A **snapshot** is taken at the **start** of every proposal’s voting period, that means that the voting power you will have at the exact `startTime`, will be frozen regardless of when you will cast your vote. 
+A **snapshot** is taken at the **start** of every proposal’s voting period, that means that the voting power you will have at the exact `startTime`, will be frozen regardless of when you will cast your vote.
 Your voting power is locked in based on:
 
 - All Nodes you own directly
@@ -115,37 +117,45 @@ Your voting power is locked in based on:
 > 🔒 Changes after voting starts (buying/selling/delegating Nodes) **don’t affect** that proposal.
 
 ---
+
 ## 🔄 Proposal Lifecycle
 
 Each proposal moves through the following stages:
 
 ### 1. **Creation**
+
 - Submitted by a user with the `WHITELISTED_ROLE`
 - Includes: title, IPFS description, list of choices, vote config
 
 ### 2. **Pending**
+
 - Proposal is registered but not live yet
 - Delayed start gives time for voter awareness
 
 ### 3. **Active**
+
 - Voting begins at the specified `startTime`
 - Snapshot taken for voter eligibility and power
 - Each Node can vote once
 
 ### 4. **Closed**
+
 - Voting ends after `voteDuration`
 - Results become locked
 
 ### 5. **Evaluation**
+
 - Results tallied
 - If quorum is met and at least one choice has support → **SUCCEEDED**
 - Otherwise → **DEFEATED**
 
 ### 6. **Execution (Off-chain)**
+
 - Passed proposals may be manually implemented by VeChain Foundation or others
 - Selected accounts can mark the proposal as Executed after the decision has become effective
 
 ### 7. **Cancellation**
+
 - Creator or other users with the `WHITELISTED_ROLE` may cancel proposals before they start
 - Admins may cancel proposals before they complete
 
@@ -171,31 +181,30 @@ To suggest a proposal:
 
 👉 Open a thread on [Discourse](https://vechain.discourse.group/latest).
 You can use the same channel to get some help to:
+
 - Review your proposal
-- Get some endorsement 
+- Get some endorsement
 - Format it correctly
 - Funnel it to a whitelisted member (`WHITELISTED_ROLE`)
 
-Proposal Creation Format: 
+Proposal Creation Format:
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `description` | `string` | IPFS CID for full Markdown content |
-| `startTime` | `uint256` | Timestamp when voting starts (after delay) |
-| `voteDuration` | `uint256` | Duration in seconds |
-| `choices` | `bytes32[]` | List of voting options |
-| `maxSelection` | `uint8` | Max choices a voter can select |
-| `minSelection` | `uint8` | Min choices a voter must select |
-
+| Field          | Type        | Description                                |
+| -------------- | ----------- | ------------------------------------------ |
+| `description`  | `string`    | IPFS CID for full Markdown content         |
+| `startTime`    | `uint256`   | Timestamp when voting starts (after delay) |
+| `voteDuration` | `uint256`   | Duration in seconds                        |
+| `choices`      | `bytes32[]` | List of voting options                     |
+| `maxSelection` | `uint8`     | Max choices a voter can select             |
+| `minSelection` | `uint8`     | Min choices a voter must select            |
 
 ## 📍 Summary
 
 VeVote enables:
+
 - On-chain governance with off-chain execution
 - Node-weighted multi-choice voting
 - Configurable proposal rules and quorum
 - Upgradeable and modular smart contract architecture
 
 It’s a flexible governance tool purpose-built for the VeChain ecosystem.
-
-
