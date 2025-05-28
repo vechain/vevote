@@ -27,15 +27,13 @@ export const VotingSingleChoice = ({
   const { votedChoices } = useVotedChoices({ proposalId: proposal.id, enabled });
 
   const initialSelectedOption = useMemo(() => {
-    if (!votedChoices || votedChoices.length === 0) return [];
-
     return proposal.votingOptions
       .map((option, i) => {
-        if (votedChoices[0].choices.includes(i + 1)) return option;
+        if (Number(votedChoices?.choices[i] || 0) === 1) return option;
         else return null;
       })
       .filter(p => p !== null);
-  }, [proposal.votingOptions, votedChoices]);
+  }, [proposal.votingOptions, votedChoices?.choices]);
 
   const [selectedOption, setSelectedOption] = useState<SingleChoiceEnum | undefined>(undefined);
 
@@ -84,10 +82,10 @@ export const VotingSingleOption = ({ proposal }: GenericVotingOptions<VotingEnum
   const { votedChoices } = useVotedChoices({ proposalId: proposal.id, enabled });
 
   const initialSelectedOption = useMemo(() => {
-    if (!votedChoices || votedChoices.length === 0) return [];
+    if (!votedChoices) return [];
     return proposal.votingOptions
       .map((_, i) => {
-        if (votedChoices[0].choices.includes(i + 1)) return i;
+        if (Number(votedChoices.choices[i] || 0) === 1) return i;
         else return null;
       })
       .filter(o => o !== null);
@@ -142,10 +140,10 @@ export const VotingMultipleOptions = ({
   const { votedChoices } = useVotedChoices({ proposalId: proposal.id, enabled });
 
   const initialSelectedOption = useMemo(() => {
-    if (!votedChoices || votedChoices.length === 0) return [];
+    if (!votedChoices) return [];
     return proposal.votingOptions
       .map((_, i) => {
-        if (votedChoices[0].choices.includes(i + 1)) return i;
+        if (Number(votedChoices.choices[i] || 0) === 1) return i;
         else return null;
       })
       .filter(o => o !== null);

@@ -19,6 +19,7 @@ import { Pagination } from "@/components/ui/Pagination";
 import { ProposalsHeader } from "@/components/navbar/Header";
 import { useCreateProposal } from "../CreateProposal/CreateProposalProvider";
 import { useProposalsEvents } from "@/hooks/useProposalsEvents";
+import { useHasVoted } from "@/hooks/useCastVote";
 
 const ITEMS_PER_PAGE = 6;
 
@@ -140,9 +141,8 @@ const ProposalCard = ({ status, title, endDate, startDate, id }: ProposalCardTyp
     }
   }, [status]);
 
-  const isVoted = useMemo(() => {
-    return ["approved", "executed"].includes(status);
-  }, [status]);
+  const { hasVoted } = useHasVoted({ proposalId: id !== "draft" ? id : undefined });
+
   return (
     <Flex
       width={"100%"}
@@ -158,7 +158,7 @@ const ProposalCard = ({ status, title, endDate, startDate, id }: ProposalCardTyp
       <Flex width={"100%"} direction={"column"} gap={6}>
         <Flex gap={4} alignItems={"center"}>
           <IconBadge variant={variant} />
-          {isVoted && <Status text={"Voted"} marginLeft={"auto"} />}
+          {hasVoted && <Status text={"Voted"} marginLeft={"auto"} />}
         </Flex>
         <Flex gap={4} alignItems={"start"} direction={"column"}>
           <Text overflow={"hidden"} fontSize={20} fontWeight={600} color={"gray.600"}>
