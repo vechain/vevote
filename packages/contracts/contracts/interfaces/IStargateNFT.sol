@@ -5,7 +5,7 @@ pragma solidity 0.8.20;
 
 import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import {IERC721Enumerable} from "@openzeppelin/contracts/token/ERC721/extensions/IERC721Enumerable.sol";
-import {DataTypes} from "../mocks/StargateNFT/libraries/DataTypes.sol";
+import {DataTypes} from "../external/StargateNFT/libraries/DataTypes.sol";
                                                   
 interface IStargateNFT is IERC721, IERC721Enumerable {
     // ------------------ Events ------------------ //
@@ -133,6 +133,12 @@ interface IStargateNFT is IERC721, IERC721Enumerable {
     function getTokenLevel(uint256 _tokenId) external view returns (uint8);
 
     function idsOwnedBy(address _owner) external view returns (uint256[] memory);
+
+    function getToken(uint256 _tokenId) external view returns (DataTypes.Token memory);
+
+    function tokensOwnedBy(address _owner) external view returns (DataTypes.Token[] memory);
+
+    function getLevelsCirculatingSuppliesAtBlock(uint48 _blockNumber) external view returns (uint208[] memory);
 
     // ------------------ VTHO Rewards Functions ------------------ //
 
