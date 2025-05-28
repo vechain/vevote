@@ -14,6 +14,10 @@ export type Translations = RootTranslation
 
 type RootTranslation = {
 	/**
+	 * L​e​f​t
+	 */
+	left: string
+	/**
 	 * H​o​m​e​p​a​g​e
 	 */
 	homepage: string
@@ -848,6 +852,10 @@ type RootTranslation = {
 }
 
 export type TranslationFunctions = {
+	/**
+	 * Left
+	 */
+	left: () => LocalizedString
 	/**
 	 * Homepage
 	 */
