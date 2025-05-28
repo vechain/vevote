@@ -20,6 +20,7 @@ import { useCreateProposal } from "../CreateProposal/CreateProposalProvider";
 import { sanitizeImageUrl } from "@/utils/proposals/helpers";
 import { useProposalEvents } from "@/hooks/useProposalEvent";
 import { ProposalCardType } from "@/types/proposal";
+import { useHasVoted } from "@/hooks/useCastVote";
 
 export const Proposal = () => {
   const { LL } = useI18nContext();
@@ -91,13 +92,14 @@ export const Proposal = () => {
 const isAdmin = true;
 const isExecutor = false;
 const isVoter = false;
-const hasVotes = false;
 
 const ProposalNavbarActions = ({ proposal }: { proposal: ProposalCardType | undefined }) => {
   const { LL } = useI18nContext();
   const onVote = () => {
     console.log("Vote");
   };
+
+  const { hasVoted } = useHasVoted({ proposalId: proposal?.id || "" });
 
   return (
     <Flex alignItems={"center"} gap={2} marginLeft={"auto"}>
@@ -110,7 +112,7 @@ const ProposalNavbarActions = ({ proposal }: { proposal: ProposalCardType | unde
       )}
 
       {isVoter &&
-        (hasVotes ? (
+        (hasVoted ? (
           <Button variant={"feedback"}>
             {LL.voted()}
             <FiCheckSquare />

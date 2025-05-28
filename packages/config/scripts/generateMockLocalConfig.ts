@@ -50,7 +50,8 @@ export const generateMockLocalConfig = () => {
         "isTrunk": true,
         "transactions": []
       }
-    }
+    },
+    indexerUrl: "https://indexer.testnet.vechain.org/api/v1"
     }
     export default config;
     `

@@ -34,13 +34,12 @@ export const buildFilterCriteria = ({
   events: abi.Event[];
   proposalId?: string;
 }) => {
-  const proposalIdBytes = proposalId ? `0x${BigInt(proposalId).toString(16).padStart(64, "0")}` : undefined;
-
   return events.map(ev => {
+    const topics = ev.encode({ proposalId });
     return {
       address: contractAddress,
       topic0: ev.signature,
-      topic1: proposalIdBytes,
+      topic1: topics[1] ?? undefined,
     };
   });
 };

@@ -1,4 +1,4 @@
-import { AppConfig } from "."
+import { AppConfig } from ".";
 const config: AppConfig = {
   environment: "mainnet",
   basePath: "https://governance.vebetterdao.org",
@@ -40,5 +40,6 @@ const config: AppConfig = {
   },
   ipfsPinningService: "https://api.gateway-proxy.vechain.org/api/v1/pinning/pinFileToIPFS",
   ipfsFetchingService: "https://api.gateway-proxy.vechain.org/ipfs",
-}
-export default config
+  indexerUrl: "https://indexer.testnet.vechain.org/api/v1",
+};
+export default config;
