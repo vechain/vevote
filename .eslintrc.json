@@ -1,20 +1,23 @@
 {
-  "extends": "next",
-  "parser": "@typescript-eslint/parser",
+  "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended", "prettier"],
   "plugins": ["@typescript-eslint"],
-  "rules": {
-    "react/display-name": "off",
-    "import/no-anonymous-default-export": "off",
-    "react/no-children-prop": "warn",
-    "react/no-unescaped-entities": "warn",
-    "react/jsx-no-literals": "error",
-    "@typescript-eslint/no-unused-vars": [
-      "error",
-      {
-        "args": "all",
-        "argsIgnorePattern": "^_",
-        "destructuredArrayIgnorePattern": "^_"
+  "parser": "@typescript-eslint/parser",
+  "overrides": [
+    {
+      "files": ["*.tsx", "*.jsx"],
+      "extends": ["plugin:react/recommended"],
+      "plugins": ["react"],
+      "rules": {
+        "react/display-name": "off",
+        "react/no-children-prop": "warn",
+        "react/no-unescaped-entities": "warn",
+        "react/jsx-no-literals": "error"
+      },
+      "settings": {
+        "react": {
+          "version": "detect"
+        }
       }
-    ]
-  }
+    }
+  ]
 }
