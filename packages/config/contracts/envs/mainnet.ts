@@ -10,6 +10,6 @@ export function createMainnetConfig() {
     INITIAL_MAX_VOTING_DURATION: 2592000, // 30 days
     INITIAL_MIN_VOTING_DURATION: 604800, // 1 week
     INITIAL_MAX_CHOICES: 32, // TODO: Update this value
-    BASE_LEVEL_NODE: 1, // TODO: Update this value when new Node Staking contracts are out on mainnet
+    BASE_LEVEL_NODE: 8, // Dawn - TODO: review when stargate is live
   });
 }

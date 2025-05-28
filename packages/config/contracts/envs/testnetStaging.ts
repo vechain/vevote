@@ -10,6 +10,6 @@ export function createTestnetStagingConfig() {
     INITIAL_MAX_VOTING_DURATION: 3600, // 1 hour
     INITIAL_MIN_VOTING_DURATION: 60, // 1 minute
     INITIAL_MAX_CHOICES: 32, // TODO: Update this value
-    BASE_LEVEL_NODE: 10, // TODO: Update this value when new Node Staking contracts are out on mainnet
+    BASE_LEVEL_NODE: 8, // Dawn
   });
 }

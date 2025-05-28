@@ -10,6 +10,6 @@ export function createTestnetConfig() {
     INITIAL_MAX_VOTING_DURATION: 2592000, // 30 days
     INITIAL_MIN_VOTING_DURATION: 60, // 1 minute
     INITIAL_MAX_CHOICES: 32,
-    BASE_LEVEL_NODE: 10,
+    BASE_LEVEL_NODE: 8, // Dawn
   });
 }
