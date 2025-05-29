@@ -6,17 +6,15 @@ import { VeVoteStorageTypes } from "./VeVoteStorageTypes.sol";
 import { VeVoteClockLogic } from "./VeVoteClockLogic.sol";
 import { VeVoteStateLogic } from "./VeVoteStateLogic.sol";
 import { VeVoteTypes } from "./VeVoteTypes.sol";
-import { VechainNodesDataTypes } from "../../libraries/VechainNodesDataTypes.sol";
-import { INodeManagement } from "../../interfaces/INodeManagement.sol";
+import { VeVoteConstants } from "./VeVoteConstants.sol";
+import { VeVoteConfigurator } from "./VeVoteConfigurator.sol";
+import { DataTypes } from "../../external/StargateNFT/libraries/DataTypes.sol";
 import { Math } from "@openzeppelin/contracts/utils/math/Math.sol";
 
 /// @title VeVoteVoteLogic
 /// @notice Voting logic for VeVote governance system including casting votes, vote weight calculation, and result tallying.
 /// @dev This library handles how users interact with proposals through voting and ensures constraints are respected.
 library VeVoteVoteLogic {
-  // ------------------------------- Constants -------------------------------
-  uint256 private constant VOTING_MULTIPLER_SCALE = 100;
-
   // ------------------------------- Errors -------------------------------
   /**
    * @dev Thrown when the proposal is not active.
@@ -42,11 +40,6 @@ library VeVoteVoteLogic {
    * @dev Thrown when the voting power calculation overflows.
    */
   error VotePowerOverflow();
-
-  /**
-   * @dev Thrown when the voting weight denominator is zero.
-   */
-  error VoteWeightDenominatorZero();
 
   // ------------------------------- Events -------------------------------
   /**
@@ -88,31 +81,31 @@ library VeVoteVoteLogic {
       revert AlreadyVoted();
     }
 
-    // Validate selected choices
-    uint8 selectedChoices = _checkChoices(proposal, choices);
+    // Validate selected choices and get number selected
+    uint8 selectedChoicesCount = _checkChoices(proposal, choices);
 
     // Calculate vote weight
-    uint256 weight = _calculateVoteWeight(self, voter, proposal.voteStart);
+    uint256 weight = _calculateVoteWeight(self, voter, proposal.voteStart, proposalId);
     if (weight == 0) {
       revert VoterNotEligible();
     }
 
     // Calculate the normalised vote weight
-    uint256 normalisedVoteWeight = weight / _voteWeightDenominator(self, proposal.voteStart);
+    uint256 normalisedVoteWeight = weight / VeVoteConfigurator.getMinStakedAmountAtTimepoint(self, proposal.voteStart);
 
     // Store vote
     self.votes[proposalId][voter] = choices;
     self.totalVotes[proposalId] += normalisedVoteWeight;
 
-    unchecked {
-      uint256 divisionResult = weight / selectedChoices; // Store division result in memory
-      mapping(uint8 => uint256) storage proposalTally = self.voteTally[proposalId]; // Cache storage pointer
+    uint256 perChoiceWeight = weight / selectedChoicesCount; // Store individual choice weight in memory -> We do not use normalised weight here as there is a chance it could underflow (weight < selectedChoicesCount), we get normalised weight when getting overall results to combat this.
+    mapping(uint8 => uint256) storage proposalTally = self.voteTally[proposalId]; // Cache storage pointer
 
-      for (uint8 i = 0; i < proposal.choices.length; i++) {
-        if ((choices & (1 << i)) != 0) {
-          // Add division result to the tally for each selected choice
-          proposalTally[i] += divisionResult;
-        }
+    uint256 len = proposal.choices.length; // Cache number of choices
+    for (uint8 i = 0; i < len; i++) {
+      // Check if the i-th bit in the choices bitmask is set (i.e., the user selected this choice)
+      if ((choices & (1 << i)) != 0) {
+        // Add division result to the tally for each selected choice
+        proposalTally[i] += perChoiceWeight;
       }
     }
 
@@ -132,9 +125,11 @@ library VeVoteVoteLogic {
     VeVoteStorageTypes.VeVoteStorage storage self,
     address account,
     uint48 timepoint
-  ) external view returns (uint256) {
+  ) external returns (uint256) {
     // Return the vote weight divided by the denominator to normalize it
-    return _calculateVoteWeight(self, account, timepoint) / _voteWeightDenominator(self, timepoint);
+    return
+      _calculateVoteWeight(self, account, timepoint, 0) /
+      VeVoteConfigurator.getMinStakedAmountAtTimepoint(self, timepoint);
   }
 
   /**
@@ -175,10 +170,10 @@ library VeVoteVoteLogic {
     VeVoteStorageTypes.VeVoteStorage storage self,
     uint256 nodeId
   ) external view returns (uint256) {
-    VechainNodesDataTypes.NodeLevelInfo memory nodeInfo = self.nodeManagement.getNodeLevelInfo(nodeId);
+    DataTypes.Token memory nodeInfo = self.nodeManagement.getNodeInfo(nodeId);
+    if (nodeInfo.levelId == 0) return 0;
     return
-      _getNodeWeight(self, nodeInfo.minBalance, nodeInfo.nodeLevel) /
-      _voteWeightDenominator(self, VeVoteClockLogic.clock());
+      _getNodeWeight(self, nodeInfo.vetAmountStaked, nodeInfo.levelId) / VeVoteConfigurator.getMinStakedAmount(self);
   }
 
   /**
@@ -190,17 +185,19 @@ library VeVoteVoteLogic {
     VeVoteStorageTypes.VeVoteStorage storage self,
     uint256 proposalId
   ) external view returns (VeVoteTypes.ProposalVoteResult[] memory results) {
-    bytes32[] storage choices = self.proposals[proposalId].choices;
+    // Cache proposal info
+    VeVoteTypes.ProposalCore storage proposal = self.proposals[proposalId];
+    bytes32[] storage choices = proposal.choices;
     uint256 numChoices = choices.length;
 
-    uint256 denominator = _voteWeightDenominator(self, self.proposals[proposalId].voteStart);
+    uint256 denominator = VeVoteConfigurator.getMinStakedAmountAtTimepoint(self, proposal.voteStart);
 
     results = new VeVoteTypes.ProposalVoteResult[](numChoices);
 
     // Iterate over each choice and calculate the normalized weight
-    for (uint8 i = 0; i < numChoices; i++) {
-      // Determine the normalized weight of the vote -> There could still be rounding errors here due to the fact users split their vote and vote smallest voting weight being 1
-      // TODO: Double check team are aware if we keep smallest votimg weight as 1 this could hapepn.
+    for (uint8 i; i < numChoices; i++) {
+      // NOTE: Normalized weights use integer division and may round down to zero for low-weight votes.
+      // This is expected and accepted in the current design. // TODO: Should we set to 1 if 0?
       uint256 normalizedWeight = self.voteTally[proposalId][i] / denominator;
 
       // Store the result in the array
@@ -255,76 +252,93 @@ library VeVoteVoteLogic {
     }
   }
 
-  // TODO: This function is incomplete, needs to be improved when new node contract is ready
-  // TODO: Add snapshot parameter
   /**
    * @dev Calculates the voting weight of a user based on their node holdings.
    * @param self The storage reference for the VeVoteStorage.
    * @param voter The address of the voter.
+   * @param snapshot the proposal snapshot.
    * @return weight The voting weight of the voter.
    */
   function _calculateVoteWeight(
     VeVoteStorageTypes.VeVoteStorage storage self,
     address voter,
-    uint48 /* snapshot */
-  ) private view returns (uint256 weight) {
-    // Fetch voter's node data -> TODO: Get users snapshot data
-    VechainNodesDataTypes.NodeLevelInfo[] memory nodes = self.nodeManagement.getUsersNodesWithLevelInfo(voter);
+    uint64 snapshot,
+    uint256 proposalId
+  ) private returns (uint256 weight) {
+    // Fetch voter's stargate NFT info from NodeManagement
+    DataTypes.Token[] memory nodes = self.nodeManagement.getUsersNodeInfo(voter);
 
-    // If the user has no nodes, return 0 -> They are not eligible to vote
+    // Check if a user is a validator
+    weight = _checkIsValidator(self, voter);
+
+    // If the user has no nodes, return validator weight (if any); otherwise, return 0.
     uint256 totalNodes = nodes.length;
     if (totalNodes == 0) {
-      return 0;
+      return weight;
     }
 
-    unchecked {
-      for (uint256 i = 0; i < totalNodes; i++) {
-        // Skip nodes with no voting power
-        if (nodes[i].nodeLevel == VechainNodesDataTypes.NodeStrengthLevel.None) {
-          continue;
-        }
-
-        uint256 nodeWeight = _getNodeWeight(self, nodes[i].minBalance, nodes[i].nodeLevel);
-
-        // Apply node weight to users total voting power
-        weight += nodeWeight;
+    for (uint256 i; i < totalNodes; i++) {
+      // Skip nodes with no voting power or minted after the snapshot
+      if (nodes[i].levelId == 0 || nodes[i].mintedAtBlock > snapshot) {
+        continue;
       }
+
+      uint256 nodeWeight = _getNodeWeight(self, nodes[i].vetAmountStaked, nodes[i].levelId);
+
+      // Apply node weight to users total voting power
+      weight += nodeWeight;
+
+      // if proposal id is not 0, store tokenId so that it cannot be used again.
+      //if(proposalId != 0) self.nodeHasVoted[nodes[i].leve] TODO: Add back in
     }
   }
 
   /**
-   * @dev Calculates the denominator for the voting weights.This should be the cheapest node's VET requirement.
-   * @param self The storage reference for the VeVoteStorage.
-   * @param snapshot The snapshot to use for the calculation.
-   * @return The denominator for the voting weights.
+   * @dev Computes the voting weight for a node based on its stake and level multiplier.
+   * Reverts if the multiplication overflows.
+   * @param self The storage reference to VeVoteStorage.
+   * @param minStake The amount of VET staked in the node.
+   * @param levelId The level ID of the node, used to determine the multiplier.
+   * @return The scaled voting weight of the node.
    */
-  function _voteWeightDenominator(
-    VeVoteStorageTypes.VeVoteStorage storage self,
-    uint48 snapshot
-  ) private view returns (uint256) {
-    // TODO: Can we get this directly from the node management contract? Do we need to store cheapest node
-    (uint256 baseNodeVetRequirement, , , ) = self.vechainNodesContract.getTokenParams(self.baseLevelNode);
-    if (baseNodeVetRequirement == 0) {
-      revert VoteWeightDenominatorZero();
-    }
-    return baseNodeVetRequirement;
-  }
-
   function _getNodeWeight(
     VeVoteStorageTypes.VeVoteStorage storage self,
-    uint256 minBalance,
-    VechainNodesDataTypes.NodeStrengthLevel nodeLevel
+    uint256 minStake,
+    uint8 levelId
   ) private view returns (uint256) {
-    // Calculate base voting power
-    uint256 baseVotingPower = minBalance;
-
     // Use tryMul to prevent overflow
-    (bool success, uint256 nodeWeight) = Math.tryMul(baseVotingPower, self.nodeMultiplier[nodeLevel]);
-    if (!success) {
+    (bool ok, uint256 nodeWeight) = Math.tryMul(minStake, self.levelIdMultiplier[levelId]);
+    if (!ok) {
       revert VotePowerOverflow();
     }
 
     // Return the node weight divided by the scale
-    return nodeWeight / VOTING_MULTIPLER_SCALE;
+    return nodeWeight / VeVoteConstants.VOTING_MULTIPLIER_SCALE;
+  }
+
+  /**
+   * @dev Determines whether aƒ voter is an active validator and returns their voting weight if so.
+   * @param self The storage reference to VeVoteStorage.
+   * @param voter The address of the account being checked.
+   * @return The validator voting weight if the voter is an active validator; otherwise, returns 0.
+   */
+  function _checkIsValidator(
+    VeVoteStorageTypes.VeVoteStorage storage self,
+    address voter
+  ) private view returns (uint256) {
+    // Call builtin validator contract
+    (bool listed, , , bool active) = VeVoteConfigurator.getValidatorContract(self).get(voter);
+
+    // Return zero weight if not listed or not active
+    if (!listed || !active) return 0;
+
+    // Use level 0 multiplier for validators
+    uint256 multiplier = self.levelIdMultiplier[0];
+
+    // Use safe multiplication with a comment
+    (bool ok, uint256 weightedStake) = Math.tryMul(multiplier, VeVoteConstants.VALIDATOR_STAKED_VET_REQUIREMENT);
+    if (!ok) revert VotePowerOverflow();
+
+    return weightedStake / VeVoteConstants.VOTING_MULTIPLIER_SCALE;
   }
 }
