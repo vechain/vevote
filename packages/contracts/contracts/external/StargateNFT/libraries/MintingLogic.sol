@@ -203,6 +203,7 @@ library MintingLogic {
 
     // Update tokens mapping
     $.tokens[tokenId] = DataTypes.Token({
+      tokenId: tokenId,
       levelId: _levelId,
       mintedAtBlock: Clock._clock(),
       vetAmountStaked: msg.value,
@@ -260,6 +261,7 @@ library MintingLogic {
 
     // Update tokens mapping
     $.tokens[_tokenId] = DataTypes.Token({
+      tokenId: _tokenId,
       levelId: level,
       mintedAtBlock: Clock._clock(),
       vetAmountStaked: msg.value,

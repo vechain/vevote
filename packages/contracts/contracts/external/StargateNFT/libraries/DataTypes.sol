@@ -67,6 +67,7 @@ library DataTypes {
   }
 
   struct Token {
+    uint256 tokenId;
     uint8 levelId;
     uint64 mintedAtBlock;
     uint256 vetAmountStaked;
