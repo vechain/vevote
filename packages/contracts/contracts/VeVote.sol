@@ -14,13 +14,48 @@ import { VeVoteStorageTypes } from "./governance/libraries/VeVoteStorageTypes.so
 import { VeVoteConfigurator } from "./governance/libraries/VeVoteConfigurator.sol";
 import { VechainNodesDataTypes } from "./libraries/VechainNodesDataTypes.sol";
 import { INodeManagement } from "./interfaces/INodeManagement.sol";
-import { ITokenAuction } from "./interfaces/ITokenAuction.sol";
+import { IStargateNFT } from "./interfaces/IStargateNFT.sol";
+import { IAuthority } from "./interfaces/IAuthority.sol";
 import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "@openzeppelin/contracts/utils/introspection/IERC165.sol";
 
-import "hardhat/console.sol";
-
+/**
+ * @title VeVote Governance Contract
+ * @notice Upgradeable multi-choice voting system for VeChain governance using Stargate NFTs and validator eligibility.
+ * @dev
+ * ## Governance Participation
+ * - Only two categories of users can vote:
+ *   1. **Stargate NFT Holders**: Voting power is derived from each NFT's `levelId` and `vetAmountStaked`,
+ *      scaled by level-specific multipliers and normalized against the current minimum stake requirement.
+ *   2. **Validators**: Represented by level ID `0`, validators receive fixed voting power based on
+ *      `VALIDATOR_STAKED_VET_REQUIREMENT` and the level `0` multiplier. Only active, listed validators,
+ *      as verified via the `Authority` contract, are eligible to participate.
+ *
+ * ## Voting Model
+ * - Supports multi-choice voting using 32-bit bitmask encoding.
+ * - Proposals specify `minSelection` and `maxSelection` constraints for voting flexibility.
+ *
+ * ## Role-Based Access Control
+ * - `DEFAULT_ADMIN_ROLE`: Full administrative privileges.
+ * - `WHITELISTED_ROLE`: Can create proposals.
+ * - `EXECUTOR_ROLE`: Can execute finalized proposals.
+ * - `SETTINGS_MANAGER_ROLE`: Can update voting durations, limits, and contract references.
+ * - `NODE_WEIGHT_MANAGER_ROLE`: Can modify NFT voting multipliers and staking thresholds.
+ * - `UPGRADER_ROLE`: Can perform UUPS-based contract upgrades.
+ *
+ * ## Upgradeability
+ * - Implements the UUPS proxy pattern (`UUPSUpgradeable`) to allow controlled upgrades by trusted entities.
+ *
+ * ## Contract Structure
+ * - Logic is modularized into internal libraries for maintainability:
+ *   - `VeVoteProposalLogic`: Proposal creation, cancellation, execution, and hashing.
+ *   - `VeVoteVoteLogic`: Voting mechanics and vote weight computation.
+ *   - `VeVoteQuorumLogic`: Quorum calculations based on circulating NFT supply and validator weight.
+ *   - `VeVoteConfigurator`: Governance configuration setters/getters.
+ *   - `VeVoteClockLogic`: Time abstraction for block-based scheduling.
+ *   - `VeVoteStorageTypes`: Defines structured storage layout.
+ */
 contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgradeable {
   /// @notice The role that can upgrade the contract
   bytes32 public constant UPGRADER_ROLE = keccak256("UPGRADER_ROLE");
@@ -78,7 +113,7 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
    */
   function hashProposal(
     address proposer,
-    uint48 startTime,
+    uint48 startBlock,
     uint48 voteDuration,
     bytes32[] memory choices,
     bytes32 descriptionHash,
@@ -88,7 +123,7 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
     return
       VeVoteProposalLogic.hashProposal(
         proposer,
-        startTime,
+        startBlock,
         voteDuration,
         choices,
         descriptionHash,
@@ -166,7 +201,7 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
   /**
    * @notice See {IVeVote-getVoteWeightAtTimepoint}.
    */
-  function getVoteWeightAtTimepoint(address account, uint48 timepoint) external view returns (uint256) {
+  function getVoteWeightAtTimepoint(address account, uint48 timepoint) external returns (uint256) {
     VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
     return VeVoteVoteLogic.getVoteWeight($, account, timepoint);
   }
@@ -174,7 +209,7 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
   /**
    * @notice See {IVeVote-getVoteWeight}.
    */
-  function getVoteWeight(address account) external view returns (uint256) {
+  function getVoteWeight(address account) external returns (uint256) {
     VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
     return VeVoteVoteLogic.getVoteWeight($, account, VeVoteClockLogic.clock());
   }
@@ -199,7 +234,7 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
   /**
    * @notice See {IVeVote-quorum}.
    */
-  function quorum(uint256 timepoint) external view returns (uint256) {
+  function quorum(uint48 timepoint) external view returns (uint256) {
     VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
     return VeVoteQuoromLogic.quorum($, timepoint);
   }
@@ -215,7 +250,7 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
   /**
    * @notice See {IVeVote-quorumNumerator}.
    */
-  function quorumNumerator(uint256 timepoint) external view returns (uint256) {
+  function quorumNumerator(uint48 timepoint) external view returns (uint256) {
     VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
     return VeVoteQuoromLogic.quorumNumerator($, timepoint);
   }
@@ -261,11 +296,19 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
   }
 
   /**
-   * @notice See {IVeVote-getBaseLevelNode}.
+   * @notice See {IVeVote-getMinStakedAmount}.
    */
-  function getBaseLevelNode() external view returns (uint8) {
+  function getMinStakedAmount() external view returns (uint256) {
     VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
-    return VeVoteConfigurator.getBaseLevelNode($);
+    return VeVoteConfigurator.getMinStakedAmount($);
+  }
+
+  /**
+   * @notice See {IVeVote-getMinStakedAmountAtTimepoint}.
+   */
+  function getMinStakedAmountAtTimepoint(uint48 timepoint) external view returns (uint256) {
+    VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
+    return VeVoteConfigurator.getMinStakedAmountAtTimepoint($, timepoint);
   }
 
   /**
@@ -277,21 +320,27 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
   }
 
   /**
-   * @notice See {IVeVote-getVechainNodeContract}.
+   * @notice See {IVeVote-getStargateNFTContract}.
    */
-  function getVechainNodeContract() external view returns (ITokenAuction) {
+  function getStargateNFTContract() external view returns (IStargateNFT) {
     VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
-    return VeVoteConfigurator.getVechainNodeContract($);
+    return VeVoteConfigurator.getStargateNFTContract($);
   }
 
   /**
-   * @notice this function returns the endorsement score of a node level.
-   * @param nodeLevel The node level of the node ID.
-   * @return uint256 The voting multiplier score of the node level.
+   * @notice See {IVeVote-getValidatorContract}.
    */
-  function nodeLevelMultiplier(VechainNodesDataTypes.NodeStrengthLevel nodeLevel) external view returns (uint256) {
+  function getValidatorContract() external view returns (IAuthority) {
     VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
-    return VeVoteConfigurator.nodeLevelMultiplier($, nodeLevel);
+    return VeVoteConfigurator.getValidatorContract($);
+  }
+
+  /**
+   * @notice See {IVeVote-levelIdMultiplier}.
+   */
+  function levelIdMultiplier(uint8 levelId) external view returns (uint256) {
+    VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
+    return VeVoteConfigurator.levelIdMultiplier($, levelId);
   }
 
   /**
@@ -322,14 +371,14 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
    */
   function propose(
     string calldata description,
-    uint48 startTime,
+    uint48 startBlock,
     uint48 voteDuration,
     bytes32[] calldata choices,
     uint8 maxSelection,
     uint8 minSelection
   ) external onlyRole(WHITELISTED_ROLE) returns (uint256) {
     VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
-    return VeVoteProposalLogic.propose($, description, startTime, voteDuration, choices, maxSelection, minSelection);
+    return VeVoteProposalLogic.propose($, description, startBlock, voteDuration, choices, maxSelection, minSelection);
   }
 
   /**
@@ -419,11 +468,11 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
   }
 
   /**
-   * @notice See {IVeVote-setBaseLevelNode}.
+   * @notice See {IVeVote-setMinStakedVetAmount}.
    */
-  function setBaseLevelNode(uint8 newBaseLevelNode) external onlyRole(NODE_WEIGHT_MANAGER_ROLE) {
+  function setMinStakedVetAmount(uint256 newMinStake) external onlyRole(NODE_WEIGHT_MANAGER_ROLE) {
     VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
-    VeVoteConfigurator.setBaseLevelNode($, newBaseLevelNode);
+    VeVoteConfigurator.setMinStakedVetAmount($, newMinStake);
   }
 
   /**
@@ -435,21 +484,27 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
   }
 
   /**
-   * @notice See {IVeVote-setVechainNodeContract}.
+   * @notice See {IVeVote-setStargateNFTContract}.
    */
-  function setVechainNodeContract(address tokenAuction) external onlyRole(SETTINGS_MANAGER_ROLE) {
+  function setStargateNFTContract(address stargateNFT) external onlyRole(SETTINGS_MANAGER_ROLE) {
     VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
-    VeVoteConfigurator.setVechainNodeContract($, tokenAuction);
+    VeVoteConfigurator.setStargateNFTContract($, stargateNFT);
   }
 
   /**
-   * @notice See {IVeVote-updateNodeMultipliers}.
+   * @notice See {IVeVote-setValidatorContract}.
    */
-  function updateNodeMultipliers(
-    VeVoteTypes.NodeVoteMultiplier memory updatedNodeMultipliers
-  ) external onlyRole(NODE_WEIGHT_MANAGER_ROLE) {
+  function setValidatorContract(address validatorContract) external onlyRole(SETTINGS_MANAGER_ROLE) {
     VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
-    VeVoteConfigurator.updateNodeMultipliers($, updatedNodeMultipliers);
+    VeVoteConfigurator.setValidatorContract($, validatorContract);
+  }
+
+  /**
+   * @notice See {IVeVote-updateLevelIdMultipliers}.
+   */
+  function updateLevelIdMultipliers(uint256[] calldata newMultipliers) external onlyRole(NODE_WEIGHT_MANAGER_ROLE) {
+    VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
+    VeVoteConfigurator.updateLevelIdMultipliers($, newMultipliers);
   }
 
   /**
