@@ -17,6 +17,7 @@ import { useCreateProposal } from "../CreateProposal/CreateProposalProvider";
 import { sanitizeImageUrl } from "@/utils/proposals/helpers";
 import { useProposalEvents } from "@/hooks/useProposalEvent";
 import { ProposalCardType } from "@/types/proposal";
+import { useHasVoted } from "@/hooks/useCastVote";
 import { ArrowLeftIcon, ArrowRightIcon, CheckSquareIcon, VoteIcon } from "@/icons";
 
 export const Proposal = () => {
@@ -94,13 +95,14 @@ export const Proposal = () => {
 const isAdmin = true;
 const isExecutor = false;
 const isVoter = false;
-const hasVotes = false;
 
 const ProposalNavbarActions = ({ proposal }: { proposal: ProposalCardType | undefined }) => {
   const { LL } = useI18nContext();
   const onVote = () => {
     console.log("Vote");
   };
+
+  const { hasVoted } = useHasVoted({ proposalId: proposal?.id || "" });
 
   return (
     <Flex alignItems={"center"} gap={2} marginLeft={"auto"}>
@@ -113,7 +115,7 @@ const ProposalNavbarActions = ({ proposal }: { proposal: ProposalCardType | unde
       )}
 
       {isVoter &&
-        (hasVotes ? (
+        (hasVoted ? (
           <Button variant={"feedback"} rightIcon={<Icon as={CheckSquareIcon} />}>
             {LL.voted()}
           </Button>

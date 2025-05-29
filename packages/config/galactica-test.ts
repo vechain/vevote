@@ -1,12 +1,12 @@
-import { AppConfig } from "."
+import { AppConfig } from ".";
 const config: AppConfig = {
   basePath: "http://localhost:3000",
   environment: "galactica-test",
   ipfsPinningService: "https://api.dev.gateway-proxy.vechain.org/api/v1/pinning/pinFileToIPFS",
   ipfsFetchingService: "https://api.dev.gateway-proxy.vechain.org/ipfs",
-  "vevoteContractAddress": "0x428BE069E21a584fBbAb934Fb4ad55AF346A3513",
-  "vechainNodesContractAddress": "0x8423411914fe65221E32827a4A88146b4A1F0837",
-  "nodeManagementContractAddress": "0xBEfdE060F6575Bb5199ed631ceEefDa632A1eCd9",
+  vevoteContractAddress: "0x428BE069E21a584fBbAb934Fb4ad55AF346A3513",
+  vechainNodesContractAddress: "0x8423411914fe65221E32827a4A88146b4A1F0837",
+  nodeManagementContractAddress: "0xBEfdE060F6575Bb5199ed631ceEefDa632A1eCd9",
   nodeUrl: "https://galactica.live.dev.node.vechain.org",
   network: {
     id: "galactica-test",
@@ -37,5 +37,6 @@ const config: AppConfig = {
       transactions: [],
     },
   },
-}
-export default config
+  indexerUrl: "https://indexer.testnet.vechain.org/api/v1",
+};
+export default config;

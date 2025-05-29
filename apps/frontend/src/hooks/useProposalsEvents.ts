@@ -1,7 +1,7 @@
 import { IpfsDetails } from "@/types/ipfs";
-import { getProposalsFromIpfs, getProposalsWithState } from "@/utils/ipfs/proposal";
+import { getProposalsFromIpfs } from "@/utils/ipfs/proposal";
 import { mergeIpfsDetails } from "@/utils/proposals/helpers";
-import { getProposalsEvents } from "@/utils/proposals/proposalsEvents";
+import { getProposalsEvents, getProposalsWithState } from "@/utils/proposals/proposalsQueries";
 import { useQuery } from "@tanstack/react-query";
 import { useConnex } from "@vechain/vechain-kit";
 

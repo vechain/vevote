@@ -6,6 +6,7 @@ import { CalendarIcon, ChevronRightIcon, ClockIcon } from "@/icons";
 import { ProposalCardType } from "@/types/proposal";
 import { Flex, Icon, Link, Text } from "@chakra-ui/react";
 import { useMemo } from "react";
+import { useHasVoted } from "@/hooks/useCastVote";
 
 export const ProposalCard = ({ status, title, endDate, startDate, id }: ProposalCardType) => {
   const variant = useMemo(() => {
@@ -17,9 +18,7 @@ export const ProposalCard = ({ status, title, endDate, startDate, id }: Proposal
     }
   }, [status]);
 
-  const isVoted = useMemo(() => {
-    return ["approved", "executed"].includes(status);
-  }, [status]);
+  const { hasVoted } = useHasVoted({ proposalId: id });
   return (
     <Flex
       width={"100%"}
@@ -35,7 +34,7 @@ export const ProposalCard = ({ status, title, endDate, startDate, id }: Proposal
       <Flex width={"100%"} direction={"column"} gap={6}>
         <Flex gap={4} alignItems={"center"}>
           <IconBadge variant={variant} />
-          {isVoted && <Status text={"Voted"} marginLeft={"auto"} />}
+          {hasVoted && <Status text={"Voted"} marginLeft={"auto"} />}
         </Flex>
         <Flex gap={4} alignItems={"start"} direction={"column"}>
           <Text overflow={"hidden"} fontSize={20} fontWeight={600} color={"gray.600"}>

@@ -7,6 +7,7 @@ import { isArraysEqual } from "../array";
 import { defaultSingleChoice } from "@/pages/CreateProposal/CreateProposalProvider";
 import { Delta } from "quill";
 import { IpfsDetails } from "@/types/ipfs";
+import { HexUInt } from "@vechain/sdk-core";
 
 export type FromEventsToProposalsReturnType = ({ ipfsHash: string } & Omit<
   ProposalCardType,
@@ -47,8 +48,8 @@ export const fromEventsToProposals = (events: ProposalEvent[]): FromEventsToProp
     const votingType = isArraysEqual(decodedChoices, defaultSingleChoice)
       ? VotingEnum.SINGLE_CHOICE
       : isSingleOption
-      ? VotingEnum.SINGLE_OPTION
-      : VotingEnum.MULTIPLE_OPTIONS;
+        ? VotingEnum.SINGLE_OPTION
+        : VotingEnum.MULTIPLE_OPTIONS;
 
     const parsedChoices = decodedChoices as SingleChoiceEnum[];
     const parsedChoicesWithId = decodedChoices.map(c => ({
@@ -106,4 +107,9 @@ export const mergeIpfsDetails = (
       },
     };
   });
+};
+
+export const fromStringToUint256 = (str: string) => {
+  const hexString = BigInt(str).toString(16);
+  return HexUInt.of("0x" + hexString).toString();
 };
