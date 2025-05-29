@@ -3,14 +3,19 @@
 pragma solidity 0.8.20;
 
 import { VeVoteStorageTypes } from "./libraries/VeVoteStorageTypes.sol";
+import { VeVoteClockLogic } from "./libraries/VeVoteClockLogic.sol";
 import { VeVoteTypes } from "./libraries/VeVoteTypes.sol";
 import { VechainNodesDataTypes } from "../libraries/VechainNodesDataTypes.sol";
+import "@openzeppelin/contracts/utils/math/SafeCast.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import "@openzeppelin/contracts/utils/structs/Checkpoints.sol";
 
 /// @title VeVoteStorage
 /// @notice Contract used as storage of the VeVote contract.
 /// @dev It defines the storage layout of the VeVote contract.
 contract VeVoteStorage is Initializable {
+  using Checkpoints for Checkpoints.Trace208;
+
   // keccak256(abi.encode(uint256(keccak256("VeVoteStorageLocation")) - 1)) & ~bytes32(uint256(0xff))
   bytes32 private constant VeVoteStorageLocation = 0xe4daadd51b0f186722e079c28ae9ded1c74d42eecd2103f7a5ce80c77c626300;
 
@@ -22,9 +27,7 @@ contract VeVoteStorage is Initializable {
   }
 
   /// @dev Initializes the governor storage
-  function __VeVoteStorage_init(
-    VeVoteTypes.InitializationData memory initializationData
-  ) internal onlyInitializing {
+  function __VeVoteStorage_init(VeVoteTypes.InitializationData memory initializationData) internal onlyInitializing {
     __VeVoteStorage_init_unchained(initializationData);
   }
 
@@ -36,9 +39,11 @@ contract VeVoteStorage is Initializable {
 
     // Validate and set the governor external contracts storage
     require(address(initializationData.nodeManagement) != address(0), "VeVote: NodeManagement address cannot be zero");
-    require(address(initializationData.vechainNodesContract) != address(0), "VeVote: VechainNode address cannot be zero");
+    require(address(initializationData.stargateNFT) != address(0), "VeVote: StargateNFT address cannot be zero");
+    require(address(initializationData.authorityContract) != address(0), "VeVote: Authority address cannot be zero");
     $.nodeManagement = initializationData.nodeManagement;
-    $.vechainNodesContract = initializationData.vechainNodesContract;
+    $.stargateNFT = initializationData.stargateNFT;
+    $.validatorContract = initializationData.authorityContract;
 
     // Set the general storage parameters
     $.minVotingDelay = initializationData.initialMinVotingDelay;
@@ -46,24 +51,25 @@ contract VeVoteStorage is Initializable {
     $.maxVotingDuration = initializationData.initialMaxVotingDuration;
     $.maxChoices = initializationData.initialMaxChoices;
 
-    // Set the base level node
-    $.baseLevelNode = initializationData.baseLevelNode;
+    // Initialize vote normalization base (min stake)
+    require(initializationData.initialMinStakedAmount > 0, "VeVote: min stake must be > 0");
+    $.minStakedVetHistory.push(VeVoteClockLogic.clock(), SafeCast.toUint208(initializationData.initialMinStakedAmount));
 
-    // Set the voting weight multipliers for different node levels
-    $.nodeMultiplier[VechainNodesDataTypes.NodeStrengthLevel.Strength] = 100; // Strength Node multipler -> Scaled by 100
-    $.nodeMultiplier[VechainNodesDataTypes.NodeStrengthLevel.Thunder] = 100; // Thunder Node multipler -> Scaled by 100
-    $.nodeMultiplier[VechainNodesDataTypes.NodeStrengthLevel.Mjolnir] = 100; // Mjolnir Node multipler -> Scaled by 100
+    // LevelId 0 is unused in Stargate, we will take advantage of this to represent Validator multiplier in VeVote. (Scaled by 100).
+    $.levelIdMultiplier[0] = 200; // Validator multipler
+    // Set the voting weight multipliers for different Stargate NFT level IDs. (Scaled by 100).
+    $.levelIdMultiplier[1] = 100; // Strength Node multipler
+    $.levelIdMultiplier[2] = 100; // Thunder Node multipler
+    $.levelIdMultiplier[3] = 100; // Mjolnir Node multipler
 
-    $.nodeMultiplier[VechainNodesDataTypes.NodeStrengthLevel.VeThorX] = 150; // VeThor X Node multipler -> Scaled by 150
-    $.nodeMultiplier[VechainNodesDataTypes.NodeStrengthLevel.StrengthX] = 150; // Strength X Node multipler -> Scaled by 150
-    $.nodeMultiplier[VechainNodesDataTypes.NodeStrengthLevel.ThunderX] = 150; // Thunder X Node multipler -> Scaled by 150
-    $.nodeMultiplier[VechainNodesDataTypes.NodeStrengthLevel.MjolnirX] = 150; // Mjolnir X Node multipler -> Scaled by 150
+    $.levelIdMultiplier[4] = 150; // VeThor X Node multipler
+    $.levelIdMultiplier[5] = 150; // Strength X Node multipler
+    $.levelIdMultiplier[6] = 150; // Thunder X Node multipler
+    $.levelIdMultiplier[7] = 150; // Mjolnir X Node multipler
 
     // TODO: Update these values to the correct values
-    $.nodeMultiplier[VechainNodesDataTypes.NodeStrengthLevel.Flash] = 100; // Flash Node multipler -> Scaled by 200
-    $.nodeMultiplier[VechainNodesDataTypes.NodeStrengthLevel.Lightning] = 100; // Lightning Node multipler -> Scaled by 200
-    $.nodeMultiplier[VechainNodesDataTypes.NodeStrengthLevel.Dawn] = 100; // Dawn Node multipler -> Scaled by 200
-
-    $.nodeMultiplier[VechainNodesDataTypes.NodeStrengthLevel.Validator] = 200; // Validator Node multipler -> Scaled by 300
+    $.levelIdMultiplier[8] = 100; // Dawn Node multipler
+    $.levelIdMultiplier[9] = 100; // Lightning Node multipler
+    $.levelIdMultiplier[10] = 100; // Flash Node multipler
   }
 }
