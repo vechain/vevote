@@ -5,6 +5,9 @@ pragma solidity 0.8.20;
 import { VeVoteStorageTypes } from "./VeVoteStorageTypes.sol";
 import { VeVoteProposalLogic } from "./VeVoteProposalLogic.sol";
 import { VeVoteClockLogic } from "./VeVoteClockLogic.sol";
+import { VeVoteVoteLogic } from "./VeVoteVoteLogic.sol";
+import { VeVoteConstants } from "./VeVoteConstants.sol";
+import { VeVoteConfigurator } from "./VeVoteConfigurator.sol";
 import { VeVoteTypes } from "./VeVoteTypes.sol";
 import "@openzeppelin/contracts/utils/structs/Checkpoints.sol";
 import "@openzeppelin/contracts/utils/math/SafeCast.sol";
@@ -46,12 +49,12 @@ library VeVoteQuoromLogic {
    * @notice Returns the quorum numerator at a given timepoint.
    * @dev Uses an optimized approach to check the latest quorum numerator before doing a binary search.
    * @param self The storage reference for VeVoteStorage.
-   * @param timepoint The block timestamp for which to retrieve the quorum numerator.
+   * @param timepoint The block number for which to retrieve the quorum numerator.
    * @return The quorum numerator value at the given timepoint.
    */
   function quorumNumerator(
     VeVoteStorageTypes.VeVoteStorage storage self,
-    uint256 timepoint
+    uint48 timepoint
   ) public view returns (uint256) {
     return _optimisticUpperLookupRecent(self.quorumNumeratorHistory, timepoint);
   }
@@ -80,14 +83,12 @@ library VeVoteQuoromLogic {
 
   /**
    * @notice Calculates the quorum required at a given timepoint.
-   * @dev This function will later be updated to use actual VET supply data when new contracts are deployed.
    * @param self The storage reference for VeVoteStorage.
-   * @param timepoint The block timestamp or ID to retrieve quorum requirements for.
+   * @param timepoint The block number to retrieve quorum requirements for.
    * @return The required quorum at the given timepoint.
    */
-  function quorum(VeVoteStorageTypes.VeVoteStorage storage self, uint256 timepoint) internal view returns (uint256) {
-    //return (self.vot3.getPastTotalSupply(timepoint) * quorumNumerator(self, timepoint)) / quorumDenominator();
-    return 0; // TODO: This needs to be fixed when new version of Node contracts are available
+  function quorum(VeVoteStorageTypes.VeVoteStorage storage self, uint48 timepoint) external view returns (uint256) {
+    return _quorum(self, timepoint);   
   }
 
   /** ------------------ SETTERS ------------------ **/
@@ -125,21 +126,46 @@ library VeVoteQuoromLogic {
     VeVoteStorageTypes.VeVoteStorage storage self,
     uint256 proposalId
   ) internal view returns (bool) {
-    //return quorum(self, VeVoteProposalLogic.proposalSnapshot(self, proposalId)) <= self.proposalTotalVet[proposalId];
-    return true; // TODO: This needs to be fixed when new version of Node contracts are available
+    return _quorum(self, VeVoteProposalLogic.proposalSnapshot(self, proposalId)) <= self.totalVotes[proposalId];
   }
 
-  // ------------------ Private FUNCTIONS ------------------
+  /**
+   * @notice Internal function to calculate the quorum required at a given timepoint.
+   * @param self The storage reference for VeVoteStorage.
+   * @param timepoint The block number to retrieve quorum requirements for.
+   * @return The required quorum at the given timepoint.
+   */
+  function _quorum(VeVoteStorageTypes.VeVoteStorage storage self, uint48 timepoint) internal view returns (uint256) {
+    uint208[] memory circulatingSupplies = self.stargateNFT.getLevelsCirculatingSuppliesAtBlock(timepoint);
+
+    // Set initial totalSupply to total authority master vote weight node as these are known.
+    uint256 totalPotenialVoteWeightScaled = VeVoteConstants.TOTAL_AUTHORITY_MASTER_NODES *
+      VeVoteConstants.VALIDATOR_STAKED_VET_REQUIREMENT;
+
+    // Cache the length to avoid repeated reads
+    uint256 length = circulatingSupplies.length;
+    for (uint8 i; i < length; i++) {
+      totalPotenialVoteWeightScaled += uint256(circulatingSupplies[i]) * self.levelIdMultiplier[i];
+    }
+
+    // Find the total potenial weight by scaling by multiplier scale and min vet stake to own a stargate NFT
+    uint256 totalPotenialVoteWeight = totalPotenialVoteWeightScaled /
+      (VeVoteConstants.VOTING_MULTIPLIER_SCALE * VeVoteConfigurator.getMinStakedAmountAtTimepoint(self, timepoint));
+
+    return (totalPotenialVoteWeight * quorumNumerator(self, timepoint)) / quorumDenominator();
+  }
+
+  // ------------------ Private functions ------------------
   /**
    * @dev Returns the numerator at a specific timepoint.
    */
   function _optimisticUpperLookupRecent(
     Checkpoints.Trace208 storage ckpts,
-    uint256 timepoint
+    uint48 timepoint
   ) private view returns (uint256) {
     // If trace is empty, key and value are both equal to 0.
     // In that case `key <= timepoint` is true, and it is ok to return 0.
     (, uint48 key, uint208 value) = ckpts.latestCheckpoint();
-    return key <= timepoint ? value : ckpts.upperLookupRecent(SafeCast.toUint48(timepoint));
+    return key <= timepoint ? value : ckpts.upperLookupRecent(timepoint);
   }
 }
