@@ -1,4 +1,5 @@
 import { Vote } from "./Vote";
+import { Delete } from "./Delete";
 import { Search } from "./Search";
 import { Wallet } from "./Wallet";
 import { Clock } from "./Clock";
@@ -25,6 +26,7 @@ import { Copy } from "./Copy";
 import { VotingPower } from "./VotingPower";
 import { ChevronUp } from "./ChevronUp";
 import { ChevronDown } from "./ChevronDown";
+import { ChevronRight } from "./ChevronRight";
 import { Filter } from "./Filter";
 import { Bold } from "./Bold";
 import { Italic } from "./Italic";
@@ -40,6 +42,10 @@ import { Minus } from "./Minus";
 import { Eye } from "./Eye";
 import { Spinner } from "./Spinner";
 import { Retry } from "./Retry";
+import { Edit } from "./Edit";
+import { MinusCircle } from "./MinusCircle";
+import { AlertTriangle } from "./AlertTriangle";
+import { Logout } from "./Logout";
 
 export {
   Vote as VoteIcon,
@@ -60,6 +66,7 @@ export {
   ArrowRight as ArrowRightIcon,
   SortDesc as SortDescIcon,
   EditBox as EditBoxIcon,
+  Edit as EditIcon,
   CalendarCheck as CalendarCheckIcon,
   Calendar as CalendarIcon,
   Users as UsersIcon,
@@ -68,6 +75,7 @@ export {
   VotingPower as VotingPowerIcon,
   ChevronUp as ChevronUpIcon,
   ChevronDown as ChevronDownIcon,
+  ChevronRight as ChevronRightIcon,
   Filter as FilterIcon,
   Check as CheckIcon,
   Bold as BoldIcon,
@@ -84,4 +92,8 @@ export {
   Eye as EyeIcon,
   Spinner as SpinnerIcon,
   Retry as RetryIcon,
+  Delete as DeleteIcon,
+  MinusCircle as MinusCircleIcon,
+  AlertTriangle as AlertTriangleIcon,
+  Logout as LogoutIcon,
 };

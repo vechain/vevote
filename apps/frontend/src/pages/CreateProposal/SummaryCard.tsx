@@ -1,13 +1,12 @@
 import { FileUploadChild } from "@/components/ui/FileUploadChild";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { ZodFile } from "@/utils/zod";
-import { Flex, Grid, GridItem, Heading, Text } from "@chakra-ui/react";
+import { Flex, Grid, GridItem, Heading, Icon, Text } from "@chakra-ui/react";
 import { PropsWithChildren, useMemo } from "react";
-import { GoArrowRight } from "react-icons/go";
-import { CiCalendar, CiClock1 } from "react-icons/ci";
 import dayjs from "dayjs";
 import { BaseOption, VotingChoices, VotingEnum } from "@/types/proposal";
 import { getTimeZone } from "@/utils/timezone";
+import { ArrowRightIcon, CalendarIcon, ClockIcon } from "@/icons";
 
 const SummaryCard = ({ title, children }: PropsWithChildren<{ title: string }>) => {
   return (
@@ -93,7 +92,7 @@ const CalendarItem = ({ label, startDate, endDate }: { label: string; startDate?
       </GridItem>
       <GridItem colSpan={3} display={"flex"} alignItems={"center"} gap={"24px"}>
         <ShowDetailsDateItemChild date={startDate} label={LL.start()} />
-        <GoArrowRight />
+        <Icon as={ArrowRightIcon} />
         <ShowDetailsDateItemChild date={endDate} label={LL.end()} />
       </GridItem>
     </Grid>
@@ -116,13 +115,13 @@ const ShowDetailsDateItemChild = ({ date, label }: { date?: Date; label: string 
         {label}
       </Text>
       <Flex alignItems={"center"} gap={"12px"}>
-        <CiCalendar color={"#AAAFB6"} />
+        <Icon as={CalendarIcon} color={"gray.400"} width={4} height={4} />
         <Text color={"gray.600"} fontSize={"14px"}>
           {onlyDate}
         </Text>
       </Flex>
       <Flex alignItems={"center"} gap={"12px"}>
-        <CiClock1 color={"#AAAFB6"} />
+        <Icon as={ClockIcon} color={"gray.400"} width={4} height={4} />
         <Text color={"gray.600"} fontSize={"14px"}>
           {onlyTime}
         </Text>

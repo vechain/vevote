@@ -2,12 +2,10 @@ import { IconBadge } from "@/components/ui/IconBadge";
 import { Status } from "@/components/ui/Status";
 import { useFormatDate } from "@/hooks/useFormatDate";
 import { useI18nContext } from "@/i18n/i18n-react";
+import { CalendarIcon, ChevronRightIcon, ClockIcon } from "@/icons";
 import { ProposalCardType } from "@/types/proposal";
 import { Flex, Icon, Link, Text } from "@chakra-ui/react";
 import { useMemo } from "react";
-import { CiCalendar } from "react-icons/ci";
-import { FaChevronRight } from "react-icons/fa";
-import { IoMdTime } from "react-icons/io";
 
 export const ProposalCard = ({ status, title, endDate, startDate, id }: ProposalCardType) => {
   const variant = useMemo(() => {
@@ -47,7 +45,7 @@ export const ProposalCard = ({ status, title, endDate, startDate, id }: Proposal
         </Flex>
       </Flex>
       <Link paddingX={0} bg={"transparent"} _hover={{ bg: "transparent" }} href={`/proposal/${id}`}>
-        <Icon as={FaChevronRight} width={4} height={4} color={"gray.500"} />
+        <Icon as={ChevronRightIcon} width={4} height={4} color={"gray.500"} />
       </Link>
     </Flex>
   );
@@ -72,9 +70,9 @@ const DateItem = ({ startDate, endDate, status }: Pick<ProposalCardType, "endDat
   const icon = useMemo(() => {
     switch (status) {
       case "voting":
-        return IoMdTime;
+        return ClockIcon;
       default:
-        return CiCalendar;
+        return CalendarIcon;
     }
   }, [status]);
 

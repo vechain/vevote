@@ -1,15 +1,13 @@
 import { useI18nContext } from "@/i18n/i18n-react";
-import { Button, Flex, ModalBody, ModalHeader, useDisclosure } from "@chakra-ui/react";
+import { Button, Flex, Icon, ModalBody, ModalHeader, useDisclosure } from "@chakra-ui/react";
 import { useMemo, useState } from "react";
-import { FiUserCheck } from "react-icons/fi";
 import { ModalSkeleton, ModalTitle } from "../ui/ModalSkeleton";
 import { SearchInput } from "../ui/SearchInput";
 import { Sort } from "../ui/SortDropdown";
 import { DataTable } from "../ui/TableSkeleton";
 import { votersColumn } from "./VotersTable";
 import { VotingBaseDropdown } from "./VotingBaseDropdown";
-import { FiFilter } from "react-icons/fi";
-import { BsSortDown } from "react-icons/bs";
+import { FilterIcon, SortDescIcon, UserCheckIcon } from "@/icons";
 
 export type VoteItem = {
   date: Date;
@@ -66,13 +64,12 @@ export const VotersModal = () => {
 
   return (
     <>
-      <Button onClick={onOpen} variant={"secondary"}>
-        <FiUserCheck />
+      <Button onClick={onOpen} variant={"secondary"} leftIcon={<Icon as={UserCheckIcon} width={5} height={5} />}>
         {LL.proposal.see_all_voters()}
       </Button>
       <ModalSkeleton isOpen={isOpen} onClose={onClose} size={"4xl"}>
         <ModalHeader>
-          <ModalTitle title={LL.voters()} icon={FiUserCheck} />
+          <ModalTitle title={LL.voters()} icon={UserCheckIcon} />
           <TableFilters nodes={nodes} options={options} />
         </ModalHeader>
         <ModalBody overflowX={"auto"}>
@@ -101,21 +98,21 @@ const TableFilters = ({ options, nodes }: { options: string[]; nodes: string[] }
         selectedOption={selectedOption}
         setSelectedOption={setSelectedOption}
         ms={"auto"}
-        icon={FiFilter}
+        icon={FilterIcon}
       />
       <VotingBaseDropdown
         label="Node"
         options={nodes}
         selectedOption={node}
         setSelectedOption={setNode}
-        icon={FiFilter}
+        icon={FilterIcon}
       />
       <VotingBaseDropdown
         label="Sort by"
         options={sortOptions}
         selectedOption={sort}
         setSelectedOption={setSort}
-        icon={BsSortDown}
+        icon={SortDescIcon}
       />
     </Flex>
   );

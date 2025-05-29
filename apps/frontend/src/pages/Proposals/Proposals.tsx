@@ -9,10 +9,9 @@ import { ProposalCardType } from "@/types/proposal";
 import { Button, Flex, Heading, Icon, Link, Tab, TabList, TabPanel, TabPanels, Tabs, Text } from "@chakra-ui/react";
 import dayjs from "dayjs";
 import { PropsWithChildren, useMemo, useState } from "react";
-import { CiCircleInfo, CiCirclePlus } from "react-icons/ci";
-import { MdOutlineHowToVote } from "react-icons/md";
 import { useCreateProposal } from "../CreateProposal/CreateProposalProvider";
 import { ProposalCard } from "./ProposalCard";
+import { CircleInfoIcon, CirclePlusIcon, VoteIcon } from "@/icons";
 
 const ITEMS_PER_PAGE = 6;
 
@@ -22,7 +21,7 @@ const isAdmin = true;
 export const Proposals = () => {
   const { draftProposal } = useCreateProposal();
   const [sort, setSort] = useState<Sort>(Sort.Newest);
-  const [searchValue, setSearchValue] = useState<string>("");
+  const [searchValue, setSearchValue] = useState("");
   const { LL } = useI18nContext();
 
   const { proposals, loading } = useProposalsEvents();
@@ -48,12 +47,12 @@ export const Proposals = () => {
       <PageContainer bg={"gray.50"}>
         <PageContainer.Header>
           <Heading fontSize={32} fontWeight={600} color="primary.600" display={"flex"} alignItems={"center"} gap={6}>
-            <Icon as={MdOutlineHowToVote} width={8} height={8} color={"primary.600"} marginRight={2} />
+            <Icon as={VoteIcon} width={8} height={8} marginRight={2} />
             {LL.proposals.title()}
           </Heading>
           {isAdmin && (
             <Button as={Link} href="/create-proposal" marginLeft={"auto"}>
-              <Icon as={CiCirclePlus} width={6} height={6} />
+              <Icon as={CirclePlusIcon} />
               {LL.proposals.create()}
             </Button>
           )}
@@ -71,6 +70,7 @@ export const Proposals = () => {
                 <SearchInput
                   value={searchValue}
                   onChange={e => setSearchValue(e.target.value)}
+                  onClear={() => setSearchValue("")}
                   placeholder={LL.proposals.search_placeholder()}
                 />
                 <SortDropdown sort={sort} setSort={setSort} />
@@ -145,7 +145,7 @@ const EmptyPanel = () => {
           height={20}
           justifyContent={"center"}
           alignItems={"center"}>
-          <Icon as={CiCircleInfo} width={8} height={8} color={"gray.400"} />
+          <Icon as={CircleInfoIcon} color={"gray.400"} width={8} height={8} />
         </Flex>
         <Text color={"gray.600"} fontSize={24}>
           {LL.proposals.no_proposals()}

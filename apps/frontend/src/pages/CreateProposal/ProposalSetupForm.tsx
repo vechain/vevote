@@ -9,9 +9,8 @@ import {
   QUESTION_MAX_CHAR,
 } from "@/schema/createProposalSchema";
 import { CreateProposalStep, VotingEnum } from "@/types/proposal";
-import { Box, Button, Flex, FormControl, Input, Text } from "@chakra-ui/react";
+import { Box, Button, Flex, FormControl, Icon, Input, Text } from "@chakra-ui/react";
 import { useCallback, useMemo } from "react";
-import { IoArrowBack, IoArrowForward } from "react-icons/io5";
 import { VotingTypeSelectControlled } from "./controllers/VotingTypeSelectControlled";
 import { CreateFormWrapper } from "./CreateFormWrapper";
 import { defaultSingleChoice, useCreateProposal } from "./CreateProposalProvider";
@@ -19,6 +18,7 @@ import { InputMessage } from "@/components/ui/InputMessage";
 import { useFormContext } from "react-hook-form";
 import { InputLimitControlled } from "./controllers/InputLimitControlled";
 import { VotingOptionsControlled } from "./VotingOptionsControlled";
+import { ArrowLeftIcon, ArrowRightIcon } from "@/icons";
 
 export const ProposalSetupForm = () => {
   const { proposalDetails, setStep, setProposalDetails } = useCreateProposal();
@@ -67,13 +67,14 @@ export const ProposalSetupForm = () => {
             {votingType === VotingEnum.MULTIPLE_OPTIONS && <MultipleOptionFields />}
 
             <Flex justifyContent={"space-between"}>
-              <Button variant={"secondary"} onClick={() => setStep(CreateProposalStep.VOTING_DETAILS)}>
-                <IoArrowBack />
+              <Button
+                variant={"secondary"}
+                onClick={() => setStep(CreateProposalStep.VOTING_DETAILS)}
+                leftIcon={<Icon as={ArrowLeftIcon} />}>
                 {LL.back()}
               </Button>
-              <Button type="submit" isDisabled={nextDisabled}>
+              <Button type="submit" isDisabled={nextDisabled} rightIcon={<Icon as={ArrowRightIcon} />}>
                 {LL.next()}
-                <IoArrowForward />
               </Button>
             </Flex>
           </CreateFormWrapper>

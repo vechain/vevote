@@ -1,13 +1,12 @@
 import { useI18nContext } from "@/i18n/i18n-react";
-import { Button, ModalBody, ModalFooter, Text, useDisclosure } from "@chakra-ui/react";
-import { FiMinusCircle } from "react-icons/fi";
+import { Button, Icon, ModalBody, ModalFooter, Text, useDisclosure } from "@chakra-ui/react";
 import { MessageModal } from "../ui/ModalSkeleton";
-import { RiDeleteBin6Line } from "react-icons/ri";
 import { useCallback } from "react";
 import { DEFAULT_PROPOSAL, useCreateProposal } from "@/pages/CreateProposal/CreateProposalProvider";
 import { useDraftProposal } from "@/hooks/useDraftProposal";
 import { useNavigate } from "react-router-dom";
 import { Routes } from "@/types/routes";
+import { DeleteIcon, EditBoxIcon } from "@/icons";
 
 export const DeleteEditProposal = () => {
   const { LL } = useI18nContext();
@@ -21,7 +20,7 @@ export const DeleteEditProposal = () => {
   return (
     <>
       <DeleteProposal />
-      <Button variant={"secondary"} onClick={onEdit}>
+      <Button variant={"secondary"} onClick={onEdit} leftIcon={<Icon as={EditBoxIcon} />}>
         {LL.edit()}
       </Button>
     </>
@@ -41,14 +40,13 @@ export const DeleteProposal = () => {
   }, [navigate, removeDraftProposal]);
   return (
     <>
-      <Button variant="danger" onClick={onOpen}>
-        <FiMinusCircle size={24} />
+      <Button variant="danger" onClick={onOpen} leftIcon={<Icon as={DeleteIcon} />}>
         {LL.delete()}
       </Button>
       <MessageModal
         isOpen={isOpen}
         onClose={onClose}
-        icon={RiDeleteBin6Line}
+        icon={DeleteIcon}
         iconColor={"red.600"}
         title={LL.proposal.delete_proposal.title()}>
         <ModalBody>

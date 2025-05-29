@@ -6,12 +6,9 @@ import { ProposalInfos } from "@/components/proposal/ProposalInfos";
 import { ProposalProvider } from "@/components/proposal/ProposalProvider";
 import { VotingSection } from "@/components/proposal/VotingSection";
 import { useI18nContext } from "@/i18n/i18n-react";
-import { Box, Button, Flex, Image, Link, Text } from "@chakra-ui/react";
+import { Box, Button, Flex, Icon, Image, Link, Text } from "@chakra-ui/react";
 import { useMemo } from "react";
-import { IoArrowBack, IoArrowForward } from "react-icons/io5";
 import { useParams } from "react-router";
-import { MdOutlineHowToVote } from "react-icons/md";
-import { FiCheckSquare } from "react-icons/fi";
 import { DeleteEditProposal } from "@/components/proposal/DeleteEditProposal";
 import { CancelEditProposal } from "@/components/proposal/CancelEditProposal";
 import { useWallet } from "@vechain/vechain-kit";
@@ -20,6 +17,7 @@ import { useCreateProposal } from "../CreateProposal/CreateProposalProvider";
 import { sanitizeImageUrl } from "@/utils/proposals/helpers";
 import { useProposalEvents } from "@/hooks/useProposalEvent";
 import { ProposalCardType } from "@/types/proposal";
+import { ArrowLeftIcon, ArrowRightIcon, CheckSquareIcon, VoteIcon } from "@/icons";
 
 export const Proposal = () => {
   const { LL } = useI18nContext();
@@ -43,12 +41,17 @@ export const Proposal = () => {
     <>
       <ProposalNavbar>
         <Flex alignItems={"center"} gap={6} width={"full"}>
-          <Button as={Link} gap={2} alignItems={"center"} href="/" variant={"secondary"}>
-            <IoArrowBack />
+          <Button
+            as={Link}
+            gap={2}
+            alignItems={"center"}
+            href="/"
+            variant={"secondary"}
+            leftIcon={<Icon as={ArrowLeftIcon} />}>
             {LL.back()}
           </Button>
           <Text display={"flex"} fontSize={"14px"} color={"primary.200"} alignItems={"center"} gap={1}>
-            {LL.homepage()} <IoArrowForward /> {LL.proposal.title()}
+            {LL.homepage()} <Icon as={ArrowRightIcon} width={5} height={4} /> {LL.proposal.title()}
           </Text>
           {account?.address && <ProposalNavbarActions proposal={proposal} />}
         </Flex>
@@ -111,13 +114,11 @@ const ProposalNavbarActions = ({ proposal }: { proposal: ProposalCardType | unde
 
       {isVoter &&
         (hasVotes ? (
-          <Button variant={"feedback"}>
+          <Button variant={"feedback"} rightIcon={<Icon as={CheckSquareIcon} />}>
             {LL.voted()}
-            <FiCheckSquare />
           </Button>
         ) : (
-          <Button onClick={onVote}>
-            <MdOutlineHowToVote />
+          <Button onClick={onVote} leftIcon={<Icon as={VoteIcon} />}>
             {LL.vote()}
           </Button>
         ))}

@@ -1,11 +1,11 @@
 import { createColumnHelper } from "@tanstack/react-table";
 import { VoteItem } from "./VotersModal";
-import { defineStyle, Link, Text } from "@chakra-ui/react";
+import { defineStyle, Icon, Link, Text } from "@chakra-ui/react";
 import { formatAddress } from "@/utils/address";
 import { CopyLink } from "../ui/CopyLink";
-import { MdOutlineArrowOutward } from "react-icons/md";
 import dayjs from "dayjs";
 import { useMemo } from "react";
+import { ArrowLinkIcon } from "@/icons";
 
 const VECHAIN_EXPLORER_URL = "https://explore-testnet.vechain.org"; //todo: add env variable
 
@@ -81,7 +81,7 @@ const TransactionIdCell = ({ value }: { value: string }) => {
       isExternal
       href={`${VECHAIN_EXPLORER_URL}/transactions/${value}`}>
       {formatAddress(value)}
-      <MdOutlineArrowOutward />
+      <Icon as={ArrowLinkIcon} width={4} height={4} />
     </Link>
   );
 };

@@ -1,11 +1,11 @@
-import { Box, Button, Flex, Heading } from "@chakra-ui/react";
+import { Box, Button, Flex, Heading, Icon } from "@chakra-ui/react";
 import { IconBadge } from "../ui/IconBadge";
 import { PropsWithChildren, useCallback, useMemo, useState } from "react";
 import { useProposal } from "./ProposalProvider";
 import { TextEditor } from "../ui/TextEditor";
 import { Delta } from "quill";
 import { useI18nContext } from "@/i18n/i18n-react";
-import { IoIosArrowDown } from "react-icons/io";
+import { ChevronDownIcon } from "@/icons";
 
 export const ProposalInfos = () => {
   const { LL } = useI18nContext();
@@ -49,7 +49,12 @@ export const ProposalInfos = () => {
           onClick={readFull}
           gap={1.5}>
           {LL.read_full_description()}
-          <IoIosArrowDown style={{ transition: "all", rotate: !maxHeight ? "180deg" : "0deg" }} />
+          <Icon
+            as={ChevronDownIcon}
+            width={4}
+            height={4}
+            style={{ transition: "all", rotate: !maxHeight ? "180deg" : "0deg" }}
+          />
         </Button>
       </Flex>
     </>

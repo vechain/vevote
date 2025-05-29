@@ -5,7 +5,6 @@ export const iconTheme = defineStyleConfig({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    color: "gray.500",
   },
   sizes: {
     xs: {
