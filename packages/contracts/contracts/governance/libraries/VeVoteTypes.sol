@@ -3,7 +3,7 @@
 pragma solidity 0.8.20;
 
 import { INodeManagement } from "../../interfaces/INodeManagement.sol";
-import { ITokenAuction } from "../../interfaces/ITokenAuction.sol";
+import { IStargateNFT } from "../../interfaces/IStargateNFT.sol";
 
 /// @title VeVoteTypes
 /// @notice Defines the core types used in the VeVote governance system.
@@ -49,13 +49,14 @@ library VeVoteTypes {
 
   struct InitializationData {
     INodeManagement nodeManagement;
-    ITokenAuction vechainNodesContract;
+    IStargateNFT stargateNFT;
+    address authorityContract;
     uint256 quorumPercentage;
     uint48 initialMinVotingDelay;
     uint48 initialMaxVotingDuration;
     uint48 initialMinVotingDuration;
     uint8 initialMaxChoices;
-    uint8 baseLevelNode;
+    uint256 initialMinStakedAmount;
   }
 
   struct InitializationRolesData {
