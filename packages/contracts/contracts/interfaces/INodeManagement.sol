@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: MIT
 
+import { DataTypes } from "../external/StargateNFT/libraries/DataTypes.sol";
+
 pragma solidity 0.8.20;
 
 interface INodeManagement {
@@ -47,7 +49,7 @@ interface INodeManagement {
   /**
    *  @dev Emit when the vechain node contract address is set or updated
    */
-  event VechainNodeContractSet(address oldContractAddress, address newContractAddress);
+  event StargateNFTContractSet(address oldContractAddress, address newContractAddress);
 
   /**
    *  @dev Emit when the stargate NFT contract address is set or updated
@@ -163,4 +165,20 @@ interface INodeManagement {
    * @return bool True if the node is a legacy node, false otherwise.
    */
   function isLegacyNode(uint256 nodeId) external view returns (bool);
+
+  /**
+   * @notice Returns all tokens associated with a user, including owned and delegated ones.
+   * @dev This function retrieves only tokens that have been migrated to the new Stargate NFT contract.
+   * @param user The user address to query.
+   * @return tokens An array of DataTypes.Token structs owned or delegated to the user.
+   */
+  function getUsersNodeInfo(address user) external view returns (DataTypes.Token[] memory tokens);
+
+  /**
+   * @notice Retrieves detailed information about a specific node.
+   * @dev Only valid for nodes that have been migrated to the new Stargate NFT contract.
+   * @param nodeId The ID of the node to retrieve information for.
+   * @return token The detailed information about the specified node.
+   */
+  function getNodeInfo(uint256 nodeId) external view returns (DataTypes.Token memory token);
 }
