@@ -12,11 +12,7 @@ import { VeVoteTypes } from "./VeVoteTypes.sol";
 /// @notice Handles the state determination of governance proposals in the VeVote system.
 /// @dev Provides functions to determine the status of a proposal based on various governance rules.
 library VeVoteStateLogic {
-  /// @notice Bitmap representing all possible proposal states.
-  bytes32 internal constant ALL_PROPOSAL_STATES_BITMAP =
-    bytes32((2 ** (uint8(type(VeVoteTypes.ProposalState).max) + 1)) - 1);
-
-  // ------------------------------- Errors -------------------------------f
+  // ------------------------------- Errors -------------------------------
   /**
    * @dev Thrown when the `proposalId` does not exist.
    * @param proposalId The ID of the proposal that does not exist.
@@ -107,10 +103,10 @@ library VeVoteStateLogic {
     }
 
     // Retrieve the current timepoint
-    uint256 currentTimepoint = VeVoteClockLogic.clock();
+    uint256 currentBlock = VeVoteClockLogic.clock();
 
-    // If the snapshot is in the future, the proposal is still Pending
-    if (snapshot >= currentTimepoint) {
+    // If the snapshot is in the future, the proposal is stil Pending
+    if (snapshot > currentBlock) {
       return VeVoteTypes.ProposalState.Pending;
     }
 
@@ -118,7 +114,7 @@ library VeVoteStateLogic {
     uint256 deadline = VeVoteProposalLogic.proposalDeadline(self, proposalId);
 
     // If the deadline has not passed, the proposal is still Active
-    if (deadline >= currentTimepoint) {
+    if (deadline >= currentBlock) {
       return VeVoteTypes.ProposalState.Active;
     }
     // If the quorum was not reached, the proposal is Defeated
