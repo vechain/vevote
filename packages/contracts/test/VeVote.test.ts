@@ -5,13 +5,12 @@ import { describe, it } from "mocha";
 import { createLocalConfig } from "@repo/config/contracts/envs/local";
 import {
   createProposal,
-  getCurrentBlockTimestamp,
+  getCurrentBlockNumber,
   getProposalIdFromTx,
   waitForNextBlock,
   waitForProposalToEnd,
   waitForProposalToStart,
 } from "./helpers/common";
-import { time } from "@nomicfoundation/hardhat-network-helpers";
 import { createNodeHolder } from "../scripts/helpers";
 
 describe("VeVote", function () {
@@ -41,7 +40,7 @@ describe("VeVote", function () {
       expect(await vevote.getMaxChoices()).to.equal(config.INITIAL_MAX_CHOICES);
       expect(await vevote.getNodeManagementContract()).to.equal(await nodeManagement.getAddress());
       expect(await vevote.getStargateNFTContract()).to.equal(await stargateNFT.getAddress());
-      expect(await vevote.getBaseLevelId()).to.equal(config.BASE_LEVEL_NODE);
+      expect(await vevote.getMinStakedAmount()).to.equal(config.MIN_VET_STAKE);
       expect(await vevote.levelIdMultiplier(1)).to.equal(100);
       expect(await vevote.levelIdMultiplier(2)).to.equal(100);
       expect(await vevote.levelIdMultiplier(3)).to.equal(100);
@@ -64,7 +63,8 @@ describe("VeVote", function () {
             initialMaxChoices: config.INITIAL_MAX_CHOICES,
             nodeManagement: await nodeManagement.getAddress(),
             stargateNFT: await stargateNFT.getAddress(),
-            baseLevelNode: config.BASE_LEVEL_NODE,
+            authorityContract: config.AUTHORITY_CONTRACT_ADDRESS,
+            initialMinStakedAmount: config.MIN_VET_STAKE,
           },
           {
             admin: admin.address,
@@ -99,12 +99,12 @@ describe("VeVote", function () {
       const { vevote } = await getOrDeployContractInstances({});
       // Proposal gets created with default values
       await createProposal({
-        startTime: 2741687368,
+        startBlock: 2741687368,
       });
       // Proposal with same values cannot be created again
       await expect(
         createProposal({
-          startTime: 2741687368,
+          startBlock: 2741687368,
         }),
       ).to.be.revertedWithCustomError(vevote, "VeVoteUnexpectedProposalState");
     });
@@ -113,9 +113,9 @@ describe("VeVote", function () {
       const { vevote } = await getOrDeployContractInstances({});
       await expect(
         createProposal({
-          startTime: 0,
+          startBlock: 0,
         }),
-      ).to.be.revertedWithCustomError(vevote, "VeVoteInvalidStartTime");
+      ).to.be.revertedWithCustomError(vevote, "VeVoteInvalidStartBlock");
     });
 
     it("Voting period must be greater than min voting duration", async function () {
@@ -147,21 +147,6 @@ describe("VeVote", function () {
       await expect(
         createProposal({
           description: "QmPaAAXwS2kGyr63q6iakVT8ybqeYeRLqwqUCYu64mNLME",
-        }),
-      ).to.not.be.reverted;
-    });
-
-    it("Description must be a valid IPFS hash (CID v1)", async function () {
-      const { vevote } = await getOrDeployContractInstances({});
-      await expect(
-        createProposal({
-          description: "bafybeidjjktshhtbgzrmrsqivlmrmrap4opll5sh3ym3m5h7s5wodjohcq",
-        }),
-      ).to.be.revertedWithCustomError(vevote, "VeVoteInvalidProposalDescription");
-
-      await expect(
-        createProposal({
-          description: "bafkreidbrnrrrv3a4iusha5kpodumws4cwlgnrdjrqrr6hbnqu7l5szjte",
         }),
       ).to.not.be.reverted;
     });
@@ -222,7 +207,7 @@ describe("VeVote", function () {
     it("Should store the proposal snapshot correctly", async function () {
       const { vevote } = await getOrDeployContractInstances({ forceDeploy: true });
       const tx = await createProposal({
-        startTime: 2741687368,
+        startBlock: 2741687368,
       });
       const proposalId = await getProposalIdFromTx(tx);
       expect(await vevote.proposalSnapshot(proposalId)).to.equal(2741687368);
@@ -231,11 +216,11 @@ describe("VeVote", function () {
     it("Should store the proposal deadline duration correctly", async function () {
       const { vevote } = await getOrDeployContractInstances({ forceDeploy: true });
       const tx = await createProposal({
-        startTime: 2000000000,
-        votingPeriod: 100,
+        startBlock: 200000000,
+        votingPeriod: 10,
       });
       const proposalId = await getProposalIdFromTx(tx);
-      expect(await vevote.proposalDeadline(proposalId)).to.equal(2000000000 + 100);
+      expect(await vevote.proposalDeadline(proposalId)).to.equal(200000000 + 10);
     });
 
     it("Should store the proposal choices correctly", async function () {
@@ -280,8 +265,8 @@ describe("VeVote", function () {
         maxChoices: 2,
         choices,
         description: "bafkreidbrnrrrv3a4iusha5kpodumws4cwlgnrdjrqrr6hbnqu7l5szjte",
-        startTime: 2000000000,
-        votingPeriod: 100,
+        startBlock: 200000000,
+        votingPeriod: 10,
       });
       await expect(tx)
         .to.emit(vevote, "VeVoteProposalCreated")
@@ -289,8 +274,8 @@ describe("VeVote", function () {
           await getProposalIdFromTx(tx),
           whitelistedAccount.address,
           "bafkreidbrnrrrv3a4iusha5kpodumws4cwlgnrdjrqrr6hbnqu7l5szjte",
-          2000000000,
-          100,
+          200000000,
+          10,
           choices,
           2,
           1,
@@ -309,15 +294,15 @@ describe("VeVote", function () {
         maxChoices: 2,
         choices,
         description: "bafkreidbrnrrrv3a4iusha5kpodumws4cwlgnrdjrqrr6hbnqu7l5szjte",
-        startTime: 2000000000,
-        votingPeriod: 100,
+        startBlock: 200000000,
+        votingPeriod: 10,
       });
 
       expect(
         await vevote.hashProposal(
           whitelistedAccount.address,
-          2000000000,
-          100,
+          200000000,
+          10,
           choices,
           ethers.keccak256(ethers.toUtf8Bytes("bafkreidbrnrrrv3a4iusha5kpodumws4cwlgnrdjrqrr6hbnqu7l5szjte")),
           2,
@@ -370,8 +355,11 @@ describe("VeVote", function () {
     });
 
     it("Only whitelisted addresses can cancel their a proposal when it is PENDING state", async function () {
+      const config = createLocalConfig();
+      config.QUORUM_PERCENTAGE = 0;
       const { vevote, whitelistedAccount, mjolnirXHolder, admin } = await getOrDeployContractInstances({
         forceDeploy: true,
+        config,
       });
       // PENDING -> CANCELLED
       const tx1 = await createProposal();
@@ -432,7 +420,9 @@ describe("VeVote", function () {
     });
 
     it("Admins can cancel any proposal when they are in PENDING or ACTIVE state", async function () {
-      const { vevote, admin, mjolnirXHolder } = await getOrDeployContractInstances({ forceDeploy: true });
+      const config = createLocalConfig();
+      config.QUORUM_PERCENTAGE = 0;
+      const { vevote, admin, mjolnirXHolder } = await getOrDeployContractInstances({ forceDeploy: true, config });
       // PENDING -> CANCELLED
       const tx1 = await createProposal();
       const proposalId1 = await getProposalIdFromTx(tx1);
@@ -608,13 +598,45 @@ describe("VeVote", function () {
       expect(await vevote.totalVotes(proposalId)).to.equal(190);
     });
 
-    // TODO: Update this test to reflect the new node contract
+    it("Should determine users vote weight correctly", async function () {
+      const {
+        vevote,
+        admin,
+        strengthHolder,
+        thunderHolder,
+        mjolnirHolder,
+        veThorXHolder,
+        strengthXHolder,
+        thunderXHolder,
+        mjolnirXHolder,
+        flashHolder,
+        lighteningHolder,
+        dawnHolder,
+        validatorHolder,
+      } = await getOrDeployContractInstances({
+        forceDeploy: true,
+      });
+
+      expect(await vevote.getVoteWeight(admin.address)).to.equal(0);
+      expect(await vevote.getVoteWeight(validatorHolder.address)).to.equal(5000);
+      expect(await vevote.getVoteWeight(strengthHolder.address)).to.equal(100);
+      expect(await vevote.getVoteWeight(thunderHolder.address)).to.equal(500);
+      expect(await vevote.getVoteWeight(mjolnirHolder.address)).to.equal(1500);
+      expect(await vevote.getVoteWeight(veThorXHolder.address)).to.equal(90);
+      expect(await vevote.getVoteWeight(strengthXHolder.address)).to.equal(240);
+      expect(await vevote.getVoteWeight(thunderXHolder.address)).to.equal(840);
+      expect(await vevote.getVoteWeight(mjolnirXHolder.address)).to.equal(2340);
+      expect(await vevote.getVoteWeight(flashHolder.address)).to.equal(20);
+      expect(await vevote.getVoteWeight(lighteningHolder.address)).to.equal(5);
+      expect(await vevote.getVoteWeight(dawnHolder.address)).to.equal(1);
+    });
+
     it("Should determine vote weight based on all nodes a user owns and has deleagted to them at a certian timepoint", async function () {
       const { vevote, strengthHolder } = await getOrDeployContractInstances({
         forceDeploy: true,
       });
 
-      const timepoint = await getCurrentBlockTimestamp();
+      const timepoint = await getCurrentBlockNumber();
 
       // User owns 1 node with weight 100
       expect(await vevote.getVoteWeightAtTimepoint(strengthHolder.address, timepoint)).to.equal(100);
@@ -645,21 +667,6 @@ describe("VeVote", function () {
     });
 
     it("Should update proposal choice tally correctly when a user votes", async function () {});
-
-    it("Should revert if base node level is 0 or not set", async function () {
-      const config = createLocalConfig();
-      config.BASE_LEVEL_NODE = 0;
-      const { vevote, strengthHolder } = await getOrDeployContractInstances({ forceDeploy: true, config });
-      const tx = await createProposal();
-      const proposalId = await getProposalIdFromTx(tx);
-      await waitForProposalToStart(proposalId);
-
-      // User owns 1 node with weight 100
-      await expect(vevote.getVoteWeight(strengthHolder.address)).to.be.reverted;
-
-      // Vote weight should be split evenly between all choices
-      await expect(vevote.connect(strengthHolder).castVote(proposalId, 3)).to.be.reverted;
-    });
 
     it("Should handle cases where vote choice weight is less than vote weight denominator", async function () {
       const { vevote, dawnHolder, otherAccount, admin, stargateNFT } = await getOrDeployContractInstances({
@@ -767,8 +774,11 @@ describe("VeVote", function () {
 
   describe("Proposal Execution", function () {
     it("Only admin addresses can execute proposals", async function () {
+      const config = createLocalConfig();
+      config.QUORUM_PERCENTAGE = 0;
       const { vevote, admin, strengthHolder, otherAccount, whitelistedAccount } = await getOrDeployContractInstances({
         forceDeploy: true,
+        config,
       });
       const tx = await createProposal();
       const proposalId = await getProposalIdFromTx(tx);
@@ -794,8 +804,11 @@ describe("VeVote", function () {
     });
 
     it("Proposals can only be executed when they are in SUCEEDED state", async function () {
+      const config = createLocalConfig();
+      config.QUORUM_PERCENTAGE = 0;
       const { vevote, whitelistedAccount, mjolnirXHolder, admin } = await getOrDeployContractInstances({
         forceDeploy: true,
+        config,
       });
       // PENDING -> CANCELLED
       const tx1 = await createProposal();
@@ -869,31 +882,72 @@ describe("VeVote", function () {
       expect(await vevote["quorumNumerator()"]()).to.equal(config.QUORUM_PERCENTAGE);
     });
 
+    it("Should revert if min vet stake required is not set at given timepoint", async function () {
+      const { vevote } = await getOrDeployContractInstances({ forceDeploy: true });
+      await expect(vevote.quorum(0)).to.be.revertedWithCustomError(vevote, "VeVoteInvalidMinStakeAtTimepoint");
+    });
+
     it("Should return the correct quorom numerator at a given timepoint", async function () {
       const config = createLocalConfig();
       const { vevote, admin } = await getOrDeployContractInstances({ forceDeploy: true });
-      const currentTime = await getCurrentBlockTimestamp();
+      const prevBlock = await getCurrentBlockNumber();
 
-      expect(await vevote["quorumNumerator(uint256)"](currentTime)).to.equal(config.QUORUM_PERCENTAGE);
+      expect(await vevote["quorumNumerator(uint48)"](prevBlock)).to.equal(config.QUORUM_PERCENTAGE);
       expect(await vevote["quorumNumerator()"]()).to.equal(config.QUORUM_PERCENTAGE);
 
-      await time.setNextBlockTimestamp(currentTime + 100);
       await waitForNextBlock();
 
       // Set quorom numerator to 50
       await vevote.connect(admin).updateQuorumNumerator(75);
 
-      expect(await vevote["quorumNumerator(uint256)"](currentTime + 101)).to.equal(75);
+      await waitForNextBlock();
+      const currentBlock = await getCurrentBlockNumber();
+
+      expect(await vevote["quorumNumerator(uint48)"](currentBlock)).to.equal(75);
       expect(await vevote["quorumNumerator()"]()).to.equal(75);
 
       // Time
-      expect(await vevote["quorumNumerator(uint256)"](currentTime + 10)).to.equal(config.QUORUM_PERCENTAGE);
+      expect(await vevote["quorumNumerator(uint48)"](prevBlock)).to.equal(config.QUORUM_PERCENTAGE);
     });
 
     it("Should return the correct quorom at a given timepoint", async function () {
-      // TODO: When quorom is implemented
       const { vevote } = await getOrDeployContractInstances({ forceDeploy: true });
-      expect(await vevote.quorum(1)).to.equal(0); // THIS IS A PLACEHOLDER
+
+      /**
+       * Quorum voting power is calculated by scaling VET per node × multiplier, then normalizing by the
+       * minimum VET required to own a node (minStake = 10,000 VET).
+       *
+       * - Each normalized vote weight = (NodeVET × Multiplier) / 10,000
+       *
+       * Hardcoded 101 Validator Nodes:
+       *   - VET: 25,000,000 × 2.0 = 50,000,000 per node
+       *   - Normalized: 50,000,000 / 10,000 = 5,000 per node
+       *   - Total: 101 × 5,000 = 505,000 normalized weight
+       *
+       * Additional single instance nodes (1 of each):
+       *
+       *   - Mjolnir X    : 15,600,000 × 1.5 = 23,400,000 / 10,000 = 2,340
+       *   - Thunder X    :  5,600,000 × 1.5 =  8,400,000 / 10,000 =   840
+       *   - Strength X   :  1,600,000 × 1.5 =  2,400,000 / 10,000 =   240
+       *   - VeThor X     :    600,000 × 1.5 =    900,000 / 10,000 =    90
+       *   - Mjolnir      : 15,000,000 × 1.0 = 15,000,000 / 10,000 = 1,500
+       *   - Thunder      :  5,000,000 × 1.0 =  5,000,000 / 10,000 =   500
+       *   - Strength     :  1,000,000 × 1.0 =  1,000,000 / 10,000 =   100
+       *   - Flash*       :    200,000 × 1.0 =    200,000 / 10,000 =    20
+       *   - Lightning*   :     50,000 × 1.0 =     50,000 / 10,000 =     5
+       *   - Dawn*        :     10,000 × 1.0 =     10,000 / 10,000 =     1
+       *
+       * Total normalized node voting weight:
+       *   = 505,000 (Validators)
+       *   + 2,340 + 840 + 240 + 90 + 1,500 + 500 + 100 + 20 + 5 + 1
+       *   = **510,636 total normalized voting weight**
+       *
+       * Quorum is calculated as:
+       *   quorum = (510,636 × 20) / 100 = 102127
+       */
+
+      const block = await getCurrentBlockNumber();
+      expect(await vevote.quorum(block)).to.equal(102127);
     });
 
     it("Only admin addresses can set the quorom numerator", async function () {
@@ -928,7 +982,9 @@ describe("VeVote", function () {
 
   describe("Proposal State", function () {
     it("Should return EXECUTED if contract has been marked as executed", async function () {
-      const { vevote, admin, mjolnirXHolder } = await getOrDeployContractInstances({ forceDeploy: true });
+      const config = createLocalConfig();
+      config.QUORUM_PERCENTAGE = 0;
+      const { vevote, admin, mjolnirXHolder } = await getOrDeployContractInstances({ forceDeploy: true, config });
       const tx = await createProposal();
       const proposalId = await getProposalIdFromTx(tx);
       await waitForProposalToStart(proposalId);
@@ -957,9 +1013,9 @@ describe("VeVote", function () {
 
     it("Should return PENDING if proposal snapshot is after current timepoint", async function () {
       const { vevote } = await getOrDeployContractInstances({ forceDeploy: true });
-      const time = await getCurrentBlockTimestamp();
+      const time = await getCurrentBlockNumber();
       const tx = await createProposal({
-        startTime: time + 1000,
+        startBlock: time + 1000,
       });
       const proposalId = await getProposalIdFromTx(tx);
       expect(await vevote.state(proposalId)).to.equal(0); // PENDING
@@ -975,15 +1031,24 @@ describe("VeVote", function () {
     });
 
     it("Should return DEFEATED if proposal deadline is before current timepoint and quorom is not reached", async function () {
-      // TODO: Implement this when quorom is implemented
-    });
-
-    it("Should return SUCEEDED if proposal deadline is before current timepoint and quorom is reached", async function () {
       const { vevote, mjolnirXHolder } = await getOrDeployContractInstances({ forceDeploy: true });
       const tx = await createProposal();
       const proposalId = await getProposalIdFromTx(tx);
       await waitForProposalToStart(proposalId);
       await vevote.connect(mjolnirXHolder).castVote(proposalId, 1);
+      await waitForProposalToEnd(proposalId);
+      // Should not have reachded quorom
+      expect(await vevote.state(proposalId)).to.equal(3);
+    });
+
+    it("Should return SUCEEDED if proposal deadline is before current timepoint and quorom is reached", async function () {
+      const config = createLocalConfig();
+      config.QUORUM_PERCENTAGE = 0;
+      const { vevote, validatorHolder } = await getOrDeployContractInstances({ forceDeploy: true, config });
+      const tx = await createProposal();
+      const proposalId = await getProposalIdFromTx(tx);
+      await waitForProposalToStart(proposalId);
+      await vevote.connect(validatorHolder).castVote(proposalId, 1);
       await waitForProposalToEnd(proposalId);
       expect(await vevote.state(proposalId)).to.equal(4); // SUCEEDED
     });
@@ -1113,28 +1178,31 @@ describe("VeVote", function () {
         .withArgs(config.INITIAL_MAX_CHOICES, 10);
     });
 
-    it("Only admin addresses can set base level node", async function () {
+    it("Only admin addresses can set min vet stake amount", async function () {
       const { vevote, admin, otherAccount } = await getOrDeployContractInstances({ forceDeploy: true });
-      await expect(vevote.connect(otherAccount).setBaseLevelNode(1)).to.be.revertedWithCustomError(
+      await expect(vevote.connect(otherAccount).setMinStakedVetAmount(1)).to.be.revertedWithCustomError(
         vevote,
         "AccessControlUnauthorizedAccount",
       );
-      await expect(vevote.connect(admin).setBaseLevelNode(1)).to.not.be.reverted;
+      await expect(vevote.connect(admin).setMinStakedVetAmount(1)).to.not.be.reverted;
 
-      expect(await vevote.getBaseLevelId()).to.equal(1);
+      expect(await vevote.getMinStakedAmount()).to.equal(1);
     });
 
-    it("Base level node cannot be 0", async function () {
+    it("Min vet stake amount cannot be 0", async function () {
       const { vevote, admin } = await getOrDeployContractInstances({ forceDeploy: true });
-      await expect(vevote.connect(admin).setBaseLevelNode(0)).to.be.revertedWithCustomError(vevote, "InvalidNode");
+      await expect(vevote.connect(admin).setMinStakedVetAmount(0)).to.be.revertedWithCustomError(
+        vevote,
+        "InvalidMinimumStake",
+      );
     });
 
     it("Should emit an event when base level node is set", async function () {
       const config = createLocalConfig();
       const { vevote, admin } = await getOrDeployContractInstances({ forceDeploy: true });
-      await expect(vevote.connect(admin).setBaseLevelNode(1))
-        .to.emit(vevote, "VechainBaseNodeSet")
-        .withArgs(config.BASE_LEVEL_NODE, 1);
+      await expect(vevote.connect(admin).setMinStakedVetAmount(1))
+        .to.emit(vevote, "MinStakedAmountUpdated")
+        .withArgs(config.MIN_VET_STAKE, 1);
     });
 
     it("Only admin address can update node management cotract", async function () {
@@ -1197,24 +1265,13 @@ describe("VeVote", function () {
 
     it("Only admin address can update node multiplers", async function () {
       const { vevote, admin, otherAccount } = await getOrDeployContractInstances({ forceDeploy: true });
-      const nodeMultipliers = {
-        strength: 1,
-        thunder: 2,
-        mjolnir: 3,
-        veThorX: 4,
-        strengthX: 5,
-        thunderX: 6,
-        mjolnirX: 7,
-        flash: 8,
-        lightning: 9,
-        dawn: 10,
-        validator: 11,
-      };
+      const nodeMultipliers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
       await expect(
         vevote.connect(otherAccount).updateLevelIdMultipliers(nodeMultipliers),
       ).to.be.revertedWithCustomError(vevote, "AccessControlUnauthorizedAccount");
       await expect(vevote.connect(admin).updateLevelIdMultipliers(nodeMultipliers)).to.not.be.reverted;
 
+      expect(await vevote.levelIdMultiplier(0)).to.equal(0);
       expect(await vevote.levelIdMultiplier(1)).to.equal(1);
       expect(await vevote.levelIdMultiplier(2)).to.equal(2);
       expect(await vevote.levelIdMultiplier(3)).to.equal(3);
@@ -1232,36 +1289,24 @@ describe("VeVote", function () {
         forceDeploy: true,
       });
 
-      const nodeMultipliers = {
-        strength: 1,
-        thunder: 2,
-        mjolnir: 3,
-        veThorX: 4,
-        strengthX: 5,
-        thunderX: 6,
-        mjolnirX: 7,
-        flash: 8,
-        lightning: 9,
-        dawn: 10,
-        validator: 11,
-      };
+      const nodeMultipliers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 
       await expect(vevote.connect(admin).updateLevelIdMultipliers(nodeMultipliers))
-        .to.emit(vevote, "NodeVoteMultipliersUpdated")
-        .withArgs(Object.values(nodeMultipliers).map(BigInt));
+        .to.emit(vevote, "VoteMultipliersUpdated")
+        .withArgs(nodeMultipliers);
     });
   });
 
   describe("Proposal Clock", function () {
     it("Should return the current block timestamp", async function () {
       const { vevote } = await getOrDeployContractInstances({});
-      const currentTime = await getCurrentBlockTimestamp();
-      expect(await vevote.clock()).to.equal(currentTime);
+      const currentBlock = await getCurrentBlockNumber();
+      expect(await vevote.clock()).to.equal(currentBlock);
     });
 
     it("Should return the correct CLOCK_TYPE", async function () {
       const { vevote } = await getOrDeployContractInstances({});
-      expect(await vevote.CLOCK_MODE()).to.equal("mode=timestamp&from=default");
+      expect(await vevote.CLOCK_MODE()).to.equal("mode=blocknumber&from=default");
     });
   });
 });
