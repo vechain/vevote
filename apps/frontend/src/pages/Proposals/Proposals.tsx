@@ -12,7 +12,6 @@ import { PropsWithChildren, useMemo, useState } from "react";
 import { useCreateProposal } from "../CreateProposal/CreateProposalProvider";
 import { ProposalCard } from "./ProposalCard";
 import { CircleInfoIcon, CirclePlusIcon, VoteIcon } from "@/icons";
-import { useHasVoted } from "@/hooks/useCastVote";
 
 const ITEMS_PER_PAGE = 6;
 
