@@ -211,8 +211,18 @@ interface IVeVote is IERC165, IERC6372 {
    * @param choices The bitmask representing the selected vote choices.
    * @param weight The voting weight of the voter.
    * @param reason The reason for the vote.
+   * @param stargateNFTs The list of Stargate node token IDs used.
+   * @param validator The validator master address if vote was cast as validator.
    */
-  event VoteCast(address indexed voter, uint256 indexed proposalId, uint32 choices, uint256 weight, string reason);
+  event VoteCast(
+    address indexed voter,
+    uint256 indexed proposalId,
+    uint32 choices,
+    uint256 weight,
+    string reason,
+    uint256[] stargateNFTs,
+    address validator
+  );
 
   /**
    * @notice Emitted when the minimum VET stake requirement is updated for vote normalization.
