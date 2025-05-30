@@ -602,7 +602,7 @@ contract NodeManagement is INodeManagement, AccessControlUpgradeable, UUPSUpgrad
 
     // Copy owned tokens
     for (uint256 i; i < ownedLength; ++i) {
-      tokens[count++] = ownedTokens[i];
+      if ($.nodeIdToDelegatee[ownedTokens[i].tokenId] == address(0)) tokens[count++] = ownedTokens[i];
     }
 
     // Fetch delegated tokens (handle burned/missing tokens via try/catch)
