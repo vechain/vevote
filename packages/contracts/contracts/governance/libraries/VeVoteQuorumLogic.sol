@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: MIT
 
-//  8b           d8       8b           d8                            
-//  `8b         d8'       `8b         d8'           ,d               
-//   `8b       d8'         `8b       d8'            88               
-//    `8b     d8' ,adPPYba, `8b     d8' ,adPPYba, MM88MMM ,adPPYba,  
-//     `8b   d8' a8P   _d88  `8b   d8' a8"     "8a  88   a8P_____88  
-//      `8b d8'  8PP  "PP""   `8b d8'  8b       d8  88   8PP"""""""  
-//       `888'   "8b,   ,aa    `888'   "8a,   ,a8"  88,  "8b,   ,aa  
-//        `8'     `"Ybbd8"'     `8'     `"YbbdP"'   "Y888 `"Ybbd8"'  
+//  8b           d8       8b           d8
+//  `8b         d8'       `8b         d8'           ,d
+//   `8b       d8'         `8b       d8'            88
+//    `8b     d8' ,adPPYba, `8b     d8' ,adPPYba, MM88MMM ,adPPYba,
+//     `8b   d8' a8P   _d88  `8b   d8' a8"     "8a  88   a8P_____88
+//      `8b d8'  8PP  "PP""   `8b d8'  8b       d8  88   8PP"""""""
+//       `888'   "8b,   ,aa    `888'   "8a,   ,a8"  88,  "8b,   ,aa
+//        `8'     `"Ybbd8"'     `8'     `"YbbdP"'   "Y888 `"Ybbd8"'
 
 pragma solidity 0.8.20;
 
@@ -18,13 +18,14 @@ import { VeVoteVoteLogic } from "./VeVoteVoteLogic.sol";
 import { VeVoteConstants } from "./VeVoteConstants.sol";
 import { VeVoteConfigurator } from "./VeVoteConfigurator.sol";
 import { VeVoteTypes } from "./VeVoteTypes.sol";
+import { DataTypes } from "../../external/StargateNFT/libraries/DataTypes.sol";
 import "@openzeppelin/contracts/utils/structs/Checkpoints.sol";
 import "@openzeppelin/contracts/utils/math/SafeCast.sol";
 
 /// @title VeVoteQuorumLogic
 /// @notice Library for managing and calculating quorum requirements in the VeVote contract.
 /// @dev This library provides functions to track quorum history, update quorum requirements, and determine if quorum has been met for proposals.
-library VeVoteQuoromLogic {
+library VeVoteQuorumLogic {
   using Checkpoints for Checkpoints.Trace208;
 
   // ------------------------------- Errors -------------------------------
@@ -97,7 +98,7 @@ library VeVoteQuoromLogic {
    * @return The required quorum at the given timepoint.
    */
   function quorum(VeVoteStorageTypes.VeVoteStorage storage self, uint48 timepoint) external view returns (uint256) {
-    return _quorum(self, timepoint);   
+    return _quorum(self, timepoint);
   }
 
   /** ------------------ SETTERS ------------------ **/
@@ -142,26 +143,39 @@ library VeVoteQuoromLogic {
    * @notice Internal function to calculate the quorum required at a given timepoint.
    * @param self The storage reference for VeVoteStorage.
    * @param timepoint The block number to retrieve quorum requirements for.
-   * @return The required quorum at the given timepoint.
+   * @return quorum at the given timepoint.
    */
-  function _quorum(VeVoteStorageTypes.VeVoteStorage storage self, uint48 timepoint) internal view returns (uint256) {
+  function _quorum(
+    VeVoteStorageTypes.VeVoteStorage storage self,
+    uint48 timepoint
+  ) internal view returns (uint256) {
     uint208[] memory circulatingSupplies = self.stargateNFT.getLevelsCirculatingSuppliesAtBlock(timepoint);
+    DataTypes.Level[] memory stargateLevels = self.stargateNFT.getLevels();
 
-    // Set initial totalSupply to total authority master vote weight node as these are known.
-    uint256 totalPotenialVoteWeightScaled = VeVoteConstants.TOTAL_AUTHORITY_MASTER_NODES *
-      VeVoteConstants.VALIDATOR_STAKED_VET_REQUIREMENT;
+    // Determine total potenial vote weigth from validators
+    uint256 validatorStake = VeVoteConstants.VALIDATOR_STAKED_VET_REQUIREMENT;
+    uint256 validatorWeight = self.levelIdMultiplier[0];
+    uint256 totalScaledWeight = VeVoteConstants.TOTAL_AUTHORITY_MASTER_NODES * validatorStake * validatorWeight;
 
-    // Cache the length to avoid repeated reads
-    uint256 length = circulatingSupplies.length;
-    for (uint8 i; i < length; i++) {
-      totalPotenialVoteWeightScaled += uint256(circulatingSupplies[i]) * self.levelIdMultiplier[i];
+    // Cache number of levels 
+    uint256 levelCount = circulatingSupplies.length;
+    for (uint8 i; i < levelCount; i++) {
+      uint256 supply = circulatingSupplies[i];
+      uint256 multiplier = self.levelIdMultiplier[i + 1]; // +1 to skip validator
+      uint256 requiredStake = stargateLevels[i].vetAmountRequiredToStake;
+
+      // supply * multiplier * requiredStake
+      totalScaledWeight += supply * multiplier * requiredStake;
     }
 
-    // Find the total potenial weight by scaling by multiplier scale and min vet stake to own a stargate NFT
-    uint256 totalPotenialVoteWeight = totalPotenialVoteWeightScaled /
-      (VeVoteConstants.VOTING_MULTIPLIER_SCALE * VeVoteConfigurator.getMinStakedAmountAtTimepoint(self, timepoint));
+    // Ensure minimum staked vet to hold stargate NFT is greater than 0
+    uint256 minStake = VeVoteConfigurator.getMinStakedAmountAtTimepoint(self, timepoint);
 
-    return (totalPotenialVoteWeight * quorumNumerator(self, timepoint)) / quorumDenominator();
+    // Divide by minimum stake to own stargate NFT to determine total potenial weight
+    uint256 totalPotentialWeight = totalScaledWeight / minStake;
+
+    // return quorom
+    return (totalPotentialWeight * quorumNumerator(self, timepoint)) / quorumDenominator();
   }
 
   // ------------------ Private functions ------------------
