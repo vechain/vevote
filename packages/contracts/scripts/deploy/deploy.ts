@@ -16,6 +16,7 @@ import {
 import { getConfig } from "@repo/config";
 import { NodeManagement, StargateDelegation, StargateNFT, VeVote } from "../../typechain-types";
 import { deployLibraries } from "../helpers/deployLibraries";
+import { createValidator } from "../helpers/validators";
 
 const appConfig = getConfig();
 
@@ -38,7 +39,11 @@ export async function deployAll(config: ContractsConfig) {
     flashHolder,
     lighteningHolder,
     dawnHolder,
-    validatorHolder,
+    validatorHolder1,
+    masterNode1,
+    validatorHolder2,
+    masterNode2,
+    whitelistedAccount,
   ] = await ethers.getSigners();
 
   const TEMP_ADMIN = network.name === "vechain_solo" ? config.CONTRACTS_ADMIN_ADDRESS : deployer.address;
@@ -161,7 +166,10 @@ export async function deployAll(config: ContractsConfig) {
 
     nodeManagementAddress = await nodeManagement.getAddress();
 
-    // Create mock node holders
+    // Mock builtin Authority contract
+    const AuthorityContractMock = await ethers.getContractFactory("Authority");
+    const authorityContractMock = await AuthorityContractMock.deploy();
+    await authorityContractMock.waitForDeployment();
 
     // ---------------------- Create Node Holders ----------------------
     await createNodeHolder(TokenLevelId.Strength, deployer, strengthHolder, stargateMock);
@@ -174,9 +182,9 @@ export async function deployAll(config: ContractsConfig) {
     await createNodeHolder(TokenLevelId.Dawn, deployer, dawnHolder, stargateMock);
     await createNodeHolder(TokenLevelId.Lightning, deployer, lighteningHolder, stargateMock);
     await createNodeHolder(TokenLevelId.Flash, deployer, flashHolder, stargateMock);
+    await createValidator(validatorHolder1, authorityContractMock, masterNode1);
+    await createValidator(validatorHolder2, authorityContractMock, masterNode2);
   }
-
-  // Create Validator // Mock
 
   // ---------------------- Deploy Libraries ----------------------
   const { veVoteConfigurator, veVoteProposalLogic, veVoteQuoromLogic, veVoteStateLogic, veVoteVoteLogic } =
@@ -196,12 +204,13 @@ export async function deployAll(config: ContractsConfig) {
         initialMaxChoices: config.INITIAL_MAX_CHOICES,
         nodeManagement: nodeManagementAddress,
         stargateNFT: stargateSCAddress,
-        baseLevelNode: config.BASE_LEVEL_NODE,
+        authorityContract: config.AUTHORITY_CONTRACT_ADDRESS,
+        initialMinStakedAmount: config.MIN_VET_STAKE,
       },
       {
         admin: TEMP_ADMIN,
         upgrader: TEMP_ADMIN,
-        whitelist: [TEMP_ADMIN],
+        whitelist: [TEMP_ADMIN, whitelistedAccount.address],
         settingsManager: TEMP_ADMIN,
         nodeWeightManager: TEMP_ADMIN,
         executor: TEMP_ADMIN,
@@ -210,7 +219,7 @@ export async function deployAll(config: ContractsConfig) {
     {
       VeVoteVoteLogic: await veVoteVoteLogic.getAddress(),
       VeVoteStateLogic: await veVoteStateLogic.getAddress(),
-      VeVoteQuoromLogic: await veVoteQuoromLogic.getAddress(),
+      VeVoteQuorumLogic: await veVoteQuoromLogic.getAddress(),
       VeVoteProposalLogic: await veVoteProposalLogic.getAddress(),
       VeVoteConfigurator: await veVoteConfigurator.getAddress(),
     },
