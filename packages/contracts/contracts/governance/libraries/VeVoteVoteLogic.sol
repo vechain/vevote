@@ -366,10 +366,11 @@ library VeVoteVoteLogic {
       }
     }
 
-    // Resize to actual count
-    nfts = new uint256[](count);
-    for (uint256 i; i < count; ++i) {
-      nfts[i] = tempTokenIds[i];
+    nfts = tempTokenIds;
+    if (count < tempTokenIds.length) {
+      assembly {
+        mstore(nfts, count)
+      }
     }
 
     return (weight, nfts, validator);
