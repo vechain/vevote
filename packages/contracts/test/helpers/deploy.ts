@@ -224,7 +224,7 @@ export const getOrDeployContractInstances = async ({ forceDeploy = false, config
     {
       VeVoteVoteLogic: await veVoteVoteLogic.getAddress(),
       VeVoteStateLogic: await veVoteStateLogic.getAddress(),
-      VeVoteQuoromLogic: await veVoteQuoromLogic.getAddress(),
+      VeVoteQuorumLogic: await veVoteQuoromLogic.getAddress(),
       VeVoteProposalLogic: await veVoteProposalLogic.getAddress(),
       VeVoteConfigurator: await veVoteConfigurator.getAddress(),
     },

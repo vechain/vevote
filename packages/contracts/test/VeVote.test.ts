@@ -12,6 +12,7 @@ import {
   waitForProposalToStart,
 } from "./helpers/common";
 import { createNodeHolder } from "../scripts/helpers";
+import { ZeroAddress, zeroPadBytes } from "ethers";
 
 describe("VeVote", function () {
   describe("Deployment", function () {
@@ -397,7 +398,7 @@ describe("VeVote", function () {
 
       // Should not be able to cancel SUCEEDED proposal
       await waitForProposalToStart(proposalId4);
-      await vevote.connect(mjolnirXHolder).castVote(proposalId4, 1);
+      await vevote.connect(mjolnirXHolder).castVote(proposalId4, 1, ZeroAddress);
       await waitForProposalToEnd(proposalId4);
       expect(await vevote.state(proposalId4)).to.equal(4);
       await expect(vevote.connect(whitelistedAccount).cancel(proposalId4)).to.be.revertedWithCustomError(
@@ -456,7 +457,7 @@ describe("VeVote", function () {
 
       // Should not be able to cancel SUCEEDED proposal
       await waitForProposalToStart(proposalId4);
-      await vevote.connect(mjolnirXHolder).castVote(proposalId4, 1);
+      await vevote.connect(mjolnirXHolder).castVote(proposalId4, 1, ZeroAddress);
       await waitForProposalToEnd(proposalId4);
       expect(await vevote.state(proposalId4)).to.equal(4);
       await expect(vevote.connect(admin).cancel(proposalId4)).to.be.revertedWithCustomError(
@@ -510,7 +511,7 @@ describe("VeVote", function () {
       const { vevote, mjolnirXHolder } = await getOrDeployContractInstances({ forceDeploy: true });
       const tx = await createProposal();
       const proposalId = await getProposalIdFromTx(tx);
-      await expect(vevote.connect(mjolnirXHolder).castVote(proposalId, 1)).to.be.revertedWithCustomError(
+      await expect(vevote.connect(mjolnirXHolder).castVote(proposalId, 1, ZeroAddress)).to.be.revertedWithCustomError(
         vevote,
         "ProposalNotActive",
       );
@@ -521,8 +522,8 @@ describe("VeVote", function () {
       const tx = await createProposal();
       const proposalId = await getProposalIdFromTx(tx);
       await waitForProposalToStart(proposalId);
-      await vevote.connect(mjolnirXHolder).castVote(proposalId, 1);
-      await expect(vevote.connect(mjolnirXHolder).castVote(proposalId, 1)).to.be.revertedWithCustomError(
+      await vevote.connect(mjolnirXHolder).castVote(proposalId, 1, ZeroAddress);
+      await expect(vevote.connect(mjolnirXHolder).castVote(proposalId, 1, ZeroAddress)).to.be.revertedWithCustomError(
         vevote,
         "AlreadyVoted",
       );
@@ -533,10 +534,9 @@ describe("VeVote", function () {
       const tx = await createProposal();
       const proposalId = await getProposalIdFromTx(tx);
       await waitForProposalToStart(proposalId);
-      await expect(vevote.connect(mjolnirXHolder).castVote(proposalId, 10000000)).to.be.revertedWithCustomError(
-        vevote,
-        "InvalidVoteChoice",
-      );
+      await expect(
+        vevote.connect(mjolnirXHolder).castVote(proposalId, 10000000, ZeroAddress),
+      ).to.be.revertedWithCustomError(vevote, "InvalidVoteChoice");
     });
 
     it("Should revert if a user selects more choices than the maximum allowed", async function () {
@@ -544,7 +544,7 @@ describe("VeVote", function () {
       const tx = await createProposal();
       const proposalId = await getProposalIdFromTx(tx);
       await waitForProposalToStart(proposalId);
-      await expect(vevote.connect(mjolnirXHolder).castVote(proposalId, 7)).to.be.revertedWithCustomError(
+      await expect(vevote.connect(mjolnirXHolder).castVote(proposalId, 7, ZeroAddress)).to.be.revertedWithCustomError(
         vevote,
         "InvalidVoteChoice",
       );
@@ -555,7 +555,7 @@ describe("VeVote", function () {
       const tx = await createProposal();
       const proposalId = await getProposalIdFromTx(tx);
       await waitForProposalToStart(proposalId);
-      await expect(vevote.connect(mjolnirXHolder).castVote(proposalId, 0)).to.be.revertedWithCustomError(
+      await expect(vevote.connect(mjolnirXHolder).castVote(proposalId, 0, ZeroAddress)).to.be.revertedWithCustomError(
         vevote,
         "InvalidVoteChoice",
       );
@@ -566,7 +566,7 @@ describe("VeVote", function () {
       const tx = await createProposal();
       const proposalId = await getProposalIdFromTx(tx);
       await waitForProposalToStart(proposalId);
-      await expect(vevote.connect(otherAccount).castVote(proposalId, 1)).to.be.revertedWithCustomError(
+      await expect(vevote.connect(otherAccount).castVote(proposalId, 1, ZeroAddress)).to.be.revertedWithCustomError(
         vevote,
         "VoterNotEligible",
       );
@@ -583,7 +583,7 @@ describe("VeVote", function () {
       await waitForProposalToStart(proposalId);
 
       // User owns 1 node with weight 100
-      expect(await vevote.getVoteWeight(strengthHolder.address)).to.equal(100);
+      expect(await vevote.getVoteWeight(strengthHolder.address, ZeroAddress)).to.equal(10000);
 
       const tokenIds = await stargateNFT.idsOwnedBy(veThorXHolder.address);
 
@@ -591,11 +591,11 @@ describe("VeVote", function () {
       await nodeManagement.connect(veThorXHolder).delegateNode(strengthHolder.address, tokenIds[0]);
 
       // User owns 1 node with weight 100 and has 1 delegated node with weight 9
-      expect(await vevote.getVoteWeight(strengthHolder.address)).to.equal(190);
+      expect(await vevote.getVoteWeight(strengthHolder.address, ZeroAddress)).to.equal(19000);
 
-      // Total votes should be 100 + 90 = 190
-      await vevote.connect(strengthHolder).castVote(proposalId, 1);
-      expect(await vevote.totalVotes(proposalId)).to.equal(190);
+      // Total votes should be 100 + 90 = 190 (19000) scaled by 100
+      await vevote.connect(strengthHolder).castVote(proposalId, 1, ZeroAddress);
+      expect(await vevote.totalVotes(proposalId)).to.equal(19000);
     });
 
     it("Should determine users vote weight correctly", async function () {
@@ -617,18 +617,18 @@ describe("VeVote", function () {
         forceDeploy: true,
       });
 
-      expect(await vevote.getVoteWeight(admin.address)).to.equal(0);
-      expect(await vevote.getVoteWeight(validatorHolder.address)).to.equal(5000);
-      expect(await vevote.getVoteWeight(strengthHolder.address)).to.equal(100);
-      expect(await vevote.getVoteWeight(thunderHolder.address)).to.equal(500);
-      expect(await vevote.getVoteWeight(mjolnirHolder.address)).to.equal(1500);
-      expect(await vevote.getVoteWeight(veThorXHolder.address)).to.equal(90);
-      expect(await vevote.getVoteWeight(strengthXHolder.address)).to.equal(240);
-      expect(await vevote.getVoteWeight(thunderXHolder.address)).to.equal(840);
-      expect(await vevote.getVoteWeight(mjolnirXHolder.address)).to.equal(2340);
-      expect(await vevote.getVoteWeight(flashHolder.address)).to.equal(20);
-      expect(await vevote.getVoteWeight(lighteningHolder.address)).to.equal(5);
-      expect(await vevote.getVoteWeight(dawnHolder.address)).to.equal(1);
+      expect(await vevote.getVoteWeight(admin.address, ZeroAddress)).to.equal(0);
+      expect(await vevote.getVoteWeight(validatorHolder.address, admin.address)).to.equal(500000);
+      expect(await vevote.getVoteWeight(strengthHolder.address, ZeroAddress)).to.equal(10000);
+      expect(await vevote.getVoteWeight(thunderHolder.address, ZeroAddress)).to.equal(50000);
+      expect(await vevote.getVoteWeight(mjolnirHolder.address, ZeroAddress)).to.equal(150000);
+      expect(await vevote.getVoteWeight(veThorXHolder.address, ZeroAddress)).to.equal(9000);
+      expect(await vevote.getVoteWeight(strengthXHolder.address, ZeroAddress)).to.equal(24000);
+      expect(await vevote.getVoteWeight(thunderXHolder.address, ZeroAddress)).to.equal(84000);
+      expect(await vevote.getVoteWeight(mjolnirXHolder.address, ZeroAddress)).to.equal(234000);
+      expect(await vevote.getVoteWeight(flashHolder.address, ZeroAddress)).to.equal(2000);
+      expect(await vevote.getVoteWeight(lighteningHolder.address, ZeroAddress)).to.equal(500);
+      expect(await vevote.getVoteWeight(dawnHolder.address, ZeroAddress)).to.equal(100);
     });
 
     it("Should determine vote weight based on all nodes a user owns and has deleagted to them at a certian timepoint", async function () {
@@ -638,12 +638,44 @@ describe("VeVote", function () {
 
       const timepoint = await getCurrentBlockNumber();
 
-      // User owns 1 node with weight 100
-      expect(await vevote.getVoteWeightAtTimepoint(strengthHolder.address, timepoint)).to.equal(100);
+      // User owns 1 node with weight 100 -> 10000 scaled by 100
+      expect(await vevote.getVoteWeightAtTimepoint(strengthHolder.address, timepoint, ZeroAddress)).to.equal(10000);
     });
 
     it("Should normalise the vote weights when calling the getters in the contract", async function () {
-      // TODO: Implement a test for all values when new node contracts in
+      const {
+        vevote,
+        admin,
+        strengthHolder,
+        thunderHolder,
+        mjolnirHolder,
+        veThorXHolder,
+        strengthXHolder,
+        thunderXHolder,
+        mjolnirXHolder,
+        flashHolder,
+        lighteningHolder,
+        dawnHolder,
+        validatorHolder,
+      } = await getOrDeployContractInstances({
+        forceDeploy: true,
+      });
+
+      // Normalised users vote weight
+      expect(await vevote.getVoteWeight(admin.address, ZeroAddress)).to.equal(0);
+      expect(await vevote.getVoteWeight(validatorHolder.address, admin.address)).to.equal(500000);
+      expect(await vevote.getVoteWeight(strengthHolder.address, ZeroAddress)).to.equal(10000);
+      expect(await vevote.getVoteWeight(thunderHolder.address, ZeroAddress)).to.equal(50000);
+      expect(await vevote.getVoteWeight(mjolnirHolder.address, ZeroAddress)).to.equal(150000);
+      expect(await vevote.getVoteWeight(veThorXHolder.address, ZeroAddress)).to.equal(9000);
+      expect(await vevote.getVoteWeight(strengthXHolder.address, ZeroAddress)).to.equal(24000);
+      expect(await vevote.getVoteWeight(thunderXHolder.address, ZeroAddress)).to.equal(84000);
+      expect(await vevote.getVoteWeight(mjolnirXHolder.address, ZeroAddress)).to.equal(234000);
+      expect(await vevote.getVoteWeight(flashHolder.address, ZeroAddress)).to.equal(2000);
+      expect(await vevote.getVoteWeight(lighteningHolder.address, ZeroAddress)).to.equal(500);
+      expect(await vevote.getVoteWeight(dawnHolder.address, ZeroAddress)).to.equal(100);
+
+      //TODO: continue
     });
 
     it("Should split vote weight evenly between all choices when a user votes", async function () {
@@ -653,54 +685,66 @@ describe("VeVote", function () {
       await waitForProposalToStart(proposalId);
 
       // User owns 1 node with weight 100
-      expect(await vevote.getVoteWeight(strengthHolder.address)).to.equal(100);
+      expect(await vevote.getVoteWeight(strengthHolder.address, ZeroAddress)).to.equal(10000);
 
       // Vote weight should be split evenly between all choices
-      await vevote.connect(strengthHolder).castVote(proposalId, 3);
+      await vevote.connect(strengthHolder).castVote(proposalId, 3, ZeroAddress);
 
       // Total votes should be 100
-      expect(await vevote.totalVotes(proposalId)).to.equal(100);
-      // Choice 1 should have 50 votes
+      expect(await vevote.totalVotes(proposalId)).to.equal(10000);
+      // Choice 1 should have 50 votes (scaled by 100)
       const votes = await vevote.getProposalVotes(proposalId);
-      expect(votes[0].weight).to.equal(50);
-      expect(votes[1].weight).to.equal(50);
+      expect(votes[0].weight).to.equal(5000);
+      expect(votes[1].weight).to.equal(5000);
     });
 
-    it("Should update proposal choice tally correctly when a user votes", async function () {});
-
-    it("Should handle cases where vote choice weight is less than vote weight denominator", async function () {
-      const { vevote, dawnHolder, otherAccount, admin, stargateNFT } = await getOrDeployContractInstances({
-        forceDeploy: true,
+    it("Should update proposal choice tally correctly when a user votes", async function () {
+      const { vevote, strengthHolder, validatorHolder, admin, dawnHolder, mjolnirHolder, nodeManagement, stargateNFT } =
+        await getOrDeployContractInstances({ forceDeploy: true });
+      const tx = await createProposal({
+        votingPeriod: 6,
       });
-
-      // Get Dawn holder number 2
-      await createNodeHolder(8, admin, otherAccount, stargateNFT);
-
-      const tx = await createProposal();
-
       const proposalId = await getProposalIdFromTx(tx);
       await waitForProposalToStart(proposalId);
 
-      // User owns 1 node with weight 1
-      expect(await vevote.getVoteWeight(dawnHolder.address)).to.equal(1);
+      // User owns 1 node with weight 100
+      expect(await vevote.getVoteWeight(strengthHolder.address, ZeroAddress)).to.equal(10000);
 
-      // Total votes should be 1, 0.5 for choice 1 and 0.5 for choice 2
-      await vevote.connect(dawnHolder).castVote(proposalId, 3);
-      expect(await vevote.totalVotes(proposalId)).to.equal(1);
+      // Vote weight should be split evenly between all choices
+      await vevote.connect(strengthHolder).castVote(proposalId, 3, ZeroAddress);
 
-      // Votes for choices will be 0.5 and 0.5 which is not a whole number so will be rounded to 0 in solidity
+      // Total votes should be 100
+      expect(await vevote.totalVotes(proposalId)).to.equal(10000);
+      // Choice 1 should have 50 votes (scaled by 100)
       const votes = await vevote.getProposalVotes(proposalId);
-      expect(votes[0].weight).to.equal(0);
-      expect(votes[1].weight).to.equal(0);
+      expect(votes[0].weight).to.equal(5000);
+      expect(votes[1].weight).to.equal(5000);
+      expect(votes[2].weight).to.equal(0);
 
-      // If another user votes with weight 1, total votes will be 2, and as votes have crossed threshold of 1 for choice 1, it will be 1
-      expect(await vevote.getVoteWeight(otherAccount.address)).to.equal(1);
-      await vevote.connect(otherAccount).castVote(proposalId, 1);
+      // Another voter votes
+      await vevote.connect(validatorHolder).castVote(proposalId, 2, admin.address);
 
-      expect(await vevote.totalVotes(proposalId)).to.equal(2);
+      // Choice 1 should have 50 votes (scaled by 100)
       const votes2 = await vevote.getProposalVotes(proposalId);
-      expect(votes2[0].weight).to.equal(1); // Choice 1 will be 1
-      expect(votes2[1].weight).to.equal(0); // Choice 2 will still be 0 as total weight is 0.5
+      expect(votes2[0].weight).to.equal(5000);
+      expect(votes2[1].weight).to.equal(505000); // validatorHolder put all his weight here
+      expect(votes2[2].weight).to.equal(0);
+
+      const tokenIds = await stargateNFT.idsOwnedBy(dawnHolder.address);
+      await nodeManagement.connect(dawnHolder).delegateNode(mjolnirHolder.address, tokenIds[0]);
+
+      await expect(vevote.connect(dawnHolder).castVote(proposalId, 5, ZeroAddress)).to.be.revertedWithCustomError(
+        vevote,
+        "VoterNotEligible",
+      );
+
+      // Another voter votes
+      await vevote.connect(mjolnirHolder).castVote(proposalId, 5, ZeroAddress); // 150000 + 100
+
+      const votes3 = await vevote.getProposalVotes(proposalId);
+      expect(votes3[0].weight).to.equal(80050);
+      expect(votes3[1].weight).to.equal(505000);
+      expect(votes3[2].weight).to.equal(75050);
     });
 
     it("Has Voted should return true if user has voted", async function () {
@@ -708,28 +752,68 @@ describe("VeVote", function () {
       const tx = await createProposal();
       const proposalId = await getProposalIdFromTx(tx);
       await waitForProposalToStart(proposalId);
-      await vevote.connect(dawnHolder).castVote(proposalId, 1);
+      await vevote.connect(dawnHolder).castVote(proposalId, 1, ZeroAddress);
       expect(await vevote.hasVoted(proposalId, dawnHolder.address)).to.equal(true);
     });
 
-    it("Should emit the VoteCast event with correct info", async function () {
-      const { vevote, dawnHolder } = await getOrDeployContractInstances({ forceDeploy: true });
-      const tx = await createProposal();
+    it("Should not allow the same node be used more than once for voting", async function () {
+      const { vevote, dawnHolder, flashHolder, nodeManagement } = await getOrDeployContractInstances({
+        forceDeploy: true,
+      });
+      const tx = await createProposal({
+        votingPeriod: 5,
+      });
       const proposalId = await getProposalIdFromTx(tx);
       await waitForProposalToStart(proposalId);
-      await expect(vevote.connect(dawnHolder).castVote(proposalId, 1))
+
+      expect(await vevote.getVoteWeight(dawnHolder.address, ZeroAddress)).to.equal(100);
+      expect(await vevote.getVoteWeight(flashHolder.address, ZeroAddress)).to.equal(2000);
+
+      const tokenId = await nodeManagement.getNodeIds(dawnHolder.address);
+
+      await vevote.connect(dawnHolder).castVote(proposalId, 1, ZeroAddress);
+
+      expect(await vevote.totalVotes(proposalId)).to.equal(100);
+
+      await nodeManagement.connect(dawnHolder).delegateNode(flashHolder.address, tokenId[0]);
+
+      await vevote.connect(flashHolder).castVote(proposalId, 1, ZeroAddress);
+
+      expect(await vevote.getVoteWeight(dawnHolder.address, ZeroAddress)).to.equal(0);
+      expect(await vevote.getVoteWeight(flashHolder.address, ZeroAddress)).to.equal(2100);
+
+      expect(await vevote.totalVotes(proposalId)).to.equal(2100); // Doesnt include the extra 100 user got from noce delagation
+    });
+
+    it("Should emit the VoteCast event with correct info", async function () {
+      const { vevote, dawnHolder, admin, validatorHolder, nodeManagement, stargateNFT, strengthHolder } =
+        await getOrDeployContractInstances({ forceDeploy: true });
+      const tx = await createProposal({
+        votingPeriod: 10,
+      });
+      const proposalId = await getProposalIdFromTx(tx);
+      await waitForProposalToStart(proposalId);
+
+      // Delegate some nodes
+      const tokenId1 = await stargateNFT.idsOwnedBy(dawnHolder.address);
+      await nodeManagement.connect(dawnHolder).delegateNode(validatorHolder.address, tokenId1[0]);
+      const tokenId2 = await stargateNFT.idsOwnedBy(strengthHolder.address);
+      await nodeManagement.connect(strengthHolder).delegateNode(validatorHolder.address, tokenId2[0]);
+
+      await expect(vevote.connect(validatorHolder).castVote(proposalId, 1, admin.address))
         .to.emit(vevote, "VoteCast")
-        .withArgs(dawnHolder.address, proposalId, 1, 1, "");
+        .withArgs(validatorHolder.address, proposalId, 1, 510100, "", [tokenId1[0], tokenId2[0]], admin.address);
     });
 
     it("Should emit the VoteCast event with correct info when castVoteWithReason is cast", async function () {
-      const { vevote, dawnHolder } = await getOrDeployContractInstances({ forceDeploy: true });
+      const { vevote, dawnHolder, stargateNFT } = await getOrDeployContractInstances({ forceDeploy: true });
       const tx = await createProposal();
       const proposalId = await getProposalIdFromTx(tx);
       await waitForProposalToStart(proposalId);
-      await expect(vevote.connect(dawnHolder).castVoteWithReason(proposalId, 1, "Test Reason"))
+      const tokenId1 = await stargateNFT.idsOwnedBy(dawnHolder.address);
+      await expect(vevote.connect(dawnHolder).castVoteWithReason(proposalId, 1, "Test Reason", ZeroAddress))
         .to.emit(vevote, "VoteCast")
-        .withArgs(dawnHolder.address, proposalId, 1, 1, "Test Reason");
+        .withArgs(dawnHolder.address, proposalId, 1, 100, "Test Reason", [tokenId1[0]], ZeroAddress);
     });
 
     it("Should return the correct node vote weight", async function () {
@@ -759,16 +843,16 @@ describe("VeVote", function () {
       const lighteningTokenId = await stargateNFT.idsOwnedBy(lighteningHolder);
       const dawnTokenId = await stargateNFT.idsOwnedBy(dawnHolder);
 
-      expect(await vevote.getNodeVoteWeight(strengthTokenId[0])).to.equal(100); // Strength node
-      expect(await vevote.getNodeVoteWeight(thunderTokenId[0])).to.equal(500); // Thunder node
-      expect(await vevote.getNodeVoteWeight(mjolnirTokenId[0])).to.equal(1500); // Mjolnir node
-      expect(await vevote.getNodeVoteWeight(veThorXId[0])).to.equal(90); // VeThorX
-      expect(await vevote.getNodeVoteWeight(strengthXTokenId[0])).to.equal(240); // StrengthX
-      expect(await vevote.getNodeVoteWeight(thunderXTokenId[0])).to.equal(840); // ThunderX
-      expect(await vevote.getNodeVoteWeight(mjolnirXTokenId[0])).to.equal(2340); // MjolnirX
-      expect(await vevote.getNodeVoteWeight(flashTokenId[0])).to.equal(20); // Flash
-      expect(await vevote.getNodeVoteWeight(lighteningTokenId[0])).to.equal(5); // Lightning
-      expect(await vevote.getNodeVoteWeight(dawnTokenId[0])).to.equal(1); // Dawn
+      expect(await vevote.getNodeVoteWeight(strengthTokenId[0])).to.equal(10000); // Strength node
+      expect(await vevote.getNodeVoteWeight(thunderTokenId[0])).to.equal(50000); // Thunder node
+      expect(await vevote.getNodeVoteWeight(mjolnirTokenId[0])).to.equal(150000); // Mjolnir node
+      expect(await vevote.getNodeVoteWeight(veThorXId[0])).to.equal(9000); // VeThorX
+      expect(await vevote.getNodeVoteWeight(strengthXTokenId[0])).to.equal(24000); // StrengthX
+      expect(await vevote.getNodeVoteWeight(thunderXTokenId[0])).to.equal(84000); // ThunderX
+      expect(await vevote.getNodeVoteWeight(mjolnirXTokenId[0])).to.equal(234000); // MjolnirX
+      expect(await vevote.getNodeVoteWeight(flashTokenId[0])).to.equal(2000); // Flash
+      expect(await vevote.getNodeVoteWeight(lighteningTokenId[0])).to.equal(500); // Lightning
+      expect(await vevote.getNodeVoteWeight(dawnTokenId[0])).to.equal(100); // Dawn
     });
   });
 
@@ -783,7 +867,7 @@ describe("VeVote", function () {
       const tx = await createProposal();
       const proposalId = await getProposalIdFromTx(tx);
       await waitForProposalToStart(proposalId);
-      await vevote.connect(strengthHolder).castVote(proposalId, 1);
+      await vevote.connect(strengthHolder).castVote(proposalId, 1, ZeroAddress);
       await waitForProposalToEnd(proposalId);
 
       // Should rever if creator tries to execute proposal
@@ -850,7 +934,7 @@ describe("VeVote", function () {
 
       // Should be able to execute a SUCEEDED proposal
       await waitForProposalToStart(proposalId4);
-      await vevote.connect(mjolnirXHolder).castVote(proposalId4, 1);
+      await vevote.connect(mjolnirXHolder).castVote(proposalId4, 1, ZeroAddress);
       await waitForProposalToEnd(proposalId4);
       expect(await vevote.state(proposalId4)).to.equal(4);
       await expect(vevote.connect(admin).execute(proposalId4)).to.not.be.reverted;
@@ -884,7 +968,7 @@ describe("VeVote", function () {
 
     it("Should revert if min vet stake required is not set at given timepoint", async function () {
       const { vevote } = await getOrDeployContractInstances({ forceDeploy: true });
-      await expect(vevote.quorum(0)).to.be.revertedWithCustomError(vevote, "VeVoteInvalidMinStakeAtTimepoint");
+      await expect(vevote.quorum(0)).to.be.revertedWithCustomError(vevote, "MinimumStakeNotSetAtTimepoint");
     });
 
     it("Should return the correct quorom numerator at a given timepoint", async function () {
@@ -943,11 +1027,11 @@ describe("VeVote", function () {
        *   = **510,636 total normalized voting weight**
        *
        * Quorum is calculated as:
-       *   quorum = (510,636 × 20) / 100 = 102127
+       *   quorum = (510,636 × 20 X 100) / 100 = 10212720
        */
 
       const block = await getCurrentBlockNumber();
-      expect(await vevote.quorum(block)).to.equal(102127);
+      expect(await vevote.quorum(block)).to.equal(10212720);
     });
 
     it("Only admin addresses can set the quorom numerator", async function () {
@@ -988,7 +1072,7 @@ describe("VeVote", function () {
       const tx = await createProposal();
       const proposalId = await getProposalIdFromTx(tx);
       await waitForProposalToStart(proposalId);
-      await vevote.connect(mjolnirXHolder).castVote(proposalId, 1);
+      await vevote.connect(mjolnirXHolder).castVote(proposalId, 1, ZeroAddress);
       await waitForProposalToEnd(proposalId);
       expect(await vevote.state(proposalId)).to.equal(4);
       await vevote.connect(admin).execute(proposalId);
@@ -1035,7 +1119,7 @@ describe("VeVote", function () {
       const tx = await createProposal();
       const proposalId = await getProposalIdFromTx(tx);
       await waitForProposalToStart(proposalId);
-      await vevote.connect(mjolnirXHolder).castVote(proposalId, 1);
+      await vevote.connect(mjolnirXHolder).castVote(proposalId, 1, ZeroAddress);
       await waitForProposalToEnd(proposalId);
       // Should not have reachded quorom
       expect(await vevote.state(proposalId)).to.equal(3);
@@ -1044,11 +1128,11 @@ describe("VeVote", function () {
     it("Should return SUCEEDED if proposal deadline is before current timepoint and quorom is reached", async function () {
       const config = createLocalConfig();
       config.QUORUM_PERCENTAGE = 0;
-      const { vevote, validatorHolder } = await getOrDeployContractInstances({ forceDeploy: true, config });
+      const { vevote, validatorHolder, admin } = await getOrDeployContractInstances({ forceDeploy: true, config });
       const tx = await createProposal();
       const proposalId = await getProposalIdFromTx(tx);
       await waitForProposalToStart(proposalId);
-      await vevote.connect(validatorHolder).castVote(proposalId, 1);
+      await vevote.connect(validatorHolder).castVote(proposalId, 1, admin.address);
       await waitForProposalToEnd(proposalId);
       expect(await vevote.state(proposalId)).to.equal(4); // SUCEEDED
     });

@@ -93,9 +93,9 @@ export const createProposal = async ({
 };
 
 export const createValidator = async (
-  validator: HardhatEthersSigner,
-  authorityContract: Authority,
   endorser: HardhatEthersSigner,
+  authorityContract: Authority,
+  validator: HardhatEthersSigner,
 ) => {
   const mockIdentity = ethers.encodeBytes32String("vechain-validator");
   await authorityContract.setValidator(validator.address, true, endorser.address, mockIdentity, true);

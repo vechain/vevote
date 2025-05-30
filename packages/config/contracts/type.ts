@@ -9,5 +9,5 @@ export type ContractsConfig = {
   INITIAL_MAX_VOTING_DURATION: number;
   INITIAL_MIN_VOTING_DURATION: number;
   INITIAL_MAX_CHOICES: number;
-  BASE_LEVEL_NODE: number;
+  MIN_VET_STAKE: bigint;
 };
