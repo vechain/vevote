@@ -14,7 +14,7 @@ pragma solidity 0.8.20;
 import { VeVoteStorageTypes } from "./VeVoteStorageTypes.sol";
 import { VeVoteProposalLogic } from "./VeVoteProposalLogic.sol";
 import { VeVoteClockLogic } from "./VeVoteClockLogic.sol";
-import { VeVoteQuoromLogic } from "./VeVoteQuoromLogic.sol";
+import { VeVoteQuorumLogic } from "./VeVoteQuorumLogic.sol";
 import { VeVoteTypes } from "./VeVoteTypes.sol";
 
 /// @title VeVoteStateLogic
@@ -111,7 +111,7 @@ library VeVoteStateLogic {
       return VeVoteTypes.ProposalState.Canceled;
     }
 
-    // Retrieve the current timepoint
+    // Retrieve the current block
     uint256 currentBlock = VeVoteClockLogic.clock();
 
     // If the snapshot is in the future, the proposal is stil Pending
@@ -127,7 +127,7 @@ library VeVoteStateLogic {
       return VeVoteTypes.ProposalState.Active;
     }
     // If the quorum was not reached, the proposal is Defeated
-    else if (!VeVoteQuoromLogic._quorumReached(self, proposalId)) {
+    else if (!VeVoteQuorumLogic._quorumReached(self, proposalId)) {
       return VeVoteTypes.ProposalState.Defeated;
     }
     // Otherwise, the proposal has succeeded
