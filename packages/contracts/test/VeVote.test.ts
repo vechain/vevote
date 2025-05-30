@@ -5,6 +5,7 @@ import { describe, it } from "mocha";
 import { createLocalConfig } from "@repo/config/contracts/envs/local";
 import {
   createProposal,
+  createValidator,
   getCurrentBlockNumber,
   getProposalIdFromTx,
   waitForNextBlock,
@@ -1060,7 +1061,81 @@ describe("VeVote", function () {
     });
 
     it("Should return true if quorom is reached for a given proposal", async function () {
-      // TODO: Implement this when quorom is implemented
+      const config = createLocalConfig();
+      config.INITIAL_MAX_VOTING_DURATION = 100;
+      const {
+        vevote,
+        admin,
+        authorityContractMock,
+        validatorHolder,
+        strengthHolder,
+        thunderHolder,
+        mjolnirHolder,
+        veThorXHolder,
+        strengthXHolder,
+        thunderXHolder,
+        mjolnirXHolder,
+        flashHolder,
+        lighteningHolder,
+        dawnHolder,
+        otherAccounts,
+      } = await getOrDeployContractInstances({ forceDeploy: true, config });
+      await expect(vevote.connect(admin).updateQuorumNumerator(5)) // Quorom should be 5%
+        .to.emit(vevote, "QuorumNumeratorUpdated")
+        .withArgs(config.QUORUM_PERCENTAGE, 5);
+
+      const tx = await createProposal({
+        votingPeriod: 20,
+      });
+      const block = await getCurrentBlockNumber();
+      const proposalId = await getProposalIdFromTx(tx);
+
+      await waitForProposalToStart(proposalId);
+
+      expect(await vevote.isQuorumReached(proposalId)).to.eql(false);
+      await vevote.connect(validatorHolder).castVote(proposalId, 1, admin.address);
+      expect(await vevote.isQuorumReached(proposalId)).to.eql(false);
+      await vevote.connect(strengthHolder).castVote(proposalId, 1, ZeroAddress);
+      expect(await vevote.isQuorumReached(proposalId)).to.eql(false);
+      await vevote.connect(thunderHolder).castVote(proposalId, 1, ZeroAddress);
+      expect(await vevote.isQuorumReached(proposalId)).to.eql(false);
+      await vevote.connect(mjolnirHolder).castVote(proposalId, 1, ZeroAddress);
+      expect(await vevote.isQuorumReached(proposalId)).to.eql(false);
+      await vevote.connect(veThorXHolder).castVote(proposalId, 1, ZeroAddress);
+      expect(await vevote.isQuorumReached(proposalId)).to.eql(false);
+      await vevote.connect(strengthXHolder).castVote(proposalId, 1, ZeroAddress);
+      expect(await vevote.isQuorumReached(proposalId)).to.eql(false);
+      await vevote.connect(thunderXHolder).castVote(proposalId, 1, ZeroAddress);
+      expect(await vevote.isQuorumReached(proposalId)).to.eql(false);
+      await vevote.connect(mjolnirXHolder).castVote(proposalId, 1, ZeroAddress);
+      expect(await vevote.isQuorumReached(proposalId)).to.eql(false);
+      await vevote.connect(flashHolder).castVote(proposalId, 1, ZeroAddress);
+      expect(await vevote.isQuorumReached(proposalId)).to.eql(false);
+      await vevote.connect(lighteningHolder).castVote(proposalId, 1, ZeroAddress);
+      expect(await vevote.isQuorumReached(proposalId)).to.eql(false);
+      await vevote.connect(dawnHolder).castVote(proposalId, 1, ZeroAddress);
+
+      // 101 Validators hardcoded in contract need to add more to reach quorum
+      await createValidator(otherAccounts[0], authorityContractMock, otherAccounts[1]);
+      await vevote.connect(otherAccounts[0]).castVote(proposalId, 1, otherAccounts[1].address);
+
+      expect(await vevote.isQuorumReached(proposalId)).to.eql(false);
+
+      await createValidator(otherAccounts[2], authorityContractMock, otherAccounts[3]);
+      await vevote.connect(otherAccounts[2]).castVote(proposalId, 1, otherAccounts[3].address);
+
+      expect(await vevote.isQuorumReached(proposalId)).to.eql(false);
+
+      const quorom = await vevote.quorum(block);
+      const votes = await vevote.totalVotes(proposalId);
+
+      expect(quorom - votes < 500000n);
+
+      // 101 Validators hardcoded in contract
+      await createValidator(otherAccounts[4], authorityContractMock, otherAccounts[5]);
+      await vevote.connect(otherAccounts[4]).castVote(proposalId, 1, otherAccounts[5].address);
+
+      expect(await vevote.isQuorumReached(proposalId)).to.eql(true);
     });
   });
 

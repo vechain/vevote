@@ -388,6 +388,13 @@ interface IVeVote is IERC165, IERC6372 {
   function quorumDenominator() external pure returns (uint256);
 
   /**
+   * @notice Checks if the quorum has been reached for a proposal.
+   * @param proposalId The ID of the proposal.
+   * @return True if the quorum has been reached, false otherwise.
+   */
+  function isQuorumReached(uint256 proposalId) external view returns (bool);
+
+  /**
    * @notice Returns the minimum voting delay.
    * @return uint48 The minimum voting delay
    */

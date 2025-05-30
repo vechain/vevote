@@ -276,6 +276,14 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
   }
 
   /**
+   * @notice See {IVeVote-isQuorumReached}.
+   */
+  function isQuorumReached(uint256 proposalId) external view returns (bool) {
+    VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
+    return VeVoteQuorumLogic.isQuorumReached($, proposalId);
+  }
+
+  /**
    * @notice See {IVeVote-getMinVotingDelay}.
    */
   function getMinVotingDelay() external view returns (uint48) {
