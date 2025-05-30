@@ -241,6 +241,11 @@ type RootTranslation = {
 		 * T​h​e​ ​s​t​a​r​t​ ​d​a​t​e​ ​m​u​s​t​ ​b​e​ ​i​n​ ​t​h​e​ ​f​u​t​u​r​e
 		 */
 		start_after_today: string
+		/**
+		 * T​h​e​ ​e​n​d​ ​d​a​t​e​ ​m​u​s​t​ ​b​e​ ​w​i​t​h​i​n​ ​{​d​a​y​s​}​ ​d​a​y​s​ ​o​f​ ​t​h​e​ ​s​t​a​r​t​ ​d​a​t​e
+		 * @param {string} days
+		 */
+		end_after_max_duration: RequiredParams<'days'>
 	}
 	voting_list: {
 		/**
@@ -1072,6 +1077,10 @@ JPG, PNG or SVG of maximum of {size}MB.
 		 * The start date must be in the future
 		 */
 		start_after_today: () => LocalizedString
+		/**
+		 * The end date must be within {days} days of the start date
+		 */
+		end_after_max_duration: (arg: { days: string }) => LocalizedString
 	}
 	voting_list: {
 		/**
