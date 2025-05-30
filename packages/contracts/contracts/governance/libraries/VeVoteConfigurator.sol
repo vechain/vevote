@@ -57,6 +57,12 @@ library VeVoteConfigurator {
    */
   error InvalidMinimumStake();
 
+    /**
+   * @notice Reverts if minimum staked amount at timepoint is zero, which would cause division by zero
+   * @param timepoint The timepoint for which the min stake is missing
+   */
+  error MinimumStakeNotSetAtTimepoint(uint48 timepoint);
+
   // ------------------------------- Events -------------------------------
 
   /**
@@ -314,7 +320,9 @@ library VeVoteConfigurator {
     VeVoteStorageTypes.VeVoteStorage storage self,
     uint48 timepoint
   ) internal view returns (uint256) {
-    return self.minStakedVetHistory.upperLookupRecent(timepoint);
+    uint256 minStake = self.minStakedVetHistory.upperLookupRecent(timepoint);
+    if (minStake == 0) revert MinimumStakeNotSetAtTimepoint(timepoint);
+    return minStake;
   }
 
   /**
