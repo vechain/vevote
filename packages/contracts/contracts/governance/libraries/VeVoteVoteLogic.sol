@@ -1,20 +1,14 @@
 // SPDX-License-Identifier: MIT
 
-// ####              ###                ####             ####                   ####                                    
-// #####           #####                #####           #####                   #####                                   
-//  #####          #####                 #####         #####                    #####                                   
-//   #####        #####    #########     #####         #####    ##########    ###########    ##########                 
-//   #####        ####   #############    #####       #####   ##############  ###########  ##############               
-//    #####      ##### #################   ####       ####  ######## ########   #####    #######   #######              
-//     ####     #####  #####      ######   #####     #####  #####       ######  #####    #####       #####              
-//     #####    ####  #####    #########    #####   #####  #####         #####  #####    ##################             
-//      #####  #####  ####     ######  ##   #####   #####  #####          ####  #####   ###################             
-//      ##### #####   #####     #   #####    ##### #####   #####         #####  #####    ##################             
-//       ##########    #####       #####      #### ####     #####       ######  #####    #####       #####              
-//        ########     #################      #########     #######   #######   ######## #######   #######              
-//        #######        ##############        #######       ###############    #########  ##############               
-//         ######          #########            #####          ###########        #######   ###########                 
-//                                                                                                                      
+//  8b           d8       8b           d8
+//  `8b         d8'       `8b         d8'           ,d
+//   `8b       d8'         `8b       d8'            88
+//    `8b     d8' ,adPPYba, `8b     d8' ,adPPYba, MM88MMM ,adPPYba,
+//     `8b   d8' a8P   _d88  `8b   d8' a8"     "8a  88   a8P_____88
+//      `8b d8'  8PP  "PP""   `8b d8'  8b       d8  88   8PP"""""""
+//       `888'   "8b,   ,aa    `888'   "8a,   ,a8"  88,  "8b,   ,aa
+//        `8'     `"Ybbd8"'     `8'     `"YbbdP"'   "Y888 `"Ybbd8"'
+//
 
 pragma solidity 0.8.20;
 
@@ -24,6 +18,7 @@ import { VeVoteStateLogic } from "./VeVoteStateLogic.sol";
 import { VeVoteTypes } from "./VeVoteTypes.sol";
 import { VeVoteConstants } from "./VeVoteConstants.sol";
 import { VeVoteConfigurator } from "./VeVoteConfigurator.sol";
+import { IAuthority } from "../../interfaces/IAuthority.sol";
 import { DataTypes } from "../../external/StargateNFT/libraries/DataTypes.sol";
 import { Math } from "@openzeppelin/contracts/utils/math/Math.sol";
 
@@ -80,7 +75,8 @@ library VeVoteVoteLogic {
     VeVoteStorageTypes.VeVoteStorage storage self,
     uint256 proposalId,
     uint32 choices,
-    string memory reason
+    string memory reason,
+    address masterAddress
   ) external {
     VeVoteTypes.ProposalCore storage proposal = self.proposals[proposalId];
 
@@ -101,7 +97,7 @@ library VeVoteVoteLogic {
     uint8 selectedChoicesCount = _checkChoices(proposal, choices);
 
     // Calculate vote weight
-    uint256 weight = _calculateVoteWeight(self, voter, proposal.voteStart, proposalId);
+    uint256 weight = _calculateVoteWeightWithTracking(self, voter, proposal.voteStart, proposalId, masterAddress);
     if (weight == 0) {
       revert VoterNotEligible();
     }
@@ -113,11 +109,11 @@ library VeVoteVoteLogic {
     self.votes[proposalId][voter] = choices;
     self.totalVotes[proposalId] += normalisedVoteWeight;
 
-    uint256 perChoiceWeight = weight / selectedChoicesCount; // Store individual choice weight in memory -> We do not use normalised weight here as there is a chance it could underflow (weight < selectedChoicesCount), we get normalised weight when getting overall results to combat this.
+    uint256 perChoiceWeight = normalisedVoteWeight / selectedChoicesCount; // Store individual choice weight in memory -> This weight is scaled here so there is no chance it could underflow (scale = 100 > max selected choices = 32).
     mapping(uint8 => uint256) storage proposalTally = self.voteTally[proposalId]; // Cache storage pointer
 
     uint256 len = proposal.choices.length; // Cache number of choices
-    for (uint8 i = 0; i < len; i++) {
+    for (uint8 i; i < len; i++) {
       // Check if the i-th bit in the choices bitmask is set (i.e., the user selected this choice)
       if ((choices & (1 << i)) != 0) {
         // Add division result to the tally for each selected choice
@@ -140,11 +136,12 @@ library VeVoteVoteLogic {
   function getVoteWeight(
     VeVoteStorageTypes.VeVoteStorage storage self,
     address account,
-    uint48 timepoint
-  ) external returns (uint256) {
+    uint48 timepoint,
+    address masterAddress
+  ) external view returns (uint256) {
     // Return the vote weight divided by the denominator to normalize it
     return
-      _calculateVoteWeight(self, account, timepoint, 0) /
+      _calculateVoteWeight(self, account, timepoint, masterAddress) /
       VeVoteConfigurator.getMinStakedAmountAtTimepoint(self, timepoint);
   }
 
@@ -205,21 +202,15 @@ library VeVoteVoteLogic {
     VeVoteTypes.ProposalCore storage proposal = self.proposals[proposalId];
     bytes32[] storage choices = proposal.choices;
     uint256 numChoices = choices.length;
-
-    uint256 denominator = VeVoteConfigurator.getMinStakedAmountAtTimepoint(self, proposal.voteStart);
+    mapping(uint8 => uint256) storage proposalTally = self.voteTally[proposalId];
 
     results = new VeVoteTypes.ProposalVoteResult[](numChoices);
 
     // Iterate over each choice and calculate the normalized weight
     for (uint8 i; i < numChoices; i++) {
-      // NOTE: Normalized weights use integer division and may round down to zero for low-weight votes.
-      // This is expected and accepted in the current design. // TODO: Should we set to 1 if 0?
-      uint256 normalizedWeight = self.voteTally[proposalId][i] / denominator;
-
-      // Store the result in the array
       results[i] = VeVoteTypes.ProposalVoteResult({
-        choice: choices[i], // <-- The bytes32 label
-        weight: normalizedWeight // <-- The weight of the vote
+        choice: choices[i], // The bytes32 label
+        weight: proposalTally[i] // The weight of the vote
       });
     }
 
@@ -279,13 +270,13 @@ library VeVoteVoteLogic {
     VeVoteStorageTypes.VeVoteStorage storage self,
     address voter,
     uint64 snapshot,
-    uint256 proposalId
-  ) private returns (uint256 weight) {
+    address masterAddress
+  ) private view returns (uint256 weight) {
     // Fetch voter's stargate NFT info from NodeManagement
     DataTypes.Token[] memory nodes = self.nodeManagement.getUsersNodeInfo(voter);
 
     // Check if a user is a validator
-    weight = _checkIsValidator(self, voter);
+    if (masterAddress != address(0)) weight = _determineValidatorVoteWeight(self, voter, masterAddress);
 
     // If the user has no nodes, return validator weight (if any); otherwise, return 0.
     uint256 totalNodes = nodes.length;
@@ -303,9 +294,52 @@ library VeVoteVoteLogic {
 
       // Apply node weight to users total voting power
       weight += nodeWeight;
+    }
+  }
 
-      // if proposal id is not 0, store tokenId so that it cannot be used again.
-      //if(proposalId != 0) self.nodeHasVoted[nodes[i].leve] TODO: Add back in
+  /**
+   * @dev Calculates the voting weight of a user based on their node holdings.
+   * @param self The storage reference for the VeVoteStorage.
+   * @param voter The address of the voter.
+   * @param snapshot the proposal snapshot.
+   * @return weight The voting weight of the voter.
+   */
+  function _calculateVoteWeightWithTracking(
+    VeVoteStorageTypes.VeVoteStorage storage self,
+    address voter,
+    uint64 snapshot,
+    uint256 proposalId,
+    address masterAddress
+  ) private returns (uint256 weight) {
+    // Fetch voter's stargate NFT info from NodeManagement
+    DataTypes.Token[] memory nodes = self.nodeManagement.getUsersNodeInfo(voter);
+
+    // Check if a user is a validator
+    if (masterAddress != address(0)) weight = _checkIsValidator(self, voter, masterAddress, proposalId);
+
+    // If the user has no nodes, return validator weight (if any); otherwise, return 0.
+    uint256 totalNodes = nodes.length;
+    if (totalNodes == 0) {
+      return weight;
+    }
+
+    for (uint256 i; i < totalNodes; i++) {
+      // Skip nodes with no voting power or minted after the snapshot
+      if (
+        nodes[i].levelId == 0 ||
+        nodes[i].mintedAtBlock > snapshot ||
+        self.nodeHasVoted[proposalId][nodes[i].tokenId] == true
+      ) {
+        continue;
+      }
+
+      uint256 nodeWeight = _getNodeWeight(self, nodes[i].vetAmountStaked, nodes[i].levelId);
+
+      // Apply node weight to users total voting power
+      weight += nodeWeight;
+
+      // Track nodes that have voted
+      self.nodeHasVoted[proposalId][nodes[i].tokenId] = true;
     }
   }
 
@@ -322,39 +356,61 @@ library VeVoteVoteLogic {
     uint256 minStake,
     uint8 levelId
   ) private view returns (uint256) {
-    // Use tryMul to prevent overflow
-    (bool ok, uint256 nodeWeight) = Math.tryMul(minStake, self.levelIdMultiplier[levelId]);
-    if (!ok) {
-      revert VotePowerOverflow();
-    }
-
-    // Return the node weight divided by the scale
-    return nodeWeight / VeVoteConstants.VOTING_MULTIPLIER_SCALE;
+    // Determine weighted stake
+    return minStake * self.levelIdMultiplier[levelId];
   }
 
   /**
    * @dev Determines whether aƒ voter is an active validator and returns their voting weight if so.
    * @param self The storage reference to VeVoteStorage.
    * @param voter The address of the account being checked.
-   * @return The validator voting weight if the voter is an active validator; otherwise, returns 0.
+   * @return voteWeight validator voting weight if the voter is an active validator; otherwise, returns 0.
    */
   function _checkIsValidator(
     VeVoteStorageTypes.VeVoteStorage storage self,
-    address voter
-  ) private view returns (uint256) {
-    // Call builtin validator contract
-    (bool listed, , , bool active) = VeVoteConfigurator.getValidatorContract(self).get(voter);
+    address voter,
+    address masterAddress,
+    uint256 proposalId
+  ) private returns (uint256) {
+    uint256 voteWeight = _determineValidatorVoteWeight(self, voter, masterAddress);
 
-    // Return zero weight if not listed or not active
-    if (!listed || !active) return 0;
+    // If a users vote weight is 0 or if the node has already voted
+    if (voteWeight == 0 || self.validatorHasVoted[proposalId][masterAddress]) {
+      return 0;
+    }
 
-    // Use level 0 multiplier for validators
+    self.validatorHasVoted[proposalId][masterAddress] = true;
+
+    return voteWeight;
+  }
+
+  /**
+   * @dev Returns validator vote weight if active, listed, and endorsed by the voter.
+   * @param self Storage reference to `VeVoteStorage`.
+   * @param voter Address claiming to endorse the validator.
+   * @param masterAddress Validator's master address.
+   * @return voteWeight Calculated voting weight or 0 if ineligible.
+   */
+  function _determineValidatorVoteWeight(
+    VeVoteStorageTypes.VeVoteStorage storage self,
+    address voter,
+    address masterAddress
+  ) private view returns (uint256 voteWeight) {
+    // Load validator authority contract
+    IAuthority validatorContract = VeVoteConfigurator.getValidatorContract(self);
+
+    // Fetch validator info
+    (bool isListed, address endorser, , bool isActive) = validatorContract.get(masterAddress);
+
+    // Check eligibility
+    if (!isListed || !isActive || endorser != voter) {
+      return 0;
+    }
+
+    // Apply level 0 multiplier
     uint256 multiplier = self.levelIdMultiplier[0];
 
-    // Use safe multiplication with a comment
-    (bool ok, uint256 weightedStake) = Math.tryMul(multiplier, VeVoteConstants.VALIDATOR_STAKED_VET_REQUIREMENT);
-    if (!ok) revert VotePowerOverflow();
-
-    return weightedStake / VeVoteConstants.VOTING_MULTIPLIER_SCALE;
+    // Compute vote weight
+    voteWeight = VeVoteConstants.VALIDATOR_STAKED_VET_REQUIREMENT * multiplier;
   }
 }

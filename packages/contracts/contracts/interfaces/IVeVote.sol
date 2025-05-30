@@ -52,6 +52,12 @@ interface IVeVote is IERC165, IERC6372 {
   error VeVoteInvalidQuorumFraction(uint256 quorumNumerator, uint256 quorumDenominator);
 
   /**
+   * @notice Reverts if minimum staked amount at timepoint is zero, which would cause division by zero
+   * @param timepoint The timepoint for which the min stake is missing
+   */
+  error MinimumStakeNotSetAtTimepoint(uint48 timepoint);
+
+  /**
    * @dev Thrown when the `proposalId` does not exist.
    * @param proposalId The ID of the proposal that does not exist.
    */
@@ -88,9 +94,9 @@ interface IVeVote is IERC165, IERC6372 {
   error InvalidAddress();
 
   /**
-   * @dev Thrown when an invalid node is set as the cheapest node.
+   * @dev Thrown when an invalid minimum VET staked is set.
    */
-  error InvalidNode();
+  error InvalidMinimumStake();
 
   /**
    * @dev Thrown when the proposal is not active.
@@ -116,11 +122,6 @@ interface IVeVote is IERC165, IERC6372 {
    * @dev Thrown when the voting power calculation overflows.
    */
   error VotePowerOverflow();
-
-  /**
-   * @dev Thrown when the voting weight denominator is zero.
-   */
-  error VoteWeightDenominatorZero();
 
   // ------------------------------- Events -------------------------------
   /**
@@ -263,16 +264,22 @@ interface IVeVote is IERC165, IERC6372 {
    * @notice Retrieves the voting weight of an account at a given timepoint.
    * @param account The address of the account.
    * @param timepoint The specific timepoint.
+   * @param masterAddress Required parameter — must be an array (can be empty). Used to determine validator voting power, if applicable.
    * @return The voting weight of the account.
    */
-  function getVoteWeightAtTimepoint(address account, uint48 timepoint) external returns (uint256);
+  function getVoteWeightAtTimepoint(
+    address account,
+    uint48 timepoint,
+    address masterAddress
+  ) external returns (uint256);
 
   /**
    * @notice Retrieves the voting weight of an account at a current timepoint.
    * @param account The address of the account.
+   * @param masterAddress Required parameter — must be an array (can be empty). Used to determine validator voting power, if applicable.
    * @return The voting weight of the account.
    */
-  function getVoteWeight(address account) external returns (uint256);
+  function getVoteWeight(address account, address masterAddress) external view returns (uint256);
 
   /**
    * @notice Retrieves the voting power of a node.
@@ -557,4 +564,31 @@ interface IVeVote is IERC165, IERC6372 {
    * @param newMultipliers Array of new vote multipliers for each levelId (index = levelId).
    */
   function updateLevelIdMultipliers(uint256[] calldata newMultipliers) external;
+
+  /**
+   * @notice Casts a vote on an active proposal without providing a reason.
+   * @dev This is a wrapper for {castVoteWithReason}, using an empty reason string.
+   *      Reverts if the proposal is not active, the caller has already voted,
+   *      or the selected choices violate min/max constraints.
+   * @param proposalId The ID of the proposal to vote on.
+   * @param choices A bitmask representing the selected choices. Each bit corresponds to a choice index.
+   * @param masterAddress Required parameter — must be an array (can be empty). Used to determine validator voting power, if applicable.
+   */
+  function castVote(uint256 proposalId, uint32 choices, address masterAddress) external;
+
+  /**
+   * @notice Casts a vote on an active proposal with an optional reason.
+   * @dev Validates the proposal state, caller eligibility, and choice constraints.
+   *      Tracks voting power for each selected choice and emits a {VoteCast} event.
+   * @param proposalId The ID of the proposal to vote on.
+   * @param choices A bitmask representing the selected choices. Each bit corresponds to a choice index.
+   * @param reason An optional string explaining the rationale behind the vote. Useful for governance UIs and transparency.
+   * @param masterAddress Required parameter — must be an array (can be empty). Used to determine validator voting power, if applicable.
+   */
+  function castVoteWithReason(
+    uint256 proposalId,
+    uint32 choices,
+    string calldata reason,
+    address masterAddress
+  ) external;
 }

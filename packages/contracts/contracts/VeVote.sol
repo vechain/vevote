@@ -1,20 +1,20 @@
 // SPDX-License-Identifier: MIT
 
-//  8b           d8       8b           d8                            
-//  `8b         d8'       `8b         d8'           ,d               
-//   `8b       d8'         `8b       d8'            88               
-//    `8b     d8' ,adPPYba, `8b     d8' ,adPPYba, MM88MMM ,adPPYba,  
-//     `8b   d8' a8P   _d88  `8b   d8' a8"     "8a  88   a8P_____88  
-//      `8b d8'  8PP  "PP""   `8b d8'  8b       d8  88   8PP"""""""  
-//       `888'   "8b,   ,aa    `888'   "8a,   ,a8"  88,  "8b,   ,aa  
-//        `8'     `"Ybbd8"'     `8'     `"YbbdP"'   "Y888 `"Ybbd8"'  
+//  8b           d8       8b           d8
+//  `8b         d8'       `8b         d8'           ,d
+//   `8b       d8'         `8b       d8'            88
+//    `8b     d8' ,adPPYba, `8b     d8' ,adPPYba, MM88MMM ,adPPYba,
+//     `8b   d8' a8P   _d88  `8b   d8' a8"     "8a  88   a8P_____88
+//      `8b d8'  8PP  "PP""   `8b d8'  8b       d8  88   8PP"""""""
+//       `888'   "8b,   ,aa    `888'   "8a,   ,a8"  88,  "8b,   ,aa
+//        `8'     `"Ybbd8"'     `8'     `"YbbdP"'   "Y888 `"Ybbd8"'
 
 pragma solidity 0.8.20;
 
 import { IVeVote } from "./interfaces/IVeVote.sol";
 import { VeVoteStorage } from "./governance/VeVoteStorage.sol";
 import { VeVoteTypes } from "./governance/libraries/VeVoteTypes.sol";
-import { VeVoteQuoromLogic } from "./governance/libraries/VeVoteQuoromLogic.sol";
+import { VeVoteQuorumLogic } from "./governance/libraries/VeVoteQuorumLogic.sol";
 import { VeVoteClockLogic } from "./governance/libraries/VeVoteClockLogic.sol";
 import { VeVoteStateLogic } from "./governance/libraries/VeVoteStateLogic.sol";
 import { VeVoteVoteLogic } from "./governance/libraries/VeVoteVoteLogic.sol";
@@ -95,7 +95,7 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
     __AccessControl_init();
     __UUPSUpgradeable_init();
     VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
-    VeVoteQuoromLogic.updateQuorumNumerator($, data.quorumPercentage);
+    VeVoteQuorumLogic.updateQuorumNumerator($, data.quorumPercentage);
 
     // Validate and set the VeVote roles
     require(address(rolesData.admin) != address(0), "VeVote: Admin address cannot be zero");
@@ -210,17 +210,21 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
   /**
    * @notice See {IVeVote-getVoteWeightAtTimepoint}.
    */
-  function getVoteWeightAtTimepoint(address account, uint48 timepoint) external returns (uint256) {
+  function getVoteWeightAtTimepoint(
+    address account,
+    uint48 timepoint,
+    address masterAddress
+  ) external view returns (uint256) {
     VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
-    return VeVoteVoteLogic.getVoteWeight($, account, timepoint);
+    return VeVoteVoteLogic.getVoteWeight($, account, timepoint, masterAddress);
   }
 
   /**
    * @notice See {IVeVote-getVoteWeight}.
    */
-  function getVoteWeight(address account) external returns (uint256) {
+  function getVoteWeight(address account, address masterAddress) external view returns (uint256) {
     VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
-    return VeVoteVoteLogic.getVoteWeight($, account, VeVoteClockLogic.clock());
+    return VeVoteVoteLogic.getVoteWeight($, account, VeVoteClockLogic.clock(), masterAddress);
   }
 
   /**
@@ -245,7 +249,7 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
    */
   function quorum(uint48 timepoint) external view returns (uint256) {
     VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
-    return VeVoteQuoromLogic.quorum($, timepoint);
+    return VeVoteQuorumLogic.quorum($, timepoint);
   }
 
   /**
@@ -253,7 +257,7 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
    */
   function quorumNumerator() external view returns (uint256) {
     VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
-    return VeVoteQuoromLogic.quorumNumerator($);
+    return VeVoteQuorumLogic.quorumNumerator($);
   }
 
   /**
@@ -261,14 +265,14 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
    */
   function quorumNumerator(uint48 timepoint) external view returns (uint256) {
     VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
-    return VeVoteQuoromLogic.quorumNumerator($, timepoint);
+    return VeVoteQuorumLogic.quorumNumerator($, timepoint);
   }
 
   /**
    * @notice See {IVeVote-quorumDenominator}.
    */
   function quorumDenominator() external pure returns (uint256) {
-    return VeVoteQuoromLogic.quorumDenominator();
+    return VeVoteQuorumLogic.quorumDenominator();
   }
 
   /**
@@ -431,17 +435,22 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
   /**
    * @notice See {IVeVote-castVote}.
    */
-  function castVote(uint256 proposalId, uint32 choices) external {
+  function castVote(uint256 proposalId, uint32 choices, address masterAddress) external {
     VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
-    VeVoteVoteLogic.castVote($, proposalId, choices, "");
+    VeVoteVoteLogic.castVote($, proposalId, choices, "", masterAddress);
   }
 
   /**
-   * @notice See {IVeVote-castVote}.
+   * @notice See {IVeVote-castVoteWithReason}.
    */
-  function castVoteWithReason(uint256 proposalId, uint32 choices, string calldata reason) external {
+  function castVoteWithReason(
+    uint256 proposalId,
+    uint32 choices,
+    string calldata reason,
+    address masterAddress
+  ) external {
     VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
-    VeVoteVoteLogic.castVote($, proposalId, choices, reason);
+    VeVoteVoteLogic.castVote($, proposalId, choices, reason, masterAddress);
   }
 
   /**
@@ -521,7 +530,7 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
    */
   function updateQuorumNumerator(uint256 newQuorumNumerator) external onlyRole(SETTINGS_MANAGER_ROLE) {
     VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
-    VeVoteQuoromLogic.updateQuorumNumerator($, newQuorumNumerator);
+    VeVoteQuorumLogic.updateQuorumNumerator($, newQuorumNumerator);
   }
 
   // ------------------ Overrides ------------------ //
