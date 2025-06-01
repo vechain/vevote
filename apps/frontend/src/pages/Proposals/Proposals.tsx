@@ -14,11 +14,12 @@ import { CiCalendar } from "react-icons/ci";
 import { useFormatDate } from "@/hooks/useFormatDate";
 import { FaChevronRight } from "react-icons/fa";
 import dayjs from "dayjs";
-import { mockProposals } from "@/utils/mock";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { Pagination } from "@/components/ui/Pagination";
 import { ProposalsHeader } from "@/components/navbar/Header";
 import { useCreateProposal } from "../CreateProposal/CreateProposalProvider";
+import { useProposalsEvents } from "@/hooks/useProposalsEvents";
+import { useHasVoted } from "@/hooks/useCastVote";
 
 const ITEMS_PER_PAGE = 6;
 
@@ -31,13 +32,15 @@ export const Proposals = () => {
   const [searchValue, setSearchValue] = useState<string>("");
   const { LL } = useI18nContext();
 
+  const { proposals, loading } = useProposalsEvents();
+
   const proposalsBySearch = useMemo(() => {
     const searchLower = searchValue.toLowerCase();
-    const mockAndDraft = draftProposal ? [draftProposal, ...mockProposals] : mockProposals;
+    const mockAndDraft = draftProposal ? [draftProposal, ...proposals] : proposals;
     return mockAndDraft.filter(({ title }) => title.toLowerCase().includes(searchLower));
-  }, [draftProposal, searchValue]);
+  }, [draftProposal, proposals, searchValue]);
 
-  const proposalsByTabStatus = useMemo(() => {
+  const proposalsByTabStatus: Record<string, ProposalCardType[]> = useMemo(() => {
     return {
       all: proposalsBySearch,
       voting: proposalsBySearch.filter(({ status }) => status === "voting"),
@@ -82,10 +85,10 @@ export const Proposals = () => {
             </Flex>
 
             <TabPanels>
-              <ProposalsPanel proposals={proposalsByTabStatus.all} />
-              <ProposalsPanel proposals={proposalsByTabStatus.voting} />
-              <ProposalsPanel proposals={proposalsByTabStatus.upcoming} />
-              <ProposalsPanel proposals={proposalsByTabStatus.finished} />
+              <ProposalsPanel proposals={proposalsByTabStatus.all} loading={loading} />
+              <ProposalsPanel proposals={proposalsByTabStatus.voting} loading={loading} />
+              <ProposalsPanel proposals={proposalsByTabStatus.upcoming} loading={loading} />
+              <ProposalsPanel proposals={proposalsByTabStatus.finished} loading={loading} />
             </TabPanels>
           </Tabs>
         </PageContainer.Content>
@@ -94,7 +97,7 @@ export const Proposals = () => {
   );
 };
 
-const ProposalsPanel = ({ proposals }: { proposals: ProposalCardType[] }) => {
+const ProposalsPanel = ({ proposals, loading }: { proposals: ProposalCardType[]; loading: boolean }) => {
   const { LL } = useI18nContext();
   const [limit, setLimit] = useState<number>(ITEMS_PER_PAGE);
   const filteredProposals = useMemo(() => proposals.filter((_p, i) => i < limit), [proposals, limit]);
@@ -102,7 +105,7 @@ const ProposalsPanel = ({ proposals }: { proposals: ProposalCardType[] }) => {
   return (
     <>
       <BasePanel>
-        {filteredProposals.length > 0 ? (
+        {!loading && filteredProposals.length > 0 ? (
           filteredProposals.map((p, i) => <ProposalCard key={i} {...p} />)
         ) : (
           <EmptyPanel />
@@ -138,9 +141,8 @@ const ProposalCard = ({ status, title, endDate, startDate, id }: ProposalCardTyp
     }
   }, [status]);
 
-  const isVoted = useMemo(() => {
-    return ["approved", "executed"].includes(status);
-  }, [status]);
+  const { hasVoted } = useHasVoted({ proposalId: id !== "draft" ? id : undefined });
+
   return (
     <Flex
       width={"100%"}
@@ -156,7 +158,7 @@ const ProposalCard = ({ status, title, endDate, startDate, id }: ProposalCardTyp
       <Flex width={"100%"} direction={"column"} gap={6}>
         <Flex gap={4} alignItems={"center"}>
           <IconBadge variant={variant} />
-          {isVoted && <Status text={"Voted"} marginLeft={"auto"} />}
+          {hasVoted && <Status text={"Voted"} marginLeft={"auto"} />}
         </Flex>
         <Flex gap={4} alignItems={"start"} direction={"column"}>
           <Text overflow={"hidden"} fontSize={20} fontWeight={600} color={"gray.600"}>

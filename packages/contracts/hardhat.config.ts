@@ -1,34 +1,26 @@
-import { VECHAIN_URL_SOLO, VECHAIN_URL_MAINNET, VECHAIN_URL_TESTNET } from "@vechain/hardhat-vechain"
-import { HardhatUserConfig } from "hardhat/config"
-import "@nomicfoundation/hardhat-toolbox"
-import "@nomiclabs/hardhat-truffle5"
-import "@vechain/hardhat-vechain"
-import "@vechain/hardhat-ethers"
-import "hardhat-contract-sizer"
-import "hardhat-ignore-warnings"
-import { getConfig } from "@repo/config"
-import "solidity-coverage"
-import "solidity-docgen"
-import { EnvConfig } from "@repo/config/contracts"
+import { HardhatUserConfig } from "hardhat/config";
+import "@nomicfoundation/hardhat-toolbox";
+import "@nomiclabs/hardhat-truffle5";
+import "hardhat-contract-sizer";
+import "@vechain/sdk-hardhat-plugin";
+import "hardhat-ignore-warnings";
+import { getConfig } from "@repo/config";
+import "solidity-coverage";
+import "solidity-docgen";
+import { EnvConfig } from "@repo/config/contracts";
+import { HDKey } from "@vechain/sdk-core";
+import { getMnemonic } from "./scripts/helpers/env";
 
 const config: HardhatUserConfig = {
   solidity: "0.8.20",
-}
-
-const getEnvMnemonic = () => {
-  const isStagingEnv = process.env.VITE_APP_ENV === "testnet-staging"
-
-  const mnemonic = isStagingEnv ? process.env.TESTNET_STAGING_MNEMONIC : process.env.MNEMONIC
-
-  return mnemonic ?? ""
-}
+};
 
 const getSoloUrl = () => {
   const url = process.env.VITE_APP_ENV
     ? getConfig(process.env.VITE_APP_ENV as EnvConfig).network.urls[0]
-    : VECHAIN_URL_SOLO
-  return url
-}
+    : "http://localhost:8669";
+  return url;
+};
 
 module.exports = {
   solidity: {
@@ -58,9 +50,9 @@ module.exports = {
     vechain_solo: {
       url: getSoloUrl(),
       accounts: {
-        mnemonic: getEnvMnemonic(),
+        mnemonic: getMnemonic(),
         count: 20,
-        path: "m/44'/818'/0'/0",
+        path: HDKey.VET_DERIVATION_PATH,
       },
       restful: true,
       gas: 10000000,
@@ -68,29 +60,29 @@ module.exports = {
     vechain_devnet: {
       url: process.env.VECHAIN_URL_DEVNET,
       accounts: {
-        mnemonic: getEnvMnemonic(),
+        mnemonic: getMnemonic(),
         count: 20,
-        path: "m/44'/818'/0'/0",
+        path: HDKey.VET_DERIVATION_PATH,
       },
       restful: true,
       gas: 10000000,
     },
     vechain_testnet: {
-      url: VECHAIN_URL_TESTNET,
+      url: "https://testnet.vechain.org",
       accounts: {
-        mnemonic: getEnvMnemonic(),
+        mnemonic: getMnemonic(),
         count: 20,
-        path: "m/44'/818'/0'/0",
+        path: HDKey.VET_DERIVATION_PATH,
       },
       restful: true,
       gas: 10000000,
     },
     vechain_mainnet: {
-      url: VECHAIN_URL_MAINNET,
+      url: "https://mainnet.vechain.org",
       accounts: {
-        mnemonic: getEnvMnemonic(),
+        mnemonic: getMnemonic(),
         count: 20,
-        path: "m/44'/818'/0'/0",
+        path: HDKey.VET_DERIVATION_PATH,
       },
       restful: true,
       gas: 10000000,
@@ -99,6 +91,6 @@ module.exports = {
   docgen: {
     pages: "files",
   },
-}
+};
 
-export default config
+export default config;

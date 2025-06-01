@@ -1,6 +1,6 @@
 services:
     thor-solo:
-        image: vechain/thor:latest
+        image: ghcr.io/vechain/thor:release-galactica-latest
         hostname: thor-solo
         container_name: thor-solo
         user: root
@@ -23,7 +23,7 @@ services:
         healthcheck:
             # We run the health check using standard UNIX tools so we don't have to
             # install additional dependencies in the container.
-            test: wget -O- http://localhost:8669/blocks/0
+            test: wget -O- http://localhost:8669/blocks/1
             interval: 5s
             timeout: 10s
             retries: 10
@@ -32,6 +32,7 @@ services:
 
     insight:
         image: ghcr.io/vechain/insight-app:master
+        platform: linux/amd64
         hostname: insight
         container_name: insight
         environment:

@@ -1,5 +1,5 @@
 export type ContractsConfig = {
-  VITE_APP_ENV: "local" | "e2e" | "testnet" | "mainnet" | "testnet-staging";
+  VITE_APP_ENV: "local" | "e2e" | "testnet" | "mainnet" | "testnet-staging" | "galactica-test";
   CONTRACTS_ADMIN_ADDRESS: string;
   STARGATE_CONTRACT_ADDRESS: string;
   NODE_MANAGEMENT_CONTRACT_ADDRESS: string;

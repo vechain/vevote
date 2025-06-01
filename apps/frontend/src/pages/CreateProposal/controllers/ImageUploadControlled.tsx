@@ -34,7 +34,7 @@ export const ImageUploadControlled = <T extends FieldValues>({
                 type: files[0].type,
                 name: files[0].name,
                 size: files[0].size,
-                source: files[0],
+                source: new Blob([files[0]], { type: files[0].type }),
                 url: URL.createObjectURL(files[0]),
               });
             }}

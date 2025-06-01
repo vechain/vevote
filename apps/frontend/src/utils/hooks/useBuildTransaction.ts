@@ -1,13 +1,13 @@
-import { useCallback } from "react"
-import { useQueryClient } from "@tanstack/react-query"
-import { EnhancedClause, useSendTransaction, useWallet } from "@vechain/vechain-kit"
+import { useCallback } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { EnhancedClause, useSendTransaction, useWallet } from "@vechain/vechain-kit";
 
 export type BuildTransactionProps<ClausesParams> = {
-  clauseBuilder: (props: ClausesParams) => EnhancedClause[]
-  refetchQueryKeys?: string[][]
-  onSuccess?: () => void
-  invalidateCache?: boolean
-}
+  clauseBuilder: (props: ClausesParams) => EnhancedClause[];
+  refetchQueryKeys?: string[][];
+  onSuccess?: () => void;
+  invalidateCache?: boolean;
+};
 
 /**
  * Custom hook for building and sending transactions.
@@ -23,8 +23,8 @@ export const useBuildTransaction = <ClausesParams>({
   invalidateCache = true,
   onSuccess,
 }: BuildTransactionProps<ClausesParams>) => {
-  const { account } = useWallet()
-  const queryClient = useQueryClient()
+  const { account } = useWallet();
+  const queryClient = useQueryClient();
 
   /**
    * Callback function to be called when the transaction is successfully confirmed.
@@ -35,31 +35,31 @@ export const useBuildTransaction = <ClausesParams>({
       refetchQueryKeys?.forEach(async queryKey => {
         await queryClient.cancelQueries({
           queryKey,
-        })
+        });
         await queryClient.refetchQueries({
           queryKey,
-        })
-      })
+        });
+      });
     }
 
-    onSuccess?.()
-  }, [invalidateCache, onSuccess, queryClient, refetchQueryKeys])
+    onSuccess?.();
+  }, [invalidateCache, onSuccess, queryClient, refetchQueryKeys]);
 
   const result = useSendTransaction({
     signerAccountAddress: account?.address,
     onTxConfirmed: handleOnSuccess,
-  })
+  });
 
   /**
    * Function to send a transaction based on the provided parameters.
    * @param props - The parameters to be passed to the `clauseBuilder` function.
    */
   const sendTransaction = useCallback(
-    (props: ClausesParams) => {
-      result.sendTransaction(clauseBuilder(props))
+    async (props: ClausesParams) => {
+      await result.sendTransaction(clauseBuilder(props));
     },
     [clauseBuilder, result],
-  )
+  );
 
-  return { ...result, sendTransaction }
-}
+  return { ...result, sendTransaction };
+};

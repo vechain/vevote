@@ -79,6 +79,8 @@ jobs:
     if: needs.check-changes.outputs.contracts-changed == 'true'
     env:
       VECHAIN_URL_DEVNET: ${{ secrets.VECHAIN_URL_DEVNET }}
+      TESTNET_STAGING_MNEMONIC: ${{ secrets.TESTNET_STAGING_MNEMONIC }}
+      MNEMONIC: ${{ secrets.MNEMONIC }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3

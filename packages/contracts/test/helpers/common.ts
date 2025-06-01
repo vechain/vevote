@@ -1,13 +1,15 @@
 import { ethers, network } from "hardhat";
 import { getOrDeployContractInstances } from "./deploy";
 import { ContractTransactionResponse } from "ethers";
-import { TransactionBody, TransactionClause, ZERO_ADDRESS } from "@vechain/sdk-core";
+import { Clause, TransactionClause, Units, VTHO } from "@vechain/sdk-core";
 import { mine, time } from "@nomicfoundation/hardhat-network-helpers";
-import { buildTxBody, signAndSendTx } from "../../scripts/helpers/txHelper";
 import { getTestKeys } from "../../scripts/helpers/seedAccounts";
 import { CreateProposalParams } from "./types";
-import { HardhatEthersSigner } from "@nomicfoundation/hardhat-ethers/signers";
-import { Authority } from "../../typechain-types";
+import { getConfig } from "@repo/config";
+import { TransactionUtils } from "@repo/utils";
+import { ThorClient } from "@vechain/sdk-network";
+
+const thorClient = ThorClient.at(getConfig().nodeUrl);
 
 export const getCurrentBlockNumber = async () => {
   const block = await ethers.provider.getBlock("latest");
@@ -23,18 +25,17 @@ export const waitForNextBlock = async () => {
     return;
   }
 
+  const accounts = getTestKeys(2);
+  const source = accounts[0];
+  const target = accounts[1];
+
+  if (!source.pk) throw new Error("No private key");
+
   // since we do not support ethers' evm_mine yet, do a vet transaction to force a block
   const clauses: TransactionClause[] = [];
-  clauses.push(clauseBuilder.transferVET(ZERO_ADDRESS, BigInt(1)));
+  clauses.push(Clause.transferVTHOToken(target.address, VTHO.of(1, Units.wei)));
 
-  const accounts = getTestKeys(3);
-  const signer = accounts[2];
-
-  const body: TransactionBody = await buildTxBody(clauses, signer.address, 32, 10_000_000);
-
-  if (!signer.pk) throw new Error("No private key");
-
-  return await signAndSendTx(body, signer.pk);
+  await TransactionUtils.sendTx(thorClient, clauses, source.pk);
 };
 
 export const moveBlocks = async (blocks: number) => {

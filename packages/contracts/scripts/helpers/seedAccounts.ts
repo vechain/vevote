@@ -1,16 +1,14 @@
-import { VECHAIN_DEFAULT_MNEMONIC } from "@vechain/hardhat-vechain"
-import { unitsUtils, addressUtils, mnemonic } from "@vechain/sdk-core"
-
+import { Address, HDKey, VET } from "@vechain/sdk-core";
+import { getMnemonic } from "./env";
 export type TestPk = {
-  pk: Uint8Array
-  pkHex: string
-  address: string
-}
+  pk: Uint8Array;
+  address: Address;
+};
 
 export type SeedAccount = {
-  key: TestPk
-  amount: bigint
-}
+  key: TestPk;
+  amount: bigint;
+};
 
 export enum SeedStrategy {
   RANDOM,
@@ -18,33 +16,28 @@ export enum SeedStrategy {
   LINEAR,
 }
 
-const isStagingEnv = process.env.NEXT_PUBLIC_APP_ENV === "testnet-staging"
+const mnemonic = getMnemonic();
+const hdnode = HDKey.fromMnemonic(mnemonic.split(" "));
 
-const PHRASE = (
-  isStagingEnv ? process.env.TESTNET_STAGING_MNEMONIC : process.env.MNEMONIC || VECHAIN_DEFAULT_MNEMONIC
-)?.split(" ") as string[]
-
-export const TEST_DERIVATION_PATH = "m"
-
-export const getTestKey = (index: number, derivationPath: string = TEST_DERIVATION_PATH): TestPk => {
-  const pk = mnemonic.derivePrivateKey(PHRASE, `${derivationPath}/${index}`)
-  const buffer = Buffer.from(pk)
-  const pkHex = buffer.toString("hex")
-  return {
-    pk,
-    pkHex,
-    address: addressUtils.fromPrivateKey(pk),
+export const getTestKey = (index: number): TestPk => {
+  const pk = hdnode.deriveChild(index);
+  if (!pk.privateKey) {
+    throw new Error("Private key not found");
   }
-}
+  return {
+    pk: pk.privateKey,
+    address: Address.ofPrivateKey(pk.privateKey),
+  };
+};
 
 export const getTestKeys = (count: number): TestPk[] => {
-  const accounts = []
+  const accounts = [];
   for (let i = 0; i < count; i++) {
-    accounts.push(getTestKey(i))
+    accounts.push(getTestKey(i));
   }
 
-  return accounts
-}
+  return accounts;
+};
 
 /**
  * Generates a random starting balance for an account
@@ -54,28 +47,8 @@ export const getTestKeys = (count: number): TestPk[] => {
  * @returns
  */
 const getRandomStartingBalance = (min: number, max: number): bigint => {
-  const scale = Math.log(max) - Math.log(min)
-  const random = Math.random() ** 6 // Raise to a power to skew towards smaller values.
-  const result = Math.exp(Math.log(min) + scale * random)
-  return unitsUtils.parseVET(Math.floor(result).toString())
-}
-
-/**
- * Get seed accounts based on the strategy
- * @param strategy the strategy to use
- * @param numAccounts the number of accounts to generate
- * @param acctOffset the offset to start the account index
- * @returns a list of seed accounts
- */
-export const getSeedAccounts = (strategy: SeedStrategy, numAccounts: number, acctOffset: number): SeedAccount[] => {
-  switch (strategy) {
-    case SeedStrategy.RANDOM:
-      return getSeedAccountsRandom(numAccounts, acctOffset)
-    case SeedStrategy.LINEAR:
-      return getSeedAccountsLinear(numAccounts, acctOffset)
-    case SeedStrategy.FIXED:
-      return getSeedAccountsFixed(numAccounts, acctOffset)
-    default:
-      throw new Error("Unknown seed strategy")
-  }
-}
+  const scale = Math.log(max) - Math.log(min);
+  const random = Math.random() ** 6; // Raise to a power to skew towards smaller values.
+  const result = Math.exp(Math.log(min) + scale * random);
+  return VET.of(Math.floor(result)).wei;
+};

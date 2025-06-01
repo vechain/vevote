@@ -1,5 +1,5 @@
 import { useI18nContext } from "@/i18n/i18n-react";
-import { BaseOption, ProposalCardType, SingleChoiceEnum, VotingEnum } from "@/types/proposal";
+import { BaseOption, ProposalCardType, ProposalStatus, SingleChoiceEnum, VotingEnum } from "@/types/proposal";
 import { Flex, Text } from "@chakra-ui/react";
 import { useWallet } from "@vechain/vechain-kit";
 import { useCallback, useMemo, useState } from "react";
@@ -7,6 +7,7 @@ import { VotingItem, VotingItemVariant } from "./VotingItem";
 import { VotingListFooter } from "./VotingListFooter";
 import { getVotingVariant } from "@/utils/voting";
 import { useProposal } from "./ProposalProvider";
+import { useCastVote, useVotedChoices } from "@/hooks/useCastVote";
 
 type GenericVotingOptions<T, P> = {
   proposal: Omit<ProposalCardType, "votingType" | "votingOptions"> & {
@@ -18,9 +19,40 @@ type GenericVotingOptions<T, P> = {
 export const VotingSingleChoice = ({
   proposal,
 }: GenericVotingOptions<VotingEnum.SINGLE_CHOICE, SingleChoiceEnum[]>) => {
+  const enabled = useMemo(() => {
+    const showResultsArray: ProposalStatus[] = ["approved", "executed", "voting", "rejected"];
+    return showResultsArray.includes(proposal.status);
+  }, [proposal.status]);
+
+  const { votedChoices } = useVotedChoices({ proposalId: proposal.id, enabled });
+
+  const initialSelectedOption = useMemo(() => {
+    return proposal.votingOptions
+      .map((option, i) => {
+        if (Number(votedChoices?.choices[i] || 0) === 1) return option;
+        else return null;
+      })
+      .filter(p => p !== null);
+  }, [proposal.votingOptions, votedChoices?.choices]);
+
   const [selectedOption, setSelectedOption] = useState<SingleChoiceEnum | undefined>(undefined);
 
   const votingVariant: VotingItemVariant = useMemo(() => getVotingVariant(proposal.status), [proposal.status]);
+
+  const { sendTransaction, isTransactionPending } = useCastVote();
+
+  const onSubmit = useCallback(async () => {
+    const options = proposal.votingOptions.map(o => {
+      if (o === selectedOption) return 1;
+      else return 0;
+    });
+
+    try {
+      await sendTransaction({ id: proposal.id, selectedOptions: options });
+    } catch (e) {
+      console.error(e);
+    }
+  }, [proposal.id, proposal.votingOptions, selectedOption, sendTransaction]);
 
   return (
     <Flex gap={8} alignItems={"start"} flexDirection={"column"} width={"100%"}>
@@ -29,22 +61,54 @@ export const VotingSingleChoice = ({
         <VotingItem
           key={index}
           label={option}
-          isSelected={selectedOption === option}
+          isSelected={(initialSelectedOption[0] || selectedOption) === option}
           kind={VotingEnum.SINGLE_CHOICE}
           variant={votingVariant}
-          votes={10}
+          choiceIndex={index + 1}
           onClick={() => setSelectedOption(option)}
         />
       ))}
-      <VotingListFooter />
+      <VotingListFooter onSubmit={onSubmit} isLoading={isTransactionPending} />
     </Flex>
   );
 };
 
 export const VotingSingleOption = ({ proposal }: GenericVotingOptions<VotingEnum.SINGLE_OPTION, BaseOption[]>) => {
+  const enabled = useMemo(() => {
+    const showResultsArray: ProposalStatus[] = ["approved", "executed", "voting", "rejected"];
+    return showResultsArray.includes(proposal.status);
+  }, [proposal.status]);
+
+  const { votedChoices } = useVotedChoices({ proposalId: proposal.id, enabled });
+
+  const initialSelectedOption = useMemo(() => {
+    if (!votedChoices) return [];
+    return proposal.votingOptions
+      .map((_, i) => {
+        if (Number(votedChoices.choices[i] || 0) === 1) return i;
+        else return null;
+      })
+      .filter(o => o !== null);
+  }, [proposal.votingOptions, votedChoices]);
+
   const [selectedOption, setSelectedOption] = useState<number | undefined>(undefined);
 
   const votingVariant: VotingItemVariant = useMemo(() => getVotingVariant(proposal.status), [proposal.status]);
+
+  const { sendTransaction, isTransactionPending } = useCastVote();
+
+  const onSubmit = useCallback(async () => {
+    const options = proposal.votingOptions.map((_, i) => {
+      if (i === selectedOption) return 1;
+      else return 0;
+    });
+
+    try {
+      await sendTransaction({ id: proposal.id, selectedOptions: options });
+    } catch (e) {
+      console.error(e);
+    }
+  }, [proposal.id, proposal.votingOptions, selectedOption, sendTransaction]);
 
   return (
     <Flex gap={8} alignItems={"start"} flexDirection={"column"} width={"100%"}>
@@ -53,14 +117,14 @@ export const VotingSingleOption = ({ proposal }: GenericVotingOptions<VotingEnum
         <VotingItem
           key={index}
           label={option.value}
-          isSelected={selectedOption === index}
+          isSelected={(initialSelectedOption[0] || selectedOption) === index}
           kind={VotingEnum.SINGLE_OPTION}
           variant={votingVariant}
-          votes={10}
+          choiceIndex={index + 1}
           onClick={() => setSelectedOption(index)}
         />
       ))}
-      <VotingListFooter />
+      <VotingListFooter onSubmit={onSubmit} isLoading={isTransactionPending} />
     </Flex>
   );
 };
@@ -68,6 +132,23 @@ export const VotingSingleOption = ({ proposal }: GenericVotingOptions<VotingEnum
 export const VotingMultipleOptions = ({
   proposal,
 }: GenericVotingOptions<VotingEnum.MULTIPLE_OPTIONS, BaseOption[]>) => {
+  const enabled = useMemo(() => {
+    const showResultsArray: ProposalStatus[] = ["approved", "executed", "voting", "rejected"];
+    return showResultsArray.includes(proposal.status);
+  }, [proposal.status]);
+
+  const { votedChoices } = useVotedChoices({ proposalId: proposal.id, enabled });
+
+  const initialSelectedOption = useMemo(() => {
+    if (!votedChoices) return [];
+    return proposal.votingOptions
+      .map((_, i) => {
+        if (Number(votedChoices.choices[i] || 0) === 1) return i;
+        else return null;
+      })
+      .filter(o => o !== null);
+  }, [proposal.votingOptions, votedChoices]);
+
   const [selectedOptions, setSelectedOptions] = useState<number[]>([]);
 
   const votingVariant: VotingItemVariant = useMemo(() => getVotingVariant(proposal.status), [proposal.status]);
@@ -87,6 +168,21 @@ export const VotingMultipleOptions = ({
     [proposal.votingLimit, selectedOptions],
   );
 
+  const { sendTransaction, isTransactionPending } = useCastVote();
+
+  const onSubmit = useCallback(async () => {
+    const options = proposal.votingOptions.map((_, i) => {
+      if (selectedOptions.includes(i)) return 1;
+      else return 0;
+    });
+
+    try {
+      await sendTransaction({ id: proposal.id, selectedOptions: options });
+    } catch (e) {
+      console.error(e);
+    }
+  }, [proposal.id, proposal.votingOptions, selectedOptions, sendTransaction]);
+
   return (
     <Flex gap={8} alignItems={"start"} flexDirection={"column"} width={"100%"}>
       <VotingTitle />
@@ -94,14 +190,14 @@ export const VotingMultipleOptions = ({
         <VotingItem
           key={index}
           label={option.value}
-          isSelected={selectedOptions.includes(index)}
+          isSelected={(initialSelectedOption || selectedOptions).includes(index)}
           kind={VotingEnum.MULTIPLE_OPTIONS}
           variant={votingVariant}
-          votes={10}
+          choiceIndex={index + 1}
           onClick={() => handleSelectedOptions(index)}
         />
       ))}
-      <VotingListFooter />
+      <VotingListFooter onSubmit={onSubmit} isLoading={isTransactionPending} />
     </Flex>
   );
 };
