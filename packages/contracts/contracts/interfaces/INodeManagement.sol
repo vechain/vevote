@@ -172,13 +172,5 @@ interface INodeManagement {
    * @param user The user address to query.
    * @return tokens An array of DataTypes.Token structs owned or delegated to the user.
    */
-  function getUsersNodeInfo(address user) external view returns (DataTypes.Token[] memory tokens);
-
-  /**
-   * @notice Retrieves detailed information about a specific node.
-   * @dev Only valid for nodes that have been migrated to the new Stargate NFT contract.
-   * @param nodeId The ID of the node to retrieve information for.
-   * @return token The detailed information about the specified node.
-   */
-  function getNodeInfo(uint256 nodeId) external view returns (DataTypes.Token memory token);
+  function getUserStargateNFTsInfo(address user) external view returns (DataTypes.Token[] memory tokens);
 }

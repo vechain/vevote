@@ -585,7 +585,7 @@ contract NodeManagement is INodeManagement, AccessControlUpgradeable, UUPSUpgrad
    * @param user The user address to query.
    * @return tokens An array of DataTypes.Token structs owned or delegated to the user.
    */
-  function getUsersNodeInfo(address user) public view returns (DataTypes.Token[] memory tokens) {
+  function getUserStargateNFTsInfo(address user) public view returns (DataTypes.Token[] memory tokens) {
     NodeManagementStorage storage $ = _getNodeManagementStorage();
 
     // Fetch owned tokens directly in a single call
@@ -624,23 +624,6 @@ contract NodeManagement is INodeManagement, AccessControlUpgradeable, UUPSUpgrad
     }
 
     return tokens;
-  }
-
-  /**
-   * @notice Retrieves detailed information about a specific node.
-   * @dev Only valid for nodes that have been migrated to the new Stargate NFT contract.
-   * @param nodeId The ID of the node to retrieve information for.
-   * @return token The detailed information about the specified node.
-   */
-  function getNodeInfo(uint256 nodeId) public view returns (DataTypes.Token memory token) {
-    NodeManagementStorage storage $ = _getNodeManagementStorage();
-
-    // Fetch node info from the Stargate NFT contract
-    try $.stargateNft.getToken(nodeId) returns (DataTypes.Token memory tokenInfo) {
-      return tokenInfo;
-    } catch {
-      revert NodeManagementInvalidNodeId();
-    }
   }
 
   /**

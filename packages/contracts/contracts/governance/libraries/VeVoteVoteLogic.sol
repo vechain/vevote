@@ -52,6 +52,11 @@ library VeVoteVoteLogic {
    */
   error VotePowerOverflow();
 
+  /**
+   * @dev Thrown when trying to fetch information for a node id that does not exist.
+   */
+  error InvalidNodeId();
+
   // ------------------------------- Events -------------------------------
   /**
    * @notice Emitted when a user casts a vote on a proposal.
@@ -190,7 +195,7 @@ library VeVoteVoteLogic {
     VeVoteStorageTypes.VeVoteStorage storage self,
     uint256 nodeId
   ) external view returns (uint256) {
-    DataTypes.Token memory nodeInfo = self.nodeManagement.getNodeInfo(nodeId);
+    DataTypes.Token memory nodeInfo = _getNodeInfo(self, nodeId);
     if (nodeInfo.levelId == 0) return 0;
     return
       _getNodeWeight(self, nodeInfo.vetAmountStaked, nodeInfo.levelId) / VeVoteConfigurator.getMinStakedAmount(self);
@@ -280,7 +285,7 @@ library VeVoteVoteLogic {
     address masterAddress
   ) private view returns (uint256 weight) {
     // Fetch voter's stargate NFT info from NodeManagement
-    DataTypes.Token[] memory nodes = self.nodeManagement.getUsersNodeInfo(voter);
+    DataTypes.Token[] memory nodes = self.nodeManagement.getUserStargateNFTsInfo(voter);
 
     // Check if a user is a validator
     if (masterAddress != address(0)) weight = _determineValidatorVoteWeight(self, voter, masterAddress);
@@ -324,7 +329,7 @@ library VeVoteVoteLogic {
     address masterAddress
   ) private returns (uint256 weight, uint256[] memory nfts, address validator) {
     // Fetch voter's stargate NFT info from NodeManagement
-    DataTypes.Token[] memory nodes = self.nodeManagement.getUsersNodeInfo(voter);
+    DataTypes.Token[] memory nodes = self.nodeManagement.getUserStargateNFTsInfo(voter);
 
     // Check if a user is a validator
     if (masterAddress != address(0)) {
@@ -473,6 +478,24 @@ library VeVoteVoteLogic {
         // Add division result to the tally for each selected choice
         proposalTally[i] += perChoiceWeight;
       }
+    }
+  }
+
+  /**
+   * @notice Retrieves detailed information about a specific node.
+   * @dev Only valid for nodes that have been migrated to the new Stargate NFT contract.
+   * @param nodeId The ID of the node to retrieve information for.
+   * @return token The detailed information about the specified node.
+   */
+  function _getNodeInfo(
+    VeVoteStorageTypes.VeVoteStorage storage self,
+    uint256 nodeId
+  ) private view returns (DataTypes.Token memory token) {
+    // Fetch node info from the Stargate NFT contract
+    try self.stargateNFT.getToken(nodeId) returns (DataTypes.Token memory tokenInfo) {
+      return tokenInfo;
+    } catch {
+      revert InvalidNodeId();
     }
   }
 }

@@ -84,6 +84,11 @@ interface IVeVote is IERC165, IERC6372 {
   error InvalidMaxVotingDuration();
 
   /**
+   * @dev Thrown when trying to fetch information for a node id that does not exist.
+   */
+  error InvalidNodeId();
+
+  /**
    * @dev Thrown when the maximum number of choices is set to an invalid value (zero).
    */
   error InvalidMaxChoices();
@@ -203,6 +208,13 @@ interface IVeVote is IERC165, IERC6372 {
    * @notice Emitted when the TokenAuction contract is set.
    */
   event StargateNFTContractSet(address oldContractAddress, address newContractAddress);
+
+  /**
+   * @notice Emitted when the Validator contract address is updated.
+   * @param oldContractAddress The previous contract address.
+   * @param newContractAddress The new contract address.
+   */
+  event ValidatorContractSet(address oldContractAddress, address newContractAddress);
 
   /**
    * @notice Emitted when a user casts a vote on a proposal.
