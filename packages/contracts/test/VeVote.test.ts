@@ -12,8 +12,8 @@ import {
   waitForProposalToEnd,
   waitForProposalToStart,
 } from "./helpers/common";
-import { createNodeHolder } from "../scripts/helpers";
-import { ZeroAddress, zeroPadBytes } from "ethers";
+import { createNodeHolder, TokenLevelId } from "../scripts/helpers";
+import { ZeroAddress } from "ethers";
 
 describe("VeVote", function () {
   describe("Deployment", function () {
@@ -573,6 +573,11 @@ describe("VeVote", function () {
       );
     });
 
+    it("Should revert if a user tries to get vote weight for a node id that does not exist", async function () {
+      const { vevote } = await getOrDeployContractInstances({ forceDeploy: true });
+      await expect(vevote.getNodeVoteWeight(123456789)).to.be.revertedWithCustomError(vevote, "InvalidNodeId");
+    });
+
     it("Should determine vote weight based on all nodes a user owns and has deleagted to them", async function () {
       const { vevote, strengthHolder, veThorXHolder, nodeManagement, stargateNFT } = await getOrDeployContractInstances(
         {
@@ -641,6 +646,84 @@ describe("VeVote", function () {
 
       // User owns 1 node with weight 100 -> 10000 scaled by 100
       expect(await vevote.getVoteWeightAtTimepoint(strengthHolder.address, timepoint, ZeroAddress)).to.equal(10000);
+    });
+
+    it("Should not include stargate NFTs that have been minted after the proposal snapshot", async function () {
+      const { vevote, otherAccount, admin, stargateNFT } = await getOrDeployContractInstances({
+        forceDeploy: true,
+      });
+
+      const timepoint = await getCurrentBlockNumber();
+      const tx = await createProposal();
+      const proposalId = await getProposalIdFromTx(tx);
+      await waitForProposalToStart(proposalId);
+
+      // Mint token for user after voting has started for proposal
+      await createNodeHolder(TokenLevelId.Strength, admin, otherAccount, stargateNFT);
+
+      // User owns 1 node with weight 100 -> but minted after timepoint/proposal snapshot so weight should be 0
+      expect(await vevote.getVoteWeightAtTimepoint(otherAccount.address, timepoint, ZeroAddress)).to.equal(0);
+      // SHould have weight of 100 for current timepoint
+      expect(await vevote.getVoteWeight(otherAccount.address, ZeroAddress)).to.equal(10000);
+
+      // Should revert if a user votes aas they have no vote weight for proposal
+      await expect(vevote.connect(otherAccount).castVote(proposalId, 1, ZeroAddress)).to.be.revertedWithCustomError(
+        vevote,
+        "VoterNotEligible",
+      );
+    });
+
+    it("Should not include validator weight in vote weight if user is not endorser of master node they passed in", async function () {
+      const { vevote, otherAccount, admin } = await getOrDeployContractInstances({
+        forceDeploy: true,
+      });
+
+      const timepoint = await getCurrentBlockNumber();
+      const tx = await createProposal();
+      const proposalId = await getProposalIdFromTx(tx);
+      await waitForProposalToStart(proposalId);
+
+      // User is not the endorser of the validator node they have passed in
+      expect(await vevote.getVoteWeightAtTimepoint(otherAccount.address, timepoint, admin.address)).to.equal(0);
+
+      // Should revert as user is not the endorser of the validator node they passed in
+      await expect(vevote.connect(otherAccount).castVote(proposalId, 1, admin.address)).to.be.revertedWithCustomError(
+        vevote,
+        "VoterNotEligible",
+      );
+    });
+
+    it("Same master node cannot be used twice for voting", async function () {
+      const { vevote, otherAccount, admin, authorityContractMock, validatorHolder } =
+        await getOrDeployContractInstances({
+          forceDeploy: true,
+        });
+
+      // Create another account endorsing same validator node
+      await createValidator(otherAccount, authorityContractMock, admin);
+
+      const timepoint = await getCurrentBlockNumber();
+      const tx = await createProposal({
+        votingPeriod: 10,
+      });
+      const proposalId = await getProposalIdFromTx(tx);
+      await waitForProposalToStart(proposalId);
+
+      // Both accounts have a vote weight as they are both endorsers, however only one can vote as they are both endorsing same master node.
+      expect(await vevote.getVoteWeightAtTimepoint(otherAccount.address, timepoint, admin.address)).to.equal(500000);
+      // Set validator account endorsing same validator node
+      await createValidator(validatorHolder, authorityContractMock, admin);
+      expect(await vevote.getVoteWeightAtTimepoint(validatorHolder.address, timepoint, admin.address)).to.equal(500000);
+
+      // First user casts vote.
+      await expect(vevote.connect(validatorHolder).castVote(proposalId, 1, admin.address)).to.not.be.reverted;
+      // Set other account endorsing now
+      await createValidator(otherAccount, authorityContractMock, admin);
+      // Should revert as user is not the master node was already ised for voting
+      await expect(vevote.connect(otherAccount).castVote(proposalId, 1, admin.address)).to.be.revertedWithCustomError(
+        vevote,
+        "VoterNotEligible",
+      );
     });
 
     it("Should normalise the vote weights when calling the getters in the contract", async function () {
@@ -1364,7 +1447,21 @@ describe("VeVote", function () {
         .withArgs(config.MIN_VET_STAKE, 1);
     });
 
-    it("Only admin address can update node management cotract", async function () {
+    it("Should revert if trying to get min staked amount at a time when it wasnt set", async function () {
+      const { vevote } = await getOrDeployContractInstances({ forceDeploy: true });
+      await expect(vevote.getMinStakedAmountAtTimepoint(1)).to.be.revertedWithCustomError(
+        vevote,
+        "MinimumStakeNotSetAtTimepoint",
+      );
+    });
+
+    it("Should be able to get min staked amount at timepoint", async function () {
+      const { vevote } = await getOrDeployContractInstances({ forceDeploy: true });
+      const currentBlock = await getCurrentBlockNumber();
+      expect(await vevote.getMinStakedAmountAtTimepoint(currentBlock)).to.eql(10000000000000000000000n);
+    });
+
+    it("Only admin address can update node management contract", async function () {
       const { vevote, admin, otherAccount, vechainNodesMock } = await getOrDeployContractInstances({
         forceDeploy: true,
       });
@@ -1396,7 +1493,7 @@ describe("VeVote", function () {
         .withArgs(await nodeManagement.getAddress(), await vechainNodesMock.getAddress());
     });
 
-    it("Only admin address can update vechain node cotract", async function () {
+    it("Only admin address can update vechain node contract", async function () {
       const { vevote, otherAccount, nodeManagement } = await getOrDeployContractInstances({ forceDeploy: true });
       await expect(
         vevote.connect(otherAccount).setStargateNFTContract(await nodeManagement.getAddress()),
@@ -1420,6 +1517,34 @@ describe("VeVote", function () {
       await expect(vevote.connect(admin).setStargateNFTContract(await nodeManagement.getAddress()))
         .to.emit(vevote, "StargateNFTContractSet")
         .withArgs(await stargateNFT.getAddress(), await nodeManagement.getAddress());
+    });
+
+    it("Only admin address can update validator contract", async function () {
+      const { vevote, otherAccount, nodeManagement } = await getOrDeployContractInstances({ forceDeploy: true });
+      await expect(
+        vevote.connect(otherAccount).setValidatorContract(await nodeManagement.getAddress()),
+      ).to.be.revertedWithCustomError(vevote, "AccessControlUnauthorizedAccount");
+    });
+
+    it("Cannot set validator contract to ZERO address", async function () {
+      const { vevote, admin } = await getOrDeployContractInstances({
+        forceDeploy: true,
+      });
+      await expect(vevote.connect(admin).setValidatorContract(ethers.ZeroAddress)).to.be.revertedWithCustomError(
+        vevote,
+        "InvalidAddress",
+      );
+    });
+
+    it("Should emit an event when validator contract updated", async function () {
+      const { vevote, admin, nodeManagement, authorityContractMock } = await getOrDeployContractInstances({
+        forceDeploy: true,
+      });
+      await expect(vevote.connect(admin).setValidatorContract(await nodeManagement.getAddress()))
+        .to.emit(vevote, "ValidatorContractSet")
+        .withArgs(await authorityContractMock.getAddress(), await nodeManagement.getAddress());
+
+      expect(await vevote.getValidatorContract()).to.eql(await nodeManagement.getAddress());
     });
 
     it("Only admin address can update node multiplers", async function () {
