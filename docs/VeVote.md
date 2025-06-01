@@ -108,7 +108,7 @@ If you hold—or are delegated—more than one Node, your **total voting power**
 
 ### 🕒 When Is Voting Power Counted?
 
-A **snapshot** is taken at the **start** of every proposal’s voting period, that means that the voting power you will have at the exact `startTime`, will be frozen regardless of when you will cast your vote.
+A **snapshot** is taken at the **start** of every proposal’s voting period, that means that the voting power you will have at the exact `startBlock`, will be frozen regardless of when you will cast your vote.
 Your voting power is locked in based on:
 
 - All Nodes you own directly
@@ -134,7 +134,7 @@ Each proposal moves through the following stages:
 
 ### 3. **Active**
 
-- Voting begins at the specified `startTime`
+- Voting begins at the specified `startBlock`
 - Snapshot taken for voter eligibility and power
 - Each Node can vote once
 
@@ -192,7 +192,7 @@ Proposal Creation Format:
 | Field          | Type        | Description                                |
 | -------------- | ----------- | ------------------------------------------ |
 | `description`  | `string`    | IPFS CID for full Markdown content         |
-| `startTime`    | `uint256`   | Timestamp when voting starts (after delay) |
+| `startBlock`    | `uint256`   | Timestamp when voting starts (after delay) |
 | `voteDuration` | `uint256`   | Duration in seconds                        |
 | `choices`      | `bytes32[]` | List of voting options                     |
 | `maxSelection` | `uint8`     | Max choices a voter can select             |

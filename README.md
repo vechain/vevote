@@ -14,14 +14,17 @@ Ensure your development environment is set up with the following:
 ## Project Structure
 
 ### Frontend (apps/frontend) 🌐
+
 A React-based application using Vite to provide a fast and efficient UI for interacting with VeVote.
 
 - **VeChain dapp-kit:** Used to manage wallet connections and blockchain interactions. [Learn more](https://docs.vechain.org/developer-resources/sdks-and-providers/dapp-kit)
 
 ### Contracts (packages/contracts) 📜
+
 Smart contracts written in Solidity, managed with Hardhat for deployment on the VeChain Thor network.
 
 ### Packages 📦
+
 Shared configurations and utility functions to streamline development.
 
 ## Getting Started
@@ -53,6 +56,7 @@ yarn dev
 ```
 
 This command will:
+
 - Start the frontend
 - Deploy contracts if they are not already deployed
 - Output logs for frontend and contract deployment
@@ -106,5 +110,5 @@ yarn dev:mainnet
 ```
 
 ## Disclaimer ⚠️
-This is an early-stage implementation of VeVote. The architecture and structure may evolve over time. Ensure you review and configure settings based on your project’s specific requirements.
 
+This is an early-stage implementation of VeVote. The architecture and structure may evolve over time. Ensure you review and configure settings based on your project’s specific requirements.
