@@ -311,7 +311,6 @@ library VeVoteVoteLogic {
 
   /**
    * @dev Calculates the voting weight of a user based on validator status and eligible node holdings.
-   *      Also returns token IDs of used nodes for event logging.
    * @param self The storage reference to VeVoteStorage.
    * @param voter The address of the voter.
    * @param snapshot The proposal snapshot block.
@@ -346,7 +345,7 @@ library VeVoteVoteLogic {
     // Temp array to collect used token IDs (max size = totalNodes)
     uint256[] memory tempTokenIds = new uint256[](totalNodes);
     uint256 count;
-
+    // Iterate through each node to compute voting weight
     for (uint256 i; i < totalNodes; ++i) {
       DataTypes.Token memory node = nodes[i];
 
@@ -383,7 +382,6 @@ library VeVoteVoteLogic {
 
   /**
    * @dev Computes the voting weight for a node based on its stake and level multiplier.
-   * Reverts if the multiplication overflows.
    * @param self The storage reference to VeVoteStorage.
    * @param minStake The amount of VET staked in the node.
    * @param levelId The level ID of the node, used to determine the multiplier.
