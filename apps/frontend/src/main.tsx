@@ -16,6 +16,7 @@ import { loadLocale } from "./i18n/i18n-util.sync";
 import "./index.css";
 import { CreateProposalProvider } from "./pages/CreateProposal/CreateProposalProvider.tsx";
 import { persister, queryClient } from "./utils/queryClient.ts";
+import { UserProvider } from "./contexts/UserProvider.tsx";
 
 loadLocale("en");
 
@@ -60,9 +61,11 @@ const Providers = ({ children }: PropsWithChildren) => {
           network={{
             type: config.network.type,
           }}>
-          <ThemeProvider>
-            <CreateProposalProvider>{children}</CreateProposalProvider>
-          </ThemeProvider>
+          <UserProvider>
+            <ThemeProvider>
+              <CreateProposalProvider>{children}</CreateProposalProvider>
+            </ThemeProvider>
+          </UserProvider>
         </VeChainKitProvider>
       </PersistQueryClientProvider>
     </I18nProvider>

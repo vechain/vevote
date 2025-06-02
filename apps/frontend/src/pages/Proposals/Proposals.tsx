@@ -4,7 +4,7 @@ import { MdOutlineHowToVote } from "react-icons/md";
 import { CiCirclePlus } from "react-icons/ci";
 import { SearchInput } from "@/components/ui/SearchInput";
 import { Sort, SortDropdown } from "@/components/ui/SortDropdown";
-import { PropsWithChildren, useMemo, useState } from "react";
+import { PropsWithChildren, useContext, useMemo, useState } from "react";
 import { ProposalCardType } from "@/types/proposal";
 import { IconBadge } from "@/components/ui/IconBadge";
 import { Status } from "@/components/ui/Status";
@@ -20,13 +20,13 @@ import { ProposalsHeader } from "@/components/navbar/Header";
 import { useCreateProposal } from "../CreateProposal/CreateProposalProvider";
 import { useProposalsEvents } from "@/hooks/useProposalsEvents";
 import { useHasVoted } from "@/hooks/useCastVote";
+import { UserContext } from "@/contexts/UserProvider";
 
 const ITEMS_PER_PAGE = 6;
 
-//todo: get from user provider
-const isAdmin = true;
-
 export const Proposals = () => {
+  const { isAdmin } = useContext(UserContext);
+
   const { draftProposal } = useCreateProposal();
   const [sort, setSort] = useState<Sort>(Sort.Newest);
   const [searchValue, setSearchValue] = useState<string>("");

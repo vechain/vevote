@@ -7,7 +7,7 @@ import { ProposalProvider } from "@/components/proposal/ProposalProvider";
 import { VotingSection } from "@/components/proposal/VotingSection";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { Box, Button, Flex, Image, Link, Text } from "@chakra-ui/react";
-import { useMemo } from "react";
+import { useContext, useMemo } from "react";
 import { IoArrowBack, IoArrowForward } from "react-icons/io5";
 import { useParams } from "react-router";
 import { MdOutlineHowToVote } from "react-icons/md";
@@ -21,6 +21,7 @@ import { sanitizeImageUrl } from "@/utils/proposals/helpers";
 import { useProposalEvents } from "@/hooks/useProposalEvent";
 import { ProposalCardType } from "@/types/proposal";
 import { useHasVoted } from "@/hooks/useCastVote";
+import { UserContext } from "@/contexts/UserProvider";
 
 export const Proposal = () => {
   const { LL } = useI18nContext();
@@ -89,8 +90,6 @@ export const Proposal = () => {
 };
 
 //todo: get from provider
-const isAdmin = true;
-const isExecutor = false;
 const isVoter = false;
 
 const ProposalNavbarActions = ({ proposal }: { proposal: ProposalCardType | undefined }) => {
@@ -100,6 +99,8 @@ const ProposalNavbarActions = ({ proposal }: { proposal: ProposalCardType | unde
   };
 
   const { hasVoted } = useHasVoted({ proposalId: proposal?.id || "" });
+
+  const { isAdmin, isExecutor } = useContext(UserContext);
 
   return (
     <Flex alignItems={"center"} gap={2} marginLeft={"auto"}>

@@ -1,7 +1,8 @@
+import { UserContext } from "@/contexts/UserProvider";
 import { useShowNavbar } from "@/hooks/useShowNavbar";
 import { Box, BoxProps, Flex, FlexProps, Image, useBreakpointValue } from "@chakra-ui/react";
 import { DAppKitWalletButton } from "@vechain/vechain-kit";
-import { PropsWithChildren, useMemo } from "react";
+import { PropsWithChildren, useContext, useMemo } from "react";
 
 const NavbarContainer = ({ children, ...restProps }: BoxProps) => {
   return (
@@ -60,10 +61,11 @@ export const Navbar = () => {
 };
 
 //todo: get from provider
-const isAdmin = true;
 
 export const ProposalNavbar = ({ children }: PropsWithChildren) => {
   const { showBackground } = useShowNavbar();
+
+  const { isAdmin } = useContext(UserContext);
 
   const bgVariant = useMemo(() => {
     if (!showBackground) {
@@ -73,7 +75,7 @@ export const ProposalNavbar = ({ children }: PropsWithChildren) => {
     } else {
       return isAdmin ? "primary.800" : "linear-gradient(102deg, #351C9B 0%, #4324C6 100%)";
     }
-  }, [showBackground]);
+  }, [showBackground, isAdmin]);
   return (
     <NavbarContainer
       bg={bgVariant}
