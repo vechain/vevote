@@ -70,13 +70,10 @@ contract VeVoteStorage is Initializable {
     $.levelIdMultiplier[1] = 100; // Strength Node multipler
     $.levelIdMultiplier[2] = 100; // Thunder Node multipler
     $.levelIdMultiplier[3] = 100; // Mjolnir Node multipler
-
     $.levelIdMultiplier[4] = 150; // VeThor X Node multipler
     $.levelIdMultiplier[5] = 150; // Strength X Node multipler
     $.levelIdMultiplier[6] = 150; // Thunder X Node multipler
     $.levelIdMultiplier[7] = 150; // Mjolnir X Node multipler
-
-    // TODO: Update these values to the correct values
     $.levelIdMultiplier[8] = 100; // Dawn Node multipler
     $.levelIdMultiplier[9] = 100; // Lightning Node multipler
     $.levelIdMultiplier[10] = 100; // Flash Node multipler

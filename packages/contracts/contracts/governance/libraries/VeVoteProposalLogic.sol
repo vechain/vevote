@@ -100,8 +100,8 @@ library VeVoteProposalLogic {
    * @dev Creates a new proposal, validates its parameters, and stores it in the contract.
    * @param self The storage reference for the VeVoteStorage.
    * @param description The IPFS CID containing the proposal details.
-   * @param startBlock The timestamp when the proposal starts.
-   * @param voteDuration The duration of the proposal in seconds.
+   * @param startBlock The block when the proposal starts.
+   * @param voteDuration The duration of the proposal in blocks.
    * @param choices The voting choices available.
    * @param maxSelection The maximum number of choices a voter can select.
    * @param minSelection The minimum number of choices a voter must select.
@@ -329,7 +329,7 @@ library VeVoteProposalLogic {
    * @dev Validates the parameters of a proposal.
    * @param self The storage reference for the VeVoteStorage.
    * @param description The proposal description (IPFS CID).
-   * @param startBlock The start time of the proposal.
+   * @param startBlock The start block of the proposal.
    * @param voteDuration The duration of the voting period.
    * @param choices The available voting choices.
    * @param maxSelection The maximum number of choices that can be selected.
@@ -346,7 +346,7 @@ library VeVoteProposalLogic {
     uint8 minSelection,
     uint256 proposalId
   ) private view {
-    // Start time must be in the future and at least minVotingDelay blocks from now
+    // Start block must be in the future and at least minVotingDelay blocks from now
     if (startBlock <= VeVoteClockLogic.clock() + self.minVotingDelay) {
       revert VeVoteInvalidStartBlock(startBlock);
     }
@@ -363,7 +363,7 @@ library VeVoteProposalLogic {
       revert VeVoteInvalidProposalDescription();
     }
 
-    // Ensure `minSelection` is not greater than `maxSelection` (logical validation) && greater than 0
+    // Ensure `minSelection` is not greater than `maxSelection` && greater than 0
     if (minSelection > maxSelection || minSelection < 1) {
       revert VeVoteInvalidSelectionRange(minSelection, maxSelection);
     }
