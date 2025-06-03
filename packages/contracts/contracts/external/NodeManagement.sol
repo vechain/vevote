@@ -1,46 +1,50 @@
 // SPDX-License-Identifier: MIT
 
-//                                      #######
-//                                 ################
-//                               ####################
-//                             ###########   #########
-//                            #########      #########
-//          #######          #########       #########
-//          #########       #########      ##########
-//           ##########     ########     ####################
-//            ##########   #########  #########################
-//              ################### ############################
-//               #################  ##########          ########
-//                 ##############      ###              ########
-//                  ############                       #########
-//                    ##########                     ##########
-//                     ########                    ###########
-//                       ###                    ############
-//                                          ##############
-//                                    #################
-//                                   ##############
-//                                   #########
+//        ✦     *        .         ✶         *        .       ✦       .
+//  ✦   _______..___________.    ___      .______        _______      ___   .___________. _______   ✦
+//     /       ||           |   /   \     |   _  \      /  _____|    /   \  |           ||   ____|  *
+//    |   (----``---|  |----`  /  ^  \    |  |_)  |    |  |  __     /  ^  \ `---|  |----`|  |__      .
+//     \   \        |  |      /  /_\  \   |      /     |  | |_ |   /  /_\  \    |  |     |   __|     ✶
+// .----)   |       |  |     /  _____  \  |  |\  \----.|  |__| |  /  _____  \   |  |     |  |____   *
+// |_______/        |__|    /__/     \__\ | _| `._____| \______| /__/     \__\  |__|     |_______|  ✦
+//         *       .      ✦      *      .        ✶       *      ✦       .       *        ✶
 
 pragma solidity 0.8.20;
 
 import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
-import { VechainNodesDataTypes } from "../libraries/VechainNodesDataTypes.sol";
 import { ITokenAuction } from "../interfaces/ITokenAuction.sol";
 import { INodeManagement } from "../interfaces/INodeManagement.sol";
+import { IStargateNFT } from "../interfaces/IStargateNFT.sol";
+import { DataTypes } from "./StargateNFT/libraries/DataTypes.sol";
 
 /**
  * @title NodeManagement
- * @notice This contract manages node ownership and delegation within the VeBetter DAO ecosystem. It supports delegation,
- *         retrieval of managed nodes, and integration with VeChain Nodes and token auction contracts.
+ * @notice This contract was originally created and used by VeBetter DAO to manage node ownership and delegation.
+ * It supports delegation, retrieval of managed nodes, and integration with legacy VeChain Nodes and token auction contracts.
+ * Since the creation of the Stargate NFT contract, this contract has been moved under the Stargate team umbrella, and
+ * it is now used to manage node delegation also for the Stargate NFT contract. But most importantly,
+ * developers can use this contract to easily migrate from pointing to the legacy vechain nodes contract to the new Stargate NFT contract.
+ * In fact, this contract will point to both the legacy vechain nodes contract and the new Stargate NFT contract, allowing
+ * a easy way to check node ownership and delegation for both.
  * @dev The contract is upgradeable using the UUPS proxy pattern and implements role-based access control for secure upgrades.
+ * @dev Important: The legacy and new vechain nodes contracts share the same token IDs.
  *
  * ------------------------ Version 2 ------------------------
  * - Add function to check if Node is delegated
  * - Add function to check if user is a delegator
  * - Add function to get users owned node ID
  * - Add function to retrieve detailed information about a user's nodes (both delegated and owned)
+ *
+ * ------------------------ Version 3 ------------------------
+ * This version aligns with the Stargate NFT contract which is the new vechain nodes contract, making {vechainNodesContract} legacy.
+ * Since users have an indefinite amount of time to migrate their nodes from the old to the new contract, this contract is used to manage
+ * node ownership and delegation for both the old and new contracts.
+ * - Added stargateNft contract address to storage
+ * - Check everywhere also ownerships in the stargate NFT contract
+ * - Deprecated removeNodeDelegation() function
+ * - Deprecated delegateNode(address) function
  */
 contract NodeManagement is INodeManagement, AccessControlUpgradeable, UUPSUpgradeable {
   using EnumerableSet for EnumerableSet.UintSet;
@@ -55,7 +59,7 @@ contract NodeManagement is INodeManagement, AccessControlUpgradeable, UUPSUpgrad
   // Struct used to format return values for getUserNodes
   struct NodeInfo {
     uint256 nodeId;
-    VechainNodesDataTypes.NodeStrengthLevel nodeLevel;
+    uint8 nodeLevel;
     address xNodeOwner;
     bool isXNodeHolder;
     bool isXNodeDelegated;
@@ -69,6 +73,7 @@ contract NodeManagement is INodeManagement, AccessControlUpgradeable, UUPSUpgrad
     ITokenAuction vechainNodesContract; // The token auction contract
     mapping(address => EnumerableSet.UintSet) delegateeToNodeIds; // Map delegatee address to set of node IDs
     mapping(uint256 => address) nodeIdToDelegatee; // Map node ID to delegatee address
+    IStargateNFT stargateNft; // The stargate NFT contract, aka: the new vechain nodes contract
   }
 
   // keccak256(abi.encode(uint256(keccak256("b3tr.storage.NodeManagement")) - 1)) & ~bytes32(uint256(0xff))
@@ -78,7 +83,6 @@ contract NodeManagement is INodeManagement, AccessControlUpgradeable, UUPSUpgrad
   /**
    * @notice Retrieve the storage reference for node delegation data.
    * @dev Internal pure function to get the storage slot for node delegation data using inline assembly.
-   * @return $ The storage reference for node delegation data.
    */
   function _getNodeManagementStorage() internal pure returns (NodeManagementStorage storage $) {
     assembly {
@@ -103,17 +107,29 @@ contract NodeManagement is INodeManagement, AccessControlUpgradeable, UUPSUpgrad
 
     NodeManagementStorage storage $ = _getNodeManagementStorage();
     $.vechainNodesContract = ITokenAuction(_vechainNodesContract);
-    emit VechainNodeContractSet(address(0), _vechainNodesContract);
+    emit StargateNFTContractSet(address(0), _vechainNodesContract);
+  }
+
+  /// @notice No op for v2
+  function initializeV2() external onlyRole(UPGRADER_ROLE) reinitializer(2) {}
+
+  /// @notice We added the stargate NFT contract in v3, so we need to initialize it
+  function initializeV3(address _stargateNft) external onlyRole(UPGRADER_ROLE) reinitializer(3) {
+    require(_stargateNft != address(0), "NodeManagement: stargateNft address cannot be zero");
+
+    NodeManagementStorage storage $ = _getNodeManagementStorage();
+    $.stargateNft = IStargateNFT(_stargateNft);
+    emit StargateNftSet(address(0), _stargateNft);
   }
 
   // ---------- Setters ---------- //
-
   /**
    * @notice Delegate a node to another address.
    * @dev This function allows a node owner to delegate their node to another address.
    * @param delegatee The address to delegate the node to.
+   * @param nodeId The ID of the node to delegate.
    */
-  function delegateNode(address delegatee) public virtual {
+  function delegateNode(address delegatee, uint256 nodeId) public virtual {
     NodeManagementStorage storage $ = _getNodeManagementStorage();
 
     // Check if the delegatee address is the zero address
@@ -121,12 +137,9 @@ contract NodeManagement is INodeManagement, AccessControlUpgradeable, UUPSUpgrad
       revert NodeManagementZeroAddress();
     }
 
-    // Get the node ID of the caller
-    uint256 nodeId = $.vechainNodesContract.ownerToId(msg.sender);
-
-    // If node ID is equal to zero, user does not own a node
-    if (nodeId == 0) {
-      revert NodeManagementNonNodeHolder();
+    // Check that the user owns the node
+    if (!isDirectNodeOwner(msg.sender, nodeId)) {
+      revert NodeManagementNotNodeOwner(nodeId);
     }
 
     // Check if the delegatee is the same as the caller, a node owner by defualt is the node manager and cannot delegate to themselves
@@ -134,12 +147,14 @@ contract NodeManagement is INodeManagement, AccessControlUpgradeable, UUPSUpgrad
       revert NodeManagementSelfDelegation();
     }
 
+    address currentDelegatee = $.nodeIdToDelegatee[nodeId];
+
     // Check if node ID is already delegated to another user and if so remove the delegation
-    if ($.nodeIdToDelegatee[nodeId] != address(0)) {
+    if (currentDelegatee != address(0)) {
       // Emit event for delegation removal
-      emit NodeDelegated(nodeId, $.nodeIdToDelegatee[nodeId], false);
+      emit NodeDelegated(nodeId, currentDelegatee, false);
       // Remove delegation
-      $.delegateeToNodeIds[$.nodeIdToDelegatee[nodeId]].remove(nodeId);
+      $.delegateeToNodeIds[currentDelegatee].remove(nodeId);
     }
 
     // Update mappings for delegation
@@ -153,16 +168,14 @@ contract NodeManagement is INodeManagement, AccessControlUpgradeable, UUPSUpgrad
   /**
    * @notice Remove the delegation of a node.
    * @dev This function allows a node owner to remove the delegation of their node, effectively revoking the delegatee's access to the node.
+   * @param nodeId The ID of the node to remove the delegation from.
    */
-  function removeNodeDelegation() public virtual {
+  function removeNodeDelegation(uint256 nodeId) public virtual {
     NodeManagementStorage storage $ = _getNodeManagementStorage();
 
-    // Get the node ID of the caller
-    uint256 nodeId = $.vechainNodesContract.ownerToId(msg.sender);
-
-    // If node ID is equal to zero, user does not own a node
-    if (nodeId == 0) {
-      revert NodeManagementNonNodeHolder();
+    // Check that the user owns the node
+    if (!isDirectNodeOwner(msg.sender, nodeId)) {
+      revert NodeManagementNotNodeOwner(nodeId);
     }
 
     // Check if node is delegated
@@ -189,8 +202,22 @@ contract NodeManagement is INodeManagement, AccessControlUpgradeable, UUPSUpgrad
 
     NodeManagementStorage storage $ = _getNodeManagementStorage();
 
-    emit VechainNodeContractSet(address($.vechainNodesContract), vechainNodesContract);
+    emit StargateNFTContractSet(address($.vechainNodesContract), vechainNodesContract);
     $.vechainNodesContract = ITokenAuction(vechainNodesContract);
+  }
+
+  /**
+   * @notice Set the address of the Stargate NFT contract.
+   * @dev This function allows the admin to update the address of the Stargate NFT contract.
+   * @param stargateNft The new address of the Stargate NFT contract.
+   */
+  function setStargateNft(address stargateNft) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    require(stargateNft != address(0), "NodeManagement: stargateNft cannot be the zero address");
+
+    NodeManagementStorage storage $ = _getNodeManagementStorage();
+
+    emit StargateNftSet(address($.stargateNft), stargateNft);
+    $.stargateNft = IStargateNFT(stargateNft);
   }
 
   // ---------- Getters ---------- //
@@ -205,10 +232,22 @@ contract NodeManagement is INodeManagement, AccessControlUpgradeable, UUPSUpgrad
     NodeManagementStorage storage $ = _getNodeManagementStorage();
 
     // Get the address of the delegatee for the given nodeId
-    address user = $.nodeIdToDelegatee[nodeId];
+    address delegatee = $.nodeIdToDelegatee[nodeId];
 
-    // Return the delegated node ID if it exists, otherwise return the node ID directly owned by the user
-    return user != address(0) ? user : $.vechainNodesContract.idToOwner(nodeId);
+    if (delegatee != address(0)) {
+      return delegatee;
+    }
+
+    address directOwner = $.vechainNodesContract.idToOwner(nodeId);
+    if (directOwner != address(0)) {
+      return directOwner;
+    }
+
+    try $.stargateNft.ownerOf(nodeId) returns (address owner) {
+      return owner;
+    } catch {
+      return address(0);
+    }
   }
 
   /**
@@ -229,7 +268,7 @@ contract NodeManagement is INodeManagement, AccessControlUpgradeable, UUPSUpgrad
     uint256[] memory nodeIds = new uint256[](count);
 
     // Populate the array with node IDs from the set
-    for (uint256 i = 0; i < count; i++) {
+    for (uint256 i; i < count; i++) {
       nodeIds[i] = nodeIdsSet.at(i);
     }
 
@@ -238,6 +277,17 @@ contract NodeManagement is INodeManagement, AccessControlUpgradeable, UUPSUpgrad
     if (ownedNodeId != 0 && $.nodeIdToDelegatee[ownedNodeId] == address(0)) {
       // If the user directly owns a node, add it to the array
       nodeIds = _appendToArray(nodeIds, ownedNodeId);
+    }
+
+    // Check also the stargateNft
+    uint256[] memory stargateNodeIds = $.stargateNft.idsOwnedBy(user);
+    if (stargateNodeIds.length > 0) {
+      for (uint256 i; i < stargateNodeIds.length; i++) {
+        // do not consider duplicates
+        if (stargateNodeIds[i] != 0 && $.nodeIdToDelegatee[stargateNodeIds[i]] == address(0)) {
+          nodeIds = _appendToArray(nodeIds, stargateNodeIds[i]);
+        }
+      }
     }
 
     return nodeIds;
@@ -252,10 +302,19 @@ contract NodeManagement is INodeManagement, AccessControlUpgradeable, UUPSUpgrad
   function isNodeManager(address user, uint256 nodeId) public view virtual returns (bool) {
     NodeManagementStorage storage $ = _getNodeManagementStorage();
 
+    address nodeOwner = $.vechainNodesContract.idToOwner(nodeId);
+    if (nodeOwner == address(0)) {
+      try $.stargateNft.ownerOf(nodeId) returns (address owner) {
+        nodeOwner = owner;
+      } catch {
+        return false;
+      }
+    }
+
     // Check if the user has the node ID delegated to them and if it is valid
     if ($.nodeIdToDelegatee[nodeId] == user) {
       // Return true if the owner of the token ID is not the zero address (valid nodeId)
-      return $.vechainNodesContract.idToOwner(nodeId) != address(0);
+      return nodeOwner != address(0);
     }
 
     if ($.nodeIdToDelegatee[nodeId] != address(0)) {
@@ -264,7 +323,7 @@ contract NodeManagement is INodeManagement, AccessControlUpgradeable, UUPSUpgrad
     }
 
     // Check if the user owns the node ID
-    return $.vechainNodesContract.idToOwner(nodeId) == user;
+    return nodeOwner == user;
   }
 
   /**
@@ -304,13 +363,13 @@ contract NodeManagement is INodeManagement, AccessControlUpgradeable, UUPSUpgrad
     NodeManagementStorage storage $ = _getNodeManagementStorage();
 
     // Check if the user directly owns a node
-    if ($.vechainNodesContract.ownerToId(user) != 0) {
+    if (getDirectNodeOwnership(user) != 0) {
       return true;
     }
 
     // Check if the user is a delegatee of any node
     uint256[] memory nodeIds = getNodeIds(user);
-    for (uint256 i = 0; i < nodeIds.length; i++) {
+    for (uint256 i; i < nodeIds.length; i++) {
       if ($.nodeIdToDelegatee[nodeIds[i]] == user) {
         return true;
       }
@@ -334,26 +393,44 @@ contract NodeManagement is INodeManagement, AccessControlUpgradeable, UUPSUpgrad
     // Create an array to hold the node IDs
     uint256[] memory nodeIds = new uint256[](count);
     // Populate the array with node IDs from the set
-    for (uint256 i = 0; i < count; i++) {
+    for (uint256 i; i < count; i++) {
       nodeIds[i] = nodeIdsSet.at(i);
     }
 
     // Get the node ID directly owned by the user
-    uint256 ownedNodeId = $.vechainNodesContract.ownerToId(user);
-    if (ownedNodeId != 0) {
-      // If the user directly owns a node, add it to the array
-      nodeIds = _appendToArray(nodeIds, ownedNodeId);
+    uint256[] memory ownedNodeIds = getDirectNodesOwnership(user);
+    // If the user directly owns nodes, append them to the nodeIds array
+    if (ownedNodeIds.length > 0) {
+      uint256[] memory combinedNodeIds = new uint256[](nodeIds.length + ownedNodeIds.length);
+      for (uint256 i; i < nodeIds.length; i++) {
+        combinedNodeIds[i] = nodeIds[i];
+      }
+      for (uint256 j; j < ownedNodeIds.length; j++) {
+        combinedNodeIds[nodeIds.length + j] = ownedNodeIds[j];
+      }
+      nodeIds = combinedNodeIds;
     }
 
     // Create array to store node information
     NodeInfo[] memory nodesInfo = new NodeInfo[](nodeIds.length);
 
     // Populate information for each node
-    for (uint256 i = 0; i < nodeIds.length; i++) {
+    for (uint256 i; i < nodeIds.length; i++) {
       uint256 currentNodeId = nodeIds[i];
       address currentNodeOwner = $.vechainNodesContract.idToOwner(currentNodeId);
+      if (currentNodeOwner == address(0)) {
+        // Try to get owner from StargateNFT
+        try $.stargateNft.ownerOf(currentNodeId) returns (address owner) {
+          currentNodeOwner = owner;
+        } catch {
+          // Skip if not a valid node
+          continue;
+        }
+      }
+
       address currentDelegatee = $.nodeIdToDelegatee[currentNodeId];
       bool isCurrentNodeDelegated = currentDelegatee != address(0);
+      bool isNodeOwnedByUser = currentNodeOwner == user;
 
       nodesInfo[i] = NodeInfo({
         nodeId: currentNodeId,
@@ -361,8 +438,8 @@ contract NodeManagement is INodeManagement, AccessControlUpgradeable, UUPSUpgrad
         xNodeOwner: currentNodeOwner,
         isXNodeHolder: true, // If it's in the nodeIds array, user is either owner or delegatee
         isXNodeDelegated: isCurrentNodeDelegated,
-        isXNodeDelegator: currentNodeId == ownedNodeId && isCurrentNodeDelegated,
-        isXNodeDelegatee: currentNodeId != ownedNodeId,
+        isXNodeDelegator: isNodeOwnedByUser && isCurrentNodeDelegated,
+        isXNodeDelegatee: currentDelegatee == user,
         delegatee: currentDelegatee
       });
     }
@@ -374,32 +451,43 @@ contract NodeManagement is INodeManagement, AccessControlUpgradeable, UUPSUpgrad
    * @notice Retrieves the node level of a given node ID.
    * @dev Internal function to get the node level of a token ID. The node level is determined based on the metadata associated with the token ID.
    * @param nodeId The token ID of the endorsing node.
-   * @return The node level of the specified token ID as a VechainNodesDataTypes.NodeStrengthLevel enum.
+   * @return levelId The node level of the specified token ID.
    */
-  function getNodeLevel(uint256 nodeId) public view returns (VechainNodesDataTypes.NodeStrengthLevel) {
+  function getNodeLevel(uint256 nodeId) public view returns (uint8 levelId) {
     NodeManagementStorage storage $ = _getNodeManagementStorage();
 
-    // Retrieve the metadata for the specified node ID
-    (, uint8 nodeLevel, , , , , ) = $.vechainNodesContract.getMetadata(nodeId);
-
-    // Cast the uint8 node level to VechainNodesDataTypes.NodeStrengthLevel enum and return
-    return VechainNodesDataTypes.NodeStrengthLevel(nodeLevel);
+    // Try to first fetch the level from the legacy contract
+    try $.vechainNodesContract.getMetadata(nodeId) returns (
+      address,
+      uint8 nodeLevel,
+      bool,
+      bool,
+      uint64,
+      uint64,
+      uint64
+    ) {
+      // If the node level is 0, it means the node is not a legacy node and we need to try to fetch the level from the stargateNft
+      if (nodeLevel == 0) {
+        return $.stargateNft.getTokenLevel(nodeId);
+      }
+      return nodeLevel;
+    } catch {
+      return $.stargateNft.getTokenLevel(nodeId);
+    }
   }
 
   /**
    * @notice Retrieves the node levels of a user's managed nodes.
    * @dev This function retrieves the node levels of the nodes managed by the specified user, either through ownership or delegation.
    * @param user The address of the user managing the nodes.
-   * @return VechainNodesDataTypes.NodeStrengthLevel[] The node levels of the nodes managed by the user.
+   * @return uint8[] The node levels of the nodes managed by the user.
    */
-  function getUsersNodeLevels(address user) public view returns (VechainNodesDataTypes.NodeStrengthLevel[] memory) {
+  function getUsersNodeLevels(address user) public view returns (uint8[] memory) {
     // Retrieve the node IDs managed by the specified user
     uint256[] memory nodeIds = getNodeIds(user);
 
     // Initialize an array to hold the node levels
-    VechainNodesDataTypes.NodeStrengthLevel[] memory nodeLevels = new VechainNodesDataTypes.NodeStrengthLevel[](
-      nodeIds.length
-    );
+    uint8[] memory nodeLevels = new uint8[](nodeIds.length);
 
     // Retrieve the node level for each node ID and store it in the nodeLevels array
     for (uint256 i; i < nodeIds.length; i++) {
@@ -411,61 +499,152 @@ contract NodeManagement is INodeManagement, AccessControlUpgradeable, UUPSUpgrad
   }
 
   /**
-   * @notice Retrieves a list of nodes a user manages, along with their respective node levels.
-   * @dev TODO: This function is incomplete and needs to be updated when the new node contract is ready.
-   * @param user The address of the user to check.
-   * @return NodeInfo[] Array of node information structures.
+   * @notice Checks if a node is a legacy node (existing in the old vechainNodesContract, or a new node in the stargateNft).
+   * @param nodeId The ID of the node to check.
+   * @return isLegacy True if the node is a legacy node, false if it is a new node. Will revert if the node is not a valid node.
    */
-  function getUsersNodesWithLevelInfo(address user) external view returns (VechainNodesDataTypes.NodeLevelInfo[] memory) {
+  function isLegacyNode(uint256 nodeId) public view returns (bool isLegacy) {
     NodeManagementStorage storage $ = _getNodeManagementStorage();
-
-    // Get the set of node IDs associated with the user
-    uint256[] memory nodeIds = getNodeIds(user);
-
-    // Create an array to store node information
-     VechainNodesDataTypes.NodeLevelInfo[] memory nodesLevelInfo =  new VechainNodesDataTypes.NodeLevelInfo[](nodeIds.length);
-
-    // Populate node information
-    for (uint256 i = 0; i < nodeIds.length; i++) {
-      uint256 nodeId = nodeIds[i];
-      VechainNodesDataTypes.NodeStrengthLevel nodeLevel = getNodeLevel(nodeId);
-      (uint256 minBalance, , , ) = $.vechainNodesContract.getTokenParams(uint8(nodeLevel));
-
-      nodesLevelInfo[i] = VechainNodesDataTypes.NodeLevelInfo({
-        nodeId: nodeId,
-        nodeLevel: nodeLevel,
-        minBalance: minBalance
-      });
+    // If the node is owned by $.vechainNodesContract, it is a legacy node
+    if ($.vechainNodesContract.idToOwner(nodeId) != address(0)) {
+      return true;
     }
 
-    return nodesLevelInfo;
-  }
+    // If the node is owned by $.stargateNft, it is a new node
+    try $.stargateNft.ownerOf(nodeId) returns (address owner) {
+      if (owner != address(0)) {
+        return false;
+      }
+    } catch {
+      return false;
+    }
 
-  /**
-   * @notice Retrieves the node level information for a given node ID. // TODO: Update this function or re-review
-   * @param nodeId The ID of the node.
-   * @return VechainNodesDataTypes.NodeLevelInfo The node level information.
-   */
-  function getNodeLevelInfo(uint256 nodeId) public view returns (VechainNodesDataTypes.NodeLevelInfo memory) {
-    NodeManagementStorage storage $ = _getNodeManagementStorage();
-    VechainNodesDataTypes.NodeStrengthLevel nodeLevel = getNodeLevel(nodeId);
-    (uint256 minBalance, , , ) = $.vechainNodesContract.getTokenParams(uint8(nodeLevel));
-
-    return VechainNodesDataTypes.NodeLevelInfo({
-      nodeId: nodeId,
-      nodeLevel: nodeLevel,
-      minBalance: minBalance
-    });
+    // If the node is not owned by either contract, it is not a valid node
+    revert NodeManagementInvalidNodeId();
   }
 
   /**
    * @notice Check if a user directly owns a node (not delegated).
    * @param user The address of the user to check.
-   * @return uint256 The ID of the owned node (0 if none).
+   * @return uint256 The ID of the owned node (0 if none). If the user has multiple nodes, the first one is returned.
    */
   function getDirectNodeOwnership(address user) public view returns (uint256) {
     NodeManagementStorage storage $ = _getNodeManagementStorage();
-    return $.vechainNodesContract.ownerToId(user);
+    uint256 nodeId = $.vechainNodesContract.ownerToId(user);
+    if (nodeId != 0) {
+      return nodeId;
+    }
+
+    // If no id returned from the vechainNodesContract, we check the stargateNft
+    uint256[] memory nodeIds = $.stargateNft.idsOwnedBy(user);
+    if (nodeIds.length > 0) {
+      return nodeIds[0];
+    }
+
+    // If no id returned from the stargateNft, we return 0
+    return 0;
+  }
+
+  /**
+   * @notice Retrieves the node IDs directly owned by a user.
+   * @param user The address of the user to check.
+   * @return uint256[] The node IDs directly owned by the user. If no nodes are owned, an empty array is returned.
+   */
+  function getDirectNodesOwnership(address user) public view returns (uint256[] memory) {
+    NodeManagementStorage storage $ = _getNodeManagementStorage();
+
+    uint256 legacyNodeId = $.vechainNodesContract.ownerToId(user);
+    uint256[] memory nodeIds = $.stargateNft.idsOwnedBy(user);
+
+    // Calculate the correct size - if legacyNodeId is not 0, add 1 to the array length
+    uint256 totalLength = nodeIds.length;
+    if (legacyNodeId != 0) {
+      totalLength += 1;
+    }
+
+    uint256[] memory userOwnedNodes = new uint256[](totalLength);
+
+    // Fill the array with the node IDs
+    uint256 currentIndex = 0;
+    if (legacyNodeId != 0) {
+      userOwnedNodes[currentIndex] = legacyNodeId;
+      currentIndex++;
+    }
+
+    // Add Stargate NFT nodes
+    for (uint256 i; i < nodeIds.length; i++) {
+      userOwnedNodes[currentIndex + i] = nodeIds[i];
+    }
+
+    return userOwnedNodes;
+  }
+
+  /**
+   * @notice Returns all tokens associated with a user, including owned and delegated ones.
+   * @dev This function retrieves only tokens that have been migrated to the new Stargate NFT contract.
+   * @param user The user address to query.
+   * @return tokens An array of DataTypes.Token structs owned or delegated to the user.
+   */
+  function getUserStargateNFTsInfo(address user) public view returns (DataTypes.Token[] memory tokens) {
+    NodeManagementStorage storage $ = _getNodeManagementStorage();
+
+    // Fetch owned tokens directly in a single call
+    DataTypes.Token[] memory ownedTokens = $.stargateNft.tokensOwnedBy(user);
+    uint256 ownedLength = ownedTokens.length;
+
+    // Get delegated token IDs (may include burned tokens)
+    EnumerableSet.UintSet storage delegatedSet = $.delegateeToNodeIds[user];
+    uint256 delegatedLength = delegatedSet.length();
+
+    // Allocate maximum size (owned + delegated), will shrink later
+    tokens = new DataTypes.Token[](ownedLength + delegatedLength);
+    uint256 count;
+
+    // Copy owned tokens
+    for (uint256 i; i < ownedLength; ++i) {
+      if ($.nodeIdToDelegatee[ownedTokens[i].tokenId] == address(0)) tokens[count++] = ownedTokens[i];
+    }
+
+    // Fetch delegated tokens (handle burned/missing tokens via try/catch)
+    for (uint256 i; i < delegatedLength; ++i) {
+      uint256 tokenId = delegatedSet.at(i);
+      try $.stargateNft.getToken(tokenId) returns (DataTypes.Token memory token) {
+        tokens[count++] = token;
+      } catch {
+        // If the tokenId has not been migrated to stargateNft yet, we catch the error and skip it.
+        continue;
+      }
+    }
+
+    // Trim excess slots from array if necessary
+    if (count < tokens.length) {
+      assembly {
+        mstore(tokens, count)
+      }
+    }
+
+    return tokens;
+  }
+
+  /**
+   * @notice Checks if a user is the direct owner of a node.
+   * @param user The address of the user to check.
+   * @param nodeId The ID of the node to check.
+   * @return bool True if the user is the direct owner of the node, false otherwise.
+   */
+  function isDirectNodeOwner(address user, uint256 nodeId) public view returns (bool) {
+    NodeManagementStorage storage $ = _getNodeManagementStorage();
+
+    address nodeOwner = $.vechainNodesContract.idToOwner(nodeId);
+    if (nodeOwner == address(0)) {
+      try $.stargateNft.ownerOf(nodeId) returns (address owner) {
+        nodeOwner = owner;
+      } catch {
+        return false;
+      }
+    }
+
+    return nodeOwner == user;
   }
 
   /**
@@ -478,11 +657,20 @@ contract NodeManagement is INodeManagement, AccessControlUpgradeable, UUPSUpgrad
   }
 
   /**
+   * @notice Returns the Stargate NFT contract instance.
+   * @return IStargateNFT The instance of the Stargate NFT contract.
+   */
+  function getStargateNft() external view returns (IStargateNFT) {
+    NodeManagementStorage storage $ = _getNodeManagementStorage();
+    return $.stargateNft;
+  }
+
+  /**
    * @notice Retrieves the current version of the contract.
    * @return string The current version of the contract.
    */
   function version() external pure virtual returns (string memory) {
-    return "2";
+    return "3";
   }
 
   // ---------- Internal ---------- //

@@ -4,7 +4,8 @@ pragma solidity 0.8.20;
 
 import { VeVoteTypes } from "../governance/libraries/VeVoteTypes.sol";
 import { INodeManagement } from "./INodeManagement.sol";
-import { ITokenAuction } from "./ITokenAuction.sol";
+import { IStargateNFT } from "./IStargateNFT.sol";
+import { IAuthority } from "./IAuthority.sol";
 import "@openzeppelin/contracts/interfaces/IERC165.sol";
 import "@openzeppelin/contracts/interfaces/IERC6372.sol";
 
@@ -15,7 +16,7 @@ interface IVeVote is IERC165, IERC6372 {
    *      - Must be in the future.
    *      - Must be at least `minVotingDelay` seconds from now.
    */
-  error VeVoteInvalidStartTime(uint48 startTime);
+  error VeVoteInvalidStartBlock(uint48 startBlock);
 
   /**
    * @dev Thrown when the voting duration is outside the allowed range.
@@ -51,6 +52,12 @@ interface IVeVote is IERC165, IERC6372 {
   error VeVoteInvalidQuorumFraction(uint256 quorumNumerator, uint256 quorumDenominator);
 
   /**
+   * @notice Reverts if minimum staked amount at timepoint is zero, which would cause division by zero
+   * @param timepoint The timepoint for which the min stake is missing
+   */
+  error MinimumStakeNotSetAtTimepoint(uint48 timepoint);
+
+  /**
    * @dev Thrown when the `proposalId` does not exist.
    * @param proposalId The ID of the proposal that does not exist.
    */
@@ -77,6 +84,11 @@ interface IVeVote is IERC165, IERC6372 {
   error InvalidMaxVotingDuration();
 
   /**
+   * @dev Thrown when trying to fetch information for a node id that does not exist.
+   */
+  error InvalidNodeId();
+
+  /**
    * @dev Thrown when the maximum number of choices is set to an invalid value (zero).
    */
   error InvalidMaxChoices();
@@ -87,9 +99,9 @@ interface IVeVote is IERC165, IERC6372 {
   error InvalidAddress();
 
   /**
-   * @dev Thrown when an invalid node is set as the cheapest node.
+   * @dev Thrown when an invalid minimum VET staked is set.
    */
-  error InvalidNode();
+  error InvalidMinimumStake();
 
   /**
    * @dev Thrown when the proposal is not active.
@@ -116,18 +128,13 @@ interface IVeVote is IERC165, IERC6372 {
    */
   error VotePowerOverflow();
 
-  /**
-   * @dev Thrown when the voting weight denominator is zero.
-   */
-  error VoteWeightDenominatorZero();
-
   // ------------------------------- Events -------------------------------
   /**
    * @notice Emitted when a new proposal is created.
    * @param proposalId The unique identifier for the proposal.
    * @param proposer The address that created the proposal.
    * @param description The IPFS CID containing the proposal details.
-   * @param startTime The timestamp when voting starts.
+   * @param startBlock The timestamp when voting starts.
    * @param voteDuration The duration of the voting period in seconds.
    * @param choices The available choices for the proposal.
    * @param maxSelection The maximum number of choices a voter can select.
@@ -137,7 +144,7 @@ interface IVeVote is IERC165, IERC6372 {
     uint256 indexed proposalId,
     address indexed proposer,
     string description,
-    uint48 startTime,
+    uint48 startBlock,
     uint48 voteDuration,
     bytes32[] choices,
     uint8 maxSelection,
@@ -200,7 +207,14 @@ interface IVeVote is IERC165, IERC6372 {
   /**
    * @notice Emitted when the TokenAuction contract is set.
    */
-  event VechainNodeContractSet(address oldContractAddress, address newContractAddress);
+  event StargateNFTContractSet(address oldContractAddress, address newContractAddress);
+
+  /**
+   * @notice Emitted when the Validator contract address is updated.
+   * @param oldContractAddress The previous contract address.
+   * @param newContractAddress The new contract address.
+   */
+  event ValidatorContractSet(address oldContractAddress, address newContractAddress);
 
   /**
    * @notice Emitted when a user casts a vote on a proposal.
@@ -209,21 +223,31 @@ interface IVeVote is IERC165, IERC6372 {
    * @param choices The bitmask representing the selected vote choices.
    * @param weight The voting weight of the voter.
    * @param reason The reason for the vote.
+   * @param stargateNFTs The list of Stargate node token IDs used.
+   * @param validator The validator master address if vote was cast as validator.
    */
-  event VoteCast(address indexed voter, uint256 indexed proposalId, uint32 choices, uint256 weight, string reason);
+  event VoteCast(
+    address indexed voter,
+    uint256 indexed proposalId,
+    uint32 choices,
+    uint256 weight,
+    string reason,
+    uint256[] stargateNFTs,
+    address validator
+  );
 
   /**
-   * @notice Emitted when the VeChain node base level is updated.
-   * @param oldBaseLevelNode The previous base level node.
-   * @param newBaseLevelNode The new base level node.
+   * @notice Emitted when the minimum VET stake requirement is updated for vote normalization.
+   * @param previousMinStake The previous minimum VET stake (used as vote weight denominator).
+   * @param newMinStake The new minimum VET stake required.
    */
-  event VechainBaseNodeSet(uint8 oldBaseLevelNode, uint8 newBaseLevelNode);
+  event MinStakedAmountUpdated(uint256 previousMinStake, uint256 newMinStake);
 
   /**
-   * @notice Emitted when the node multiplier scores are updated.
-   * @param nodeMultiplier The updated node multiplier scores.
+   * @notice Emitted when the voting multipliers are updated in batch.
+   * @param updatedMultipliers The updated multipliers by level ID index.
    */
-  event NodeVoteMultipliersUpdated(VeVoteTypes.NodeVoteMultiplier nodeMultiplier);
+  event VoteMultipliersUpdated(uint256[] updatedMultipliers);
 
   // ------------------------------- Structs -------------------------------
   /**
@@ -262,16 +286,22 @@ interface IVeVote is IERC165, IERC6372 {
    * @notice Retrieves the voting weight of an account at a given timepoint.
    * @param account The address of the account.
    * @param timepoint The specific timepoint.
+   * @param masterAddress Required parameter — must be an array (can be empty). Used to determine validator voting power, if applicable.
    * @return The voting weight of the account.
    */
-  function getVoteWeightAtTimepoint(address account, uint48 timepoint) external view returns (uint256);
+  function getVoteWeightAtTimepoint(
+    address account,
+    uint48 timepoint,
+    address masterAddress
+  ) external returns (uint256);
 
   /**
    * @notice Retrieves the voting weight of an account at a current timepoint.
    * @param account The address of the account.
+   * @param masterAddress Required parameter — must be an array (can be empty). Used to determine validator voting power, if applicable.
    * @return The voting weight of the account.
    */
-  function getVoteWeight(address account) external view returns (uint256);
+  function getVoteWeight(address account, address masterAddress) external view returns (uint256);
 
   /**
    * @notice Retrieves the voting power of a node.
@@ -283,7 +313,7 @@ interface IVeVote is IERC165, IERC6372 {
   /**
    * @notice Returns the hash of a proposal.
    * @param proposer The address of the proposer.
-   * @param startTime The time when the proposal starts.
+   * @param startBlock The time when the proposal starts.
    * @param voteDuration The duration of the proposal.
    * @param choices The voting choices for the proposal.
    * @param descriptionHash The hash of the proposal description.
@@ -293,7 +323,7 @@ interface IVeVote is IERC165, IERC6372 {
    */
   function hashProposal(
     address proposer,
-    uint48 startTime,
+    uint48 startBlock,
     uint48 voteDuration,
     bytes32[] memory choices,
     bytes32 descriptionHash,
@@ -348,7 +378,7 @@ interface IVeVote is IERC165, IERC6372 {
    * @param timepoint The block timestamp or ID to retrieve quorum requirements for.
    * @return The required quorum at the given timepoint.
    */
-  function quorum(uint256 timepoint) external view returns (uint256);
+  function quorum(uint48 timepoint) external view returns (uint256);
 
   /**
    * @notice Returns the latest recorded quorum numerator.
@@ -357,17 +387,24 @@ interface IVeVote is IERC165, IERC6372 {
   function quorumNumerator() external view returns (uint256);
 
   /**
-   * @notice Returns the quorum numerator at a given timepoint.
-   * @param timepoint The block timestamp for which to retrieve the quorum numerator.
-   * @return The quorum numerator value at the given timepoint.
+   * @notice Returns the quorum numerator at a given block number.
+   * @param timepoint The block number for which to retrieve the quorum numerator.
+   * @return The quorum numerator value at the given block number.
    */
-  function quorumNumerator(uint256 timepoint) external view returns (uint256);
+  function quorumNumerator(uint48 timepoint) external view returns (uint256);
 
   /**
    * @notice Returns the quorum denominator, which is a constant value.
    * @return The constant quorum denominator (100).
    */
   function quorumDenominator() external pure returns (uint256);
+
+  /**
+   * @notice Checks if the quorum has been reached for a proposal.
+   * @param proposalId The ID of the proposal.
+   * @return True if the quorum has been reached, false otherwise.
+   */
+  function isQuorumReached(uint256 proposalId) external view returns (bool);
 
   /**
    * @notice Returns the minimum voting delay.
@@ -394,10 +431,17 @@ interface IVeVote is IERC165, IERC6372 {
   function getMaxChoices() external view returns (uint8);
 
   /**
-   * @notice Returns the base level node for the VeChain Node contract.
-   * @return The current base level node.
+   * @notice Returns the current minimum VET stake required for vote normalization.
+   * @return The latest checkpointed min stake.
    */
-  function getBaseLevelNode() external view returns (uint8);
+  function getMinStakedAmount() external view returns (uint256);
+
+  /**
+   * @notice Returns the minimum stake requirement at a given snapshot.
+   * @param timepoint The snapshot block.
+   * @return The min stake at that time.
+   */
+  function getMinStakedAmountAtTimepoint(uint48 timepoint) external view returns (uint256);
 
   /**
    * @notice Returns the node management contract instance.
@@ -406,10 +450,23 @@ interface IVeVote is IERC165, IERC6372 {
   function getNodeManagementContract() external view returns (INodeManagement);
 
   /**
-   * @notice Returns the vechain node contract instance.
-   * @return ITokenAuction The vechain node contract
+   * @notice Returns the stargate NFT contract instance.
+   * @return IStargateNFT The stargate NFT contract.
    */
-  function getVechainNodeContract() external view returns (ITokenAuction);
+  function getStargateNFTContract() external view returns (IStargateNFT);
+
+  /**
+   * @notice Returns the builtin Authority contract instance.
+   * @return IAuthority The current builtin validator contract.
+   */
+  function getValidatorContract() external view returns (IAuthority);
+
+  /**
+   * @notice this function returns the voting multiplier score of a specific level Id.
+   * @param levelId The level ID of Stargate NFT.
+   * @return uint256 The voting multiplier of the node level.
+   */
+  function levelIdMultiplier(uint8 levelId) external view returns (uint256);
 
   /**
    * @notice Returns the current timepoint using the block number.
@@ -436,7 +493,7 @@ interface IVeVote is IERC165, IERC6372 {
    * @notice Proposes a new governance action.
    * @dev Creates a new proposal, validates its parameters, and stores it in the contract.
    * @param description The IPFS CID containing the proposal details.
-   * @param startTime The timestamp when the proposal starts.
+   * @param startBlock The timestamp when the proposal starts.
    * @param voteDuration The duration of the proposal in seconds.
    * @param choices The voting choices available.
    * @param maxSelection The maximum number of choices a voter can select.
@@ -445,7 +502,7 @@ interface IVeVote is IERC165, IERC6372 {
    */
   function propose(
     string memory description,
-    uint48 startTime,
+    uint48 startBlock,
     uint48 voteDuration,
     bytes32[] memory choices,
     uint8 maxSelection,
@@ -501,10 +558,10 @@ interface IVeVote is IERC165, IERC6372 {
   function setMaxChoices(uint8 newMaxChoices) external;
 
   /**
-   * @notice Sets the most basic node level that can be obtained.
-   * @param newBaseLevelNode The new base level node to set.
+   * @notice Updates the minimum VET stake required for vote weight normalization.
+   * @param newMinStake The new minimum stake amount in VET (must be > 0).
    */
-  function setBaseLevelNode(uint8 newBaseLevelNode) external;
+  function setMinStakedVetAmount(uint256 newMinStake) external;
 
   /**
    * @notice Updates the node management contract address.
@@ -513,14 +570,54 @@ interface IVeVote is IERC165, IERC6372 {
   function setNodeManagementContract(address nodeManagement) external;
 
   /**
-   * @notice Updates the Vechain Node Token Auction contract address.
-   * @param tokenAuction The address of the token auction contract
+   * @notice Updates the Stargate NFT contract address.
+   * @param stargateNFT The address of the stargate NFT contract
    */
-  function setVechainNodeContract(address tokenAuction) external;
+  function setStargateNFTContract(address stargateNFT) external;
+
+  /**
+   * @notice Updates the builtin Validator contract address.
+   * @param validatorContract The address of the builtin validator contract
+   */
+  function setValidatorContract(address validatorContract) external;
 
   /**
    * @notice Updates the quorum numerator.
    * @param newQuorumNumerator The new quorum numerator
    */
   function updateQuorumNumerator(uint256 newQuorumNumerator) external;
+
+  /**
+   * @notice Updates the Stargate NFT and Validtor vote weight multipliers for each level ID.
+   * @dev The index in the array corresponds to the `levelId`. Array length must be <= max level count. (Note: Index 0 = Validator)
+   * @param newMultipliers Array of new vote multipliers for each levelId (index = levelId).
+   */
+  function updateLevelIdMultipliers(uint256[] calldata newMultipliers) external;
+
+  /**
+   * @notice Casts a vote on an active proposal without providing a reason.
+   * @dev This is a wrapper for {castVoteWithReason}, using an empty reason string.
+   *      Reverts if the proposal is not active, the caller has already voted,
+   *      or the selected choices violate min/max constraints.
+   * @param proposalId The ID of the proposal to vote on.
+   * @param choices A bitmask representing the selected choices. Each bit corresponds to a choice index.
+   * @param masterAddress Required parameter — must be an array (can be empty). Used to determine validator voting power, if applicable.
+   */
+  function castVote(uint256 proposalId, uint32 choices, address masterAddress) external;
+
+  /**
+   * @notice Casts a vote on an active proposal with an optional reason.
+   * @dev Validates the proposal state, caller eligibility, and choice constraints.
+   *      Tracks voting power for each selected choice and emits a {VoteCast} event.
+   * @param proposalId The ID of the proposal to vote on.
+   * @param choices A bitmask representing the selected choices. Each bit corresponds to a choice index.
+   * @param reason An optional string explaining the rationale behind the vote. Useful for governance UIs and transparency.
+   * @param masterAddress Required parameter — must be an array (can be empty). Used to determine validator voting power, if applicable.
+   */
+  function castVoteWithReason(
+    uint256 proposalId,
+    uint32 choices,
+    string calldata reason,
+    address masterAddress
+  ) external;
 }

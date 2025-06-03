@@ -1,12 +1,7 @@
 /** @type {import("eslint").Linter.Config} */
 module.exports = {
   root: true,
-  extends: [
-    "eslint:recommended",
-    "prettier",
-    "eslint-config-turbo",
-    "plugin:prettier/recommended",
-  ],
+  extends: ["eslint:recommended", "prettier", "eslint-config-turbo", "plugin:prettier/recommended"],
   plugins: ["only-warn"],
   globals: {
     React: true,
@@ -18,16 +13,11 @@ module.exports = {
   settings: {
     "import/resolver": {
       typescript: {
-        project,
+        project: "./tsconfig.json",
       },
     },
   },
-  ignorePatterns: [
-    // Ignore dotfiles
-    ".*.js",
-    "node_modules/",
-    "dist/",
-  ],
+  ignorePatterns: [".*.js", "node_modules/", "dist/"],
   overrides: [
     {
       files: ["*.js?(x)", "*.ts?(x)"],
@@ -35,6 +25,9 @@ module.exports = {
   ],
   parser: "@typescript-eslint/parser",
   parserOptions: {
-    project: true,
+    project: "./tsconfig.json",
+    tsconfigRootDir: __dirname,
+    ecmaVersion: 2020,
+    sourceType: "module",
   },
 };

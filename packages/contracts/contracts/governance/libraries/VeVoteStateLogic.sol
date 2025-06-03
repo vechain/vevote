@@ -1,22 +1,27 @@
 // SPDX-License-Identifier: MIT
 
+//  8b           d8       8b           d8                            
+//  `8b         d8'       `8b         d8'           ,d               
+//   `8b       d8'         `8b       d8'            88               
+//    `8b     d8' ,adPPYba, `8b     d8' ,adPPYba, MM88MMM ,adPPYba,  
+//     `8b   d8' a8P   _d88  `8b   d8' a8"     "8a  88   a8P_____88  
+//      `8b d8'  8PP  "PP""   `8b d8'  8b       d8  88   8PP"""""""  
+//       `888'   "8b,   ,aa    `888'   "8a,   ,a8"  88,  "8b,   ,aa  
+//        `8'     `"Ybbd8"'     `8'     `"YbbdP"'   "Y888 `"Ybbd8"'  
+
 pragma solidity 0.8.20;
 
 import { VeVoteStorageTypes } from "./VeVoteStorageTypes.sol";
 import { VeVoteProposalLogic } from "./VeVoteProposalLogic.sol";
 import { VeVoteClockLogic } from "./VeVoteClockLogic.sol";
-import { VeVoteQuoromLogic } from "./VeVoteQuoromLogic.sol";
+import { VeVoteQuorumLogic } from "./VeVoteQuorumLogic.sol";
 import { VeVoteTypes } from "./VeVoteTypes.sol";
 
 /// @title VeVoteStateLogic
 /// @notice Handles the state determination of governance proposals in the VeVote system.
 /// @dev Provides functions to determine the status of a proposal based on various governance rules.
 library VeVoteStateLogic {
-  /// @notice Bitmap representing all possible proposal states.
-  bytes32 internal constant ALL_PROPOSAL_STATES_BITMAP =
-    bytes32((2 ** (uint8(type(VeVoteTypes.ProposalState).max) + 1)) - 1);
-
-  // ------------------------------- Errors -------------------------------f
+  // ------------------------------- Errors -------------------------------
   /**
    * @dev Thrown when the `proposalId` does not exist.
    * @param proposalId The ID of the proposal that does not exist.
@@ -106,11 +111,11 @@ library VeVoteStateLogic {
       return VeVoteTypes.ProposalState.Canceled;
     }
 
-    // Retrieve the current timepoint
-    uint256 currentTimepoint = VeVoteClockLogic.clock();
+    // Retrieve the current block
+    uint256 currentBlock = VeVoteClockLogic.clock();
 
-    // If the snapshot is in the future, the proposal is still Pending
-    if (snapshot >= currentTimepoint) {
+    // If the snapshot is in the future, the proposal is stil Pending
+    if (snapshot > currentBlock) {
       return VeVoteTypes.ProposalState.Pending;
     }
 
@@ -118,11 +123,11 @@ library VeVoteStateLogic {
     uint256 deadline = VeVoteProposalLogic.proposalDeadline(self, proposalId);
 
     // If the deadline has not passed, the proposal is still Active
-    if (deadline >= currentTimepoint) {
+    if (deadline >= currentBlock) {
       return VeVoteTypes.ProposalState.Active;
     }
     // If the quorum was not reached, the proposal is Defeated
-    else if (!VeVoteQuoromLogic._quorumReached(self, proposalId)) {
+    else if (!VeVoteQuorumLogic._quorumReached(self, proposalId)) {
       return VeVoteTypes.ProposalState.Defeated;
     }
     // Otherwise, the proposal has succeeded

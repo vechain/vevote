@@ -1,11 +1,11 @@
-export * from "./type"
+export * from "./type";
 
-import { createLocalConfig } from "./envs/local"
-import { createTestnetStagingConfig } from "./envs/testnetStaging"
-import { createE2EConfig } from "./envs/e2e"
-import { createTestnetConfig } from "./envs/testnet"
-import { createMainnetConfig } from "./envs/mainnet"
-import { createGalacticaTestConfig } from "./envs/galaticaTest"
+import { createLocalConfig } from "./envs/local";
+import { createTestnetStagingConfig } from "./envs/testnetStaging";
+import { createE2EConfig } from "./envs/e2e";
+import { createTestnetConfig } from "./envs/testnet";
+import { createMainnetConfig } from "./envs/mainnet";
+import { createGalacticaTestConfig } from "./envs/galaticaTest";
 
 export const AppEnv = {
   LOCAL: "local",
@@ -14,28 +14,27 @@ export const AppEnv = {
   TESTNET: "testnet",
   MAINNET: "mainnet",
   GALACTICA_TEST: "galactica-test",
-} as const
+} as const;
 
-export const EnvConfigValues = Object.values(AppEnv)
-export type EnvConfig = (typeof EnvConfigValues)[number]
+export const EnvConfigValues = Object.values(AppEnv);
+export type EnvConfig = (typeof EnvConfigValues)[number];
 
 export function getContractsConfig(env: EnvConfig) {
   switch (env) {
     case AppEnv.LOCAL:
-      return createLocalConfig()
+      return createLocalConfig();
     case AppEnv.E2E:
-      return createE2EConfig()
+      return createE2EConfig();
     case AppEnv.TESTNET_STAGING:
-      return createTestnetStagingConfig()
+      return createTestnetStagingConfig();
     case AppEnv.TESTNET:
-      return createTestnetConfig()
+      return createTestnetConfig();
     case AppEnv.MAINNET:
-      return createMainnetConfig()
+      return createMainnetConfig();
     case AppEnv.GALACTICA_TEST:
-      return createGalacticaTestConfig()
+      return createGalacticaTestConfig();
 
     default:
-      throw new Error(`Invalid ENV "${env}"`)
+      throw new Error(`Invalid ENV "${env}"`);
   }
 }
-

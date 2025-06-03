@@ -1,19 +1,32 @@
 // SPDX-License-Identifier: MIT
 
+//  8b           d8       8b           d8
+//  `8b         d8'       `8b         d8'           ,d
+//   `8b       d8'         `8b       d8'            88
+//    `8b     d8' ,adPPYba, `8b     d8' ,adPPYba, MM88MMM ,adPPYba,
+//     `8b   d8' a8P   _d88  `8b   d8' a8"     "8a  88   a8P_____88
+//      `8b d8'  8PP  "PP""   `8b d8'  8b       d8  88   8PP"""""""
+//       `888'   "8b,   ,aa    `888'   "8a,   ,a8"  88,  "8b,   ,aa
+//        `8'     `"Ybbd8"'     `8'     `"YbbdP"'   "Y888 `"Ybbd8"'
+
 pragma solidity 0.8.20;
 
 import { VeVoteStorageTypes } from "./VeVoteStorageTypes.sol";
-import { INodeManagement } from "../../interfaces/INodeManagement.sol";
-import { ITokenAuction } from "../../interfaces/ITokenAuction.sol";
+import { VeVoteClockLogic } from "./VeVoteClockLogic.sol";
 import { VeVoteTypes } from "./VeVoteTypes.sol";
-import { VechainNodesDataTypes } from "../../libraries/VechainNodesDataTypes.sol";
+import { INodeManagement } from "../../interfaces/INodeManagement.sol";
+import { IStargateNFT } from "../../interfaces/IStargateNFT.sol";
+import { IAuthority } from "../../interfaces/IAuthority.sol";
+import "@openzeppelin/contracts/utils/structs/Checkpoints.sol";
+import "@openzeppelin/contracts/utils/math/SafeCast.sol";
 
 /// @title VeVoteConfigurator
 /// @notice Library for configuring governance parameters in VeVote.
 /// @dev Provides setter and getter functions for governance configuration settings.
 library VeVoteConfigurator {
-  // ------------------------------- Errors -------------------------------
+  using Checkpoints for Checkpoints.Trace208;
 
+  // ------------------------------- Errors -------------------------------
   /**
    * @dev Thrown when the minimum voting delay is set to an invalid value (zero).
    */
@@ -40,9 +53,15 @@ library VeVoteConfigurator {
   error InvalidAddress();
 
   /**
-   * @dev Thrown when an invalid node is set as the cheapest node.
+   * @dev Thrown when an invalid minimum VET staked is set.
    */
-  error InvalidNode();
+  error InvalidMinimumStake();
+
+  /**
+   * @notice Reverts if minimum staked amount at timepoint is zero, which would cause division by zero
+   * @param timepoint The timepoint for which the min stake is missing
+   */
+  error MinimumStakeNotSetAtTimepoint(uint48 timepoint);
 
   // ------------------------------- Events -------------------------------
 
@@ -82,24 +101,31 @@ library VeVoteConfigurator {
   event NodeManagementContractSet(address oldContractAddress, address newContractAddress);
 
   /**
-   * @notice Emitted when the VeChain node contract address is updated.
+   * @notice Emitted when the Stargate NFT contract address is updated.
    * @param oldContractAddress The previous contract address.
    * @param newContractAddress The new contract address.
    */
-  event VechainNodeContractSet(address oldContractAddress, address newContractAddress);
+  event StargateNFTContractSet(address oldContractAddress, address newContractAddress);
 
   /**
-   * @notice Emitted when the VeChain node base level is updated.
-   * @param oldBaseLevelNode The previous base level node.
-   * @param newBaseLevelNode The new base level node.
+   * @notice Emitted when the Validator contract address is updated.
+   * @param oldContractAddress The previous contract address.
+   * @param newContractAddress The new contract address.
    */
-  event VechainBaseNodeSet(uint8 oldBaseLevelNode, uint8 newBaseLevelNode);
+  event ValidatorContractSet(address oldContractAddress, address newContractAddress);
 
   /**
-   * @notice Emitted when the node multiplier scores are updated.
-   * @param nodeMultiplier The updated node multiplier scores.
+   * @notice Emitted when the minimum VET stake requirement is updated for vote normalization.
+   * @param previousMinStake The previous minimum VET stake (used as vote weight denominator).
+   * @param newMinStake The new minimum VET stake required.
    */
-  event NodeVoteMultipliersUpdated(VeVoteTypes.NodeVoteMultiplier nodeMultiplier);
+  event MinStakedAmountUpdated(uint256 previousMinStake, uint256 newMinStake);
+
+  /**
+   * @notice Emitted when the voting multipliers are updated in batch.
+   * @param updatedMultipliers The updated multipliers by level ID index.
+   */
+  event VoteMultipliersUpdated(uint256[] updatedMultipliers);
 
   /** ------------------ SETTERS ------------------ **/
 
@@ -161,17 +187,17 @@ library VeVoteConfigurator {
   }
 
   /**
-   * @notice Sets the most basic node level that can be obtained.
-   * @dev Ensures the new node level is greater than zero before updating.
+   * @notice Updates the minimum VET stake required for vote weight normalization.
    * @param self The storage reference for VeVote.
-   * @param baseNodeLevel The new base level node to set.
+   * @param newMinStake The new minimum stake amount in VET (must be > 0).
    */
-  function setBaseLevelNode(VeVoteStorageTypes.VeVoteStorage storage self, uint8 baseNodeLevel) external {
-    if (baseNodeLevel == 0) revert InvalidNode();
+  function setMinStakedVetAmount(VeVoteStorageTypes.VeVoteStorage storage self, uint256 newMinStake) external {
+    if (newMinStake == 0) revert InvalidMinimumStake();
 
-    uint8 oldBaseLevelNode = self.baseLevelNode;
-    self.baseLevelNode = baseNodeLevel;
-    emit VechainBaseNodeSet(oldBaseLevelNode, baseNodeLevel);
+    uint256 previous = self.minStakedVetHistory.latest();
+    self.minStakedVetHistory.push(VeVoteClockLogic.clock(), SafeCast.toUint208(newMinStake));
+
+    emit MinStakedAmountUpdated(previous, newMinStake);
   }
 
   /**
@@ -192,45 +218,49 @@ library VeVoteConfigurator {
   }
 
   /**
-   * @notice Sets the VeChain Node contract address.
+   * @notice Sets the Stargate NFT contract adress.
    * @dev Ensures the provided address is not zero before updating.
    * @param self The storage reference for VeVote.
    * @param newContractAddress The new contract address to set.
    */
-  function setVechainNodeContract(VeVoteStorageTypes.VeVoteStorage storage self, address newContractAddress) external {
+  function setStargateNFTContract(VeVoteStorageTypes.VeVoteStorage storage self, address newContractAddress) external {
     if (newContractAddress == address(0)) revert InvalidAddress();
 
-    address oldContractAddress = address(self.vechainNodesContract);
-    self.vechainNodesContract = ITokenAuction(newContractAddress);
-    emit VechainNodeContractSet(oldContractAddress, newContractAddress);
+    address oldContractAddress = address(self.stargateNFT);
+    self.stargateNFT = IStargateNFT(newContractAddress);
+    emit StargateNFTContractSet(oldContractAddress, newContractAddress);
   }
 
   /**
-   * @notice Updates the node multiplier scores for each node level.
+   * @notice Sets the Validator contract address.
+   * @dev Ensures the provided address is not zero before updating.
    * @param self The storage reference for VeVote.
-   * @param updatedNodeMultipliers The new node multiplier scores to set.
+   * @param newContractAddress The new contract address to set.
    */
-  function updateNodeMultipliers(
+  function setValidatorContract(VeVoteStorageTypes.VeVoteStorage storage self, address newContractAddress) external {
+    if (newContractAddress == address(0)) revert InvalidAddress();
+
+    address oldContractAddress = self.validatorContract;
+    self.validatorContract = newContractAddress;
+    emit ValidatorContractSet(oldContractAddress, newContractAddress);
+  }
+
+  /**
+   * @notice Updates the Stargate NFT and Validtorvote weight multipliers for each level ID.
+   * @dev The index in the array corresponds to the `levelId`. Array length must be <= max level count. (Note: Index 0 = Validator)
+   * @param self The storage reference for VeVote.
+   * @param newMultipliers Array of new vote multipliers for each levelId (index = levelId).
+   */
+  function updateLevelIdMultipliers(
     VeVoteStorageTypes.VeVoteStorage storage self,
-    VeVoteTypes.NodeVoteMultiplier memory updatedNodeMultipliers
+    uint256[] calldata newMultipliers
   ) external {
-    // Set the endorsement score for each node level
-    self.nodeMultiplier[VechainNodesDataTypes.NodeStrengthLevel.Strength] = updatedNodeMultipliers.strength; // Strength Node score
-    self.nodeMultiplier[VechainNodesDataTypes.NodeStrengthLevel.Thunder] = updatedNodeMultipliers.thunder; // Thunder Node score
-    self.nodeMultiplier[VechainNodesDataTypes.NodeStrengthLevel.Mjolnir] = updatedNodeMultipliers.mjolnir; // Mjolnir Node score
+    uint256 length = newMultipliers.length;
+    for (uint8 i; i < length; ++i) {
+      self.levelIdMultiplier[i] = newMultipliers[i];
+    }
 
-    self.nodeMultiplier[VechainNodesDataTypes.NodeStrengthLevel.VeThorX] = updatedNodeMultipliers.veThorX; // VeThor X Node score
-    self.nodeMultiplier[VechainNodesDataTypes.NodeStrengthLevel.StrengthX] = updatedNodeMultipliers.strengthX; // Strength X Node score
-    self.nodeMultiplier[VechainNodesDataTypes.NodeStrengthLevel.ThunderX] = updatedNodeMultipliers.thunderX; // Thunder X Node score
-    self.nodeMultiplier[VechainNodesDataTypes.NodeStrengthLevel.MjolnirX] = updatedNodeMultipliers.mjolnirX; // Mjolnir X Node score
-
-    // TODO: Ensure these are correct, set the new nodes
-    self.nodeMultiplier[VechainNodesDataTypes.NodeStrengthLevel.Flash] = updatedNodeMultipliers.flash; // Flash Node score
-    self.nodeMultiplier[VechainNodesDataTypes.NodeStrengthLevel.Lightning] = updatedNodeMultipliers.lightning; // Lightning Node score
-    self.nodeMultiplier[VechainNodesDataTypes.NodeStrengthLevel.Dawn] = updatedNodeMultipliers.dawn; // Dawn Node score
-    self.nodeMultiplier[VechainNodesDataTypes.NodeStrengthLevel.Validator] = updatedNodeMultipliers.validator; // Validator Node score
-
-    emit NodeVoteMultipliersUpdated(updatedNodeMultipliers);
+    emit VoteMultipliersUpdated(newMultipliers);
   }
 
   /** ------------------ GETTERS ------------------ **/
@@ -272,18 +302,33 @@ library VeVoteConfigurator {
   }
 
   /**
-   * @notice Returns the base level node for the VeChain Node contract.
+   * @notice Returns the current minimum VET stake required for vote normalization.
    * @param self The storage reference for VeVote.
-   * @return The current base level node.
+   * @return The latest checkpointed min stake.
    */
-  function getBaseLevelNode(VeVoteStorageTypes.VeVoteStorage storage self) internal view returns (uint8) {
-    return self.baseLevelNode;
+  function getMinStakedAmount(VeVoteStorageTypes.VeVoteStorage storage self) internal view returns (uint256) {
+    return self.minStakedVetHistory.latest();
   }
 
   /**
-   * @notice Returns the address of the Node Management contract.
+   * @notice Returns the minimum stake requirement at a given snapshot.
    * @param self The storage reference for VeVote.
-   * @return The current Node Management contract address.
+   * @param timepoint The snapshot block.
+   * @return The min stake at that time.
+   */
+  function getMinStakedAmountAtTimepoint(
+    VeVoteStorageTypes.VeVoteStorage storage self,
+    uint48 timepoint
+  ) internal view returns (uint256) {
+    uint256 minStake = self.minStakedVetHistory.upperLookupRecent(timepoint);
+    if (minStake == 0) revert MinimumStakeNotSetAtTimepoint(timepoint);
+    return minStake;
+  }
+
+  /**
+   * @notice Returns the Node Management contract.
+   * @param self The storage reference for VeVote.
+   * @return The current Node Management contract.
    */
   function getNodeManagementContract(
     VeVoteStorageTypes.VeVoteStorage storage self
@@ -292,24 +337,33 @@ library VeVoteConfigurator {
   }
 
   /**
-   * @notice Returns the address of the VeChain Node contract.
+   * @notice Returns the Stargate NFT contract.
    * @param self The storage reference for VeVote.
-   * @return The current VeChain Node contract address.
+   * @return The current Stargate NFT contract.
    */
-  function getVechainNodeContract(VeVoteStorageTypes.VeVoteStorage storage self) internal view returns (ITokenAuction) {
-    return self.vechainNodesContract;
+  function getStargateNFTContract(VeVoteStorageTypes.VeVoteStorage storage self) internal view returns (IStargateNFT) {
+    return self.stargateNFT;
   }
 
   /**
-   * @notice this function returns the endorsement score of a node level.
+   * @notice Returns the builtin Authority contract.
+   * @param self The storage reference for VeVote.
+   * @return The current builtin validator contract.
+   */
+  function getValidatorContract(VeVoteStorageTypes.VeVoteStorage storage self) internal view returns (IAuthority) {
+    return IAuthority(self.validatorContract);
+  }
+
+  /**
+   * @notice this function returns the voting multiplier of a Stargate NFT level ID.
    * @dev This value is scaled down by 100 from its stored value.
-   * @param nodeLevel The node level of the node ID.
+   * @param levelId The level ID of the Stargate NFT.
    * @return uint256 The voting multiplier score of the node level.
    */
-  function nodeLevelMultiplier(
+  function levelIdMultiplier(
     VeVoteStorageTypes.VeVoteStorage storage self,
-    VechainNodesDataTypes.NodeStrengthLevel nodeLevel
+    uint8 levelId
   ) internal view returns (uint256) {
-    return self.nodeMultiplier[nodeLevel];
+    return self.levelIdMultiplier[levelId];
   }
 }

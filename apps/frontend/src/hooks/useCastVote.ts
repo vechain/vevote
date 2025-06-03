@@ -4,6 +4,7 @@ import { getHasVoted, getVotedChoices, getVotesResults } from "@/utils/proposals
 import { getConfig } from "@repo/config";
 import { VeVote__factory } from "@repo/contracts";
 import { useQuery } from "@tanstack/react-query";
+import { ZERO_ADDRESS } from "@vechain/sdk-core";
 import { EnhancedClause, useBuildTransaction, useConnex, useWallet } from "@vechain/vechain-kit";
 import { useCallback } from "react";
 
@@ -33,7 +34,11 @@ export const useCastVote = () => {
         const createProposalClause: EnhancedClause = {
           to: contractAddress,
           value: 0,
-          data: contractInterface.encodeFunctionData("castVote", [fromStringToUint256(id), numberChoices]),
+          data: contractInterface.encodeFunctionData("castVote", [
+            fromStringToUint256(id),
+            numberChoices,
+            ZERO_ADDRESS,
+          ]),
           comment: `Cast vote with reason`,
           abi: JSON.parse(JSON.stringify(contractInterface.getFunction("castVote"))),
         };
