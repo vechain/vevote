@@ -18,7 +18,7 @@ Supported Stargate NFT levels include **MjolnirX**, **ThunderX**, **StrengthX**,
 
 > 🔐 **Delegation**: Stargate NFT holders can assign their voting rights to another wallet—enabling trusted representatives to participate in governance.
 
-> ⚠️ Users of legacy Vehchain Nodes who have not migrated it to Stargate NFT contract will not be eligible for voting. 
+> ⚠️ VeChain Node holders must migrate their legacy nodes to the Stargate NFT contract to be eligible for voting.
 
 ---
 
