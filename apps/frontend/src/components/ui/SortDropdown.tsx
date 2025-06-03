@@ -10,7 +10,7 @@ import {
 } from "@chakra-ui/react";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { Dispatch, SetStateAction } from "react";
-import { BsSortDown } from "react-icons/bs";
+import { SortDescIcon } from "@/icons";
 
 export enum Sort {
   Newest = "newest",
@@ -28,7 +28,7 @@ export const SortDropdown = ({
   return (
     <Menu>
       <MenuButton as={Button} variant={"secondary"} size={"icon"} {...restProps}>
-        <Icon as={BsSortDown} />
+        <Icon as={SortDescIcon} />
       </MenuButton>
       <MenuList>
         <MenuOptionGroup defaultValue={sort} onChange={value => setSort(value as Sort)}>

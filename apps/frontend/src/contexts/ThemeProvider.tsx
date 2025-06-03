@@ -17,12 +17,16 @@ import { tableTheme } from "@/theme/table";
 const config: ThemeConfig = {
   initialColorMode: "light",
   useSystemColorMode: false,
+  cssVarPrefix: "",
 };
 
 const theme = extendTheme({
   styles: {
     global: () => ({
       ":root": {
+        body: {
+          fontFamily: fonts.body,
+        },
         "input::-webkit-calendar-picker-indicator": {
           background: "transparent",
           color: "transparent",
@@ -38,8 +42,8 @@ const theme = extendTheme({
       },
     }),
   },
-  colors,
   config,
+  colors,
   fonts,
   fontSizes,
   components: {

@@ -1,13 +1,12 @@
-import { Button, Flex, Link, ModalBody, ModalHeader, Text, useDisclosure } from "@chakra-ui/react";
-import { MdOutlineHowToVote } from "react-icons/md";
+import { Button, Flex, Icon, Link, ModalBody, ModalHeader, Text, useDisclosure } from "@chakra-ui/react";
 import { ModalSkeleton, ModalTitle } from "../ui/ModalSkeleton";
 import { CopyLink } from "../ui/CopyLink";
 import { useWallet } from "@vechain/vechain-kit";
 import { formatAddress } from "@/utils/address";
-import { MdOutlineArrowOutward } from "react-icons/md";
 import { useMemo } from "react";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { useFormatDate } from "@/hooks/useFormatDate";
+import { ArrowLinkIcon, VotingPowerIcon } from "@/icons";
 
 const VECHAIN_EXPLORER_URL = "https://explore-testnet.vechain.org"; //todo: add env variable
 
@@ -66,13 +65,12 @@ export const VotingPowerModal = ({ votingPower }: { votingPower: number }) => {
 
   return (
     <>
-      <Button onClick={onOpen} variant={"secondary"}>
-        <MdOutlineHowToVote size={20} />
+      <Button onClick={onOpen} variant={"secondary"} leftIcon={<Icon as={VotingPowerIcon} width={5} height={5} />}>
         {votingPower}
       </Button>
       <ModalSkeleton isOpen={isOpen} onClose={onClose}>
         <ModalHeader>
-          <ModalTitle title={LL.proposal.voting_power.title()} icon={MdOutlineHowToVote} />
+          <ModalTitle title={LL.proposal.voting_power.title()} icon={VotingPowerIcon} />
         </ModalHeader>
         <ModalBody>
           <Flex flexDirection={"column"} gap={8}>
@@ -99,7 +97,7 @@ export const VotingPowerModal = ({ votingPower }: { votingPower: number }) => {
                     isExternal
                     href={`${VECHAIN_EXPLORER_URL}/blocks/${block.id}`}>
                     {block.number}
-                    <MdOutlineArrowOutward />
+                    <Icon as={ArrowLinkIcon} width={4} height={4} />
                   </Link>
                 </Text>
               </Flex>

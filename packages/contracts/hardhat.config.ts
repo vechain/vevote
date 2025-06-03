@@ -1,26 +1,26 @@
-import { HardhatUserConfig } from "hardhat/config"
-import "@nomicfoundation/hardhat-toolbox"
-import "@nomiclabs/hardhat-truffle5"
-import "hardhat-contract-sizer"
-import "@vechain/sdk-hardhat-plugin"
-import "hardhat-ignore-warnings"
-import { getConfig } from "@repo/config"
-import "solidity-coverage"
-import "solidity-docgen"
-import { EnvConfig } from "@repo/config/contracts"
-import { HDKey } from "@vechain/sdk-core"
-import { getMnemonic } from "./scripts/helpers/env"
+import { HardhatUserConfig } from "hardhat/config";
+import "@nomicfoundation/hardhat-toolbox";
+import "@nomiclabs/hardhat-truffle5";
+import "hardhat-contract-sizer";
+import "@vechain/sdk-hardhat-plugin";
+import "hardhat-ignore-warnings";
+import { getConfig } from "@repo/config";
+import "solidity-coverage";
+import "solidity-docgen";
+import { EnvConfig } from "@repo/config/contracts";
+import { HDKey } from "@vechain/sdk-core";
+import { getMnemonic } from "./scripts/helpers/env";
 
 const config: HardhatUserConfig = {
   solidity: "0.8.20",
-}
+};
 
 const getSoloUrl = () => {
   const url = process.env.VITE_APP_ENV
     ? getConfig(process.env.VITE_APP_ENV as EnvConfig).network.urls[0]
     : "http://localhost:8669";
-  return url
-}
+  return url;
+};
 
 module.exports = {
   solidity: {
@@ -91,6 +91,6 @@ module.exports = {
   docgen: {
     pages: "files",
   },
-}
+};
 
-export default config
+export default config;

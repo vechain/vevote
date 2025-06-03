@@ -1,5 +1,14 @@
 // SPDX-License-Identifier: MIT
 
+//  8b           d8       8b           d8                            
+//  `8b         d8'       `8b         d8'           ,d               
+//   `8b       d8'         `8b       d8'            88               
+//    `8b     d8' ,adPPYba, `8b     d8' ,adPPYba, MM88MMM ,adPPYba,  
+//     `8b   d8' a8P   _d88  `8b   d8' a8"     "8a  88   a8P_____88  
+//      `8b d8'  8PP  "PP""   `8b d8'  8b       d8  88   8PP"""""""  
+//       `888'   "8b,   ,aa    `888'   "8a,   ,a8"  88,  "8b,   ,aa  
+//        `8'     `"Ybbd8"'     `8'     `"YbbdP"'   "Y888 `"Ybbd8"'  
+
 pragma solidity 0.8.20;
 
 import { VeVoteStorageTypes } from "./VeVoteStorageTypes.sol";
@@ -17,7 +26,7 @@ library VeVoteProposalLogic {
    *      - Must be in the future.
    *      - Must be at least `minVotingDelay` seconds from now.
    */
-  error VeVoteInvalidStartTime(uint48 startTime);
+  error VeVoteInvalidStartBlock(uint48 startBlock);
 
   /**
    * @dev Thrown when the voting duration is outside the allowed range.
@@ -57,7 +66,7 @@ library VeVoteProposalLogic {
    * @param proposalId The unique identifier for the proposal.
    * @param proposer The address that created the proposal.
    * @param description The IPFS CID containing the proposal details.
-   * @param startTime The timestamp when voting starts.
+   * @param startBlock The timestamp when voting starts.
    * @param voteDuration The duration of the voting period in seconds.
    * @param choices The available choices for the proposal.
    * @param maxSelection The maximum number of choices a voter can select.
@@ -67,7 +76,7 @@ library VeVoteProposalLogic {
     uint256 indexed proposalId,
     address indexed proposer,
     string description,
-    uint48 startTime,
+    uint48 startBlock,
     uint48 voteDuration,
     bytes32[] choices,
     uint8 maxSelection,
@@ -89,10 +98,10 @@ library VeVoteProposalLogic {
   /**
    * @notice Proposes a new governance action.
    * @dev Creates a new proposal, validates its parameters, and stores it in the contract.
-   * @param self The storage reference for the GovernorStorage.
+   * @param self The storage reference for the VeVoteStorage.
    * @param description The IPFS CID containing the proposal details.
-   * @param startTime The timestamp when the proposal starts.
-   * @param voteDuration The duration of the proposal in seconds.
+   * @param startBlock The block when the proposal starts.
+   * @param voteDuration The duration of the proposal in blocks.
    * @param choices The voting choices available.
    * @param maxSelection The maximum number of choices a voter can select.
    * @param minSelection The minimum number of choices a voter must select.
@@ -101,7 +110,7 @@ library VeVoteProposalLogic {
   function propose(
     VeVoteStorageTypes.VeVoteStorage storage self,
     string memory description,
-    uint48 startTime,
+    uint48 startBlock,
     uint48 voteDuration,
     bytes32[] memory choices,
     uint8 maxSelection,
@@ -112,7 +121,7 @@ library VeVoteProposalLogic {
 
     uint256 proposalId = hashProposal(
       proposer,
-      startTime,
+      startBlock,
       voteDuration,
       choices,
       keccak256(bytes(description)),
@@ -120,12 +129,12 @@ library VeVoteProposalLogic {
       minSelection
     );
 
-    validateProposeParams(self, description, startTime, voteDuration, choices, maxSelection, minSelection, proposalId);
+    validateProposeParams(self, description, startBlock, voteDuration, choices, maxSelection, minSelection, proposalId);
 
-    // Create the proposal objectd
+    // Create the proposal object
     VeVoteTypes.ProposalCore memory proposal;
     proposal.proposer = proposer;
-    proposal.voteStart = startTime;
+    proposal.voteStart = startBlock;
     proposal.voteDuration = voteDuration;
     proposal.choices = choices;
     proposal.maxSelection = maxSelection;
@@ -138,7 +147,7 @@ library VeVoteProposalLogic {
       proposalId,
       proposer,
       description,
-      startTime,
+      startBlock,
       voteDuration,
       choices,
       maxSelection,
@@ -151,7 +160,7 @@ library VeVoteProposalLogic {
   /**
    * @notice Cancels a proposal.
    * @dev Allows the proposer or an admin to cancel a proposal before execution.
-   * @param self The storage reference for the GovernorStorage.
+   * @param self The storage reference for the VeVoteStorage.
    * @param whitelisted Flag indicating if the caller is whitelisted.
    * @param admin Flag indicating if the caller is an admin.
    * @param proposalId The ID of the proposal to cancel.
@@ -198,7 +207,7 @@ library VeVoteProposalLogic {
   /**
    * @notice Marks a proposal as executed.
    * @dev Allows an admin to mark a proposal as executed.
-   * @param self The storage reference for the GovernorStorage.
+   * @param self The storage reference for the VeVoteStorage.
    * @param proposalId The ID of the proposal to execute.
    */
   function execute(VeVoteStorageTypes.VeVoteStorage storage self, uint256 proposalId) external returns (uint256) {
@@ -213,6 +222,8 @@ library VeVoteProposalLogic {
     self.proposals[proposalId].executed = true;
 
     emit VeVoteProposalExecuted(proposalId);
+
+    return proposalId;
   }
 
   // ------------------------------- Getter Functions -------------------------------
@@ -221,7 +232,7 @@ library VeVoteProposalLogic {
    * @notice Returns the hash of a proposal.
    * @dev Hashes the proposal parameters to produce a unique proposal ID.
    * @param proposer The address of the proposer.
-   * @param startTime The time when the proposal starts.
+   * @param startBlock The block when the proposal starts.
    * @param voteDuration The duration of the proposal.
    * @param choices The voting choices for the proposal.
    * @param descriptionHash The hash of the proposal description.
@@ -231,7 +242,7 @@ library VeVoteProposalLogic {
    */
   function hashProposal(
     address proposer,
-    uint48 startTime,
+    uint48 startBlock,
     uint48 voteDuration,
     bytes32[] memory choices,
     bytes32 descriptionHash,
@@ -240,15 +251,15 @@ library VeVoteProposalLogic {
   ) internal pure returns (uint256) {
     return
       uint256(
-        keccak256(abi.encode(proposer, startTime, voteDuration, choices, descriptionHash, maxSelection, minSelection))
+        keccak256(abi.encode(proposer, startBlock, voteDuration, choices, descriptionHash, maxSelection, minSelection))
       );
   }
 
   /**
-   * @notice Returns the start time of a proposal.
-   * @param self The storage reference for the GovernorStorage.
+   * @notice Returns the start block of a proposal.
+   * @param self The storage reference for the VeVoteStorage.
    * @param proposalId The unique identifier of the proposal.
-   * @return The start time of the proposal.
+   * @return The start block of the proposal.
    */
   function proposalSnapshot(
     VeVoteStorageTypes.VeVoteStorage storage self,
@@ -258,11 +269,11 @@ library VeVoteProposalLogic {
   }
 
   /**
-   * @notice Returns the timestamp at which voting ends for the given proposal.
-   * @dev Calculates the deadline as voteStart + voteDuration. After this timestamp, the proposal is no longer active.
+   * @notice Returns the block number at which voting ends for the given proposal.
+   * @dev Calculates the deadline as voteStart + voteDuration. After this block, the proposal is no longer active.
    * @param self The storage reference for the VeVoteStorage.
    * @param proposalId The unique identifier of the proposal.
-   * @return deadline The UNIX timestamp when the proposal voting period ends.
+   * @return deadline The block number when the proposal voting period ends.
    */
   function proposalDeadline(
     VeVoteStorageTypes.VeVoteStorage storage self,
@@ -316,9 +327,9 @@ library VeVoteProposalLogic {
 
   /**
    * @dev Validates the parameters of a proposal.
-   * @param self The storage reference for the GovernorStorage.
+   * @param self The storage reference for the VeVoteStorage.
    * @param description The proposal description (IPFS CID).
-   * @param startTime The start time of the proposal.
+   * @param startBlock The start block of the proposal.
    * @param voteDuration The duration of the voting period.
    * @param choices The available voting choices.
    * @param maxSelection The maximum number of choices that can be selected.
@@ -328,16 +339,16 @@ library VeVoteProposalLogic {
   function validateProposeParams(
     VeVoteStorageTypes.VeVoteStorage storage self,
     string memory description,
-    uint48 startTime,
+    uint48 startBlock,
     uint48 voteDuration,
     bytes32[] memory choices,
     uint8 maxSelection,
     uint8 minSelection,
     uint256 proposalId
   ) private view {
-    // Start time must be in the future and at least minVotingDelay seconds from now
-    if (startTime <= VeVoteClockLogic.clock() + self.minVotingDelay) {
-      revert VeVoteInvalidStartTime(startTime);
+    // Start block must be in the future and at least minVotingDelay blocks from now
+    if (startBlock <= VeVoteClockLogic.clock() + self.minVotingDelay) {
+      revert VeVoteInvalidStartBlock(startBlock);
     }
 
     // Voting duration must be at least `minVotingDuration` and at most `maxVotingDuration`
@@ -347,12 +358,12 @@ library VeVoteProposalLogic {
       revert VeVoteInvalidVoteDuration(voteDuration, minDur, maxDur);
     }
 
-    // Check description restriction
-    if (!isValidIPFSHash(description)) {
+    // Lightweight IPFS description check: description must be at least 32 bytes (CIDv0 = 46, CIDv1 = 59+)
+    if (bytes(description).length < 32) {
       revert VeVoteInvalidProposalDescription();
     }
 
-    // Ensure `minSelection` is not greater than `maxSelection` (logical validation) && greater than 0
+    // Ensure `minSelection` is not greater than `maxSelection` && greater than 0
     if (minSelection > maxSelection || minSelection < 1) {
       revert VeVoteInvalidSelectionRange(minSelection, maxSelection);
     }
@@ -367,52 +378,5 @@ library VeVoteProposalLogic {
       // Proposal already exists
       revert VeVoteUnexpectedProposalState(proposalId, VeVoteStateLogic._state(self, proposalId), bytes32(0));
     }
-  }
-
-  /**
-   * @dev Validates if a given string is a valid IPFS CID.
-   * @param description The proposal description (expected to be an IPFS hash).
-   * @return True if the description is a valid IPFS CID, false otherwise.
-   * // TODO: DO WE NEED TO VALIDATE THE DESCRIPTION?
-   */
-  function isValidIPFSHash(string memory description) private pure returns (bool) {
-    bytes memory descBytes = bytes(description);
-    uint256 len = descBytes.length;
-
-    // CID v0 (46 chars, starts with "Qm")
-    if (len == 46 && descBytes[0] == "Q" && descBytes[1] == "m") {
-      return true;
-    }
-
-    // CID v1 (Base32: starts with "bafk", 59+ chars, lowercase)
-    if (len >= 59 && descBytes[0] == "b" && descBytes[1] == "a" && descBytes[2] == "f" && descBytes[3] == "k") {
-      return isBase32(descBytes, 0, len);
-    }
-
-    return false;
-  }
-
-  /**
-   * @dev Validates if a given byte array is a valid Base32 string.
-   * @param descBytes The byte array to validate.
-   * @param startIndex The start index of the Base32 string.
-   * @param endIndex The end index of the Base32 string.
-   * @return True if the byte array is a valid Base32 string, false otherwise.
-   */
-  function isBase32(bytes memory descBytes, uint256 startIndex, uint256 endIndex) private pure returns (bool) {
-    unchecked {
-      for (uint256 i = startIndex; i < endIndex; ++i) {
-        uint8 char = uint8(descBytes[i]);
-
-        // Base32 lower-case alphabet: a-z (97-122), 2-7 (50-55)
-        bool isLetter = (char >= 97 && char <= 122); // a-z
-        bool isDigit = (char >= 50 && char <= 55); // 2-7
-
-        if (!isLetter && !isDigit) {
-          return false;
-        }
-      }
-    }
-    return true;
   }
 }

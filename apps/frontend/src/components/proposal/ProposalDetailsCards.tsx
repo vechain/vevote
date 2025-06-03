@@ -3,12 +3,9 @@ import { useI18nContext } from "@/i18n/i18n-react";
 import { Flex, Grid, Heading, Icon, Link, Text } from "@chakra-ui/react";
 import { CopyLink } from "../ui/CopyLink";
 import { formatAddress } from "@/utils/address";
-import { LuCalendarCheck, LuUsers } from "react-icons/lu";
-import { PropsWithChildren } from "react";
-import { MdOutlineArrowOutward } from "react-icons/md";
-import { FaRegEdit } from "react-icons/fa";
-import { IconType } from "react-icons";
+import { PropsWithChildren, SVGProps } from "react";
 import { useProposal } from "./ProposalProvider";
+import { ArrowLinkIcon, CalendarCheckIcon, EditBoxIcon, UsersIcon } from "@/icons";
 
 const VECHAIN_EXPLORER_URL = "https://explore-testnet.vechain.org"; //todo: add env variable
 
@@ -19,7 +16,7 @@ export const ProposalDetailsCards = () => {
   const { formattedProposalDate } = useFormatDate();
   return (
     <Grid templateColumns="repeat(3, 1fr)" gap={6} width={"100%"}>
-      <DetailsCardsItem title={LL.proposal.proposed_by()} icon={FaRegEdit}>
+      <DetailsCardsItem title={LL.proposal.proposed_by()} icon={EditBoxIcon}>
         <Flex gap={2} alignItems={"start"} flexDirection={"column"}>
           <Flex gap={2} alignItems={"center"}>
             <Text fontWeight={500} color="gray.600">
@@ -42,7 +39,7 @@ export const ProposalDetailsCards = () => {
           </Flex>
         </Flex>
       </DetailsCardsItem>
-      <DetailsCardsItem title={LL.proposal.voting_calendar()} icon={LuCalendarCheck}>
+      <DetailsCardsItem title={LL.proposal.voting_calendar()} icon={CalendarCheckIcon}>
         <Flex gap={2} alignItems={"start"} flexDirection={"column"}>
           <Flex gap={3} alignItems={"center"}>
             <Text minW={10} color="gray.500">
@@ -63,7 +60,7 @@ export const ProposalDetailsCards = () => {
           </Flex>
         </Flex>
       </DetailsCardsItem>
-      <DetailsCardsItem title={LL.proposal.who_can_vote()} icon={LuUsers}>
+      <DetailsCardsItem title={LL.proposal.who_can_vote()} icon={UsersIcon}>
         <Flex gap={2} alignItems={"start"} flexDirection={"column"}>
           <Text color="gray.600">{LL.proposal.node_holders()}</Text>
           <Link
@@ -74,7 +71,7 @@ export const ProposalDetailsCards = () => {
             color="primary.500"
             href="https://vechain.org/">
             {LL.learn_more()}
-            <MdOutlineArrowOutward />
+            <Icon as={ArrowLinkIcon} width={4} height={4} />
           </Link>
         </Flex>
       </DetailsCardsItem>
@@ -83,7 +80,7 @@ export const ProposalDetailsCards = () => {
 };
 
 type DetailsCardsItemProps = PropsWithChildren<{
-  icon: IconType;
+  icon: (props: SVGProps<SVGSVGElement>) => JSX.Element;
   title: string;
 }>;
 

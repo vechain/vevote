@@ -63,7 +63,7 @@ export const buttonTheme = defineStyleConfig({
   },
   variants: {
     primary: {
-      backgroundColor: colors.primary[700],
+      backgroundColor: colors.primary[500],
       textColor: colors.gray[50],
       _hover: {
         backgroundColor: colors.primary[400],

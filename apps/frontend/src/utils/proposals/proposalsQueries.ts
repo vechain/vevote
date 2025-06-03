@@ -1,4 +1,11 @@
+import { ProposalDetails } from "@/pages/CreateProposal/CreateProposalProvider";
+import { ProposalEvent } from "@/types/blockchain";
 import { BaseOption, ProposalCardType, VotingEnum } from "@/types/proposal";
+import { getConfig } from "@repo/config";
+import { VeVote__factory } from "@repo/contracts";
+import { getAllEvents } from "@vechain/vechain-kit";
+import dayjs from "dayjs";
+import { ethers } from "ethers";
 import { buildFilterCriteria, executeCall, executeMultipleClauses, getEventMethods } from "../contract";
 import {
   fromEventsToProposals,
@@ -6,13 +13,6 @@ import {
   getStatusFromState,
   getStatusParProposalMethod,
 } from "./helpers";
-import { ProposalDetails } from "@/pages/CreateProposal/CreateProposalProvider";
-import { ethers } from "ethers";
-import dayjs from "dayjs";
-import { getConfig } from "@repo/config";
-import { VeVote__factory } from "@repo/contracts";
-import { getAllEvents } from "@vechain/vechain-kit";
-import { ProposalEvent } from "@/types/blockchain";
 
 const nodeUrl = getConfig(import.meta.env.VITE_APP_ENV).nodeUrl;
 const contractAddress = getConfig(import.meta.env.VITE_APP_ENV).vevoteContractAddress;
@@ -128,4 +128,28 @@ export const getHashProposal = async ({
     method: "hashProposal",
     args,
   });
+};
+
+export const getProposalClock = async () => {
+  const methodsWithArgs = [
+    {
+      method: "getMinVotingDelay" as const,
+      args: [],
+    },
+    {
+      method: "getMaxVotingDuration" as const,
+      args: [],
+    },
+  ];
+
+  const clock = await executeMultipleClauses({
+    contractAddress,
+    contractInterface,
+    methodsWithArgs,
+  });
+
+  return {
+    minVotingDelay: Number(clock[0].result.plain),
+    maxVotingDuration: Number(clock[1].result.plain),
+  };
 };

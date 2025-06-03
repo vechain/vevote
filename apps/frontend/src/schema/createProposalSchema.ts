@@ -7,15 +7,16 @@ import { z } from "zod";
 export const TITLE_MAX_CHARS = 120;
 export const QUESTION_MAX_CHAR = 120;
 
-export const proposalDetailsSchema = z
-  .object({
-    title: z.string().min(1, { message: LL.field_errors.required() }).max(TITLE_MAX_CHARS),
-    description: z.array(z.custom<ProposalDescription>()).min(1, { message: LL.field_errors.required() }),
-    headerImage: zodFile,
-  })
-  .and(zodStartEndDates);
+export const proposalDetailsSchema = (delay: number, duration: number) =>
+  z
+    .object({
+      title: z.string().min(1, { message: LL.field_errors.required() }).max(TITLE_MAX_CHARS),
+      description: z.array(z.custom<ProposalDescription>()).min(1, { message: LL.field_errors.required() }),
+      headerImage: zodFile,
+    })
+    .and(zodStartEndDates(delay, duration));
 
-export type ProposalDetailsSchema = z.infer<typeof proposalDetailsSchema>;
+export type ProposalDetailsSchema = z.infer<ReturnType<typeof proposalDetailsSchema>>;
 
 export const proposalSingleChoiceSchema = z.object({
   votingType: z.literal(VotingEnum.SINGLE_CHOICE),
