@@ -12,11 +12,14 @@ import { DateTimeInputControlled } from "./controllers/DateTimeInputControlled";
 import { CreateProposalStep } from "@/types/proposal";
 import { proposalDetailsSchema, ProposalDetailsSchema, TITLE_MAX_CHARS } from "@/schema/createProposalSchema";
 import { ArrowLeftIcon, ArrowRightIcon } from "@/icons";
+import { useProposalClock } from "@/hooks/useProposalClock";
 
 export const ProposalDetailsForm = () => {
   const { proposalDetails, setProposalDetails, setStep } = useCreateProposal();
   const { LL } = useI18nContext();
   const LLDetailsForm = LL.proposal.create.details_form;
+
+  const { maxVotingDuration, minVotingDelay } = useProposalClock();
 
   const defaultValues = useMemo(
     () => ({
@@ -38,7 +41,10 @@ export const ProposalDetailsForm = () => {
     setStep(CreateProposalStep.VOTING_SETUP);
   };
   return (
-    <FormSkeleton schema={proposalDetailsSchema} defaultValues={defaultValues} onSubmit={onSubmit}>
+    <FormSkeleton
+      schema={proposalDetailsSchema(minVotingDelay, maxVotingDuration)}
+      defaultValues={defaultValues}
+      onSubmit={onSubmit}>
       {({ register, errors, watch }) => {
         const title = watch("title");
         return (
