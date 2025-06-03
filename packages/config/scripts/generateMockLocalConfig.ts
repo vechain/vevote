@@ -19,6 +19,7 @@ export const generateMockLocalConfig = () => {
     vevoteContractAddress: "0x45d5CA3f295ad8BCa291cC4ecd33382DE40E4FAc",
     vechainNodesContractAddress: "0xCc7332f0f3Bc41528162ab6d5e1CA7A1e780b328",
     nodeManagementContractAddress: "0x54A2816877E787CCadeE112a4Bb19aC7Cdc0E805",
+    stargateNFTContractAddress: "0xDc9927805Df9075113e9786ADDD793Fc1786A170",
     ipfsPinningService: "https://api.gateway-proxy.vechain.org/api/v1/pinning/pinFileToIPFS",
     ipfsFetchingService: "https://api.gateway-proxy.vechain.org/ipfs",
     "nodeUrl": "http://localhost:8669",
