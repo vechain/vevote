@@ -10,7 +10,7 @@ import {
   ModalProps,
   Text,
 } from "@chakra-ui/react";
-import { IconType } from "react-icons/lib";
+import { SVGProps } from "react";
 
 export const ModalSkeleton = ({ children, ...props }: ModalProps) => {
   return (
@@ -25,7 +25,7 @@ export const ModalSkeleton = ({ children, ...props }: ModalProps) => {
 };
 
 type MessageModalProps = Omit<ModalProps, "variant"> & {
-  icon: IconType;
+  icon: (props: SVGProps<SVGSVGElement>) => JSX.Element;
   title?: string;
   iconColor?: ColorProps["color"];
 };
@@ -36,7 +36,7 @@ export const MessageModal = ({ children, title, icon, iconColor = "primary.500",
       <ModalOverlay />
       <ModalContent gap={2}>
         <ModalHeader textAlign={"center"} display={"flex"} flexDirection={"column"} alignItems={"center"}>
-          <Icon color={iconColor} size={"xl"} as={icon} paddingBottom={6} />
+          <Icon color={iconColor} width={16} height={16} as={icon} paddingBottom={6} />
           <Text fontSize={20} color={"gray.600"} fontWeight={600}>
             {title}
           </Text>
@@ -47,7 +47,13 @@ export const MessageModal = ({ children, title, icon, iconColor = "primary.500",
   );
 };
 
-export const ModalTitle = ({ title, icon }: { title: string; icon?: IconType }) => {
+export const ModalTitle = ({
+  title,
+  icon,
+}: {
+  title: string;
+  icon?: (props: SVGProps<SVGSVGElement>) => JSX.Element;
+}) => {
   return (
     <Heading fontSize={20} fontWeight={600} color={"primary.600"} display={"flex"} alignItems={"center"} gap={2}>
       {icon && <Icon as={icon} color={"primary.600"} />}

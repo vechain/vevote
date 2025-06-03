@@ -23,7 +23,7 @@ export const Banner = () => {
         maxWidth={"fit-content"}
         marginX={"auto"}
         overflow={"hidden"}>
-        <Image src="/svgs/illust.svg" alt="VeVote Logo" width={80} height={80} objectFit={"cover"} />
+        <Image src="/svgs/illust.svg" alt="VeVote Logo" width={"416px"} height={"416px"} objectFit={"cover"} />
         <Flex flexDirection={"column"} color={"white"} gap={10}>
           <Box>
             <TopHeading>{LL.header.official()}</TopHeading>

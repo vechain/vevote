@@ -1,8 +1,8 @@
 import { useI18nContext } from "@/i18n/i18n-react";
-import { Button, Flex, Text } from "@chakra-ui/react";
+import { CircleInfoIcon } from "@/icons";
+import { Button, Flex, Icon, Text } from "@chakra-ui/react";
 import { useWallet } from "@vechain/vechain-kit";
 import { useCallback, useMemo } from "react";
-import { IoIosInformationCircleOutline } from "react-icons/io";
 
 //todo: get from user provider
 const isVoter = false;
@@ -35,7 +35,7 @@ export const BuyANode = () => {
       borderWidth={1}
       background={connectedAndVoter ? "gray.100" : "primary.50"}
       borderColor={connectedAndVoter ? "gray.200" : "primary.100"}>
-      <IoIosInformationCircleOutline color={connectedAndVoter ? "gray.600" : "primary.700"} size={24} />
+      <Icon as={CircleInfoIcon} color={connectedAndVoter ? "gray.600" : "primary.700"} />
       <Text flex={1} fontSize={18} fontWeight={500} color={connectedAndVoter ? "gray.600" : "primary.700"}>
         {infoText}
       </Text>

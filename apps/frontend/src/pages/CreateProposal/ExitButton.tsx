@@ -1,13 +1,12 @@
 import { MessageModal } from "@/components/ui/ModalSkeleton";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { Routes } from "@/types/routes";
-import { Button, ModalFooter, Text, useDisclosure } from "@chakra-ui/react";
+import { Button, Icon, ModalFooter, Text, useDisclosure } from "@chakra-ui/react";
 import { useCallback, useMemo } from "react";
-import { IoMdClose } from "react-icons/io";
-import { LuLogOut } from "react-icons/lu";
 import { useNavigate } from "react-router";
 import { useCreateProposal } from "./CreateProposalProvider";
 import { CreateProposalStep } from "@/types/proposal";
+import { CheckIcon, CloseIcon, LogoutIcon } from "@/icons";
 
 export const ExitButton = () => {
   const { LL } = useI18nContext();
@@ -42,14 +41,18 @@ export const ExitButton = () => {
 
   return (
     <>
-      <Button marginLeft={"auto"} alignItems={"center"} gap={2} onClick={onExitOpen}>
+      <Button
+        marginLeft={"auto"}
+        alignItems={"center"}
+        gap={2}
+        onClick={onExitOpen}
+        rightIcon={<Icon as={CloseIcon} />}>
         {LL.exit()}
-        <IoMdClose />
       </Button>
       <MessageModal
         isOpen={isExitOpen}
         onClose={onExitClose}
-        icon={LuLogOut}
+        icon={LogoutIcon}
         iconColor={"red.600"}
         title={LL.proposal.create.exit_proposal.title()}>
         <Text textAlign={"center"} fontSize={14} color={"gray.600"}>
@@ -75,8 +78,8 @@ export const ExitButton = () => {
       <MessageModal
         isOpen={isSavedOpen}
         onClose={onSavedClose}
-        icon={LuLogOut}
-        iconColor={"red.600"}
+        icon={CheckIcon}
+        iconColor={"primary.500"}
         title={LL.proposal.create.draft_saved.title()}>
         <Text textAlign={"center"} fontSize={14} color={"gray.600"}>
           {LL.proposal.create.draft_saved.description()}

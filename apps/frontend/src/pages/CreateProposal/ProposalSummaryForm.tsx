@@ -1,11 +1,11 @@
 import { useI18nContext } from "@/i18n/i18n-react";
 import { CreateProposalStep, VotingEnum } from "@/types/proposal";
-import { Button, Flex } from "@chakra-ui/react";
-import { IoArrowBack, IoEyeOutline } from "react-icons/io5";
+import { Button, Flex, Icon } from "@chakra-ui/react";
 import { CreateFormWrapper } from "./CreateFormWrapper";
 import { useCreateProposal } from "./CreateProposalProvider";
 import { PublishButton } from "./PublishButton";
 import { SummaryCard } from "./SummaryCard";
+import { ArrowLeftIcon, EyeIcon } from "@/icons";
 
 export const ProposalSummaryForm = () => {
   const { LL } = useI18nContext();
@@ -60,12 +60,17 @@ export const ProposalSummaryForm = () => {
       </SummaryCard>
 
       <Flex gap={4} marginTop={20}>
-        <Button variant={"secondary"} onClick={() => setStep(CreateProposalStep.VOTING_SETUP)}>
-          <IoArrowBack />
+        <Button
+          variant={"secondary"}
+          onClick={() => setStep(CreateProposalStep.VOTING_SETUP)}
+          leftIcon={<Icon as={ArrowLeftIcon} />}>
           {LL.back()}
         </Button>
-        <Button variant={"secondary"} marginLeft={"auto"} onClick={() => setOpenPreview(true)}>
-          <IoEyeOutline />
+        <Button
+          variant={"secondary"}
+          marginLeft={"auto"}
+          onClick={() => setOpenPreview(true)}
+          leftIcon={<Icon as={EyeIcon} />}>
           {LL.preview()}
         </Button>
         <PublishButton />

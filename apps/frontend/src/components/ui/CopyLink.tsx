@@ -1,6 +1,6 @@
-import { Button, Flex, Link, LinkProps } from "@chakra-ui/react";
+import { CopyIcon } from "@/icons";
+import { Button, Flex, Icon, Link, LinkProps } from "@chakra-ui/react";
 import { useCallback } from "react";
-import { LuCopy } from "react-icons/lu";
 
 export const CopyLink = ({
   textToCopy,
@@ -15,9 +15,14 @@ export const CopyLink = ({
   return (
     <Flex gap={2} alignItems={"center"}>
       <Link {...props} />
-      <Button onClick={copy} variant="ghost" minWidth={"fit-content"} color={props.color} padding={0}>
-        <LuCopy />
-      </Button>
+      <Button
+        onClick={copy}
+        variant="ghost"
+        minWidth={"fit-content"}
+        color={props.color}
+        padding={0}
+        leftIcon={<Icon as={CopyIcon} width={4} height={4} />}
+      />
     </Flex>
   );
 };

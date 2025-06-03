@@ -24,7 +24,7 @@ const NavbarInnerContainer = ({ children, ...restProps }: FlexProps) => {
   return (
     <Flex
       transition={"all 0.3s"}
-      borderRadius={3}
+      borderRadius={12}
       maxWidth={"1440px"}
       marginX={"auto"}
       justifyContent={"space-between"}
@@ -49,11 +49,19 @@ export const Navbar = () => {
   return (
     <NavbarContainer>
       <NavbarInnerContainer
+        backdropFilter="auto"
         backdropBlur={!showBackground ? "md" : "none"}
         bgColor={!showBackground ? "rgba(38, 20, 112, 0.65)" : "transparent"}
         paddingX={6}
         paddingY={4}>
-        <Image src="/images/vevote_logo.png" alt="VeVote Logo" width={40} height={8} objectFit={"cover"} />
+        <Image
+          src="/svgs/vevote_logo.svg"
+          alt="VeVote Logo"
+          width={"auto"}
+          height={showBackground ? "32px" : "24px"}
+          objectFit={"cover"}
+          transition={"all 0.3s"}
+        />
       </NavbarInnerContainer>
     </NavbarContainer>
   );

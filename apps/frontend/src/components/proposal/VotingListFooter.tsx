@@ -1,17 +1,16 @@
 import { useI18nContext } from "@/i18n/i18n-react";
 import { InfoBox, infoBoxVariants } from "../ui/InfoBox";
 import { useFormatDate } from "@/hooks/useFormatDate";
-import { IoArrowForward } from "react-icons/io5";
 import { useMemo } from "react";
-import { Button, ButtonProps, Flex, Link, Text, useBreakpointValue } from "@chakra-ui/react";
+import { Button, ButtonProps, Flex, Icon, Link, Text, useBreakpointValue } from "@chakra-ui/react";
 import { DAppKitWalletButton, useWallet } from "@vechain/vechain-kit";
 import { VotingItemVariant } from "./VotingItem";
-import { FiCheckSquare } from "react-icons/fi";
 import { useProposal } from "./ProposalProvider";
 import { getVotingVariant } from "@/utils/voting";
 import { VotingPowerModal } from "./VotingPowerModal";
 import { VotersModal } from "./VotersModal";
 import { useHasVoted } from "@/hooks/useCastVote";
+import { ArrowLinkIcon, ArrowRightIcon, CheckCircleIcon } from "@/icons";
 
 export const VotingListFooter = ({ onSubmit, isLoading }: { onSubmit: () => Promise<void>; isLoading?: boolean }) => {
   const { proposal } = useProposal();
@@ -70,8 +69,8 @@ const VotingFooterAction = ({
 const VotingSubmit = (props: ButtonProps) => {
   const { LL } = useI18nContext();
   return (
-    <Button {...props}>
-      {LL.submit()} <IoArrowForward />
+    <Button rightIcon={<Icon as={ArrowRightIcon} />} {...props}>
+      {LL.submit()}
     </Button>
   );
 };
@@ -81,11 +80,13 @@ const VotedChip = () => {
   //TODO: see your vote modal
   return (
     <Flex alignItems={"center"} gap={3}>
-      <Button variant={"feedback"}>
+      <Button variant={"feedback"} rightIcon={<Icon as={CheckCircleIcon} />}>
         {LL.voted()}
-        <FiCheckSquare />
       </Button>
-      <Link color={"primary.500"}>{LL.proposal.see_your_vote()}</Link>
+      <Link color={"primary.500"}>
+        {LL.proposal.see_your_vote()}
+        <Icon as={ArrowLinkIcon} width={4} height={4} />
+      </Link>
     </Flex>
   );
 };

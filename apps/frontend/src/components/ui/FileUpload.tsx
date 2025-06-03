@@ -2,8 +2,8 @@ import { Box, Button, Flex, Icon, Text } from "@chakra-ui/react";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { PropsWithChildren, useCallback, useMemo } from "react";
 import { DropzoneOptions, DropzoneState, useDropzone } from "react-dropzone";
-import { LuUpload } from "react-icons/lu";
 import { bytesToMB } from "@/utils/file";
+import { UploadIcon } from "@/icons";
 
 export const IMAGES_FORMATS = {
   "image/jpeg": [],
@@ -104,7 +104,11 @@ const DefaultFileUpload = ({ isDisabled, getRootProps, getInputProps }: FileUplo
       </Text>
 
       <Box {...getRootProps()} width={"fit-content"}>
-        <Button leftIcon={<Icon size={"sm"} as={LuUpload} />} variant={"secondary"} isDisabled={isDisabled} size={"md"}>
+        <Button
+          leftIcon={<Icon width={5} height={5} as={UploadIcon} />}
+          variant={"secondary"}
+          isDisabled={isDisabled}
+          size={"md"}>
           <input {...getInputProps()} />
           {LL.upload()}
         </Button>
