@@ -1,12 +1,12 @@
-import { HardhatEthersSigner } from "@nomicfoundation/hardhat-ethers/signers"
+import { HardhatEthersSigner } from "@nomicfoundation/hardhat-ethers/signers";
 
 export interface CreateProposalParams {
-  minChoices?: number
-  maxChoices?: number
-  votingPeriod?: number
-  startIn?: number
-  choices?: string[]
-  description?: string
-  proposer?: HardhatEthersSigner
-  startTime?: number
+  minChoices?: number;
+  maxChoices?: number;
+  votingPeriod?: number;
+  startIn?: number;
+  choices?: string[];
+  description?: string;
+  proposer?: HardhatEthersSigner;
+  startBlock?: number;
 }

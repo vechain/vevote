@@ -1,9 +1,18 @@
 // SPDX-License-Identifier: MIT
 
+//  8b           d8       8b           d8                            
+//  `8b         d8'       `8b         d8'           ,d               
+//   `8b       d8'         `8b       d8'            88               
+//    `8b     d8' ,adPPYba, `8b     d8' ,adPPYba, MM88MMM ,adPPYba,  
+//     `8b   d8' a8P   _d88  `8b   d8' a8"     "8a  88   a8P_____88  
+//      `8b d8'  8PP  "PP""   `8b d8'  8b       d8  88   8PP"""""""  
+//       `888'   "8b,   ,aa    `888'   "8a,   ,a8"  88,  "8b,   ,aa  
+//        `8'     `"Ybbd8"'     `8'     `"YbbdP"'   "Y888 `"Ybbd8"'  
+
 pragma solidity 0.8.20;
 
 import { INodeManagement } from "../../interfaces/INodeManagement.sol";
-import { ITokenAuction } from "../../interfaces/ITokenAuction.sol";
+import { IStargateNFT } from "../../interfaces/IStargateNFT.sol";
 
 /// @title VeVoteTypes
 /// @notice Defines the core types used in the VeVote governance system.
@@ -49,13 +58,14 @@ library VeVoteTypes {
 
   struct InitializationData {
     INodeManagement nodeManagement;
-    ITokenAuction vechainNodesContract;
+    IStargateNFT stargateNFT;
+    address authorityContract;
     uint256 quorumPercentage;
     uint48 initialMinVotingDelay;
     uint48 initialMaxVotingDuration;
     uint48 initialMinVotingDuration;
     uint8 initialMaxChoices;
-    uint8 baseLevelNode;
+    uint256 initialMinStakedAmount;
   }
 
   struct InitializationRolesData {
@@ -75,22 +85,5 @@ library VeVoteTypes {
   struct ProposalVoteResult {
     bytes32 choice;
     uint256 weight;
-  }
-
-  /**
-   * @dev The score of a node.
-   */
-  struct NodeVoteMultiplier {
-    uint256 strength;
-    uint256 thunder;
-    uint256 mjolnir;
-    uint256 veThorX;
-    uint256 strengthX;
-    uint256 thunderX;
-    uint256 mjolnirX;
-    uint256 flash;
-    uint256 lightning;
-    uint256 dawn;
-    uint256 validator;
   }
 }

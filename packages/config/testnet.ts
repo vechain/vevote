@@ -4,6 +4,7 @@ const config: AppConfig = {
   basePath: "https://example.org",
   vevoteContractAddress: "0x9198005340ce96d1994E9fDEccE595cEe2051C54",
   vechainNodesContractAddress: "0x365282124Ff66A5f38A82B3717C0203Fb1E2701D",
+  stargateNFTContractAddress: "0xa08a499fe59267caacb2162cdacf832f99ad50e7",
   nodeManagementContractAddress: "0x4E31b0235d9B86810759658a1884Ccd9b7AC451E",
   nodeUrl: "https://testnet.vechain.org",
   network: {
