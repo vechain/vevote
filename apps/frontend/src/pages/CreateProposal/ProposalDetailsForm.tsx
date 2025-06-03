@@ -2,16 +2,16 @@ import { FormSkeleton } from "@/components/ui/FormSkeleton";
 import { CreateFormWrapper } from "./CreateFormWrapper";
 import { useMemo } from "react";
 import { useCreateProposal } from "./CreateProposalProvider";
-import { Button, Flex, FormControl, Input, Text } from "@chakra-ui/react";
+import { Button, Flex, FormControl, Icon, Input, Text } from "@chakra-ui/react";
 import { Label } from "@/components/ui/Label";
 import { InputMessage } from "@/components/ui/InputMessage";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { TextEditorControlled } from "./controllers/TextEditorControlled";
 import { ImageUploadControlled } from "./controllers/ImageUploadControlled";
 import { DateTimeInputControlled } from "./controllers/DateTimeInputControlled";
-import { IoArrowBack, IoArrowForward } from "react-icons/io5";
 import { CreateProposalStep } from "@/types/proposal";
 import { proposalDetailsSchema, ProposalDetailsSchema, TITLE_MAX_CHARS } from "@/schema/createProposalSchema";
+import { ArrowLeftIcon, ArrowRightIcon } from "@/icons";
 
 export const ProposalDetailsForm = () => {
   const { proposalDetails, setProposalDetails, setStep } = useCreateProposal();
@@ -84,13 +84,11 @@ export const ProposalDetailsForm = () => {
             </Flex>
 
             <Flex justifyContent={"space-between"}>
-              <Button variant={"secondary"} disabled>
-                <IoArrowBack />
+              <Button variant={"secondary"} disabled leftIcon={<Icon as={ArrowLeftIcon} />}>
                 {LL.back()}
               </Button>
-              <Button type="submit">
+              <Button type="submit" rightIcon={<Icon as={ArrowRightIcon} />}>
                 {LL.next()}
-                <IoArrowForward />
               </Button>
             </Flex>
           </CreateFormWrapper>

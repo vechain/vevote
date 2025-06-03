@@ -1,13 +1,12 @@
 import { useI18nContext } from "@/i18n/i18n-react";
-import { Button, FormControl, ModalBody, ModalFooter, Text, Textarea, useDisclosure } from "@chakra-ui/react";
-import { FiMinusCircle } from "react-icons/fi";
+import { Button, FormControl, Icon, ModalBody, ModalFooter, Text, Textarea, useDisclosure } from "@chakra-ui/react";
 import { MessageModal } from "../ui/ModalSkeleton";
-import { RiDeleteBin6Line } from "react-icons/ri";
 import { useCallback } from "react";
 import { FormSkeleton } from "../ui/FormSkeleton";
 import { z } from "zod";
 import { Label } from "../ui/Label";
 import { InputMessage } from "../ui/InputMessage";
+import { DeleteIcon, MinusCircleIcon } from "@/icons";
 
 export const CancelEditProposal = () => {
   const { LL } = useI18nContext();
@@ -33,14 +32,13 @@ export const CancelProposal = () => {
   }, []);
   return (
     <>
-      <Button variant="danger" onClick={onOpen}>
-        <FiMinusCircle size={24} />
+      <Button variant="danger" onClick={onOpen} leftIcon={<Icon as={MinusCircleIcon} />}>
         {LL.cancel()}
       </Button>
       <MessageModal
         isOpen={isOpen}
         onClose={onClose}
-        icon={RiDeleteBin6Line}
+        icon={DeleteIcon}
         iconColor={"red.600"}
         title={LL.proposal.cancel_proposal.title()}>
         <FormSkeleton onSubmit={onSubmit} schema={schema}>

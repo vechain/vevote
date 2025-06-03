@@ -9,15 +9,15 @@ export const useFormatDate = () => {
     const hours = dateJs.diff(dayjs(), "hours") % 24;
     const minutes = dateJs.diff(dayjs(), "minutes") % 60;
 
-    const daysString = days > 1 ? `${days} days and` : days > 0 ? `${days} day` : undefined;
+    const daysString = days > 1 ? `${days} days` : days > 0 ? `${days} day` : undefined;
     const hoursString = hours > 0 ? `${hours}h` : undefined;
     const minutesString = minutes > 0 ? `${minutes}min` : undefined;
 
-    if (!daysString && !hoursString && !minutesString) {
-      return "Ended";
-    }
-
-    return [daysString, hoursString, minutesString].filter(Boolean).join(" ") + " left";
+    return {
+      days: daysString,
+      hours: hoursString,
+      minutes: minutesString,
+    };
   }, []);
 
   const formattedDate = useCallback((date?: Date) => {

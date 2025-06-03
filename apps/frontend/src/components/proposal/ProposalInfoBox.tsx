@@ -1,18 +1,17 @@
 import { useFormatDate } from "@/hooks/useFormatDate";
 import { useI18nContext } from "@/i18n/i18n-react";
-import { Button, Flex, Heading, Text } from "@chakra-ui/react";
+import { Button, Flex, Heading, Icon, Text } from "@chakra-ui/react";
 import { useMemo } from "react";
-import { IoArrowForward } from "react-icons/io5";
 import { InfoBox, infoBoxVariants } from "../ui/InfoBox";
 import { useProposal } from "./ProposalProvider";
+import { ArrowLinkIcon } from "@/icons";
 
 type ProposalInfoBoxProps = {
-  proposalId?: string;
   canceledDate?: Date;
   canceledReason?: string;
 };
 
-export const ProposalInfoBox = ({ canceledDate, canceledReason, proposalId }: ProposalInfoBoxProps) => {
+export const ProposalInfoBox = ({ canceledDate, canceledReason }: ProposalInfoBoxProps) => {
   const { proposal } = useProposal();
   const { LL } = useI18nContext();
   const { formattedProposalDate } = useFormatDate();
@@ -65,10 +64,9 @@ export const ProposalInfoBox = ({ canceledDate, canceledReason, proposalId }: Pr
           </Text>
         )}
       </Flex>
-      {proposalId && (
-        <Button alignSelf={"center"} gap={2}>
+      {variant === "executed" && (
+        <Button variant={"secondary"} alignSelf={"center"} gap={2} rightIcon={<Icon as={ArrowLinkIcon} />}>
           {LL.see_details()}
-          <IoArrowForward />
         </Button>
       )}
       {canceledDate && <Text>{formattedProposalDate(canceledDate)}</Text>}

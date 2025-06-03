@@ -1,10 +1,10 @@
 import { useI18nContext } from "@/i18n/i18n-react";
 import { VotingEnum } from "@/types/proposal";
-import { Box, BoxProps, Flex, Heading, Text } from "@chakra-ui/react";
+import { Box, BoxProps, Flex, Heading, Icon, Text } from "@chakra-ui/react";
 import { PropsWithChildren } from "react";
-import { MdOutlineHowToVote } from "react-icons/md";
 import { useProposal } from "./ProposalProvider";
 import { VotingMultipleOptions, VotingSingleChoice, VotingSingleOption } from "./VotingList";
+import { VoteIcon } from "@/icons";
 
 export const VotingSection = () => {
   const { proposal } = useProposal();
@@ -42,7 +42,7 @@ const VotingSectionHeader = () => {
         alignItems={"start"}
         gap={6}>
         <Heading fontSize={20} fontWeight={600} color="primary.700" display={"flex"} gap={2} alignItems={"center"}>
-          <MdOutlineHowToVote />
+          <Icon as={VoteIcon} />
           {LL.voting()}
         </Heading>
         <Text fontSize={24} color={"gray.600"} fontWeight={500}>

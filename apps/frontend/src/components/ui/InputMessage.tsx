@@ -1,5 +1,5 @@
+import { AlertTriangleIcon } from "@/icons";
 import { FormErrorMessage, FormHelperText, Icon, Text } from "@chakra-ui/react";
-import { FiAlertTriangle } from "react-icons/fi";
 
 type InputMessageProps = {
   message?: string;
@@ -11,7 +11,7 @@ export const InputMessage = ({ error, message }: InputMessageProps) => {
   if (error)
     return (
       <FormErrorMessage display={"flex"} gap={2} alignItems={"center"}>
-        <Icon size={"xs"} as={FiAlertTriangle} color={"red.500"} />
+        <Icon width={4} height={4} as={AlertTriangleIcon} color={"red.500"} />
         <Text fontSize={"12px"}>{error}</Text>
       </FormErrorMessage>
     );

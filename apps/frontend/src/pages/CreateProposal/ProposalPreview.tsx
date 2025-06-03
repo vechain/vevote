@@ -2,8 +2,7 @@ import { useI18nContext } from "@/i18n/i18n-react";
 import { useCreateProposal } from "./CreateProposalProvider";
 import { DAppKitWalletButton, useWallet } from "@vechain/vechain-kit";
 import { ProposalProvider } from "@/components/proposal/ProposalProvider";
-import { Box, Button, Flex, Heading, Image, Text, useBreakpointValue } from "@chakra-ui/react";
-import { IoArrowBack, IoArrowForward, IoClose } from "react-icons/io5";
+import { Box, Button, Flex, Heading, Icon, Image, Text, useBreakpointValue } from "@chakra-ui/react";
 import { PageContainer } from "@/components/PageContainer";
 import { PropsWithChildren, useEffect, useMemo } from "react";
 import { ProposalInfos } from "@/components/proposal/ProposalInfos";
@@ -11,7 +10,7 @@ import { ProposalDetailsCards } from "@/components/proposal/ProposalDetailsCards
 import { ProposalInfoBox } from "@/components/proposal/ProposalInfoBox";
 import { VotingSection } from "@/components/proposal/VotingSection";
 import { BuyANode } from "@/components/proposal/BuyANode";
-import { MdOutlineHowToVote } from "react-icons/md";
+import { ArrowLeftIcon, ArrowRightIcon, CloseIcon, VoteIcon } from "@/icons";
 
 export const ProposalPreview = () => {
   const { LL } = useI18nContext();
@@ -26,7 +25,7 @@ export const ProposalPreview = () => {
         status: "upcoming",
         proposer: account?.address ?? "",
         createdAt: new Date(),
-      } as const),
+      }) as const,
     [proposalDetails, account?.address],
   );
 
@@ -49,12 +48,11 @@ export const ProposalPreview = () => {
           alignItems={"center"}
           gap={6}>
           <Flex alignItems={"center"} gap={6} width={"full"}>
-            <Button gap={2} alignItems={"center"} variant={"secondary"}>
-              <IoArrowBack />
+            <Button gap={2} alignItems={"center"} variant={"secondary"} leftIcon={<Icon as={ArrowLeftIcon} />}>
               {LL.back()}
             </Button>
             <Text display={"flex"} fontSize={"14px"} color={"primary.200"} alignItems={"center"} gap={1}>
-              {LL.homepage()} <IoArrowForward /> {LL.proposal.title()}
+              {LL.homepage()} <Icon as={ArrowRightIcon} width={5} height={4} /> {LL.proposal.title()}
             </Text>
             <ProposalNavbarActions />
             <DAppKitWalletButton
@@ -92,10 +90,7 @@ const ProposalNavbarActions = () => {
   const { LL } = useI18nContext();
   return (
     <Flex alignItems={"center"} gap={2} marginLeft={"auto"}>
-      <Button>
-        <MdOutlineHowToVote />
-        {LL.vote()}
-      </Button>
+      <Button leftIcon={<Icon as={VoteIcon} />}>{LL.vote()}</Button>
     </Flex>
   );
 };
@@ -126,9 +121,8 @@ const PreviewWrapper = ({ children }: PropsWithChildren) => {
         <Heading color={"primary.700"} fontWeight={600}>
           {LL.proposal.create.previewing()}
         </Heading>
-        <Button variant={"secondary"} onClick={() => setOpenPreview(false)}>
+        <Button variant={"secondary"} onClick={() => setOpenPreview(false)} rightIcon={<Icon as={CloseIcon} />}>
           {LL.close()}
-          <IoClose />
         </Button>
       </Flex>
       <Flex

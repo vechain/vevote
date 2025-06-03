@@ -10,8 +10,7 @@ import {
   MenuOptionGroup,
   Text,
 } from "@chakra-ui/react";
-import { Dispatch, SetStateAction } from "react";
-import { IconType } from "react-icons";
+import { Dispatch, SetStateAction, SVGProps } from "react";
 
 type Option = string;
 
@@ -23,7 +22,7 @@ export const VotingBaseDropdown = <T extends Option>({
   icon,
   ...restProps
 }: Omit<MenuButtonProps, "children"> & {
-  icon: IconType;
+  icon: (props: SVGProps<SVGSVGElement>) => JSX.Element;
   label?: string;
   options: T[];
   selectedOption: T;

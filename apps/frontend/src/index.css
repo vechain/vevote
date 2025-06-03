@@ -84,3 +84,8 @@ h6 {
 .ql-container.ql-snow.ql-disabled .ql-editor {
   padding: 0;
 }
+
+.chakra-button__icon {
+  margin-inline-start: 0 !important;
+  margin-inline-end: 0 !important;
+}

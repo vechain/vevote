@@ -1,24 +1,29 @@
+import {
+  BoldIcon,
+  ItalicIcon,
+  LinkIcon,
+  ListChecksIcon,
+  ListNumberIcon,
+  StrikethroughIcon,
+  UnderlineIcon,
+} from "@/icons";
 import { Box } from "@chakra-ui/react";
 import Quill, { Delta, EmitterSource, Range } from "quill";
 import "quill/dist/quill.snow.css";
 import { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
 import ReactDOMServer from "react-dom/server";
 
-import { FaListOl } from "react-icons/fa6";
-import { LuBold, LuItalic, LuLink, LuStrikethrough, LuUnderline } from "react-icons/lu";
-import { PiListChecksBold } from "react-icons/pi";
-
 const icons = Quill.import("ui/icons") as Record<string, string>;
 
-const boldIcon = ReactDOMServer.renderToStaticMarkup(<LuBold />);
-const italicIcon = ReactDOMServer.renderToStaticMarkup(<LuItalic />);
-const underlineIcon = ReactDOMServer.renderToStaticMarkup(<LuUnderline />);
-const strikeIcon = ReactDOMServer.renderToStaticMarkup(<LuStrikethrough />);
+const boldIcon = ReactDOMServer.renderToStaticMarkup(<BoldIcon />);
+const italicIcon = ReactDOMServer.renderToStaticMarkup(<ItalicIcon />);
+const underlineIcon = ReactDOMServer.renderToStaticMarkup(<UnderlineIcon />);
+const strikeIcon = ReactDOMServer.renderToStaticMarkup(<StrikethroughIcon />);
 
-const numberListIcon = ReactDOMServer.renderToStaticMarkup(<FaListOl />);
-const checkListIcon = ReactDOMServer.renderToStaticMarkup(<PiListChecksBold />);
+const numberListIcon = ReactDOMServer.renderToStaticMarkup(<ListNumberIcon />);
+const checkListIcon = ReactDOMServer.renderToStaticMarkup(<ListChecksIcon />);
 
-const linkIcon = ReactDOMServer.renderToStaticMarkup(<LuLink />);
+const linkIcon = ReactDOMServer.renderToStaticMarkup(<LinkIcon />);
 
 icons["bold"] = boldIcon;
 icons["italic"] = italicIcon;
