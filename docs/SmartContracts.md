@@ -14,7 +14,7 @@ VeVote is designed as a modular system using the **UUPS proxy pattern**, which s
 | ------------ | -------------------------------------------------------------------------------------------------- |
 | `VeVote.sol` | VeVote system smart contract, routes proposal and voting calls, handles access control and storage |
 
-> 🧠 These contracts define the high-level behavior and state management of the system. All logic is offloaded to libraries.
+> 🧠 This contract define the high-level behavior and state management of the system. All logic is offloaded to libraries.
 
 ---
 
@@ -25,19 +25,19 @@ VeVote uses a set of specialized **library contracts** to keep the logic modular
 ### Why Libraries?
 
 - ✅ **Modularity** – Each library focuses on a single area of functionality (e.g. voting, timing)
-- 🔁 **Reusability** – Logic can be reused across governance versions or other DAO systems
 - ⚡ **Gas Efficiency** – Smaller contract size reduces deployment and interaction costs
 - 🧱 **Upgrade Flexibility** – Allows logic updates without touching unrelated modules
+- 🔁 **Reusability** – Logic can be reused across governance versions
 
 ### Core Logic Libraries
 
 | Library Contract          | Responsibility                                                 |
 | ------------------------- | -------------------------------------------------------------- |
-| `VeVoteVoteLogic.sol`     | Voting logic: casting, tallying, validation                    |
-| `VeVoteProposalLogic.sol` | Proposal creation: input validation, role checks, setup        |
+| `VeVoteVoteLogic.sol`     | **Voting logic**: casting, tallying, validation                    |
+| `VeVoteProposalLogic.sol` | **Proposal creation**: input validation, role checks, setup        |
 | `VeVoteQuorumLogic.sol`   | Quorum calculation and pass/fail logic                         |
 | `VeVoteClockLogic.sol`    | Time-related logic                                             |
-| `VeVoteConfigurator.sol`  | Admin-only config updates: vote durations, multipliers, quorum |
+| `VeVoteConfigurator.sol`  | **Admin-only config updates**: vote durations, multipliers, external contracts, etc. |
 
 > 📌 These libraries are called via delegatecall from `VeVote.sol`, and all read/write operations interact with `VeVoteStorage.sol`.
 
@@ -54,7 +54,7 @@ VeVote uses OpenZeppelin's `AccessControlUpgradeable` to manage permissions.
 | `WHITELISTED_ROLE`         | Can submit proposals to the VeVote system                      |
 | `SETTINGS_MANAGER_ROLE`    | Manages contract configurations                                |
 | `EXECUTOR_ROLE`            | Can mark proposals as executed, as execution happens off-chain |
-| `VOTE_PARAMS_MANAGER_ROLE` | Can update parameters of the vote weighting formula            |
+| `NODE_WEIGHT_MANAGER_ROLE` | Can update parameters of the vote weighting formula            |
 
 ---
 
@@ -74,8 +74,9 @@ VeVote supports upgradeability through the **UUPS Proxy Pattern**:
 
 | External Contract    | Purpose                                               |
 | -------------------- | ----------------------------------------------------- |
-| `NodeManagement.sol` | Validates Node ownership and delegation relationships |
-| `ThunderFactory.sol` | Vehchain Node Staking contract (TODO: Update)         |
+| `NodeManagement.sol` | Manages delegation of Stargate NFTs to other wallets. Used to resolve ownership and delegation relationships for vote eligibility. |
+| `StargateNFT.sol` | Core Stargate NFT staking contract. Stores tier, VET stake, and multiplier information used to calculate voting power.   |
+| `Authority.sol` | 	VeChain’s Proof of Authority registry. Used to check if a voter is an endorser of an Authority Master Node.    |
 
 ---
 

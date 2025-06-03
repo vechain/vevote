@@ -2,7 +2,7 @@
 
 ## 🗳️ What Is VeVote?
 
-**VeVote** is VeChain’s official decentralized governance system. It allows holders of eligible **VeChain Nodes**—or wallets with delegated Nodes—to vote on proposals that shape the ecosystem’s future.
+**VeVote** is VeChain’s official decentralized governance system. It allows **endorsers of Authority** Master Nodes, holders of eligible **Stargate NFTs**—or wallets with delegated Stargate NFTs—to vote on proposals that shape the ecosystem’s future.
 
 From protocol upgrades to community initiatives, VeVote ensures decision-making is **transparent**, **fair**, and **decentralised**.
 
@@ -12,12 +12,15 @@ From protocol upgrades to community initiatives, VeVote ensures decision-making 
 
 You’re eligible to vote if:
 
-- ✅ You **own** a VeChain Node
-- ✅ A Node has been **delegated** to your wallet
+- ✅ You **own** a Stargate NFT
+- ✅ A Stargate NFT has been **delegated** to your wallet
+- ✅ You are an **endorser** of an Authority Master Node (AMN)
 
-Supported Node types include **Validator**, **MjolnirX**, **ThunderX**, **StrengthX**, **VeThorX**, **Mjolnir**, **Thunder**, **Strength**, **Flash**, **Lightning**, and **Dawn**.
+Supported Stargate NFT levels include **MjolnirX**, **ThunderX**, **StrengthX**, **VeThorX**, **Mjolnir**, **Thunder**, **Strength**, **Flash**, **Lightning**, and **Dawn**.
 
-> 🔐 **Delegation**: Node holders can assign their voting rights to another wallet—enabling trusted representatives to participate in governance.
+> 🔐 **Delegation**: Stargate NFT holders can assign their voting rights to another wallet—enabling trusted representatives to participate in governance.
+
+> ⚠️ Users of legacy Vehchain Nodes who have not migrated it to Stargate NFT contract will not be eligible for voting. 
 
 ---
 
@@ -42,23 +45,30 @@ Example: ThunderX Node (840 units), selecting 2 options:
 Each option receives 420 units
 ```
 
+### 🚨 **One Vote Per Proposal**:
+Each wallet can only vote **once** per proposal.
+You **cannot change or re-submit** your vote once it has been cast.
+
 ---
 
-## 💪 How Node Type Affects Voting Power
+## 💪 How Stargate NFTs and AMN's affect Voting Power
 
-VeVote uses a **weighted voting system** based on your Node type. Larger, higher-tier Nodes grant **more influence**.
+VeVote uses a **weighted voting system** based on your Stargate NFT level or if you hold an AMN. Larger, higher-level NFTs grant **more influence**.
 
-Voting power is calculated using **Voting Units**, determined by:
+Voting power is calculated using **Voting Units**, determined by any combination of:
 
-1. The minimum requirement of **VET staked** for your Node (compared to the smallest tier)
-2. A **multiplier** based on the Node tier
+1. The tier and VET stake of your Stargate NFT
+
+2. Your endorsement of an Authority Master Node
+
+> ℹ️ For simplicity, throughout the rest of this documentation, we will refer to all eligible voting power sources (Stargate NFT tiers or AMN endorsement) collectively as *"Nodes."*
 
 ### 🧮 Step 1: Base Voting Power
 
-Every Node is compared to the minimum requirement of the lowest Node tier —**Dawn (10,000 VET)**—which equals **1 voting unit**:
+Every node is compared to the minimum staked VET requirement of the lowest Stargate NFT tier -**Dawn (10,000 VET)** - which equals **1 voting unit**:
 
 ```
-Base Voting Power = Your Node’s VET ÷ 10,000
+Base Voting Power = Required Staked VET to hold your Node ÷ 10,000
 ```
 
 Example: Thunder X (5,600,000 VET)
@@ -69,7 +79,7 @@ Example: Thunder X (5,600,000 VET)
 
 ### 🔁 Step 2: Apply the Multiplier
 
-Each Node tier has a multiplier. Thunder X uses **1.5x**:
+Each node has a multiplier. Thunder X uses **1.5x**:
 
 ```
 Final Voting Power = Base Units × Multiplier
@@ -77,7 +87,7 @@ Final Voting Power = Base Units × Multiplier
                    = 840 voting units
 ```
 
-> 🧑‍💻 Dev Note: In the contract, multipliers are stored as whole numbers scaled by 100 (e.g. 150 = 1.5).
+> 🧑‍💻 Dev Note: In the smart contract, multipliers are stored as whole numbers scaled by 100 (e.g. 150 = 1.5).
 
 ### ➕ Holding Multiple Nodes
 
@@ -94,7 +104,7 @@ If you hold—or are delegated—more than one Node, your **total voting power**
 
 | Node Type   | VET Required | Multiplier | Voting Units |
 | ----------- | ------------ | ---------- | ------------ |
-| Validator   | 25,000,000   | 2.0×       | 5,000        |
+| AMN Endorser| 25,000,000   | 2.0×       | 5,000        |
 | Mjolnir X   | 15,600,000   | 1.5×       | 2,340        |
 | Thunder X   | 5,600,000    | 1.5×       | 840          |
 | Strength X  | 1,600,000    | 1.5×       | 240          |
@@ -106,15 +116,23 @@ If you hold—or are delegated—more than one Node, your **total voting power**
 | Lightning\* | 50,000       | 1.0×       | 5            |
 | Dawn\*      | 10,000       | 1.0×       | 1            |
 
-### 🕒 When Is Voting Power Counted?
 
-A **snapshot** is taken at the **start** of every proposal’s voting period, that means that the voting power you will have at the exact `startBlock`, will be frozen regardless of when you will cast your vote.
-Your voting power is locked in based on:
+> ℹ️ Note: the voting units in the smart are scaled by 100 to avoid underflow when determining to total vote weight. 
 
-- All Nodes you own directly
-- Any Nodes delegated to your wallet
+### ⚖️ When Is Voting Power Counted?
 
-> 🔒 Changes after voting starts (buying/selling/delegating Nodes) **don’t affect** that proposal.
+Voting power is calculated at the **moment you cast your vote**, not at the proposal’s start.
+
+Although a startBlock snapshot defines when voting begins, your voting power depends on your live status during the voting period. This includes:
+
+- Stargate NFTs you currently hold
+- Stargate NFTs currently delegated to you
+- Whether your address is listed as an Authority Master Node endorser
+
+> 🔒  **Important Notes**:
+>    - NFTs minted after voting begins can **not** be used to vote.
+>    - NFTs burned, transferred, or undelegated before voting will not count.
+>    - Eligibility and voting strength are assessed in real time when you vote — not at startBlock.
 
 ---
 
@@ -192,7 +210,7 @@ Proposal Creation Format:
 | Field          | Type        | Description                                |
 | -------------- | ----------- | ------------------------------------------ |
 | `description`  | `string`    | IPFS CID for full Markdown content         |
-| `startBlock`    | `uint256`   | Timestamp when voting starts (after delay) |
+| `startBlock`    | `uint256`   | Block when voting starts (after delay) |
 | `voteDuration` | `uint256`   | Duration in seconds                        |
 | `choices`      | `bytes32[]` | List of voting options                     |
 | `maxSelection` | `uint8`     | Max choices a voter can select             |
