@@ -75,7 +75,7 @@ VeVote supports upgradeability through the **UUPS Proxy Pattern**:
 | External Contract    | Purpose                                               |
 | -------------------- | ----------------------------------------------------- |
 | `NodeManagement.sol` | Manages delegation of Stargate NFTs to other wallets. Used to resolve ownership and delegation relationships for vote eligibility. |
-| `StargateNFT.sol` | Core Stargate NFT staking contract. Stores tier, VET stake, and multiplier information used to calculate voting power.   |
+| `StargateNFT.sol` | Core Stargate NFT staking contract. Stores level info, VET stake, and owner information used to calculate voting power.   |
 | `Authority.sol` | 	VeChain’s Proof of Authority registry. Used to check if a voter is an endorser of an Authority Master Node.    |
 
 ---
