@@ -369,9 +369,6 @@ describe("VeVote", function () {
       // ACTIVE
       const tx2 = await createProposal();
       const proposalId2 = await getProposalIdFromTx(tx2);
-      // DEFEATED
-      const tx3 = await createProposal();
-      const proposalId3 = await getProposalIdFromTx(tx3);
       // SUCEEDED -> EXECUTED
       const tx4 = await createProposal();
       const proposalId4 = await getProposalIdFromTx(tx4);
@@ -387,15 +384,6 @@ describe("VeVote", function () {
         vevote,
         "VeVoteUnexpectedProposalState",
       );
-
-      // Should not be able to cancel DEFEATED proposal
-      // TODO: Uncomment this after quorom is implemented
-      /* await waitForProposalToEnd(proposalId3)
-      expect(await vevote.state(proposalId3)).to.equal(3)
-      await expect(vevote.connect(admin).cancel(proposalId3)).to.be.revertedWithCustomError(
-        vevote,
-        "VeVoteUnexpectedProposalState",
-      ) */
 
       // Should not be able to cancel SUCEEDED proposal
       await waitForProposalToStart(proposalId4);
@@ -419,6 +407,20 @@ describe("VeVote", function () {
         vevote,
         "VeVoteUnexpectedProposalState",
       );
+
+      await vevote.connect(admin).updateQuorumNumerator(20);
+
+      // DEFEATED
+      const tx3 = await createProposal();
+      const proposalId3 = await getProposalIdFromTx(tx3);
+
+      // Should not be able to cancel DEFEATED proposal
+      await waitForProposalToEnd(proposalId3);
+      expect(await vevote.state(proposalId3)).to.equal(3);
+      await expect(vevote.connect(admin).cancel(proposalId3)).to.be.revertedWithCustomError(
+        vevote,
+        "VeVoteUnexpectedProposalState",
+      );
     });
 
     it("Admins can cancel any proposal when they are in PENDING or ACTIVE state", async function () {
@@ -431,9 +433,6 @@ describe("VeVote", function () {
       // ACTIVE
       const tx2 = await createProposal();
       const proposalId2 = await getProposalIdFromTx(tx2);
-      // DEFEATED
-      const tx3 = await createProposal();
-      const proposalId3 = await getProposalIdFromTx(tx3);
       // SUCEEDED -> EXECUTED
       const tx4 = await createProposal();
       const proposalId4 = await getProposalIdFromTx(tx4);
@@ -446,15 +445,6 @@ describe("VeVote", function () {
       await waitForProposalToStart(proposalId2);
       expect(await vevote.state(proposalId2)).to.equal(1);
       await expect(vevote.connect(admin).cancel(proposalId2)).to.not.be.reverted;
-
-      // Should not be able to cancel DEFEATED proposal
-      // TODO: Uncomment this after quorom is implemented
-      /* await waitForProposalToEnd(proposalId3)
-      expect(await vevote.state(proposalId3)).to.equal(3)
-      await expect(vevote.connect(admin).cancel(proposalId3)).to.be.revertedWithCustomError(
-        vevote,
-        "VeVoteUnexpectedProposalState",
-      ) */
 
       // Should not be able to cancel SUCEEDED proposal
       await waitForProposalToStart(proposalId4);
@@ -475,6 +465,20 @@ describe("VeVote", function () {
 
       // Should not be able to re-cancel a proposal
       await expect(vevote.connect(admin).cancel(proposalId1)).to.be.revertedWithCustomError(
+        vevote,
+        "VeVoteUnexpectedProposalState",
+      );
+
+      await vevote.connect(admin).updateQuorumNumerator(20);
+
+      // DEFEATED
+      const tx3 = await createProposal();
+      const proposalId3 = await getProposalIdFromTx(tx3);
+
+      // Should not be able to cancel DEFEATED proposal
+      await waitForProposalToEnd(proposalId3);
+      expect(await vevote.state(proposalId3)).to.equal(3);
+      await expect(vevote.connect(admin).cancel(proposalId3)).to.be.revertedWithCustomError(
         vevote,
         "VeVoteUnexpectedProposalState",
       );
@@ -984,9 +988,6 @@ describe("VeVote", function () {
       // ACTIVE
       const tx2 = await createProposal();
       const proposalId2 = await getProposalIdFromTx(tx2);
-      // DEFEATED
-      const tx3 = await createProposal();
-      const proposalId3 = await getProposalIdFromTx(tx3);
       // SUCEEDED -> EXECUTED
       const tx4 = await createProposal();
       const proposalId4 = await getProposalIdFromTx(tx4);
@@ -1007,15 +1008,6 @@ describe("VeVote", function () {
         "VeVoteUnexpectedProposalState",
       );
 
-      // Should not be able to exectute DEFEATED proposal
-      // TODO: Uncomment this after quorom is implemented
-      /* await waitForProposalToEnd(proposalId3)
-      expect(await vevote.state(proposalId3)).to.equal(3)
-      await expect(vevote.connect(admin).execute(proposalId3)).to.be.revertedWithCustomError(
-        vevote,
-        "VeVoteUnexpectedProposalState",
-      ) */
-
       // Should be able to execute a SUCEEDED proposal
       await waitForProposalToStart(proposalId4);
       await vevote.connect(mjolnirXHolder).castVote(proposalId4, 1, ZeroAddress);
@@ -1032,6 +1024,20 @@ describe("VeVote", function () {
 
       // Should not be able to execute a CANCELLED a proposal
       await expect(vevote.connect(admin).execute(proposalId1)).to.be.revertedWithCustomError(
+        vevote,
+        "VeVoteUnexpectedProposalState",
+      );
+
+      await vevote.connect(admin).updateQuorumNumerator(20);
+
+      // DEFEATED
+      const tx3 = await createProposal();
+      const proposalId3 = await getProposalIdFromTx(tx3);
+
+      // Should not be able to cancel DEFEATED proposal
+      await waitForProposalToEnd(proposalId3);
+      expect(await vevote.state(proposalId3)).to.equal(3);
+      await expect(vevote.connect(admin).execute(proposalId3)).to.be.revertedWithCustomError(
         vevote,
         "VeVoteUnexpectedProposalState",
       );
