@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity 0.8.20;
+import { DataTypes } from "../external/StargateNFT/libraries/DataTypes.sol";
 
-import { VechainNodesDataTypes } from "../libraries/VechainNodesDataTypes.sol";
+pragma solidity 0.8.20;
 
 interface INodeManagement {
   /**
@@ -33,6 +33,12 @@ interface INodeManagement {
   error NodeManagementNodeAlreadyDelegated(uint256 nodeId, address delegatee);
 
   /**
+   * @notice Error indicating that the user does not own the node.
+   * @param nodeId The ID of the node that the user does not own.
+   */
+  error NodeManagementNotNodeOwner(uint256 nodeId);
+
+  /**
    * @notice Event emitted when a node is delegated or the delegation is removed.
    * @param nodeId The ID of the node being delegated or having its delegation removed.
    * @param delegatee The address to which the node is delegated or from which the delegation is removed.
@@ -43,7 +49,17 @@ interface INodeManagement {
   /**
    *  @dev Emit when the vechain node contract address is set or updated
    */
-  event VechainNodeContractSet(address oldContractAddress, address newContractAddress);
+  event StargateNFTContractSet(address oldContractAddress, address newContractAddress);
+
+  /**
+   *  @dev Emit when the stargate NFT contract address is set or updated
+   */
+  event StargateNftSet(address oldContractAddress, address newContractAddress);
+
+  /**
+   * @notice Error indicating that a node ID is not valid.
+   */
+  error NodeManagementInvalidNodeId();
 
   /**
    * @notice Initialize the contract with the specified VeChain Nodes contract, admin, and upgrader addresses.
@@ -62,13 +78,15 @@ interface INodeManagement {
   /**
    * @notice Delegate a node to another address.
    * @param delegatee The address to delegate the node to.
+   * @param nodeId The ID of the node to delegate.
    */
-  function delegateNode(address delegatee) external;
+  function delegateNode(address delegatee, uint256 nodeId) external;
 
   /**
    * @notice Remove the delegation of a node.
+   * @param nodeId The ID of the node to remove the delegation from.
    */
-  function removeNodeDelegation() external;
+  function removeNodeDelegation(uint256 nodeId) external;
 
   /**
    * @notice Retrieve the node ID associated with a user, either through direct ownership or delegation.
@@ -121,33 +139,38 @@ interface INodeManagement {
   function getDirectNodeOwnership(address user) external view returns (uint256);
 
   /**
+   * @notice Retrieves the node IDs directly owned by a user.
+   * @param user The address of the user to check.
+   * @return uint256[] The node IDs directly owned by the user. If no nodes are owned, an empty array is returned.
+   */
+  function getDirectNodesOwnership(address user) external view returns (uint256[] memory);
+
+  /**
    * @notice Retrieves the node level of a given node ID.
    * @param nodeId The token ID of the endorsing node.
-   * @return VechainNodesDataTypes.NodeStrengthLevel The node level of the specified token ID.
+   * @return levelId The node level of the specified token ID.
    */
-  function getNodeLevel(uint256 nodeId) external view returns (VechainNodesDataTypes.NodeStrengthLevel);
+  function getNodeLevel(uint256 nodeId) external view returns (uint8 levelId);
 
   /**
    * @notice Retrieves the node level of a user's managed node.
    * @param user The address of the user managing the node.
-   * @return VechainNodesDataTypes.NodeStrengthLevel The node level of the node managed by the user.
+   * @return uint8[] The node level of the node managed by the user.
    */
-  function getUsersNodeLevels(address user) external view returns (VechainNodesDataTypes.NodeStrengthLevel[] memory);
+  function getUsersNodeLevels(address user) external view returns (uint8[] memory);
 
   /**
-   * @notice Retrieves a list of nodes a user manages, along with their respective node levels.
-   * @dev TODO: This function is incomplete and needs to be updated when the new node contract is ready.
-   * @param user The address of the user to check.
-   * @return NodeInfo[] Array of node information structures.
+   * @notice Checks if a node is a legacy node.
+   * @param nodeId The ID of the node to check.
+   * @return bool True if the node is a legacy node, false otherwise.
    */
-  function getUsersNodesWithLevelInfo(
-    address user
-  ) external view returns (VechainNodesDataTypes.NodeLevelInfo[] memory);
+  function isLegacyNode(uint256 nodeId) external view returns (bool);
 
   /**
-   * @notice Retrieves the node level information for a given node ID.
-   * @param nodeId The ID of the node.
-   * @return VechainNodesDataTypes.NodeLevelInfo The node level information.
+   * @notice Returns all tokens associated with a user, including owned and delegated ones.
+   * @dev This function retrieves only tokens that have been migrated to the new Stargate NFT contract.
+   * @param user The user address to query.
+   * @return tokens An array of DataTypes.Token structs owned or delegated to the user.
    */
-  function getNodeLevelInfo(uint256 nodeId) external view returns (VechainNodesDataTypes.NodeLevelInfo memory);
+  function getUserStargateNFTsInfo(address user) external view returns (DataTypes.Token[] memory tokens);
 }

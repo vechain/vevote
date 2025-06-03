@@ -11,6 +11,7 @@ export type AppConfig = {
   basePath?: string;
   vevoteContractAddress: string;
   nodeManagementContractAddress: string;
+  stargateNFTContractAddress: string;
   vechainNodesContractAddress: string;
   nodeUrl: string;
   network: Network;
