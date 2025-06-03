@@ -1,5 +1,3 @@
-# VeVote Governance Documentation
-
 ## 🗳️ What Is VeVote?
 
 **VeVote** is VeChain’s official decentralized governance system. It allows **endorsers of Authority** Master Nodes, holders of eligible **Stargate NFTs**—or wallets with delegated Stargate NFTs—to vote on proposals that shape the ecosystem’s future.
@@ -226,3 +224,6 @@ VeVote enables:
 - Upgradeable and modular smart contract architecture
 
 It’s a flexible governance tool purpose-built for the VeChain ecosystem.
+
+## 📑 VeVote Smart Contract Documentation
+ [Click here for more infomation relating to the smart contract implementation/](SmartContracts.md)
