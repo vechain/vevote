@@ -115,7 +115,7 @@ If you hold—or are delegated—more than one Node, your **total voting power**
 | Dawn\*      | 10,000       | 1.0×       | 1            |
 
 
-> ℹ️ Note: the voting units in the smart are scaled by 100 to avoid underflow when determining to total vote weight. 
+> ℹ️ Note: the voting units in the smart contract are scaled by 100 to avoid underflow when determining total vote weight. 
 
 ### ⚖️ When Is Voting Power Counted?
 
