@@ -226,4 +226,4 @@ VeVote enables:
 It’s a flexible governance tool purpose-built for the VeChain ecosystem.
 
 ## 📑 VeVote Smart Contract Documentation
- [Click here for more infomation relating to the smart contract implementation/](SmartContracts.md)
+ Click [here](SmartContracts.md) for more infomation relating to the smart contract implementation
