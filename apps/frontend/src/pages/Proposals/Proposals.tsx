@@ -4,21 +4,22 @@ import { Pagination } from "@/components/ui/Pagination";
 import { SearchInput } from "@/components/ui/SearchInput";
 import { Sort, SortDropdown } from "@/components/ui/SortDropdown";
 import { useProposalsEvents } from "@/hooks/useProposalsEvents";
+
 import { useI18nContext } from "@/i18n/i18n-react";
 import { ProposalCardType } from "@/types/proposal";
 import { Button, Flex, Heading, Icon, Link, Tab, TabList, TabPanel, TabPanels, Tabs, Text } from "@chakra-ui/react";
 import dayjs from "dayjs";
-import { PropsWithChildren, useMemo, useState } from "react";
+import { PropsWithChildren, useMemo, useState, useContext } from "react";
 import { useCreateProposal } from "../CreateProposal/CreateProposalProvider";
 import { ProposalCard } from "./ProposalCard";
 import { CircleInfoIcon, CirclePlusIcon, VoteIcon } from "@/icons";
+import { UserContext } from "@/contexts/UserProvider";
 
 const ITEMS_PER_PAGE = 6;
 
-//todo: get from user provider
-const isAdmin = true;
-
 export const Proposals = () => {
+  const { isAdmin } = useContext(UserContext);
+
   const { draftProposal } = useCreateProposal();
   const [sort, setSort] = useState<Sort>(Sort.Newest);
   const [searchValue, setSearchValue] = useState("");
