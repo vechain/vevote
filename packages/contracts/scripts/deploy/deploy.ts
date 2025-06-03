@@ -203,7 +203,7 @@ export async function deployAll(config: ContractsConfig) {
         initialMinVotingDuration: config.INITIAL_MIN_VOTING_DURATION,
         initialMaxChoices: config.INITIAL_MAX_CHOICES,
         nodeManagement: nodeManagementAddress,
-        stargateNFT: stargateSCAddress,
+        stargateNFT: await stargateMock.getAddress(),
         authorityContract: config.AUTHORITY_CONTRACT_ADDRESS,
         initialMinStakedAmount: config.MIN_VET_STAKE,
       },
