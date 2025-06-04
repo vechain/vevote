@@ -1,4 +1,4 @@
-import { executeCall } from "@/utils/contract";
+import { executeCall, executeMultipleClauses } from "@/utils/contract";
 import { getConfig } from "@repo/config";
 import { VeVote__factory } from "@repo/contracts";
 import { useWallet } from "@vechain/dapp-kit-react";
@@ -124,13 +124,43 @@ export const UserProvider = (props: React.PropsWithChildren) => {
   );
 
   useEffect(() => {
-    const getAdmin = async () => {
-      const admin = await hasRole(ROLES.ADMIN);
-      const upgrader = await hasRole(ROLES.UPGRADER_ROLE);
-      const weightManager = await hasRole(ROLES.NODE_WEIGHT_MANAGER_ROLE);
-      const settingsManager = await hasRole(ROLES.SETTINGS_MANAGER_ROLE);
-      const whitelisted = await hasRole(ROLES.WHITELISTED_ROLE);
-      const executor = await hasRole(ROLES.EXECUTOR_ROLE);
+    const getUserRoles = async () => {
+      if (!account) {
+        setIsAdmin(false);
+        setIsExecutor(false);
+        setIsNodeManager(false);
+        setIsSettingsManager(false);
+        setIsUpgrader(false);
+        setIsWhitelisted(false);
+        return;
+      }
+
+      const roleMethods = [
+        { method: "DEFAULT_ADMIN_ROLE" as const, args: [] },
+        { method: "UPGRADER_ROLE" as const, args: [] },
+        { method: "WHITELISTED_ROLE" as const, args: [] },
+        { method: "EXECUTOR_ROLE" as const, args: [] },
+        { method: "SETTINGS_MANAGER_ROLE" as const, args: [] },
+        { method: "NODE_WEIGHT_MANAGER_ROLE" as const, args: [] },
+      ];
+
+      const roleResults = (
+        await executeMultipleClauses({ contractAddress, contractInterface, methodsWithArgs: roleMethods })
+      ).map(result => (result.success ? (result.result.plain as string) : ""));
+
+      //the Role calls may fail, so we get an 'undefined' roleHash. The hasRole call will fail if so, but it's better keeping
+      const hasRoleMethods = roleResults.map(roleHash => {
+        return { method: "hasRole" as const, args: [roleHash, account] };
+      });
+
+      const [admin, upgrader, whitelisted, executor, settingsManager, weightManager] = (
+        await executeMultipleClauses({
+          contractAddress,
+          contractInterface,
+          methodsWithArgs: hasRoleMethods,
+        })
+      ).map(result => Boolean(result.result.plain));
+
       setIsAdmin(admin);
       setIsExecutor(executor);
       setIsNodeManager(weightManager);
@@ -139,8 +169,8 @@ export const UserProvider = (props: React.PropsWithChildren) => {
       setIsWhitelisted(whitelisted);
     };
 
-    getAdmin();
-  }, [hasRole]);
+    getUserRoles();
+  }, [hasRole, account]);
 
   const ctxValue = useMemo(() => {
     return { hasRole, isAdmin, isExecutor, isNodeManager, isSettingsManager, isUpgrader, isWhitelisted };
