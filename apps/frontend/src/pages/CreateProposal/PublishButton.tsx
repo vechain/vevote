@@ -45,6 +45,7 @@ export const PublishButton = () => {
       onPublishClose();
       onSuccessOpen();
     } catch (e) {
+      console.error(e);
       onPublishClose();
       onFailedOpen();
     } finally {
@@ -114,14 +115,14 @@ export const PublishButton = () => {
           {LL.proposal.create.summary_form.publish_success_description()}
         </Text>
         <ModalFooter width={"full"} justifyContent={"space-center"} mt={7}>
-          <Link
-            as={Button}
+          <Button
+            as={Link}
             width={"full"}
             href={`/proposal/${newProposalId}`}
             color={"white"}
             _hover={{ textDecoration: "none" }}>
             {LL.continue()}
-          </Link>
+          </Button>
         </ModalFooter>
       </MessageModal>
     </>
