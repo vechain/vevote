@@ -1,7 +1,7 @@
 import { executeCall, executeMultipleClauses } from "@/utils/contract";
 import { getConfig } from "@repo/config";
 import { VeVote__factory } from "@repo/contracts";
-import { useWallet } from "@vechain/dapp-kit-react";
+import { useWallet } from "@vechain/vechain-kit";
 import { createContext, useCallback, useEffect, useMemo, useState } from "react";
 
 const contractAddress = getConfig(import.meta.env.VITE_APP_ENV).vevoteContractAddress;
@@ -111,12 +111,12 @@ export const UserProvider = (props: React.PropsWithChildren) => {
           break;
         }
       }
-      if (!checkedRole || !account) return false;
+      if (!checkedRole || !account?.address) return false;
       const hasRoleResponse = await executeCall({
         contractAddress,
         contractInterface,
         method: "hasRole",
-        args: [role, account],
+        args: [role, account.address],
       });
       return hasRoleResponse.result.plain as boolean;
     },
@@ -125,7 +125,7 @@ export const UserProvider = (props: React.PropsWithChildren) => {
 
   useEffect(() => {
     const getUserRoles = async () => {
-      if (!account) {
+      if (!account?.address) {
         setIsAdmin(false);
         setIsExecutor(false);
         setIsNodeManager(false);
@@ -150,7 +150,7 @@ export const UserProvider = (props: React.PropsWithChildren) => {
 
       //the Role calls may fail, so we get an 'undefined' roleHash. The hasRole call will fail if so, but it's better keeping
       const hasRoleMethods = roleResults.map(roleHash => {
-        return { method: "hasRole" as const, args: [roleHash, account] };
+        return { method: "hasRole" as const, args: [roleHash, account.address] };
       });
 
       const [admin, upgrader, whitelisted, executor, settingsManager, weightManager] = (
