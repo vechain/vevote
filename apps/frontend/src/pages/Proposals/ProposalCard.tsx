@@ -103,6 +103,11 @@ export const VotingDate = ({
   };
 }) => {
   const { LL } = useI18nContext();
+  const hoursMinutes = useMemo(() => {
+    if (votingDate?.hours) return `${votingDate?.hours} ${votingDate?.minutes}`;
+    return `${votingDate?.minutes}`;
+  }, [votingDate?.hours, votingDate?.minutes]);
+
   return (
     <Flex fontSize={16} alignItems={"center"} color={"gray.600"} gap={1}>
       {votingDate?.days && (
@@ -111,7 +116,7 @@ export const VotingDate = ({
           <Text color={"gray.500"}>{LL.and()}</Text>
         </>
       )}
-      <Text fontWeight={500}>{`${votingDate?.hours} ${votingDate?.minutes}`}</Text>
+      <Text fontWeight={500}>{hoursMinutes}</Text>
       <Text color={"gray.500"}>{LL.left().toLowerCase()}</Text>
     </Flex>
   );

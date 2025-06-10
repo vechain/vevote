@@ -4,7 +4,6 @@ import { useBuildTransaction } from "@/utils";
 import { getConfig } from "@repo/config";
 import { VeVote__factory } from "@repo/contracts";
 import { EnhancedClause } from "@vechain/vechain-kit";
-import dayjs from "dayjs";
 import { ethers } from "ethers";
 import { useCallback } from "react";
 
@@ -15,12 +14,16 @@ export const useBuildCreateProposal = () => {
   const buildClauses = useCallback(
     ({
       description,
-      startDate,
-      endDate,
       votingOptions,
       votingType,
       votingLimit,
-    }: Omit<ProposalDetails, "description"> & { description: string }) => {
+      startBlock,
+      durationBlock,
+    }: Omit<ProposalDetails, "description" | "startDate" | "voteDuration"> & {
+      description: string;
+      startBlock: number;
+      durationBlock: number;
+    }) => {
       const clauses: EnhancedClause[] = [];
 
       try {
@@ -29,13 +32,15 @@ export const useBuildCreateProposal = () => {
             ? votingOptions.map(c => ethers.encodeBytes32String(c as string))
             : votingOptions.map(c => ethers.encodeBytes32String((c as BaseOption).value));
 
+        // console.log([description, startBlock, durationBlock - startBlock, encodedChoices, votingLimit || 1, 1]);
+
         const createProposalClause: EnhancedClause = {
           to: contractAddress,
           value: 0,
           data: contractInterface.encodeFunctionData("propose", [
             description,
-            dayjs(startDate).unix(),
-            dayjs(endDate).unix() - dayjs(startDate).unix(),
+            startBlock,
+            durationBlock - startBlock,
             encodedChoices,
             votingLimit || 1,
             1,

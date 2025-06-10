@@ -3,11 +3,12 @@ import { useI18nContext } from "@/i18n/i18n-react";
 import { Button, Icon, Link, ModalFooter, Text, useDisclosure } from "@chakra-ui/react";
 import { useBuildCreateProposal } from "@/hooks/useBuildCreatePropose";
 import { useCreateProposal } from "./CreateProposalProvider";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { uploadProposalToIpfs } from "@/utils/ipfs/proposal";
 import { getHashProposal } from "@/utils/proposals/proposalsQueries";
 import { useWallet } from "@vechain/vechain-kit";
 import { ArrowRightIcon, CheckIcon, CircleInfoIcon, CircleXIcon, RetryIcon } from "@/icons";
+import { useGetDatesBlocks } from "@/hooks/useGetDatesBlocks";
 
 export const PublishButton = () => {
   const { LL } = useI18nContext();
@@ -19,7 +20,13 @@ export const PublishButton = () => {
   const [newProposalId, setNewProposalId] = useState("");
 
   const { proposalDetails } = useCreateProposal();
-  const { sendTransaction, error } = useBuildCreateProposal();
+  const { sendTransaction, error, status, txReceipt } = useBuildCreateProposal();
+
+  const { startBlock, durationBlock } = useGetDatesBlocks({
+    startDate: proposalDetails.startDate,
+    endDate: proposalDetails.endDate,
+  });
+
   const { account } = useWallet();
 
   const onSubmit = useCallback(async () => {
@@ -30,26 +37,49 @@ export const PublishButton = () => {
 
       const data = {
         ...proposalDetails,
+        startBlock,
+        durationBlock,
         description,
       };
 
       await sendTransaction(data);
       if (error) throw new Error(`Failed to sing transaction`);
+
       const res = await getHashProposal({ ...data, proposer: account?.address || "" });
 
-      if (res.success) setNewProposalId(res.result.plain as string);
+      if (res.success) setNewProposalId((res.result.plain as BigInteger).toString());
 
-      onPublishClose();
-      onSuccessOpen();
+      if (txReceipt) {
+        onPublishClose();
+        onSuccessOpen();
+      } else {
+        onPublishClose();
+        onFailedOpen();
+      }
     } catch (e) {
       onPublishClose();
       onFailedOpen();
     } finally {
       setIsLoading(false);
     }
-  }, [account?.address, error, onFailedOpen, onPublishClose, onSuccessOpen, proposalDetails, sendTransaction]);
+  }, [
+    account?.address,
+    durationBlock,
+    error,
+    onFailedOpen,
+    onPublishClose,
+    onSuccessOpen,
+    proposalDetails,
+    sendTransaction,
+    startBlock,
+    txReceipt,
+  ]);
 
   const onTryAgain = useCallback(() => onFailedClose(), [onFailedClose]);
+
+  useEffect(() => {
+    console.log({ error, status, txReceipt });
+  }, [error, status, txReceipt]);
 
   return (
     <>
@@ -108,14 +138,14 @@ export const PublishButton = () => {
           {LL.proposal.create.summary_form.publish_success_description()}
         </Text>
         <ModalFooter width={"full"} justifyContent={"space-center"} mt={7}>
-          <Link
-            as={Button}
+          <Button
+            as={Link}
             width={"full"}
             href={`/proposal/${newProposalId}`}
             color={"white"}
             _hover={{ textDecoration: "none" }}>
             {LL.continue()}
-          </Link>
+          </Button>
         </ModalFooter>
       </MessageModal>
     </>

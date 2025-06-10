@@ -18,7 +18,7 @@ import { UserContext } from "@/contexts/UserProvider";
 const ITEMS_PER_PAGE = 6;
 
 export const Proposals = () => {
-  const { isAdmin } = useContext(UserContext);
+  const { isWhitelisted } = useContext(UserContext);
 
   const { draftProposal } = useCreateProposal();
   const [sort, setSort] = useState<Sort>(Sort.Newest);
@@ -51,7 +51,7 @@ export const Proposals = () => {
             <Icon as={VoteIcon} width={8} height={8} marginRight={2} />
             {LL.proposals.title()}
           </Heading>
-          {isAdmin && (
+          {isWhitelisted && (
             <Button as={Link} href="/create-proposal" marginLeft={"auto"}>
               <Icon as={CirclePlusIcon} />
               {LL.proposals.create()}
