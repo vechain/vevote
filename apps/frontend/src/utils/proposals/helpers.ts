@@ -138,7 +138,7 @@ export const getDateFromBlock = async (blockNumber: number): Promise<Date> => {
     return dayjs(timestamp * 1000).toDate();
   }
 
-  const estimatedSecondsIntoFuture = (blockNumber - currentBlockNumber) * AVERAGE_BLOCK_TIME;
+  const estimatedSecondsIntoFuture = (currentBlockNumber - blockNumber) * AVERAGE_BLOCK_TIME;
   const estimatedTimestamp = currentTimestamp + estimatedSecondsIntoFuture;
   return dayjs(estimatedTimestamp * 1000).toDate();
 };

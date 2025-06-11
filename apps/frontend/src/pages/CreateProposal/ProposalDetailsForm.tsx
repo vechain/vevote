@@ -32,6 +32,11 @@ export const ProposalDetailsForm = () => {
     [proposalDetails],
   );
 
+  const schema = useMemo(
+    () => proposalDetailsSchema(minVotingDelay, maxVotingDuration),
+    [maxVotingDuration, minVotingDelay],
+  );
+
   const onSubmit = (values: ProposalDetailsSchema) => {
     setProposalDetails({
       ...proposalDetails,
@@ -41,10 +46,7 @@ export const ProposalDetailsForm = () => {
     setStep(CreateProposalStep.VOTING_SETUP);
   };
   return (
-    <FormSkeleton
-      schema={proposalDetailsSchema(minVotingDelay, maxVotingDuration)}
-      defaultValues={defaultValues}
-      onSubmit={onSubmit}>
+    <FormSkeleton schema={schema} defaultValues={defaultValues} onSubmit={onSubmit}>
       {({ register, errors, watch }) => {
         const title = watch("title");
         return (
