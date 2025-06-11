@@ -3,7 +3,7 @@ import { useI18nContext } from "@/i18n/i18n-react";
 import { Button, Icon, Link, ModalFooter, Text, useDisclosure } from "@chakra-ui/react";
 import { useBuildCreateProposal } from "@/hooks/useBuildCreatePropose";
 import { useCreateProposal } from "./CreateProposalProvider";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { uploadProposalToIpfs } from "@/utils/ipfs/proposal";
 import { getHashProposal } from "@/utils/proposals/proposalsQueries";
 import { useWallet } from "@vechain/vechain-kit";
@@ -20,7 +20,11 @@ export const PublishButton = () => {
   const [newProposalId, setNewProposalId] = useState("");
 
   const { proposalDetails } = useCreateProposal();
-  const { sendTransaction, error, status, txReceipt } = useBuildCreateProposal();
+  const {
+    build: { sendTransaction, txReceipt },
+    error,
+    resetError,
+  } = useBuildCreateProposal();
 
   const { startBlock, durationBlock } = useGetDatesBlocks({
     startDate: proposalDetails.startDate,
@@ -32,6 +36,7 @@ export const PublishButton = () => {
   const onSubmit = useCallback(async () => {
     try {
       setIsLoading(true);
+      resetError();
 
       const description = await uploadProposalToIpfs(proposalDetails);
 
@@ -70,16 +75,13 @@ export const PublishButton = () => {
     onPublishClose,
     onSuccessOpen,
     proposalDetails,
+    resetError,
     sendTransaction,
     startBlock,
     txReceipt,
   ]);
 
   const onTryAgain = useCallback(() => onFailedClose(), [onFailedClose]);
-
-  useEffect(() => {
-    console.log({ error, status, txReceipt });
-  }, [error, status, txReceipt]);
 
   return (
     <>

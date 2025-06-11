@@ -5,12 +5,16 @@ import { getConfig } from "@repo/config";
 import { VeVote__factory } from "@repo/contracts";
 import { EnhancedClause } from "@vechain/vechain-kit";
 import { ethers } from "ethers";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 
 const contractAddress = getConfig(import.meta.env.VITE_APP_ENV).vevoteContractAddress;
 const contractInterface = VeVote__factory.createInterface();
 
 export const useBuildCreateProposal = () => {
+  const [error, setError] = useState<string | undefined>(undefined);
+
+  const resetError = useCallback(() => setError(undefined), []);
+
   const buildClauses = useCallback(
     ({
       description,
@@ -75,7 +79,12 @@ export const useBuildCreateProposal = () => {
     [],
   );
 
-  return useBuildTransaction({
-    clauseBuilder: buildClauses,
-  });
+  return {
+    build: useBuildTransaction({
+      clauseBuilder: buildClauses,
+      onError: error => setError(error),
+    }),
+    error,
+    resetError,
+  };
 };
