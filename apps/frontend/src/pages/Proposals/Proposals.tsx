@@ -38,7 +38,7 @@ export const Proposals = () => {
       all: proposalsBySearch,
       voting: proposalsBySearch.filter(({ status }) => status === "voting"),
       upcoming: proposalsBySearch.filter(({ status }) => status === "upcoming"),
-      finished: proposalsBySearch.filter(({ startDate, endDate }) => dayjs(endDate || startDate).isBefore(dayjs())),
+      finished: proposalsBySearch.filter(({ endDate }) => dayjs(endDate).isBefore(dayjs())),
     };
   }, [proposalsBySearch]);
 

@@ -103,6 +103,7 @@ export const VotingDate = ({
   };
 }) => {
   const { LL } = useI18nContext();
+
   const hoursMinutes = useMemo(() => {
     if (votingDate?.hours) return `${votingDate?.hours} ${votingDate?.minutes}`;
     return `${votingDate?.minutes}`;
