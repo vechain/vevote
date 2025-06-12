@@ -36,8 +36,6 @@ export const useBuildCreateProposal = () => {
             ? votingOptions.map(c => ethers.encodeBytes32String(c as string))
             : votingOptions.map(c => ethers.encodeBytes32String((c as BaseOption).value));
 
-        // console.log([description, startBlock, durationBlock - startBlock, encodedChoices, votingLimit || 1, 1]);
-
         const createProposalClause: EnhancedClause = {
           to: contractAddress,
           value: 0,
