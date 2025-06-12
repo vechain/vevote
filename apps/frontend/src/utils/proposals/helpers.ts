@@ -61,14 +61,10 @@ export const fromEventsToProposals = async (events: ProposalEvent[]): Promise<Fr
         value: c,
       })) as BaseOption[];
 
-      console.log({ start: event.startTime, duration: event.voteDuration });
-
       const [startDate, endDate] = await Promise.all([
         getDateFromBlock(Number(event.startTime)),
         getDateFromBlock(Number(event.startTime) + Number(event.voteDuration)),
       ]);
-
-      console.log({ startDate: dayjs(startDate).format("DD/MM/YYYY"), endDate: dayjs(endDate).format("DD/MM/YYYY") });
 
       const base = {
         id: event.proposalId,

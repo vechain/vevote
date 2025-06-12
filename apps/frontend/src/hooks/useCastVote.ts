@@ -39,7 +39,7 @@ export const useCastVote = () => {
             numberChoices,
             ZERO_ADDRESS,
           ]),
-          comment: `Cast vote with reason`,
+          comment: `Cast vote`,
           abi: JSON.parse(JSON.stringify(contractInterface.getFunction("castVote"))),
         };
 

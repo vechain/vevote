@@ -152,11 +152,6 @@ export const getProposalClock = async () => {
     methodsWithArgs,
   });
 
-  console.log({
-    minVotingDelay: Number(clock[0].result.plain) * 10,
-    maxVotingDuration: Number(clock[1].result.plain) * 10,
-  });
-
   return {
     minVotingDelay: Number(clock[0].result.plain) * 10,
     maxVotingDuration: Number(clock[1].result.plain) * 10,
