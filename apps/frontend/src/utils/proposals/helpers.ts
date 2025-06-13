@@ -8,6 +8,9 @@ import { defaultSingleChoice } from "@/pages/CreateProposal/CreateProposalProvid
 import { Delta } from "quill";
 import { IpfsDetails } from "@/types/ipfs";
 import { HexUInt } from "@vechain/sdk-core";
+import { thorClient } from "../thorClient";
+
+const AVERAGE_BLOCK_TIME = 10; // in seconds
 
 export type FromEventsToProposalsReturnType = ({ ipfsHash: string } & Omit<
   ProposalCardType,
@@ -40,44 +43,48 @@ export const getStatusParProposalMethod = (proposalIds?: string[]) => {
   }));
 };
 
-export const fromEventsToProposals = (events: ProposalEvent[]): FromEventsToProposalsReturnType => {
-  return events.map(event => {
-    const isSingleOption = Number(event.maxSelection) === 1;
-    const decodedChoices = event.choices.map(c => ethers.decodeBytes32String(c));
+export const fromEventsToProposals = async (events: ProposalEvent[]): Promise<FromEventsToProposalsReturnType> => {
+  return await Promise.all(
+    events.map(async event => {
+      const isSingleOption = Number(event.maxSelection) === 1;
+      const decodedChoices = event.choices.map(c => ethers.decodeBytes32String(c));
 
-    const votingType = isArraysEqual(decodedChoices, defaultSingleChoice)
-      ? VotingEnum.SINGLE_CHOICE
-      : isSingleOption
-        ? VotingEnum.SINGLE_OPTION
-        : VotingEnum.MULTIPLE_OPTIONS;
+      const votingType = isArraysEqual(decodedChoices, defaultSingleChoice)
+        ? VotingEnum.SINGLE_CHOICE
+        : isSingleOption
+          ? VotingEnum.SINGLE_OPTION
+          : VotingEnum.MULTIPLE_OPTIONS;
 
-    const parsedChoices = decodedChoices as SingleChoiceEnum[];
-    const parsedChoicesWithId = decodedChoices.map(c => ({
-      id: uuidv4(),
-      value: c,
-    })) as BaseOption[];
+      const parsedChoices = decodedChoices as SingleChoiceEnum[];
+      const parsedChoicesWithId = decodedChoices.map(c => ({
+        id: uuidv4(),
+        value: c,
+      })) as BaseOption[];
 
-    const base = {
-      id: event.proposalId,
-      proposer: event.proposer,
-      createdAt: new Date(),
-      startDate: dayjs(Number(event.startTime) * 1000).toDate(),
-      endDate: dayjs(Number(event.startTime) * 1000)
-        .add(Number(event.voteDuration) * 1000)
-        .toDate(),
-      votingLimit: event.maxSelection,
-      ipfsHash: event.description,
-    };
+      const [startDate, endDate] = await Promise.all([
+        getDateFromBlock(Number(event.startTime)),
+        getDateFromBlock(Number(event.startTime) + Number(event.voteDuration)),
+      ]);
 
-    switch (votingType) {
-      case VotingEnum.SINGLE_CHOICE:
-        return { votingType, votingOptions: parsedChoices, ...base };
-      case VotingEnum.SINGLE_OPTION:
-        return { votingType, votingOptions: parsedChoicesWithId, ...base };
-      case VotingEnum.MULTIPLE_OPTIONS:
-        return { votingType, votingOptions: parsedChoicesWithId, ...base };
-    }
-  });
+      const base = {
+        id: event.proposalId,
+        proposer: event.proposer,
+        createdAt: startDate,
+        startDate,
+        endDate,
+        votingLimit: event.maxSelection,
+        ipfsHash: event.description,
+      };
+
+      switch (votingType) {
+        case VotingEnum.SINGLE_CHOICE:
+          return { votingType, votingOptions: parsedChoices, ...base };
+        case VotingEnum.SINGLE_OPTION:
+        case VotingEnum.MULTIPLE_OPTIONS:
+          return { votingType, votingOptions: parsedChoicesWithId, ...base };
+      }
+    }),
+  );
 };
 
 export const sanitizeImageUrl = (url?: string) => {
@@ -107,6 +114,33 @@ export const mergeIpfsDetails = (
       },
     };
   });
+};
+
+export const getBlockFromDate = async (date: Date): Promise<number> => {
+  const currentBlock = await thorClient.blocks.getFinalBlockExpanded();
+  const currentTimestamp = currentBlock?.timestamp || 0; // in seconds
+  const currentBlockNumber = currentBlock?.number || 0; // current block number
+
+  const targetTimestamp = Math.floor(date.getTime() / 1000); // in seconds
+
+  const blocksUntilTarget = Math.floor((targetTimestamp - currentTimestamp) / AVERAGE_BLOCK_TIME);
+  return currentBlockNumber + blocksUntilTarget;
+};
+
+export const getDateFromBlock = async (blockNumber: number): Promise<Date> => {
+  const currentBlock = await thorClient.blocks.getFinalBlockExpanded();
+  const currentTimestamp = currentBlock?.timestamp || 0;
+  const currentBlockNumber = currentBlock?.number || 0;
+
+  if (blockNumber <= currentBlockNumber) {
+    const block = await thorClient.blocks.getBlockCompressed(blockNumber);
+    const timestamp = block?.timestamp ?? currentTimestamp;
+    return dayjs(timestamp * 1000).toDate();
+  }
+
+  const estimatedSecondsIntoFuture = (blockNumber - currentBlockNumber) * AVERAGE_BLOCK_TIME;
+  const estimatedTimestamp = currentTimestamp + estimatedSecondsIntoFuture;
+  return dayjs(estimatedTimestamp * 1000).toDate();
 };
 
 export const fromStringToUint256 = (str: string) => {

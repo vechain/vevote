@@ -40,7 +40,7 @@
     "@vechain/dapp-kit-react": "1.4.1",
     "@vechain/sdk-core": "^1.2.0-rc.2",
     "@vechain/sdk-network": "^1.2.0-rc.2",
-    "@vechain/vechain-kit": "^1.7.0",
+    "@vechain/vechain-kit": "1.8.4",
     "add": "^2.0.6",
     "axios": "^1.8.2",
     "dayjs": "^1.11.13",
@@ -57,7 +57,8 @@
     "uuid": "^11.1.0",
     "viem": "^2.21.9",
     "vite": "^5.4.16",
-    "yarn": "^1.22.22"
+    "yarn": "^1.22.22",
+    "zod": "3.22.4"
   },
   "devDependencies": {
     "@originjs/vite-plugin-commonjs": "^1.0.3",

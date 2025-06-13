@@ -4,23 +4,30 @@ import { useBuildTransaction } from "@/utils";
 import { getConfig } from "@repo/config";
 import { VeVote__factory } from "@repo/contracts";
 import { EnhancedClause } from "@vechain/vechain-kit";
-import dayjs from "dayjs";
 import { ethers } from "ethers";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 
 const contractAddress = getConfig(import.meta.env.VITE_APP_ENV).vevoteContractAddress;
 const contractInterface = VeVote__factory.createInterface();
 
 export const useBuildCreateProposal = () => {
+  const [error, setError] = useState<string | undefined>(undefined);
+
+  const resetError = useCallback(() => setError(undefined), []);
+
   const buildClauses = useCallback(
     ({
       description,
-      startDate,
-      endDate,
       votingOptions,
       votingType,
       votingLimit,
-    }: Omit<ProposalDetails, "description"> & { description: string }) => {
+      startBlock,
+      durationBlock,
+    }: Omit<ProposalDetails, "description" | "startDate" | "voteDuration"> & {
+      description: string;
+      startBlock: number;
+      durationBlock: number;
+    }) => {
       const clauses: EnhancedClause[] = [];
 
       try {
@@ -34,8 +41,8 @@ export const useBuildCreateProposal = () => {
           value: 0,
           data: contractInterface.encodeFunctionData("propose", [
             description,
-            dayjs(startDate).unix(),
-            dayjs(endDate).unix() - dayjs(startDate).unix(),
+            startBlock,
+            durationBlock - startBlock,
             encodedChoices,
             votingLimit || 1,
             1,
@@ -70,7 +77,12 @@ export const useBuildCreateProposal = () => {
     [],
   );
 
-  return useBuildTransaction({
-    clauseBuilder: buildClauses,
-  });
+  return {
+    build: useBuildTransaction({
+      clauseBuilder: buildClauses,
+      onError: error => setError(error),
+    }),
+    error,
+    resetError,
+  };
 };

@@ -14,7 +14,7 @@ export const zodStartEndDates = (delay: number, duration: number) =>
     })
     .superRefine((data, ctx) => {
       const today = dayjs().add(delay, "seconds").toDate();
-      const endDate = dayjs(data.startDate).add(duration, "seconds").toDate();
+      const endDate = dayjs().add(duration, "seconds").toDate();
 
       if (data.startDate >= data.endDate)
         ctx.addIssue({
@@ -31,7 +31,7 @@ export const zodStartEndDates = (delay: number, duration: number) =>
       else if (data.endDate > endDate)
         ctx.addIssue({
           code: "custom",
-          message: LL.field_errors.end_after_max_duration({ days: dayjs(endDate).format("D") }),
+          message: LL.field_errors.end_after_max_duration({ days: `${dayjs(endDate).diff(dayjs(), "day")}` }),
           path: ["endDate"],
         });
     });

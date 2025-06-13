@@ -4,7 +4,6 @@ import { BaseOption, ProposalCardType, VotingEnum } from "@/types/proposal";
 import { getConfig } from "@repo/config";
 import { VeVote__factory } from "@repo/contracts";
 import { getAllEvents } from "@vechain/vechain-kit";
-import dayjs from "dayjs";
 import { ethers } from "ethers";
 import { buildFilterCriteria, executeCall, executeMultipleClauses, getEventMethods } from "../contract";
 import {
@@ -49,7 +48,7 @@ export const getProposalsEvents = async (
             proposalId: decoded.proposalId,
             proposer: decoded.proposer,
             description: decoded.description,
-            startTime: decoded.startTime,
+            startTime: decoded.startBlock,
             voteDuration: decoded.voteDuration,
             choices: decoded.choices,
             maxSelection: decoded.maxSelection,
@@ -65,7 +64,7 @@ export const getProposalsEvents = async (
       }
     });
 
-    const partialProposals = fromEventsToProposals(decodedProposalEvents);
+    const partialProposals = await fromEventsToProposals(decodedProposalEvents);
 
     return { proposals: partialProposals };
   } catch (error) {
@@ -102,11 +101,16 @@ export const getHashProposal = async ({
   description,
   votingOptions,
   votingType,
-  endDate,
-  startDate,
+  durationBlock,
+  startBlock,
   votingLimit,
   proposer,
-}: Omit<ProposalDetails, "description"> & { description: string; proposer: string }) => {
+}: Omit<ProposalDetails, "description" | "startTime" | "endTime"> & {
+  description: string;
+  proposer: string;
+  startBlock: number;
+  durationBlock: number;
+}) => {
   const encodedChoices =
     votingType === VotingEnum.SINGLE_CHOICE
       ? votingOptions.map(c => ethers.encodeBytes32String(c as string))
@@ -114,8 +118,8 @@ export const getHashProposal = async ({
 
   const args = [
     proposer,
-    dayjs(startDate).unix(),
-    dayjs(endDate).unix() - dayjs(startDate).unix(),
+    startBlock,
+    durationBlock - startBlock,
     encodedChoices,
     ethers.keccak256(ethers.toUtf8Bytes(description)),
     votingLimit || 1,
@@ -149,7 +153,7 @@ export const getProposalClock = async () => {
   });
 
   return {
-    minVotingDelay: Number(clock[0].result.plain),
-    maxVotingDuration: Number(clock[1].result.plain),
+    minVotingDelay: Number(clock[0].result.plain) * 10,
+    maxVotingDuration: Number(clock[1].result.plain) * 10,
   };
 };

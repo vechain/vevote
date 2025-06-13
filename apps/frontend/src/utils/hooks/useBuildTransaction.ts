@@ -7,6 +7,7 @@ export type BuildTransactionProps<ClausesParams> = {
   refetchQueryKeys?: string[][];
   onSuccess?: () => void;
   invalidateCache?: boolean;
+  onError?: (error?: string) => void;
 };
 
 /**
@@ -22,6 +23,7 @@ export const useBuildTransaction = <ClausesParams>({
   refetchQueryKeys,
   invalidateCache = true,
   onSuccess,
+  onError,
 }: BuildTransactionProps<ClausesParams>) => {
   const { account } = useWallet();
   const queryClient = useQueryClient();
@@ -45,9 +47,18 @@ export const useBuildTransaction = <ClausesParams>({
     onSuccess?.();
   }, [invalidateCache, onSuccess, queryClient, refetchQueryKeys]);
 
+  const handleOnFailed: (error?: Error | string) => Promise<void> = useCallback(
+    async error => {
+      if (typeof error === "string") onError?.(error);
+      else onError?.(String(error));
+    },
+    [onError],
+  );
+
   const result = useSendTransaction({
     signerAccountAddress: account?.address,
     onTxConfirmed: handleOnSuccess,
+    onTxFailedOrCancelled: handleOnFailed,
   });
 
   /**
@@ -56,7 +67,7 @@ export const useBuildTransaction = <ClausesParams>({
    */
   const sendTransaction = useCallback(
     async (props: ClausesParams) => {
-      await result.sendTransaction(clauseBuilder(props));
+      return await result.sendTransaction(clauseBuilder(props));
     },
     [clauseBuilder, result],
   );

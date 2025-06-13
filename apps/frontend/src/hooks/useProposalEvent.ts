@@ -14,7 +14,7 @@ export const useProposalEvents = ({ proposalId }: { proposalId?: string }) => {
   const { thor } = useConnex();
 
   const { data, error, isLoading } = useQuery({
-    queryKey: ["getSingleProposal"],
+    queryKey: ["getSingleProposal", proposalId],
     queryFn: async () => await getSingleProposal(thor, proposalId),
     enabled: !!thor && !!proposalId,
   });

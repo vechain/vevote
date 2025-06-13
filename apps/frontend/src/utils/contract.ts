@@ -1,11 +1,8 @@
 import { MethodName } from "@/types/common";
-import { getConfig } from "@repo/config";
-import { ThorClient } from "@vechain/sdk-network";
 import { Interface } from "ethers";
 import { abi } from "thor-devkit";
 import { ABIFunction } from "@vechain/sdk-core";
-
-const nodeUrl = getConfig(import.meta.env.VITE_APP_ENV).nodeUrl;
+import { thorClient } from "./thorClient";
 
 export type GetMethodProps<T extends Interface> = {
   contractInterface: T;
@@ -53,20 +50,18 @@ export const executeMultipleClauses = async <T extends Interface>({
   contractInterface: T;
   methodsWithArgs?: { method: MethodName<T["getFunction"]>; args: unknown[] }[];
 }) => {
-  const thor = ThorClient.at(nodeUrl);
-
   try {
     const clauses = methodsWithArgs?.map(({ method, args }) => {
       const interfaceJson = contractInterface.getFunction(method)?.format("full");
       if (!interfaceJson) throw new Error(`Method ${method} not found`);
 
       const functionAbi = new ABIFunction(interfaceJson);
-      return thor.contracts.load(contractAddress, [functionAbi.signature]).clause[method](...args);
+      return thorClient.contracts.load(contractAddress, [functionAbi.signature]).clause[method](...args);
     });
 
     if (!clauses) throw new Error(`Clauses not found`);
 
-    const results = await thor.contracts.executeMultipleClausesCall(clauses);
+    const results = await thorClient.contracts.executeMultipleClausesCall(clauses);
 
     return results;
   } catch (error) {
@@ -86,13 +81,11 @@ export const executeCall = async <T extends Interface>({
   method: MethodName<T["getFunction"]>;
   args: unknown[];
 }) => {
-  const thor = ThorClient.at(nodeUrl);
-
   try {
     const interfaceJson = contractInterface.getFunction(method)?.format("full");
     if (!interfaceJson) throw new Error(`Method ${method} not found`);
     const functionAbi = new ABIFunction(interfaceJson);
-    const results = await thor.contracts.executeCall(contractAddress, functionAbi, args);
+    const results = await thorClient.contracts.executeCall(contractAddress, functionAbi, args);
     return results;
   } catch (error) {
     console.error("Error calling multiple methods:", error);

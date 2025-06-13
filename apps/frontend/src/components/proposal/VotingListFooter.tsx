@@ -83,7 +83,7 @@ const VotedChip = () => {
       <Button variant={"feedback"} rightIcon={<Icon as={CheckCircleIcon} />}>
         {LL.voted()}
       </Button>
-      <Link color={"primary.500"}>
+      <Link color={"primary.500"} display={"flex"} gap={1} alignItems={"center"}>
         {LL.proposal.see_your_vote()}
         <Icon as={ArrowLinkIcon} width={4} height={4} />
       </Link>
