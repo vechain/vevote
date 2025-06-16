@@ -214,6 +214,10 @@ type RootTranslation = {
 	 * R​e​a​d​ ​f​u​l​l​ ​d​e​s​c​r​i​p​t​i​o​n
 	 */
 	read_full_description: string
+	/**
+	 * D​i​s​c​o​n​n​e​c​t
+	 */
+	disconnect: string
 	home: {
 		/**
 		 * H​o​m​e
@@ -350,6 +354,16 @@ type RootTranslation = {
 			 * Y​e​s​,​ ​D​e​l​e​t​e​ ​P​r​o​p​o​s​a​l
 			 */
 			yes_delete: string
+		}
+		draft_dialog: {
+			/**
+			 * D​r​a​f​t​ ​p​r​o​p​o​s​a​l
+			 */
+			title: string
+			/**
+			 * B​y​ ​c​o​n​t​i​n​u​i​n​g​,​ ​y​o​u​r​ ​o​l​d​ ​p​r​o​p​o​s​a​l​ ​l​i​n​k​e​d​ ​t​o​ ​t​h​e​ ​p​r​e​v​i​e​w​ ​a​c​c​o​u​n​t​ ​w​i​l​l​ ​b​e​ ​d​i​s​c​a​r​d​e​d​.​ ​A​r​e​ ​y​o​u​ ​s​u​r​e​ ​y​o​u​ ​w​a​n​t​ ​t​o​ ​p​r​o​c​e​e​d​?
+			 */
+			description: string
 		}
 		info_box: {
 			info: {
@@ -1054,6 +1068,10 @@ JPG, PNG or SVG of maximum of {size}MB.
 	 * Read full description
 	 */
 	read_full_description: () => LocalizedString
+	/**
+	 * Disconnect
+	 */
+	disconnect: () => LocalizedString
 	home: {
 		/**
 		 * Home
@@ -1188,6 +1206,16 @@ JPG, PNG or SVG of maximum of {size}MB.
 			 * Yes, Delete Proposal
 			 */
 			yes_delete: () => LocalizedString
+		}
+		draft_dialog: {
+			/**
+			 * Draft proposal
+			 */
+			title: () => LocalizedString
+			/**
+			 * By continuing, your old proposal linked to the preview account will be discarded. Are you sure you want to proceed?
+			 */
+			description: () => LocalizedString
 		}
 		info_box: {
 			info: {

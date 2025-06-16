@@ -17,6 +17,7 @@ import "./index.css";
 import { CreateProposalProvider } from "./pages/CreateProposal/CreateProposalProvider.tsx";
 import { persister, queryClient } from "./utils/queryClient.ts";
 import { UserProvider } from "./contexts/UserProvider.tsx";
+import { DraftProposalProvider } from "./contexts/DraftProposalProvider.tsx";
 
 loadLocale("en");
 
@@ -63,7 +64,9 @@ const Providers = ({ children }: PropsWithChildren) => {
           }}>
           <UserProvider>
             <ThemeProvider>
-              <CreateProposalProvider>{children}</CreateProposalProvider>
+              <CreateProposalProvider>
+                <DraftProposalProvider>{children}</DraftProposalProvider>
+              </CreateProposalProvider>
             </ThemeProvider>
           </UserProvider>
         </VeChainKitProvider>

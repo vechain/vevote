@@ -13,6 +13,8 @@ const nodeUrl = getConfig(import.meta.env.VITE_APP_ENV).nodeUrl;
 
 export const getHasVoted = async (proposalId?: string, address?: string) => {
   if (!proposalId || !address) return false;
+  if (proposalId === "draft") return false;
+
   try {
     const hasVoted = await executeCall({
       contractAddress,
