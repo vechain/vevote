@@ -164,6 +164,10 @@ type RootTranslation = {
 	 */
 	upload: string
 	/**
+	 * C​o​p​i​e​d​ ​t​o​ ​c​l​i​p​b​o​a​r​d
+	 */
+	copied_to_clipboard: string
+	/**
 	 * I​m​a​g​e​ ​s​i​z​e​ ​s​h​o​u​l​d​ ​b​e​ ​1​2​8​0​x​5​1​2​p​x​ ​(​r​a​t​i​o​ ​3​:​1​)​.​
 ​J​P​G​,​ ​P​N​G​ ​o​r​ ​S​V​G​ ​o​f​ ​m​a​x​i​m​u​m​ ​o​f​ ​{​s​i​z​e​}​M​B​.
 	 * @param {number} size
@@ -1019,6 +1023,10 @@ export type TranslationFunctions = {
 	 * Upload
 	 */
 	upload: () => LocalizedString
+	/**
+	 * Copied to clipboard
+	 */
+	copied_to_clipboard: () => LocalizedString
 	/**
 	 * Image size should be 1280x512px (ratio 3:1).
 JPG, PNG or SVG of maximum of {size}MB.

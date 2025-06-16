@@ -38,6 +38,7 @@ const en = {
   buy_a_node: "Buy a Node",
   filed_length: "{current:number}/{max:number}",
   upload: "Upload",
+  copied_to_clipboard: "Copied to clipboard",
   file_upload_description:
     "Image size should be 1280x512px (ratio 3:1).\nJPG, PNG or SVG of maximum of {size:number}MB.",
   select_date: "Select date",
