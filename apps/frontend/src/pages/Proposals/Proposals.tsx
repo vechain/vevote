@@ -14,11 +14,13 @@ import { useCreateProposal } from "../CreateProposal/CreateProposalProvider";
 import { ProposalCard } from "./ProposalCard";
 import { CircleInfoIcon, CirclePlusIcon, VoteIcon } from "@/icons";
 import { UserContext } from "@/contexts/UserProvider";
+import { useWallet } from "@vechain/vechain-kit";
 
 const ITEMS_PER_PAGE = 6;
 
 export const Proposals = () => {
-  const { isWhitelisted } = useContext(UserContext);
+  const { isWhitelisted, isAdmin } = useContext(UserContext);
+  const { account } = useWallet();
 
   const { draftProposal } = useCreateProposal();
   const [sort, setSort] = useState<Sort>(Sort.Newest);
@@ -29,9 +31,10 @@ export const Proposals = () => {
 
   const proposalsBySearch = useMemo(() => {
     const searchLower = searchValue.toLowerCase();
-    const mockAndDraft = draftProposal ? [draftProposal, ...proposals] : proposals;
+    const isDraftProposal = draftProposal && draftProposal?.proposer === account?.address;
+    const mockAndDraft = isDraftProposal ? [draftProposal, ...proposals] : proposals;
     return mockAndDraft.filter(({ title }) => title.toLowerCase().includes(searchLower));
-  }, [draftProposal, proposals, searchValue]);
+  }, [account?.address, draftProposal, proposals, searchValue]);
 
   const proposalsByTabStatus: Record<string, ProposalCardType[]> = useMemo(() => {
     return {
@@ -51,7 +54,7 @@ export const Proposals = () => {
             <Icon as={VoteIcon} width={8} height={8} marginRight={2} />
             {LL.proposals.title()}
           </Heading>
-          {isWhitelisted && (
+          {(isWhitelisted || isAdmin) && (
             <Button as={Link} href="/create-proposal" marginLeft={"auto"}>
               <Icon as={CirclePlusIcon} />
               {LL.proposals.create()}

@@ -51,6 +51,7 @@ const en = {
   confirm: "Confirm",
   try_again: "Try Again",
   read_full_description: "Read full description",
+  disconnect: "Disconnect",
   home: {
     title: "Home",
     go_to_proposals: "Go to proposals",
@@ -95,6 +96,11 @@ const en = {
       confirmation: "Are you sure you want to delete it?",
       no_go_back: "No, go back",
       yes_delete: "Yes, Delete Proposal",
+    },
+    draft_dialog: {
+      title: "Draft proposal",
+      description:
+        "By continuing, your old proposal linked to the preview account will be discarded. Are you sure you want to proceed?",
     },
     info_box: {
       info: {

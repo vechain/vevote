@@ -10,7 +10,6 @@ import { Box, Button, Flex, Icon, Image, Link, Text } from "@chakra-ui/react";
 import { useContext, useMemo } from "react";
 import { useParams } from "react-router";
 import { DeleteEditProposal } from "@/components/proposal/DeleteEditProposal";
-import { CancelEditProposal } from "@/components/proposal/CancelEditProposal";
 import { useWallet } from "@vechain/vechain-kit";
 import { BuyANode } from "@/components/proposal/BuyANode";
 import { useCreateProposal } from "../CreateProposal/CreateProposalProvider";
@@ -103,13 +102,13 @@ const ProposalNavbarActions = ({ proposal }: { proposal: ProposalCardType | unde
 
   const { hasVoted } = useHasVoted({ proposalId: proposal?.id || "" });
 
-  const { isAdmin, isExecutor } = useContext(UserContext);
+  const { isAdmin, isExecutor, isWhitelisted } = useContext(UserContext);
+
+  const isAdminWhitelisted = useMemo(() => isAdmin || isWhitelisted, [isAdmin, isWhitelisted]);
 
   return (
     <Flex alignItems={"center"} gap={2} marginLeft={"auto"}>
-      {isAdmin && ["draft"].includes(proposal?.status || "") && <DeleteEditProposal />}
-
-      {isAdmin && ["upcoming", "voting"].includes(proposal?.status || "") && <CancelEditProposal />}
+      {isAdminWhitelisted && ["draft"].includes(proposal?.status || "") && <DeleteEditProposal />}
 
       {isExecutor && proposal?.status === "approved" && (
         <Button variant={"feedback"}>{LL.proposal.mark_as_executed()}</Button>

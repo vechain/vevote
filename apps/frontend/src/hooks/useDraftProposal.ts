@@ -1,20 +1,7 @@
 import { ProposalDetails } from "@/pages/CreateProposal/CreateProposalProvider";
 import { ProposalCardType } from "@/types/proposal";
+import { base64ToBlob } from "@/utils/file";
 import dayjs from "dayjs";
-
-export function base64ToBlob(dataUrl?: string, type?: string): Blob {
-  if (!dataUrl) throw new Error("Base64 url not found");
-  const base64Content = dataUrl.substring("data:image/png;base64,".length);
-
-  const binaryString = atob(base64Content);
-  const bytes = new Uint8Array(binaryString.length);
-
-  for (let i = 0; i < binaryString.length; i++) {
-    bytes[i] = binaryString.charCodeAt(i);
-  }
-
-  return new Blob([bytes], { type });
-}
 
 export const useDraftProposal = () => {
   const fromDraftToProposal = (
@@ -39,7 +26,7 @@ export const useDraftProposal = () => {
     };
   };
 
-  const fromProposalToDraft = async (proposalDetails: ProposalDetails): Promise<ProposalCardType> => {
+  const fromProposalToDraft = async (proposalDetails: ProposalDetails, proposer: string): Promise<ProposalCardType> => {
     let base64Url = "";
     const blob = proposalDetails.headerImage?.source;
 
@@ -54,7 +41,7 @@ export const useDraftProposal = () => {
       ...proposalDetails,
       status: "draft",
       id: "draft",
-      proposer: "0x",
+      proposer,
       createdAt: new Date(),
       headerImage: {
         name: proposalDetails.headerImage?.name ?? "",

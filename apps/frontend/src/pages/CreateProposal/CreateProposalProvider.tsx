@@ -2,6 +2,7 @@ import { useDraftProposal } from "@/hooks/useDraftProposal";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { CreateProposalStep, ProposalCardType, SingleChoiceEnum, VotingChoices, VotingEnum } from "@/types/proposal";
 import { ZodFile } from "@/utils/zod";
+import { useWallet } from "@vechain/vechain-kit";
 import { Op } from "quill";
 import {
   createContext,
@@ -73,6 +74,7 @@ export const CreateProposalContext = createContext<CreateProposalContextType>({
 });
 
 export const CreateProposalProvider = ({ children }: PropsWithChildren) => {
+  const { account } = useWallet();
   const { fromProposalToDraft } = useDraftProposal();
   const [openPreview, setOpenPreview] = useState(false);
   const [draftProposal, setDraftProposal, removeDraftProposal] = useLocalStorage<ProposalCardType | null>(
@@ -83,9 +85,9 @@ export const CreateProposalProvider = ({ children }: PropsWithChildren) => {
   const [step, setStep] = useState<CreateProposalStep>(CreateProposalStep.VOTING_DETAILS);
 
   const saveDraftProposal = useCallback(async () => {
-    const draft = await fromProposalToDraft(proposalDetails);
+    const draft = await fromProposalToDraft(proposalDetails, account?.address || "");
     return setDraftProposal(draft);
-  }, [fromProposalToDraft, proposalDetails, setDraftProposal]);
+  }, [account?.address, fromProposalToDraft, proposalDetails, setDraftProposal]);
 
   const value = useMemo(
     () => ({
