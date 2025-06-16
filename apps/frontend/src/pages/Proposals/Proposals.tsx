@@ -45,6 +45,12 @@ export const Proposals = () => {
     };
   }, [proposalsBySearch]);
 
+  const canCreateProposal = useMemo(() => {
+    if (!account?.address) return false;
+    if (isWhitelisted || isAdmin) return true;
+    return false;
+  }, [account?.address, isAdmin, isWhitelisted]);
+
   return (
     <>
       <ProposalsHeader />
@@ -54,7 +60,7 @@ export const Proposals = () => {
             <Icon as={VoteIcon} width={8} height={8} marginRight={2} />
             {LL.proposals.title()}
           </Heading>
-          {(isWhitelisted || isAdmin) && (
+          {canCreateProposal && (
             <Button as={Link} href="/create-proposal" marginLeft={"auto"}>
               <Icon as={CirclePlusIcon} />
               {LL.proposals.create()}

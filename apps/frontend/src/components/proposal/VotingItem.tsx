@@ -54,10 +54,14 @@ export const VotingItem = ({
   const { account } = useWallet();
   const { proposal } = useProposal();
   const { hasVoted } = useHasVoted({ proposalId: proposal.id });
+  const cannotVote = useMemo(
+    () => !account?.address || hasVoted || variant !== "voting" || proposal.proposer === account.address,
+    [account?.address, hasVoted, proposal.proposer, variant],
+  );
   const handleClick = useCallback(() => {
-    if (!account?.address || hasVoted || variant !== "voting") return;
+    if (cannotVote) return;
     onClick?.();
-  }, [account?.address, hasVoted, variant, onClick]);
+  }, [cannotVote, onClick]);
   return (
     <Button
       variant={"tertiary"}
