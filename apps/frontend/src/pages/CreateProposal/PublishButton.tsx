@@ -3,7 +3,7 @@ import { useI18nContext } from "@/i18n/i18n-react";
 import { Button, Icon, Link, ModalFooter, Text, useDisclosure } from "@chakra-ui/react";
 import { useBuildCreateProposal } from "@/hooks/useBuildCreatePropose";
 import { useCreateProposal } from "./CreateProposalProvider";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { uploadProposalToIpfs } from "@/utils/ipfs/proposal";
 import { getHashProposal } from "@/utils/proposals/proposalsQueries";
 import { useWallet } from "@vechain/vechain-kit";
@@ -12,6 +12,8 @@ import { useGetDatesBlocks } from "@/hooks/useGetDatesBlocks";
 
 export const PublishButton = () => {
   const { LL } = useI18nContext();
+  const { account } = useWallet();
+
   const { isOpen: isPublishOpen, onClose: onPublishClose, onOpen: onPublishOpen } = useDisclosure();
   const { isOpen: isFailedOpen, onClose: onFailedClose, onOpen: onFailedOpen } = useDisclosure();
   const { isOpen: isSuccessOpen, onClose: onSuccessClose, onOpen: onSuccessOpen } = useDisclosure();
@@ -21,9 +23,7 @@ export const PublishButton = () => {
 
   const { proposalDetails } = useCreateProposal();
   const {
-    build: { sendTransaction, error: transError },
-    error,
-    resetError,
+    build: { sendTransaction, status },
   } = useBuildCreateProposal();
 
   const { startBlock, durationBlock } = useGetDatesBlocks({
@@ -31,12 +31,20 @@ export const PublishButton = () => {
     endDate: proposalDetails.endDate,
   });
 
-  const { account } = useWallet();
+  const onSuccess = useCallback(() => {
+    onPublishClose();
+    onSuccessOpen();
+  }, [onPublishClose, onSuccessOpen]);
+
+  const onFailed = useCallback(() => {
+    onPublishClose();
+    onFailedOpen();
+  }, [onFailedOpen, onPublishClose]);
 
   const onSubmit = useCallback(async () => {
     try {
       setIsLoading(true);
-      resetError();
+      setNewProposalId("");
 
       const description = await uploadProposalToIpfs(proposalDetails);
 
@@ -49,37 +57,22 @@ export const PublishButton = () => {
 
       await sendTransaction(data);
 
-      console.log("error", transError);
-
-      if (error) throw new Error(`Failed to sing transaction`);
-
       const res = await getHashProposal({ ...data, proposer: account?.address || "" });
-
       if (res.success) setNewProposalId((res.result.plain as BigInteger).toString());
-
-      onPublishClose();
-      onSuccessOpen();
     } catch (e) {
-      onPublishClose();
-      onFailedOpen();
+      onFailed();
     } finally {
       setIsLoading(false);
     }
-  }, [
-    account?.address,
-    durationBlock,
-    error,
-    onFailedOpen,
-    onPublishClose,
-    onSuccessOpen,
-    proposalDetails,
-    resetError,
-    sendTransaction,
-    startBlock,
-    transError,
-  ]);
+  }, [account?.address, durationBlock, onFailed, proposalDetails, sendTransaction, startBlock]);
 
   const onTryAgain = useCallback(() => onFailedClose(), [onFailedClose]);
+
+  useEffect(() => {
+    if (newProposalId) {
+      onSuccess();
+    }
+  }, [newProposalId, onFailed, onFailedOpen, onSuccess, status]);
 
   return (
     <>

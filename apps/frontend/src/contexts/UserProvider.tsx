@@ -1,6 +1,6 @@
 import { useUserNodes, useUserRoles } from "@/hooks/useUserQueries";
 import { UserNode } from "@/types/user";
-import { createContext, useContext, useEffect, useMemo } from "react";
+import { createContext, useContext, useMemo } from "react";
 
 const DEFAULT_ROLES = {
   isAdmin: false,
@@ -31,8 +31,6 @@ export const UserContext = createContext<UserContextProps>({
 export const UserProvider = (props: React.PropsWithChildren) => {
   const { roles } = useUserRoles();
   const { nodes } = useUserNodes();
-
-  useEffect(() => console.log({ roles, nodes }), [roles, nodes]);
 
   const ctxValue = useMemo(() => {
     return { ...(roles ?? DEFAULT_ROLES), isVoter: nodes.length > 0, nodes };

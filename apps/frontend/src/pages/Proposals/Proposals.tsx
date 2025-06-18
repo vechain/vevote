@@ -7,7 +7,7 @@ import { useProposalsEvents } from "@/hooks/useProposalsEvents";
 import { useUser } from "@/contexts/UserProvider";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { CircleInfoIcon, CirclePlusIcon, VoteIcon } from "@/icons";
-import { ProposalCardType } from "@/types/proposal";
+import { ProposalCardType, ProposalStatus } from "@/types/proposal";
 import { Button, Flex, Heading, Icon, Link, Tab, TabList, TabPanel, TabPanels, Tabs, Text } from "@chakra-ui/react";
 import { useWallet } from "@vechain/vechain-kit";
 import dayjs from "dayjs";
@@ -31,20 +31,24 @@ export const Proposals = () => {
   const proposalsBySearch = useMemo(() => {
     const searchLower = searchValue.toLowerCase();
     const isDraftProposal = draftProposal && draftProposal?.proposer === account?.address;
-    const mockAndDraft = isDraftProposal ? [draftProposal, ...proposals] : proposals;
-    return mockAndDraft.filter(({ title }) => title.toLowerCase().includes(searchLower));
+    const filteredProposals = proposals.filter(({ title }) => title.toLowerCase().includes(searchLower)).reverse();
+
+    return isDraftProposal ? [draftProposal, ...filteredProposals] : filteredProposals;
   }, [account?.address, draftProposal, proposals, searchValue]);
 
   const proposalsByTabStatus: Record<string, ProposalCardType[]> = useMemo(() => {
+    const finishedStatuses: ProposalStatus[] = ["canceled", "rejected", "min-not-reached"];
     return {
       all: proposalsBySearch,
       voting: proposalsBySearch.filter(({ status }) => status === "voting"),
       upcoming: proposalsBySearch.filter(({ status }) => status === "upcoming"),
-      finished: proposalsBySearch.filter(({ endDate }) => dayjs(endDate).isBefore(dayjs())),
+      finished: proposalsBySearch.filter(
+        ({ endDate, status }) => dayjs(endDate).isBefore(dayjs()) || finishedStatuses.includes(status),
+      ),
     };
   }, [proposalsBySearch]);
 
-  const canCreateProposal = useMemo(() => !account?.address && isWhitelisted, [account?.address, isWhitelisted]);
+  const canCreateProposal = useMemo(() => account?.address && isWhitelisted, [account?.address, isWhitelisted]);
 
   return (
     <>
