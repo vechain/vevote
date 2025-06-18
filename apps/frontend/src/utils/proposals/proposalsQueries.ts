@@ -22,25 +22,34 @@ export const getProposalsEvents = async (
   proposalId?: string,
 ): Promise<{ proposals: FromEventsToProposalsReturnType }> => {
   try {
+    // Get event methods
     const [proposalCreatedEvent, proposalExecutedEvent, proposalCanceledEvent] = getEventMethods({
       contractInterface,
       methods: ["VeVoteProposalCreated", "VeVoteProposalExecuted", "ProposalCanceled"],
     });
 
+    // Build filter criteria
     const filterCriteria = buildFilterCriteria({
       contractAddress,
       events: [proposalCreatedEvent, proposalExecutedEvent, proposalCanceledEvent],
       proposalId,
     });
 
-    const events: Connex.Thor.Filter.Row<"event", object>[] = await getAllEvents({ thor, nodeUrl, filterCriteria });
-    //TODO: use sdk once vechain-kit is compatible
+    // Fetch all events
+    const events: Connex.Thor.Filter.Row<"event", object>[] = await getAllEvents({
+      thor,
+      nodeUrl,
+      filterCriteria,
+    });
+
+    // TODO: use SDK once vechain-kit is compatible
     // const events = subscriptions.getEventSubscriptionUrl(nodeUrl)
 
-    const decodedProposalEvents: (ProposalEvent | undefined)[] = events.map(event => {
-      switch (event.topics[0]) {
-        case proposalExecutedEvent.signature:
-        case proposalCreatedEvent.signature: {
+    const decodedProposalEvents = events
+      .map(event => {
+        const eventSignature = event.topics[0];
+
+        if (eventSignature === proposalCreatedEvent.signature || eventSignature === proposalExecutedEvent.signature) {
           const decoded = proposalCreatedEvent.decode(event.data, event.topics);
 
           return {
@@ -55,14 +64,13 @@ export const getProposalsEvents = async (
           };
         }
 
-        default:
-          return undefined;
-      }
-    });
+        return undefined;
+      })
+      .filter(Boolean);
 
-    const decodedCanceledProposals = events.map(event => {
-      switch (event.topics[0]) {
-        case proposalCanceledEvent.signature: {
+    const decodedCanceledProposals = events
+      .map(event => {
+        if (event.topics[0] === proposalCanceledEvent.signature) {
           const decoded = proposalCanceledEvent.decode(event.data, event.topics);
 
           return {
@@ -71,30 +79,28 @@ export const getProposalsEvents = async (
             reason: decoded.reason || "",
           };
         }
-        default:
-          return undefined;
-      }
-    });
 
-    const mergedProposals = decodedProposalEvents
-      .map(event => {
-        const canceledProposal = decodedCanceledProposals.find(c => c?.proposalId === event?.proposalId);
-        if (canceledProposal) {
-          return {
-            ...event,
-            canceller: canceledProposal.canceller,
-            reason: canceledProposal.reason,
-          };
-        }
-        return event;
+        return undefined;
       })
-      .filter(event => Boolean(event)) as ProposalEvent[];
+      .filter(Boolean);
 
-    const partialProposals = await fromEventsToProposals(mergedProposals);
+    const mergedProposals: ProposalEvent[] = decodedProposalEvents
+      .map(proposal => {
+        const canceledProposal = decodedCanceledProposals.find(
+          canceled => canceled?.proposalId === proposal?.proposalId,
+        );
 
-    return { proposals: partialProposals };
+        return canceledProposal
+          ? { ...proposal, canceller: canceledProposal.canceller, reason: canceledProposal.reason }
+          : proposal;
+      })
+      .filter(Boolean) as ProposalEvent[];
+
+    const proposals = await fromEventsToProposals(mergedProposals);
+
+    return { proposals };
   } catch (error) {
-    console.error(error);
+    console.error("Error fetching proposal events:", error);
     throw error;
   }
 };
