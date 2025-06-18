@@ -2,7 +2,7 @@ import { getConfig } from "@repo/config";
 import { executeCall, executeMultipleClauses } from "../contract";
 import { VeVote__factory } from "@repo/contracts";
 import { NodeManagement__factory } from "@repo/contracts/typechain-types";
-import { UserNode } from "@/types/user";
+import { ExtendedUserNode, NodeStrengthLevels, UserNode } from "@/types/user";
 
 const contractAddress = getConfig(import.meta.env.VITE_APP_ENV).vevoteContractAddress;
 const nodeManagmentAddress = getConfig(import.meta.env.VITE_APP_ENV).nodeManagementContractAddress;
@@ -68,27 +68,39 @@ export const getUserNodes = async ({ address }: { address: string }) => {
 
   if (!nodesRes.success) return { nodes: [] };
 
-  const nodesWithoutPower = nodesRes.result.plain as UserNode[];
+  const userNodes = nodesRes.result.plain as UserNode[];
 
-  const methodsWithArgs = nodesWithoutPower.map(node => ({
+  const votingPowerArgs = userNodes.map(node => ({
     method: "getNodeVoteWeight" as const,
     args: [node.nodeId],
   }));
 
-  const nodesWithPower = (
-    await executeMultipleClauses({
+  const multiplierArgs = userNodes.map(node => ({
+    method: "levelIdMultiplier" as const,
+    args: [node.nodeLevel],
+  }));
+
+  const [nodesPower, nodesMultiplier] = await Promise.all([
+    executeMultipleClauses({
       contractAddress,
       contractInterface,
-      methodsWithArgs,
-    })
-  ).map(result => {
-    if (!result.success) return 0;
-    return (result.result.plain as bigint) || BigInt(0);
-  });
+      methodsWithArgs: votingPowerArgs,
+    }),
+    executeMultipleClauses({
+      contractAddress,
+      contractInterface,
+      methodsWithArgs: multiplierArgs,
+    }),
+  ]);
 
-  const nodes = nodesWithoutPower.map((node, index) => ({
+  const nodesPowerResults = nodesPower.map(r => (r.success ? (r.result.plain as bigint) : BigInt(0)));
+  const nodesMultiplierResults = nodesMultiplier.map(r => (r.success ? (r.result.plain as bigint) : BigInt(0)));
+
+  const nodes: ExtendedUserNode[] = userNodes.map((node, index) => ({
     ...node,
-    votingPower: nodesWithPower[index] || BigInt(0),
+    multiplier: nodesMultiplierResults[index] || BigInt(0),
+    nodeName: NodeStrengthLevels[node.nodeLevel],
+    votingPower: nodesPowerResults[index] || BigInt(0),
   }));
 
   return { nodes };

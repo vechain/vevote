@@ -97,7 +97,6 @@ const ProposalNavbarActions = ({ proposal }: { proposal: ProposalCardType | unde
   const { account } = useWallet();
 
   const { hasVoted } = useHasVoted({ proposalId: proposal?.id || "" });
-
   const { isExecutor, isWhitelisted, isVoter } = useUser();
 
   const canVote = useMemo(

@@ -232,6 +232,56 @@ type RootTranslation = {
 		 */
 		go_to_proposals: string
 	}
+	node_names: {
+		/**
+		 * N​o​ ​N​o​d​e
+		 */
+		none: string
+		/**
+		 * S​t​r​e​n​g​t​h
+		 */
+		strength: string
+		/**
+		 * T​h​u​n​d​e​r
+		 */
+		thunder: string
+		/**
+		 * M​j​o​l​n​i​r
+		 */
+		mjolnir: string
+		/**
+		 * V​e​T​h​o​r​ ​X
+		 */
+		vethorx: string
+		/**
+		 * S​t​r​e​n​g​t​h​ ​X
+		 */
+		strengthx: string
+		/**
+		 * T​h​u​n​d​e​r​ ​X
+		 */
+		thunderx: string
+		/**
+		 * M​j​o​l​n​i​r​ ​X
+		 */
+		mjolnirx: string
+		/**
+		 * F​l​a​s​h
+		 */
+		flash: string
+		/**
+		 * L​i​g​h​t​n​i​n​g
+		 */
+		lightning: string
+		/**
+		 * D​a​w​n
+		 */
+		dawn: string
+		/**
+		 * V​a​l​i​d​a​t​o​r
+		 */
+		validator: string
+	}
 	field_errors: {
 		/**
 		 * R​e​q​u​i​r​e​d
@@ -1089,6 +1139,56 @@ JPG, PNG or SVG of maximum of {size}MB.
 		 * Go to proposals
 		 */
 		go_to_proposals: () => LocalizedString
+	}
+	node_names: {
+		/**
+		 * No Node
+		 */
+		none: () => LocalizedString
+		/**
+		 * Strength
+		 */
+		strength: () => LocalizedString
+		/**
+		 * Thunder
+		 */
+		thunder: () => LocalizedString
+		/**
+		 * Mjolnir
+		 */
+		mjolnir: () => LocalizedString
+		/**
+		 * VeThor X
+		 */
+		vethorx: () => LocalizedString
+		/**
+		 * Strength X
+		 */
+		strengthx: () => LocalizedString
+		/**
+		 * Thunder X
+		 */
+		thunderx: () => LocalizedString
+		/**
+		 * Mjolnir X
+		 */
+		mjolnirx: () => LocalizedString
+		/**
+		 * Flash
+		 */
+		flash: () => LocalizedString
+		/**
+		 * Lightning
+		 */
+		lightning: () => LocalizedString
+		/**
+		 * Dawn
+		 */
+		dawn: () => LocalizedString
+		/**
+		 * Validator
+		 */
+		validator: () => LocalizedString
 	}
 	field_errors: {
 		/**

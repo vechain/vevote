@@ -1,3 +1,9 @@
+export type NodeItem = {
+  multiplier: number;
+  nodeName: string;
+  votingPower: number;
+};
+
 export enum UserRoles {
   ADMIN,
   UPGRADER_ROLE,
@@ -16,5 +22,40 @@ export type UserNode = {
   isXNodeDelegatee: boolean;
   isXNodeDelegated: boolean;
   delegatee: string;
-  votingPower: bigint;
 };
+
+export type ExtendedUserNode = UserNode & {
+  votingPower: bigint;
+  multiplier: bigint;
+  nodeName: NodeStrengthLevel;
+};
+
+export enum NodeStrengthLevel {
+  None = "none",
+  Strength = "strength",
+  Thunder = "thunder",
+  Mjolnir = "mjolnir",
+  VeThorX = "vethorx",
+  StrengthX = "strengthx",
+  ThunderX = "thunderx",
+  MjolnirX = "mjolnirx",
+  Flash = "flash",
+  Lightning = "lightning",
+  Dawn = "dawn",
+  Validator = "validator",
+}
+
+export const NodeStrengthLevels: NodeStrengthLevel[] = [
+  NodeStrengthLevel.None,
+  NodeStrengthLevel.Strength,
+  NodeStrengthLevel.Thunder,
+  NodeStrengthLevel.Mjolnir,
+  NodeStrengthLevel.VeThorX,
+  NodeStrengthLevel.StrengthX,
+  NodeStrengthLevel.ThunderX,
+  NodeStrengthLevel.MjolnirX,
+  NodeStrengthLevel.Flash,
+  NodeStrengthLevel.Lightning,
+  NodeStrengthLevel.Dawn,
+  NodeStrengthLevel.Validator,
+];
