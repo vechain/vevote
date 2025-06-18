@@ -6,8 +6,9 @@ import { CopyLink } from "../ui/CopyLink";
 import dayjs from "dayjs";
 import { useMemo } from "react";
 import { ArrowLinkIcon } from "@/icons";
+import { getConfig } from "@repo/config";
 
-const VECHAIN_EXPLORER_URL = "https://explore-testnet.vechain.org"; //todo: add env variable
+const VECHAIN_EXPLORER_URL = getConfig(import.meta.env.VITE_APP_ENV).network.explorerUrl;
 
 const columnHelper = createColumnHelper<VoteItem>();
 
