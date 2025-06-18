@@ -1,8 +1,8 @@
-import { UserContext } from "@/contexts/UserProvider";
+import { useUser } from "@/contexts/UserProvider";
 import { useShowNavbar } from "@/hooks/useShowNavbar";
 import { Box, BoxProps, Flex, FlexProps, Image, useBreakpointValue } from "@chakra-ui/react";
 import { DAppKitWalletButton } from "@vechain/vechain-kit";
-import { PropsWithChildren, useContext, useMemo } from "react";
+import { PropsWithChildren, useMemo } from "react";
 
 const NavbarContainer = ({ children, ...restProps }: BoxProps) => {
   return (
@@ -68,12 +68,10 @@ export const Navbar = () => {
   );
 };
 
-//todo: get from provider
-
 export const ProposalNavbar = ({ children }: PropsWithChildren) => {
   const { showBackground } = useShowNavbar();
 
-  const { isAdmin } = useContext(UserContext);
+  const { isAdmin } = useUser();
 
   const bgVariant = useMemo(() => {
     if (!showBackground) {

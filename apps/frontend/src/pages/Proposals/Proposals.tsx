@@ -4,22 +4,21 @@ import { Pagination } from "@/components/ui/Pagination";
 import { SearchInput } from "@/components/ui/SearchInput";
 import { Sort, SortDropdown } from "@/components/ui/SortDropdown";
 import { useProposalsEvents } from "@/hooks/useProposalsEvents";
-
+import { useUser } from "@/contexts/UserProvider";
 import { useI18nContext } from "@/i18n/i18n-react";
+import { CircleInfoIcon, CirclePlusIcon, VoteIcon } from "@/icons";
 import { ProposalCardType } from "@/types/proposal";
 import { Button, Flex, Heading, Icon, Link, Tab, TabList, TabPanel, TabPanels, Tabs, Text } from "@chakra-ui/react";
+import { useWallet } from "@vechain/vechain-kit";
 import dayjs from "dayjs";
-import { PropsWithChildren, useMemo, useState, useContext } from "react";
+import { PropsWithChildren, useMemo, useState } from "react";
 import { useCreateProposal } from "../CreateProposal/CreateProposalProvider";
 import { ProposalCard } from "./ProposalCard";
-import { CircleInfoIcon, CirclePlusIcon, VoteIcon } from "@/icons";
-import { UserContext } from "@/contexts/UserProvider";
-import { useWallet } from "@vechain/vechain-kit";
 
 const ITEMS_PER_PAGE = 6;
 
 export const Proposals = () => {
-  const { isWhitelisted, isAdmin } = useContext(UserContext);
+  const { isWhitelisted } = useUser();
   const { account } = useWallet();
 
   const { draftProposal } = useCreateProposal();
@@ -45,11 +44,7 @@ export const Proposals = () => {
     };
   }, [proposalsBySearch]);
 
-  const canCreateProposal = useMemo(() => {
-    if (!account?.address) return false;
-    if (isWhitelisted || isAdmin) return true;
-    return false;
-  }, [account?.address, isAdmin, isWhitelisted]);
+  const canCreateProposal = useMemo(() => !account?.address && isWhitelisted, [account?.address, isWhitelisted]);
 
   return (
     <>

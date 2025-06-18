@@ -7,6 +7,8 @@ export type ProposalEvent = {
   choices: string[];
   maxSelection: number;
   minSelection: number;
+  canceller?: string;
+  reason?: string;
 };
 
 export enum ProposalState {

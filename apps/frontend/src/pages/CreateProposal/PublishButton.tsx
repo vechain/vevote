@@ -21,7 +21,7 @@ export const PublishButton = () => {
 
   const { proposalDetails } = useCreateProposal();
   const {
-    build: { sendTransaction },
+    build: { sendTransaction, error: transError },
     error,
     resetError,
   } = useBuildCreateProposal();
@@ -49,6 +49,8 @@ export const PublishButton = () => {
 
       await sendTransaction(data);
 
+      console.log("error", transError);
+
       if (error) throw new Error(`Failed to sing transaction`);
 
       const res = await getHashProposal({ ...data, proposer: account?.address || "" });
@@ -74,6 +76,7 @@ export const PublishButton = () => {
     resetError,
     sendTransaction,
     startBlock,
+    transError,
   ]);
 
   const onTryAgain = useCallback(() => onFailedClose(), [onFailedClose]);

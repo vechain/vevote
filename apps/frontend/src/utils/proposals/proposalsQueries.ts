@@ -37,14 +37,13 @@ export const getProposalsEvents = async (
     //TODO: use sdk once vechain-kit is compatible
     // const events = subscriptions.getEventSubscriptionUrl(nodeUrl)
 
-    const decodedProposalEvents: ProposalEvent[] = events.map(event => {
+    const decodedProposalEvents: (ProposalEvent | undefined)[] = events.map(event => {
       switch (event.topics[0]) {
-        case proposalCanceledEvent.signature:
         case proposalExecutedEvent.signature:
         case proposalCreatedEvent.signature: {
           const decoded = proposalCreatedEvent.decode(event.data, event.topics);
 
-          const proposalEvent: ProposalEvent = {
+          return {
             proposalId: decoded.proposalId,
             proposer: decoded.proposer,
             description: decoded.description,
@@ -54,17 +53,44 @@ export const getProposalsEvents = async (
             maxSelection: decoded.maxSelection,
             minSelection: 1,
           };
-
-          return proposalEvent;
         }
 
-        default: {
-          throw new Error("Unknown event");
-        }
+        default:
+          return undefined;
       }
     });
 
-    const partialProposals = await fromEventsToProposals(decodedProposalEvents);
+    const decodedCanceledProposals = events.map(event => {
+      switch (event.topics[0]) {
+        case proposalCanceledEvent.signature: {
+          const decoded = proposalCanceledEvent.decode(event.data, event.topics);
+
+          return {
+            proposalId: decoded.proposalId,
+            canceller: decoded.canceller,
+            reason: decoded.reason || "",
+          };
+        }
+        default:
+          return undefined;
+      }
+    });
+
+    const mergedProposals = decodedProposalEvents
+      .map(event => {
+        const canceledProposal = decodedCanceledProposals.find(c => c?.proposalId === event?.proposalId);
+        if (canceledProposal) {
+          return {
+            ...event,
+            canceller: canceledProposal.canceller,
+            reason: canceledProposal.reason,
+          };
+        }
+        return event;
+      })
+      .filter(event => Boolean(event)) as ProposalEvent[];
+
+    const partialProposals = await fromEventsToProposals(mergedProposals);
 
     return { proposals: partialProposals };
   } catch (error) {
