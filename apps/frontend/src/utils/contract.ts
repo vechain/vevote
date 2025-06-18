@@ -3,6 +3,7 @@ import { Interface } from "ethers";
 import { abi } from "thor-devkit";
 import { ABIFunction } from "@vechain/sdk-core";
 import { thorClient } from "./thorClient";
+import { SimulateTransactionOptions } from "@vechain/sdk-network";
 
 export type GetMethodProps<T extends Interface> = {
   contractInterface: T;
@@ -45,10 +46,12 @@ export const executeMultipleClauses = async <T extends Interface>({
   contractAddress,
   contractInterface,
   methodsWithArgs,
+  callOptions,
 }: {
   contractAddress: string;
   contractInterface: T;
   methodsWithArgs?: { method: MethodName<T["getFunction"]>; args: unknown[] }[];
+  callOptions?: SimulateTransactionOptions;
 }) => {
   try {
     const clauses = methodsWithArgs?.map(({ method, args }) => {
@@ -61,7 +64,7 @@ export const executeMultipleClauses = async <T extends Interface>({
 
     if (!clauses) throw new Error(`Clauses not found`);
 
-    const results = await thorClient.contracts.executeMultipleClausesCall(clauses);
+    const results = await thorClient.contracts.executeMultipleClausesCall(clauses, callOptions);
 
     return results;
   } catch (error) {

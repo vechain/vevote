@@ -117,7 +117,8 @@ export const mergeIpfsDetails = (
   });
 };
 
-export const getBlockFromDate = async (date: Date): Promise<number> => {
+export const getBlockFromDate = async (date?: Date): Promise<number> => {
+  if (!date) return 0;
   const currentBlock = await thorClient.blocks.getFinalBlockExpanded();
   const currentTimestamp = currentBlock?.timestamp || 0; // in seconds
   const currentBlockNumber = currentBlock?.number || 0; // current block number

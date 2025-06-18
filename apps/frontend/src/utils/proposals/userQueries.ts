@@ -56,7 +56,7 @@ export const getUserRoles = async ({ address }: { address?: string }) => {
   };
 };
 
-export const getUserNodes = async ({ address }: { address: string }) => {
+export const getUserNodes = async ({ address, blockN }: { address: string; blockN?: string }) => {
   if (!address) return { nodes: [] };
 
   const nodesRes = await executeCall({
@@ -80,11 +80,16 @@ export const getUserNodes = async ({ address }: { address: string }) => {
     args: [node.nodeLevel],
   }));
 
+  console.log("blockN", blockN);
+
   const [nodesPower, nodesMultiplier] = await Promise.all([
     executeMultipleClauses({
       contractAddress,
       contractInterface,
       methodsWithArgs: votingPowerArgs,
+      callOptions: {
+        revision: blockN,
+      },
     }),
     executeMultipleClauses({
       contractAddress,

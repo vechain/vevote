@@ -7,9 +7,10 @@ import { useMemo } from "react";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { useFormatDate } from "@/hooks/useFormatDate";
 import { ArrowLinkIcon, VotingPowerIcon } from "@/icons";
-import { useUser } from "@/contexts/UserProvider";
 import { NodeItem } from "@/types/user";
 import { getConfig } from "@repo/config";
+import { useNodes } from "@/hooks/useUserQueries";
+import { useProposal } from "./ProposalProvider";
 
 const VECHAIN_EXPLORER_URL = getConfig(import.meta.env.VITE_APP_ENV).network.explorerUrl;
 
@@ -17,14 +18,15 @@ export const VotingPowerModal = () => {
   const { LL } = useI18nContext();
   const { isOpen, onClose, onOpen } = useDisclosure();
   const { formattedProposalDate } = useFormatDate();
-  const { nodes } = useUser();
+  const { proposal } = useProposal();
+  const { nodes } = useNodes({ startDate: proposal.startDate });
 
   const nodesList = useMemo(
     () =>
       nodes.map(node => ({
         multiplier: Number(node.multiplier) / 100,
         nodeName: LL.node_names[node.nodeName](),
-        votingPower: Number(node.votingPower),
+        votingPower: Number(node.votingPower) / 100,
       })),
     [LL.node_names, nodes],
   );
