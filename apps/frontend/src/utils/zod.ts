@@ -2,6 +2,12 @@ import { z } from "zod";
 import { LL } from "@/i18n/i18n-ssr";
 import dayjs from "dayjs";
 
+export const ADDRESS_LENGTH = 42;
+export const requiredAddress = z
+  .string()
+  .length(ADDRESS_LENGTH, { message: LL.field_errors.address_length({ length: ADDRESS_LENGTH }) })
+  .refine(value => value.startsWith("0x"), { message: LL.field_errors.address_starts_with_0x() });
+
 export const requiredString = z.string().min(1, { message: LL.field_errors.required() });
 
 export const optionalUrl = z.union([z.string().url().nullish(), z.literal("")]);

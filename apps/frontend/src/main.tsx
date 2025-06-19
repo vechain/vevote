@@ -18,6 +18,7 @@ import { CreateProposalProvider } from "./pages/CreateProposal/CreateProposalPro
 import { persister, queryClient } from "./utils/queryClient.ts";
 import { UserProvider } from "./contexts/UserProvider.tsx";
 import { DraftProposalProvider } from "./contexts/DraftProposalProvider.tsx";
+import { AMNProvider } from "./contexts/AMNprovider.tsx";
 
 loadLocale("en");
 
@@ -63,11 +64,13 @@ const Providers = ({ children }: PropsWithChildren) => {
             type: config.network.type,
           }}>
           <UserProvider>
-            <ThemeProvider>
-              <CreateProposalProvider>
-                <DraftProposalProvider>{children}</DraftProposalProvider>
-              </CreateProposalProvider>
-            </ThemeProvider>
+            <AMNProvider>
+              <ThemeProvider>
+                <CreateProposalProvider>
+                  <DraftProposalProvider>{children}</DraftProposalProvider>
+                </CreateProposalProvider>
+              </ThemeProvider>
+            </AMNProvider>
           </UserProvider>
         </VeChainKitProvider>
       </PersistQueryClientProvider>

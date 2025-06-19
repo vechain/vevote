@@ -258,6 +258,15 @@ type RootTranslation = {
 		 * @param {string} days
 		 */
 		end_after_max_duration: RequiredParams<'days'>
+		/**
+		 * A​d​d​r​e​s​s​ ​m​u​s​t​ ​b​e​ ​{​l​e​n​g​t​h​}​ ​c​h​a​r​a​c​t​e​r​s​ ​l​o​n​g
+		 * @param {number} length
+		 */
+		address_length: RequiredParams<'length'>
+		/**
+		 * A​d​d​r​e​s​s​ ​m​u​s​t​ ​s​t​a​r​t​ ​w​i​t​h​ ​'​0​x​'
+		 */
+		address_starts_with_0x: string
 	}
 	voting_list: {
 		/**
@@ -1115,6 +1124,14 @@ JPG, PNG or SVG of maximum of {size}MB.
 		 * The end date must be within {days} days of the start date
 		 */
 		end_after_max_duration: (arg: { days: string }) => LocalizedString
+		/**
+		 * Address must be {length} characters long
+		 */
+		address_length: (arg: { length: number }) => LocalizedString
+		/**
+		 * Address must start with '0x'
+		 */
+		address_starts_with_0x: () => LocalizedString
 	}
 	voting_list: {
 		/**

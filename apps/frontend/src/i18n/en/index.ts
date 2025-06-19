@@ -64,6 +64,8 @@ const en = {
     end_before_today: "The end date must be in the future",
     start_after_today: "The start date must be in the future",
     end_after_max_duration: "The end date must be within {days:string} days of the start date",
+    address_length: "Address must be {length:number} characters long",
+    address_starts_with_0x: "Address must start with '0x'",
   },
   voting_list: {
     voting_options: "Voting options:",
