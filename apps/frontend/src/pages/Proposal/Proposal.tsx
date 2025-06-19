@@ -20,6 +20,7 @@ import { useHasVoted } from "@/hooks/useCastVote";
 import { useUser } from "@/contexts/UserProvider";
 import { ArrowLeftIcon, ArrowRightIcon, CheckSquareIcon, VoteIcon } from "@/icons";
 import { CancelProposal } from "@/components/proposal/CancelProposal";
+import { useNodes } from "@/hooks/useUserQueries";
 
 export const Proposal = () => {
   const { LL } = useI18nContext();
@@ -95,25 +96,30 @@ export const Proposal = () => {
 const ProposalNavbarActions = ({ proposal }: { proposal: ProposalCardType | undefined }) => {
   const { LL } = useI18nContext();
   const { account } = useWallet();
-
   const { hasVoted } = useHasVoted({ proposalId: proposal?.id || "" });
-  const { isExecutor, isWhitelisted, isVoter } = useUser();
+  const { isExecutor, isWhitelisted } = useUser();
+  const { nodes } = useNodes({ startDate: proposal?.startDate });
+  const isVoter = useMemo(() => nodes.length > 0, [nodes.length]);
 
   const canVote = useMemo(
-    () => account?.address !== proposal?.proposer && isVoter,
-    [account?.address, isVoter, proposal?.proposer],
+    () => account?.address !== proposal?.proposer && isVoter && ["voting"].includes(proposal?.status || ""),
+    [account?.address, isVoter, proposal?.proposer, proposal?.status],
   );
 
   const canCancel = useMemo(
-    () => isWhitelisted && account?.address === proposal?.proposer,
-    [account?.address, isWhitelisted, proposal?.proposer],
+    () => isWhitelisted && account?.address === proposal?.proposer && ["upcoming"].includes(proposal?.status || ""),
+    [account?.address, isWhitelisted, proposal?.proposer, proposal?.status],
+  );
+
+  const canEditDraft = useMemo(
+    () => isWhitelisted && ["draft"].includes(proposal?.status || ""),
+    [isWhitelisted, proposal?.status],
   );
 
   return (
     <Flex alignItems={"center"} gap={2} marginLeft={"auto"}>
-      {isWhitelisted && ["draft"].includes(proposal?.status || "") && <DeleteEditProposal />}
-
-      {canCancel && ["upcoming"].includes(proposal?.status || "") && <CancelProposal proposalId={proposal?.id} />}
+      {canEditDraft && <DeleteEditProposal />}
+      {canCancel && <CancelProposal proposalId={proposal?.id} />}
 
       {isExecutor && proposal?.status === "approved" && (
         <Button variant={"feedback"}>{LL.proposal.mark_as_executed()}</Button>
