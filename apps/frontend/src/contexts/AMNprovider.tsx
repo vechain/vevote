@@ -2,32 +2,53 @@ import { FormSkeleton } from "@/components/ui/FormSkeleton";
 import { InputMessage } from "@/components/ui/InputMessage";
 import { Label } from "@/components/ui/Label";
 import { MessageModal } from "@/components/ui/ModalSkeleton";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { useBuildMasterNode } from "@/hooks/useMasterNode";
+import { useI18nContext } from "@/i18n/i18n-react";
 import { CircleInfoIcon } from "@/icons";
+import { MasterNodeStorage } from "@/types/AMN";
 import { requiredAddress } from "@/utils/zod";
 import { Button, FormControl, Input, ModalBody, ModalFooter, Text, useDisclosure } from "@chakra-ui/react";
 import { useWallet } from "@vechain/vechain-kit";
-import { PropsWithChildren, useCallback, useEffect } from "react";
+import { createContext, PropsWithChildren, useCallback, useContext, useEffect } from "react";
 import { z } from "zod";
 
+const AMNContext = createContext<{
+  masterNode: MasterNodeStorage;
+}>({
+  masterNode: { checked: false },
+});
+
 export const AMNProvider = ({ children }: PropsWithChildren) => {
+  const [masterNode, setMasterNode] = useLocalStorage<MasterNodeStorage>("master-node", {
+    checked: false,
+  });
   const { isOpen, onClose, onOpen } = useDisclosure();
   const { account } = useWallet();
 
   useEffect(() => {
-    if (account && account.address) {
+    if (account && account.address && !masterNode.checked) {
       onOpen();
     }
-  }, [account, onOpen]);
+  }, [account, masterNode.checked, onOpen]);
   return (
-    <>
+    <AMNContext.Provider value={{ masterNode }}>
       {children}
-      <AMNPopup isOpen={isOpen} onClose={onClose} />
-    </>
+      <AMNPopup isOpen={isOpen} onClose={onClose} setMasterNode={setMasterNode} />
+    </AMNContext.Provider>
   );
 };
 
-const AMNPopup = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
+const AMNPopup = ({
+  isOpen,
+  onClose,
+  setMasterNode,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  setMasterNode: (value: MasterNodeStorage) => void;
+}) => {
+  const { LL } = useI18nContext();
   const schema = z.object({
     masterNode: requiredAddress,
   });
@@ -38,13 +59,32 @@ const AMNPopup = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void })
     async (values: z.infer<typeof schema>) => {
       try {
         const res = await refetchMasterNode(values.masterNode);
+
+        if (!res) {
+          throw new Error("Failed to fetch master node data");
+        }
+
+        setMasterNode({
+          checked: true,
+          address: values.masterNode,
+        });
+
+        onClose();
+
         console.log("Master Node fetched successfully:", res);
       } catch (error) {
         console.error("Error fetching master node:", error);
       }
     },
-    [refetchMasterNode],
+    [onClose, refetchMasterNode, setMasterNode],
   );
+
+  const onCancel = useCallback(() => {
+    setMasterNode({
+      checked: true,
+    });
+    onClose();
+  }, [onClose, setMasterNode]);
 
   return (
     <MessageModal
@@ -64,14 +104,14 @@ const AMNPopup = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void })
                 }
               </Text>
               <FormControl isInvalid={Boolean(errors.masterNode)}>
-                <Label label={"Node Master"} />
-                <Input placeholder={""} {...register("masterNode")} />
+                <Label label={"Master node"} fontSize={14} />
+                <Input placeholder={""} {...register("masterNode")} width={"full"} />
                 <InputMessage error={errors.masterNode?.message} />
               </FormControl>
             </ModalBody>
-            <ModalFooter width={"full"} mt={7}>
-              <Button flex={1} variant={"secondary"} onClick={onClose}>
-                {"I'm don't want to use AMN"}
+            <ModalFooter width={"full"} gap={2} mt={7}>
+              <Button flex={1} variant={"secondary"} onClick={onCancel}>
+                {LL.cancel()}
               </Button>
               <Button flex={1} variant={"primary"} type="submit">
                 {"Submit"}
@@ -82,4 +122,12 @@ const AMNPopup = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void })
       </FormSkeleton>
     </MessageModal>
   );
+};
+
+export const useAMN = () => {
+  const context = useContext(AMNContext);
+  if (!context) {
+    throw new Error("useAMN must be used within an AMNProvider");
+  }
+  return context;
 };
