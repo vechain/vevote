@@ -38,7 +38,6 @@ export const useUserNodes = () => {
 
 export const useNodes = ({ startDate }: { startDate?: Date }) => {
   const { account } = useWallet();
-
   const [blockN, setBlockN] = useState<string | undefined>(undefined);
 
   const { data, error } = useQuery({
