@@ -8,7 +8,7 @@ import { Flex, Icon, Link, Text } from "@chakra-ui/react";
 import { useMemo } from "react";
 import { useHasVoted } from "@/hooks/useCastVote";
 
-export const ProposalCard = ({ status, title, endDate, startDate, id, proposer }: ProposalCardType) => {
+export const ProposalCard = ({ status, title, endDate, startDate, id }: ProposalCardType) => {
   const variant = useMemo(() => {
     switch (status) {
       case "min-not-reached":
@@ -34,7 +34,6 @@ export const ProposalCard = ({ status, title, endDate, startDate, id, proposer }
       <Flex width={"100%"} direction={"column"} gap={6}>
         <Flex gap={4} alignItems={"center"}>
           <IconBadge variant={variant} />
-          <Text>{proposer}</Text>
           {hasVoted && <Status text={"Voted"} marginLeft={"auto"} />}
         </Flex>
         <Flex gap={4} alignItems={"start"} direction={"column"}>
