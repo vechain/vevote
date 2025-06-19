@@ -6,8 +6,9 @@ import { formatAddress } from "@/utils/address";
 import { PropsWithChildren, SVGProps } from "react";
 import { useProposal } from "./ProposalProvider";
 import { ArrowLinkIcon, CalendarCheckIcon, EditBoxIcon, UsersIcon } from "@/icons";
+import { getConfig } from "@repo/config";
 
-const VECHAIN_EXPLORER_URL = "https://explore-testnet.vechain.org"; //todo: add env variable
+const VECHAIN_EXPLORER_URL = getConfig(import.meta.env.VITE_APP_ENV).network.explorerUrl;
 
 export const ProposalDetailsCards = () => {
   const { proposal } = useProposal();

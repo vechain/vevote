@@ -7,41 +7,28 @@ import { useMemo } from "react";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { useFormatDate } from "@/hooks/useFormatDate";
 import { ArrowLinkIcon, VotingPowerIcon } from "@/icons";
+import { NodeItem } from "@/types/user";
+import { getConfig } from "@repo/config";
+import { useNodes } from "@/hooks/useUserQueries";
+import { useProposal } from "./ProposalProvider";
 
-const VECHAIN_EXPLORER_URL = "https://explore-testnet.vechain.org"; //todo: add env variable
+const VECHAIN_EXPLORER_URL = getConfig(import.meta.env.VITE_APP_ENV).network.explorerUrl;
 
-type NodeItemProps = {
-  multiplier: number;
-  nodeName: string;
-  votingPower: number;
-};
-type NodesListProps = NodeItemProps[];
-
-export const VotingPowerModal = ({ votingPower }: { votingPower: number }) => {
+export const VotingPowerModal = () => {
   const { LL } = useI18nContext();
   const { isOpen, onClose, onOpen } = useDisclosure();
   const { formattedProposalDate } = useFormatDate();
+  const { proposal } = useProposal();
+  const { nodes } = useNodes({ startDate: proposal.startDate });
 
-  //todo: get nodes list from blockchain
   const nodesList = useMemo(
-    () => [
-      {
-        multiplier: 1,
-        nodeName: "Thunder X",
-        votingPower: 840,
-      },
-      {
-        multiplier: 2,
-        nodeName: "Majolnir",
-        votingPower: 3000,
-      },
-      {
-        multiplier: 1,
-        nodeName: "Validator",
-        votingPower: 5000,
-      },
-    ],
-    [],
+    () =>
+      nodes.map(node => ({
+        multiplier: Number(node.multiplier) / 100,
+        nodeName: LL.node_names[node.nodeName](),
+        votingPower: Number(node.votingPower) / 100,
+      })),
+    [LL.node_names, nodes],
   );
 
   const totalVotingPower = useMemo(() => {
@@ -66,7 +53,7 @@ export const VotingPowerModal = ({ votingPower }: { votingPower: number }) => {
   return (
     <>
       <Button onClick={onOpen} variant={"secondary"} leftIcon={<Icon as={VotingPowerIcon} width={5} height={5} />}>
-        {votingPower}
+        {totalVotingPower}
       </Button>
       <ModalSkeleton isOpen={isOpen} onClose={onClose}>
         <ModalHeader>
@@ -133,12 +120,12 @@ const NodesHeader = () => {
   );
 };
 
-const NodesList = ({ nodesList }: { nodesList: NodesListProps }) => {
+const NodesList = ({ nodesList }: { nodesList: NodeItem[] }) => {
   return (
     <Flex flexDirection={"column"} borderBottomWidth={1} borderColor={"gray.200"}>
       {nodesList.map(({ multiplier, nodeName, votingPower }, index) => (
         <Flex key={index} alignItems={"center"} color={"gray.600"} paddingY={1.5} gap={8}>
-          <Text>{`${multiplier}x`}</Text>
+          <Text minWidth={"30px"}>{`${multiplier}x`}</Text>
           <Text flex={1}>{nodeName}</Text>
           <Text>{votingPower}</Text>
         </Flex>

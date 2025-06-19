@@ -56,7 +56,7 @@ export const useCastVote = () => {
 
   return useBuildTransaction({
     clauseBuilder: buildClauses,
-    refetchQueryKeys: [hasVotedQueryKey()],
+    refetchQueryKeys: [["hasVoted"], ["votesResults"], ["votedChoices"]],
   });
 };
 

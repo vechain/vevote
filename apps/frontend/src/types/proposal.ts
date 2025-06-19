@@ -55,4 +55,5 @@ export type ProposalCardType = ProposalDetails & {
   status: ProposalStatus;
   proposer: string;
   createdAt: Date;
+  reason?: string;
 };
