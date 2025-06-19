@@ -4,22 +4,21 @@ import { Pagination } from "@/components/ui/Pagination";
 import { SearchInput } from "@/components/ui/SearchInput";
 import { Sort, SortDropdown } from "@/components/ui/SortDropdown";
 import { useProposalsEvents } from "@/hooks/useProposalsEvents";
-
+import { useUser } from "@/contexts/UserProvider";
 import { useI18nContext } from "@/i18n/i18n-react";
-import { ProposalCardType } from "@/types/proposal";
+import { CircleInfoIcon, CirclePlusIcon, VoteIcon } from "@/icons";
+import { ProposalCardType, ProposalStatus } from "@/types/proposal";
 import { Button, Flex, Heading, Icon, Link, Tab, TabList, TabPanel, TabPanels, Tabs, Text } from "@chakra-ui/react";
+import { useWallet } from "@vechain/vechain-kit";
 import dayjs from "dayjs";
-import { PropsWithChildren, useMemo, useState, useContext } from "react";
+import { PropsWithChildren, useMemo, useState } from "react";
 import { useCreateProposal } from "../CreateProposal/CreateProposalProvider";
 import { ProposalCard } from "./ProposalCard";
-import { CircleInfoIcon, CirclePlusIcon, VoteIcon } from "@/icons";
-import { UserContext } from "@/contexts/UserProvider";
-import { useWallet } from "@vechain/vechain-kit";
 
 const ITEMS_PER_PAGE = 6;
 
 export const Proposals = () => {
-  const { isWhitelisted, isAdmin } = useContext(UserContext);
+  const { isWhitelisted } = useUser();
   const { account } = useWallet();
 
   const { draftProposal } = useCreateProposal();
@@ -32,24 +31,24 @@ export const Proposals = () => {
   const proposalsBySearch = useMemo(() => {
     const searchLower = searchValue.toLowerCase();
     const isDraftProposal = draftProposal && draftProposal?.proposer === account?.address;
-    const mockAndDraft = isDraftProposal ? [draftProposal, ...proposals] : proposals;
-    return mockAndDraft.filter(({ title }) => title.toLowerCase().includes(searchLower));
+    const filteredProposals = proposals.filter(({ title }) => title.toLowerCase().includes(searchLower)).reverse();
+
+    return isDraftProposal ? [draftProposal, ...filteredProposals] : filteredProposals;
   }, [account?.address, draftProposal, proposals, searchValue]);
 
   const proposalsByTabStatus: Record<string, ProposalCardType[]> = useMemo(() => {
+    const finishedStatuses: ProposalStatus[] = ["canceled", "rejected", "min-not-reached"];
     return {
       all: proposalsBySearch,
       voting: proposalsBySearch.filter(({ status }) => status === "voting"),
       upcoming: proposalsBySearch.filter(({ status }) => status === "upcoming"),
-      finished: proposalsBySearch.filter(({ endDate }) => dayjs(endDate).isBefore(dayjs())),
+      finished: proposalsBySearch.filter(
+        ({ endDate, status }) => dayjs(endDate).isBefore(dayjs()) || finishedStatuses.includes(status),
+      ),
     };
   }, [proposalsBySearch]);
 
-  const canCreateProposal = useMemo(() => {
-    if (!account?.address) return false;
-    if (isWhitelisted || isAdmin) return true;
-    return false;
-  }, [account?.address, isAdmin, isWhitelisted]);
+  const canCreateProposal = useMemo(() => account?.address && isWhitelisted, [account?.address, isWhitelisted]);
 
   return (
     <>
