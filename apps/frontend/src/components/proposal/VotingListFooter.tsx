@@ -40,7 +40,7 @@ export const VotingListFooter = ({ onSubmit, isLoading }: { onSubmit: () => Prom
       <Flex gap={8} alignItems={"center"} justifyContent={"space-between"} width={"100%"}>
         <VotingFooterAction onSubmit={onSubmit} votingVariant={votingVariant} isLoading={isLoading} />
         {/* add error */}
-        {!votingNotStarted && <VotingPower votingPower={300} />}
+        {!votingNotStarted && <VotingPower />}
       </Flex>
     );
 };
@@ -95,14 +95,14 @@ const VotedChip = () => {
   );
 };
 
-const VotingPower = ({ votingPower }: { votingPower: number }) => {
+const VotingPower = () => {
   const { LL } = useI18nContext();
   return (
     <Flex alignItems={"center"} gap={3}>
       <Text fontSize={12} fontWeight={600} color={"gray.500"}>
         {LL.voting_power()}
       </Text>
-      <VotingPowerModal votingPower={votingPower} />
+      <VotingPowerModal />
     </Flex>
   );
 };

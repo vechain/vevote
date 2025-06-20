@@ -1,35 +1,41 @@
 import { useI18nContext } from "@/i18n/i18n-react";
 import { Button, FormControl, Icon, ModalBody, ModalFooter, Text, Textarea, useDisclosure } from "@chakra-ui/react";
 import { MessageModal } from "../ui/ModalSkeleton";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { FormSkeleton } from "../ui/FormSkeleton";
 import { z } from "zod";
 import { Label } from "../ui/Label";
 import { InputMessage } from "../ui/InputMessage";
 import { DeleteIcon, MinusCircleIcon } from "@/icons";
+import { useCancelProposal } from "@/hooks/useCancelProposal";
+import { Routes } from "@/types/routes";
+import { useNavigate } from "react-router-dom";
 
-export const CancelEditProposal = () => {
-  const { LL } = useI18nContext();
-  return (
-    <>
-      <CancelProposal />
-      <Button variant={"secondary"}>{LL.edit()}</Button>
-    </>
-  );
-};
-
-export const CancelProposal = () => {
+export const CancelProposal = ({ proposalId }: { proposalId?: string }) => {
   const { LL } = useI18nContext();
   const { isOpen, onClose, onOpen } = useDisclosure();
+  const navigate = useNavigate();
+
+  const { sendTransaction, error, isTransactionPending, txReceipt, status } = useCancelProposal();
 
   const schema = z.object({
     reason: z.string().optional(),
   });
 
-  //todo: implement deletion
-  const onSubmit = useCallback((values: z.infer<typeof schema>) => {
-    console.log(values);
-  }, []);
+  const onSubmit = useCallback(
+    async (values: z.infer<typeof schema>) => {
+      if (!proposalId) return;
+      sendTransaction({ proposalId, reason: values.reason });
+    },
+    [proposalId, sendTransaction],
+  );
+
+  useEffect(() => {
+    if (status === "success") {
+      onClose();
+      navigate(Routes.HOME);
+    }
+  }, [error, isTransactionPending, navigate, onClose, status, txReceipt]);
   return (
     <>
       <Button variant="danger" onClick={onOpen} leftIcon={<Icon as={MinusCircleIcon} />}>
@@ -38,6 +44,7 @@ export const CancelProposal = () => {
       <MessageModal
         isOpen={isOpen}
         onClose={onClose}
+        closeOnOverlayClick={false}
         icon={DeleteIcon}
         iconColor={"red.600"}
         title={LL.proposal.cancel_proposal.title()}>
@@ -58,7 +65,7 @@ export const CancelProposal = () => {
                 <Button flex={1} variant={"secondary"} onClick={onClose}>
                   {LL.go_back()}
                 </Button>
-                <Button flex={1} variant={"danger"} type="submit">
+                <Button flex={1} variant={"danger"} type="submit" isLoading={isTransactionPending}>
                   {LL.proposal.cancel_proposal.title()}
                 </Button>
               </ModalFooter>
