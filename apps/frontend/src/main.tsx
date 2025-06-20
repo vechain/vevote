@@ -18,7 +18,7 @@ import { CreateProposalProvider } from "./pages/CreateProposal/CreateProposalPro
 import { persister, queryClient } from "./utils/queryClient.ts";
 import { UserProvider } from "./contexts/UserProvider.tsx";
 import { DraftProposalProvider } from "./contexts/DraftProposalProvider.tsx";
-import { analytics } from "./utils/mixpanel/mixpanel.ts";
+import { MixPanelProvider } from "./contexts/MixPanelProvider.tsx";
 
 loadLocale("en");
 
@@ -38,7 +38,6 @@ const Providers = ({ children }: PropsWithChildren) => {
   const [locale, setLocale] = useState<Locales>("en");
 
   useEffect(() => {
-    analytics.trackPageView('Home');
     const detectedLocale = detectLocale(localStorageDetector, navigatorDetector);
     loadLocaleAsync(detectedLocale).then(() => {
       setLocale(detectedLocale);
@@ -66,9 +65,11 @@ const Providers = ({ children }: PropsWithChildren) => {
           }}>
           <UserProvider>
             <ThemeProvider>
-              <CreateProposalProvider>
-                <DraftProposalProvider>{children}</DraftProposalProvider>
-              </CreateProposalProvider>
+              <MixPanelProvider>
+                <CreateProposalProvider>
+                  <DraftProposalProvider>{children}</DraftProposalProvider>
+                </CreateProposalProvider>
+              </MixPanelProvider>
             </ThemeProvider>
           </UserProvider>
         </VeChainKitProvider>

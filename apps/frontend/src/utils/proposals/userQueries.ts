@@ -80,8 +80,6 @@ export const getUserNodes = async ({ address, blockN }: { address: string; block
     args: [node.nodeLevel],
   }));
 
-  console.log("blockN", blockN);
-
   const [nodesPower, nodesMultiplier] = await Promise.all([
     executeMultipleClauses({
       contractAddress,

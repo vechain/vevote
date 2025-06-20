@@ -2,21 +2,22 @@ import mixpanel, { Dict } from "mixpanel-browser";
 
 const MIXPANEL_TOKEN = import.meta.env.VITE_MIXPANEL_TOKEN || "";
 
-if (MIXPANEL_TOKEN) {
-  mixpanel.init(MIXPANEL_TOKEN, {
-    debug: import.meta.env.DEV,
-    track_pageview: true,
-    persistence: "localStorage",
-    ignore_dnt: true,
-    loaded: function (mixpanel) {
-      console.log("Mixpanel loaded successfully id:", mixpanel.get_distinct_id());
-    },
-  });
-} else {
-  console.warn("Mixpanel token not found. Make sure VITE_MIXPANEL_TOKEN is set in your environment variables.");
-}
+export const mixpanelInit = () => {
+  if (MIXPANEL_TOKEN) {
+    mixpanel.init(MIXPANEL_TOKEN, {
+      debug: import.meta.env.DEV,
+      track_pageview: true,
+      persistence: "localStorage",
+      ignore_dnt: true,
+      loaded: function (mixpanel) {
+        console.log("Mixpanel loaded successfully id:", mixpanel.get_distinct_id());
+      },
+    });
+  } else {
+    console.warn("Mixpanel token not found. Make sure VITE_MIXPANEL_TOKEN is set in your environment variables.");
+  }
+};
 
-// Events wrapper
 export const analytics = {
   track: (eventName: string, properties: Dict = {}) => {
     if (MIXPANEL_TOKEN) {
