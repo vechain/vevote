@@ -64,6 +64,9 @@ export const getUserNodes = async ({ address, blockN }: { address: string; block
     contractInterface: nodeManagementInterface,
     method: "getUserNodes",
     args: [address],
+    callOptions: {
+      revision: blockN,
+    },
   });
 
   if (!nodesRes.success) return { nodes: [] };
@@ -87,9 +90,6 @@ export const getUserNodes = async ({ address, blockN }: { address: string; block
       contractAddress,
       contractInterface,
       methodsWithArgs: votingPowerArgs,
-      callOptions: {
-        revision: blockN,
-      },
     }),
     executeMultipleClauses({
       contractAddress,

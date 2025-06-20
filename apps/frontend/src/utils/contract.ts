@@ -3,7 +3,7 @@ import { Interface } from "ethers";
 import { abi } from "thor-devkit";
 import { ABIFunction } from "@vechain/sdk-core";
 import { thorClient } from "./thorClient";
-import { SimulateTransactionOptions } from "@vechain/sdk-network";
+import { ContractCallOptions, SimulateTransactionOptions } from "@vechain/sdk-network";
 
 export type GetMethodProps<T extends Interface> = {
   contractInterface: T;
@@ -78,17 +78,19 @@ export const executeCall = async <T extends Interface>({
   contractInterface,
   args,
   method,
+  callOptions,
 }: {
   contractAddress: string;
   contractInterface: T;
   method: MethodName<T["getFunction"]>;
   args: unknown[];
+  callOptions?: ContractCallOptions;
 }) => {
   try {
     const interfaceJson = contractInterface.getFunction(method)?.format("full");
     if (!interfaceJson) throw new Error(`Method ${method} not found`);
     const functionAbi = new ABIFunction(interfaceJson);
-    const results = await thorClient.contracts.executeCall(contractAddress, functionAbi, args);
+    const results = await thorClient.contracts.executeCall(contractAddress, functionAbi, args, callOptions);
     return results;
   } catch (error) {
     console.error("Error calling multiple methods:", error);

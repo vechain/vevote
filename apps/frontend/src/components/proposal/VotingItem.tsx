@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { useWallet } from "@vechain/vechain-kit";
 import { useHasVoted, useVotesResults } from "@/hooks/useCastVote";
 import { useProposal } from "./ProposalProvider";
+import { useNodes } from "@/hooks/useUserQueries";
 
 export type VotingItemVariant = "upcoming" | "voting" | "result-lost" | "result-win";
 
@@ -54,9 +55,12 @@ export const VotingItem = ({
   const { account } = useWallet();
   const { proposal } = useProposal();
   const { hasVoted } = useHasVoted({ proposalId: proposal.id });
+  const { nodes } = useNodes({ startDate: proposal?.startDate });
+  const isVoter = useMemo(() => nodes.length > 0, [nodes.length]);
+
   const cannotVote = useMemo(
-    () => !account?.address || hasVoted || variant !== "voting" || proposal.proposer === account.address,
-    [account?.address, hasVoted, proposal.proposer, variant],
+    () => !account?.address || hasVoted || variant !== "voting" || proposal.proposer === account.address || !isVoter,
+    [account?.address, hasVoted, isVoter, proposal.proposer, variant],
   );
   const handleClick = useCallback(() => {
     if (cannotVote) return;
