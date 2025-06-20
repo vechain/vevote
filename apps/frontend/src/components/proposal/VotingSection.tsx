@@ -5,16 +5,24 @@ import { PropsWithChildren } from "react";
 import { useProposal } from "./ProposalProvider";
 import { VotingMultipleOptions, VotingSingleChoice, VotingSingleOption } from "./VotingList";
 import { VoteIcon } from "@/icons";
+import { useVotesResults } from "@/hooks/useCastVote";
 
 export const VotingSection = () => {
   const { proposal } = useProposal();
+  const { results } = useVotesResults({ proposalId: proposal.id, size: proposal.votingOptions.length });
   return (
     <VotingSectionContainer>
       <VotingSectionHeader />
       <VotingSectionContent>
-        {proposal.votingType === VotingEnum.SINGLE_CHOICE && <VotingSingleChoice proposal={proposal} />}
-        {proposal.votingType === VotingEnum.SINGLE_OPTION && <VotingSingleOption proposal={proposal} />}
-        {proposal.votingType === VotingEnum.MULTIPLE_OPTIONS && <VotingMultipleOptions proposal={proposal} />}
+        {proposal.votingType === VotingEnum.SINGLE_CHOICE && (
+          <VotingSingleChoice proposal={proposal} results={results} />
+        )}
+        {proposal.votingType === VotingEnum.SINGLE_OPTION && (
+          <VotingSingleOption proposal={proposal} results={results} />
+        )}
+        {proposal.votingType === VotingEnum.MULTIPLE_OPTIONS && (
+          <VotingMultipleOptions proposal={proposal} results={results} />
+        )}
       </VotingSectionContent>
     </VotingSectionContainer>
   );

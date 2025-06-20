@@ -1,5 +1,5 @@
 import { useUserRoles } from "@/hooks/useUserQueries";
-import { createContext, useContext, useEffect, useMemo } from "react";
+import { createContext, useContext, useMemo } from "react";
 
 const DEFAULT_ROLES = {
   isAdmin: false,
@@ -29,8 +29,6 @@ export const UserProvider = (props: React.PropsWithChildren) => {
   const ctxValue = useMemo(() => {
     return { ...(roles ?? DEFAULT_ROLES) };
   }, [roles]);
-
-  useEffect(() => console.log("UserProvider context value:", ctxValue), [ctxValue]);
 
   return <UserContext.Provider value={ctxValue}>{props.children}</UserContext.Provider>;
 };

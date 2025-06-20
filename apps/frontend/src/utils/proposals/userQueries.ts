@@ -59,54 +59,58 @@ export const getUserRoles = async ({ address }: { address?: string }) => {
 export const getUserNodes = async ({ address, blockN }: { address: string; blockN?: string }) => {
   if (!address) return { nodes: [] };
 
-  const nodesRes = await executeCall({
-    contractAddress: nodeManagmentAddress,
-    contractInterface: nodeManagementInterface,
-    method: "getUserNodes",
-    args: [address],
-    callOptions: {
-      revision: blockN,
-    },
-  });
+  console.log("Fetching user nodes for address:", address, "at block:", blockN);
 
-  if (!nodesRes.success) return { nodes: [] };
+  try {
+    const nodesRes = await executeCall({
+      contractAddress: nodeManagmentAddress,
+      contractInterface: nodeManagementInterface,
+      method: "getUserNodes",
+      args: [address],
+      callOptions: {
+        revision: blockN,
+      },
+    });
 
-  const userNodes = nodesRes.result.plain as UserNode[];
+    if (!nodesRes.success) return { nodes: [] };
 
-  const votingPowerArgs = userNodes.map(node => ({
-    method: "getNodeVoteWeight" as const,
-    args: [node.nodeId],
-  }));
+    const userNodes = nodesRes.result.plain as UserNode[];
 
-  const multiplierArgs = userNodes.map(node => ({
-    method: "levelIdMultiplier" as const,
-    args: [node.nodeLevel],
-  }));
+    const votingPowerArgs = userNodes.map(node => ({
+      method: "getNodeVoteWeight" as const,
+      args: [node.nodeId],
+    }));
 
-  console.log("blockN", blockN);
+    const multiplierArgs = userNodes.map(node => ({
+      method: "levelIdMultiplier" as const,
+      args: [node.nodeLevel],
+    }));
 
-  const [nodesPower, nodesMultiplier] = await Promise.all([
-    executeMultipleClauses({
-      contractAddress,
-      contractInterface,
-      methodsWithArgs: votingPowerArgs,
-    }),
-    executeMultipleClauses({
-      contractAddress,
-      contractInterface,
-      methodsWithArgs: multiplierArgs,
-    }),
-  ]);
+    const [nodesPower, nodesMultiplier] = await Promise.all([
+      executeMultipleClauses({
+        contractAddress,
+        contractInterface,
+        methodsWithArgs: votingPowerArgs,
+      }),
+      executeMultipleClauses({
+        contractAddress,
+        contractInterface,
+        methodsWithArgs: multiplierArgs,
+      }),
+    ]);
 
-  const nodesPowerResults = nodesPower.map(r => (r.success ? (r.result.plain as bigint) : BigInt(0)));
-  const nodesMultiplierResults = nodesMultiplier.map(r => (r.success ? (r.result.plain as bigint) : BigInt(0)));
+    const nodesPowerResults = nodesPower.map(r => (r.success ? (r.result.plain as bigint) : BigInt(0)));
+    const nodesMultiplierResults = nodesMultiplier.map(r => (r.success ? (r.result.plain as bigint) : BigInt(0)));
 
-  const nodes: ExtendedUserNode[] = userNodes.map((node, index) => ({
-    ...node,
-    multiplier: nodesMultiplierResults[index] || BigInt(0),
-    nodeName: NodeStrengthLevels[node.nodeLevel],
-    votingPower: nodesPowerResults[index] || BigInt(0),
-  }));
+    const nodes: ExtendedUserNode[] = userNodes.map((node, index) => ({
+      ...node,
+      multiplier: nodesMultiplierResults[index] || BigInt(0),
+      nodeName: NodeStrengthLevels[node.nodeLevel],
+      votingPower: nodesPowerResults[index] || BigInt(0),
+    }));
 
-  return { nodes };
+    return { nodes };
+  } catch (error) {
+    console.error("Error fetching user nodes:", error);
+  }
 };

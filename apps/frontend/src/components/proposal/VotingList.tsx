@@ -8,16 +8,19 @@ import { VotingListFooter } from "./VotingListFooter";
 import { getVotingVariant } from "@/utils/voting";
 import { useProposal } from "./ProposalProvider";
 import { useCastVote, useVotedChoices } from "@/hooks/useCastVote";
+import { VotedResult } from "@/types/votes";
 
 type GenericVotingOptions<T, P> = {
   proposal: Omit<ProposalCardType, "votingType" | "votingOptions"> & {
     votingType: T;
     votingOptions: P;
   };
+  results?: VotedResult;
 };
 
 export const VotingSingleChoice = ({
   proposal,
+  results,
 }: GenericVotingOptions<VotingEnum.SINGLE_CHOICE, SingleChoiceEnum[]>) => {
   const enabled = useMemo(() => {
     const showResultsArray: ProposalStatus[] = ["approved", "executed", "voting", "rejected"];
@@ -39,7 +42,7 @@ export const VotingSingleChoice = ({
 
   const votingVariant: VotingItemVariant = useMemo(() => getVotingVariant(proposal.status), [proposal.status]);
 
-  const { sendTransaction, isTransactionPending } = useCastVote();
+  const { sendTransaction, isTransactionPending } = useCastVote({ proposalId: proposal.id });
 
   const onSubmit = useCallback(async () => {
     const options = proposal.votingOptions.map(o => {
@@ -66,6 +69,7 @@ export const VotingSingleChoice = ({
           variant={votingVariant}
           choiceIndex={index + 1}
           onClick={() => setSelectedOption(option)}
+          results={results}
         />
       ))}
       <VotingListFooter onSubmit={onSubmit} isLoading={isTransactionPending} />
@@ -73,7 +77,10 @@ export const VotingSingleChoice = ({
   );
 };
 
-export const VotingSingleOption = ({ proposal }: GenericVotingOptions<VotingEnum.SINGLE_OPTION, BaseOption[]>) => {
+export const VotingSingleOption = ({
+  proposal,
+  results,
+}: GenericVotingOptions<VotingEnum.SINGLE_OPTION, BaseOption[]>) => {
   const enabled = useMemo(() => {
     const showResultsArray: ProposalStatus[] = ["approved", "executed", "voting", "rejected"];
     return showResultsArray.includes(proposal.status);
@@ -95,7 +102,7 @@ export const VotingSingleOption = ({ proposal }: GenericVotingOptions<VotingEnum
 
   const votingVariant: VotingItemVariant = useMemo(() => getVotingVariant(proposal.status), [proposal.status]);
 
-  const { sendTransaction, isTransactionPending } = useCastVote();
+  const { sendTransaction, isTransactionPending } = useCastVote({ proposalId: proposal.id });
 
   const onSubmit = useCallback(async () => {
     const options = proposal.votingOptions.map((_, i) => {
@@ -122,6 +129,7 @@ export const VotingSingleOption = ({ proposal }: GenericVotingOptions<VotingEnum
           variant={votingVariant}
           choiceIndex={index + 1}
           onClick={() => setSelectedOption(index)}
+          results={results}
         />
       ))}
       <VotingListFooter onSubmit={onSubmit} isLoading={isTransactionPending} />
@@ -131,6 +139,7 @@ export const VotingSingleOption = ({ proposal }: GenericVotingOptions<VotingEnum
 
 export const VotingMultipleOptions = ({
   proposal,
+  results,
 }: GenericVotingOptions<VotingEnum.MULTIPLE_OPTIONS, BaseOption[]>) => {
   const enabled = useMemo(() => {
     const showResultsArray: ProposalStatus[] = ["approved", "executed", "voting", "rejected"];
@@ -168,7 +177,7 @@ export const VotingMultipleOptions = ({
     [proposal.votingLimit, selectedOptions],
   );
 
-  const { sendTransaction, isTransactionPending } = useCastVote();
+  const { sendTransaction, isTransactionPending } = useCastVote({ proposalId: proposal.id });
 
   const onSubmit = useCallback(async () => {
     const options = proposal.votingOptions.map((_, i) => {
@@ -195,6 +204,7 @@ export const VotingMultipleOptions = ({
           variant={votingVariant}
           choiceIndex={index + 1}
           onClick={() => handleSelectedOptions(index)}
+          results={results}
         />
       ))}
       <VotingListFooter onSubmit={onSubmit} isLoading={isTransactionPending} />

@@ -22,16 +22,14 @@ export const useUserRoles = () => {
 export const useNodes = ({ startDate }: { startDate?: Date }) => {
   const { account } = useWallet();
 
-  const { data: blockNumber } = useQuery({
-    queryKey: ["blockNumber", { date: startDate }],
+  const { data: block } = useQuery({
+    queryKey: ["blockNumber", startDate],
     queryFn: async () => await getBlockFromDate(startDate),
-    enabled: Boolean(startDate),
   });
 
   const { data, error } = useQuery({
-    queryKey: ["allNodes", { address: account?.address, blockN: blockNumber }],
-    queryFn: async () => await getUserNodes({ address: account?.address || "", blockN: blockNumber?.toString() }),
-    enabled: Boolean(account?.address) && Boolean(blockNumber),
+    queryKey: ["allNodes", account?.address, block?.number],
+    queryFn: async () => await getUserNodes({ address: account?.address || "", blockN: block?.number.toString() }),
   });
 
   return {
