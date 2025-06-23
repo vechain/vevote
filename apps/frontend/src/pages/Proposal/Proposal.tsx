@@ -101,10 +101,7 @@ const ProposalNavbarActions = ({ proposal }: { proposal: ProposalCardType | unde
   const { nodes } = useNodes({ startDate: proposal?.startDate });
   const isVoter = useMemo(() => nodes.length > 0, [nodes.length]);
 
-  const canVote = useMemo(
-    () => account?.address !== proposal?.proposer && isVoter && ["voting"].includes(proposal?.status || ""),
-    [account?.address, isVoter, proposal?.proposer, proposal?.status],
-  );
+  const canVote = useMemo(() => isVoter && ["voting"].includes(proposal?.status || ""), [isVoter, proposal?.status]);
 
   const canCancel = useMemo(
     () => isWhitelisted && account?.address === proposal?.proposer && ["upcoming"].includes(proposal?.status || ""),

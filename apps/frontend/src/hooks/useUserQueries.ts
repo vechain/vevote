@@ -3,6 +3,33 @@ import { getUserNodes, getUserRoles } from "@/utils/proposals/userQueries";
 import { useQuery } from "@tanstack/react-query";
 import { useWallet } from "@vechain/vechain-kit";
 
+const getNodes = async ({ address, startDate }: { address: string; startDate: Date }) => {
+  try {
+    const blockN = await getBlockFromDate(startDate);
+    if (!blockN) return { nodes: [] };
+    return await getUserNodes({ address, blockN: blockN?.number.toString() });
+  } catch (error) {
+    console.error("Error fetching nodes:", error);
+    return { nodes: [] };
+  }
+};
+
+export const useNodes = ({ startDate }: { startDate?: Date }) => {
+  const { account } = useWallet();
+
+  const { data, error, isLoading } = useQuery({
+    queryKey: ["allNodes", startDate],
+    queryFn: async () => await getNodes({ address: account?.address || "", startDate: startDate! }),
+    enabled: Boolean(account?.address && startDate),
+  });
+
+  return {
+    nodes: data?.nodes || [],
+    isLoading,
+    isError: Boolean(error),
+  };
+};
+
 export const useUserRoles = () => {
   const { account } = useWallet();
 
@@ -14,28 +41,6 @@ export const useUserRoles = () => {
 
   return {
     roles: data,
-    isLoading: !error && !data,
-    isError: Boolean(error),
-  };
-};
-
-export const useNodes = ({ startDate }: { startDate?: Date }) => {
-  const { account } = useWallet();
-
-  const { data: blockNumber } = useQuery({
-    queryKey: ["blockNumber", { date: startDate }],
-    queryFn: async () => await getBlockFromDate(startDate),
-    enabled: Boolean(startDate),
-  });
-
-  const { data, error } = useQuery({
-    queryKey: ["allNodes", { address: account?.address, blockN: blockNumber }],
-    queryFn: async () => await getUserNodes({ address: account?.address || "", blockN: blockNumber?.toString() }),
-    enabled: Boolean(account?.address) && Boolean(blockNumber),
-  });
-
-  return {
-    nodes: data?.nodes || [],
     isLoading: !error && !data,
     isError: Boolean(error),
   };

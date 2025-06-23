@@ -13,7 +13,9 @@ import { useHasVoted } from "@/hooks/useCastVote";
 import { ArrowLinkIcon, ArrowRightIcon, CheckCircleIcon } from "@/icons";
 import { useNodes } from "@/hooks/useUserQueries";
 
-export const VotingListFooter = ({ onSubmit, isLoading }: { onSubmit: () => Promise<void>; isLoading?: boolean }) => {
+type VotingListFooterProps = { onSubmit: () => Promise<void>; isLoading?: boolean; disabled?: boolean };
+
+export const VotingListFooter = ({ onSubmit, isLoading, disabled = false }: VotingListFooterProps) => {
   const { proposal } = useProposal();
   const { account } = useWallet();
   const { LL } = useI18nContext();
@@ -38,7 +40,13 @@ export const VotingListFooter = ({ onSubmit, isLoading }: { onSubmit: () => Prom
 
   return (
     <Flex gap={8} alignItems={"center"} justifyContent={"space-between"} width={"100%"}>
-      <VotingFooterAction onSubmit={onSubmit} votingVariant={votingVariant} isLoading={isLoading} isVoter={isVoter} />
+      <VotingFooterAction
+        onSubmit={onSubmit}
+        votingVariant={votingVariant}
+        isLoading={isLoading}
+        isVoter={isVoter}
+        disabled={disabled}
+      />
       {/* add error */}
       {!votingNotStarted && isVoter && <VotingPower />}
     </Flex>
@@ -50,11 +58,13 @@ const VotingFooterAction = ({
   votingVariant,
   isLoading,
   isVoter = false,
+  disabled = false,
 }: {
   onSubmit: () => void;
   votingVariant: VotingItemVariant;
   isLoading?: boolean;
   isVoter?: boolean;
+  disabled?: boolean;
 }) => {
   const { account } = useWallet();
   const { proposal } = useProposal();
@@ -65,7 +75,7 @@ const VotingFooterAction = ({
   switch (votingVariant) {
     case "voting": {
       if (!isVoter) return;
-      return hasVoted ? <VotedChip /> : <VotingSubmit onClick={onSubmit} isLoading={isLoading} />;
+      return hasVoted ? <VotedChip /> : <VotingSubmit onClick={onSubmit} isLoading={isLoading} disabled={disabled} />;
     }
     case "result-win":
     case "result-lost":
