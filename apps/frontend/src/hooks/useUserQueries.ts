@@ -6,6 +6,7 @@ import { useWallet } from "@vechain/vechain-kit";
 const getNodes = async ({ address, startDate }: { address: string; startDate: Date }) => {
   try {
     const blockN = await getBlockFromDate(startDate);
+    if (!blockN) return { nodes: [] };
     return await getUserNodes({ address, blockN: blockN?.number.toString() });
   } catch (error) {
     console.error("Error fetching nodes:", error);

@@ -61,7 +61,11 @@ export const VotingSingleChoice = ({
           results={results}
         />
       ))}
-      <VotingListFooter onSubmit={onSubmit} isLoading={isTransactionPending} disabled={!currentSelection} />
+      <VotingListFooter
+        onSubmit={onSubmit}
+        isLoading={isTransactionPending}
+        disabled={currentSelection === undefined}
+      />
     </Flex>
   );
 };
@@ -113,7 +117,11 @@ export const VotingSingleOption = ({
           results={results}
         />
       ))}
-      <VotingListFooter onSubmit={onSubmit} isLoading={isTransactionPending} disabled={!currentSelection} />
+      <VotingListFooter
+        onSubmit={onSubmit}
+        isLoading={isTransactionPending}
+        disabled={currentSelection === undefined}
+      />
     </Flex>
   );
 };
@@ -182,7 +190,7 @@ export const VotingMultipleOptions = ({
           results={results}
         />
       ))}
-      <VotingListFooter onSubmit={onSubmit} isLoading={isTransactionPending} disabled={currentSelection.length > 0} />
+      <VotingListFooter onSubmit={onSubmit} isLoading={isTransactionPending} disabled={currentSelection.length === 0} />
     </Flex>
   );
 };
