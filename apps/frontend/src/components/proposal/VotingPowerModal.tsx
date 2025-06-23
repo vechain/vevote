@@ -11,6 +11,7 @@ import { NodeItem } from "@/types/user";
 import { getConfig } from "@repo/config";
 import { useNodes } from "@/hooks/useUserQueries";
 import { useProposal } from "./ProposalProvider";
+import { useGetDatesBlocks } from "@/hooks/useGetDatesBlocks";
 
 const VECHAIN_EXPLORER_URL = getConfig(import.meta.env.VITE_APP_ENV).network.explorerUrl;
 
@@ -20,6 +21,10 @@ export const VotingPowerModal = () => {
   const { formattedProposalDate } = useFormatDate();
   const { proposal } = useProposal();
   const { nodes } = useNodes({ startDate: proposal.startDate });
+
+  const { startBlock, startBlockId } = useGetDatesBlocks({
+    startDate: proposal.startDate,
+  });
 
   const nodesList = useMemo(
     () =>
@@ -35,19 +40,17 @@ export const VotingPowerModal = () => {
     return nodesList.reduce((acc, node) => acc + node.votingPower, 0);
   }, [nodesList]);
 
-  //todo: get block info from blockchain
   const block = useMemo(
     () => ({
-      id: "0x0146e719f72cf2ef3e7baaefcb3a96c6d6c9d13111c2610155241ff634c5f80a",
-      number: "21.423.897",
+      id: startBlockId,
+      number: startBlock || 0,
     }),
-    [],
+    [startBlock, startBlockId],
   );
 
-  //todo: get snapshot date from blockchain
   const snapshot = useMemo(
-    () => formattedProposalDate(new Date("2023-10-01T00:00:00Z")) || "",
-    [formattedProposalDate],
+    () => formattedProposalDate(proposal.startDate) || "",
+    [formattedProposalDate, proposal.startDate],
   );
 
   return (

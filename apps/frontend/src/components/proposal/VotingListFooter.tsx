@@ -11,13 +11,18 @@ import { VotingPowerModal } from "./VotingPowerModal";
 import { VotersModal } from "./VotersModal";
 import { useHasVoted } from "@/hooks/useCastVote";
 import { ArrowLinkIcon, ArrowRightIcon, CheckCircleIcon } from "@/icons";
+import { useNodes } from "@/hooks/useUserQueries";
 
-export const VotingListFooter = ({ onSubmit, isLoading }: { onSubmit: () => Promise<void>; isLoading?: boolean }) => {
+type VotingListFooterProps = { onSubmit: () => Promise<void>; isLoading?: boolean; disabled?: boolean };
+
+export const VotingListFooter = ({ onSubmit, isLoading, disabled = false }: VotingListFooterProps) => {
   const { proposal } = useProposal();
   const { account } = useWallet();
   const { LL } = useI18nContext();
   const { formattedProposalDate } = useFormatDate();
   const votingVariant: VotingItemVariant = useMemo(() => getVotingVariant(proposal.status), [proposal.status]);
+  const { nodes } = useNodes({ startDate: proposal?.startDate });
+  const isVoter = useMemo(() => nodes.length > 0, [nodes.length]);
 
   const votingNotStarted = useMemo(
     () => proposal.status === "upcoming" || (proposal.status === "voting" && !account?.address),
@@ -35,9 +40,15 @@ export const VotingListFooter = ({ onSubmit, isLoading }: { onSubmit: () => Prom
 
   return (
     <Flex gap={8} alignItems={"center"} justifyContent={"space-between"} width={"100%"}>
-      <VotingFooterAction onSubmit={onSubmit} votingVariant={votingVariant} isLoading={isLoading} />
+      <VotingFooterAction
+        onSubmit={onSubmit}
+        votingVariant={votingVariant}
+        isLoading={isLoading}
+        isVoter={isVoter}
+        disabled={disabled}
+      />
       {/* add error */}
-      {!votingNotStarted && <VotingPower />}
+      {!votingNotStarted && isVoter && <VotingPower />}
     </Flex>
   );
 };
@@ -46,10 +57,14 @@ const VotingFooterAction = ({
   onSubmit,
   votingVariant,
   isLoading,
+  isVoter = false,
+  disabled = false,
 }: {
   onSubmit: () => void;
   votingVariant: VotingItemVariant;
   isLoading?: boolean;
+  isVoter?: boolean;
+  disabled?: boolean;
 }) => {
   const { account } = useWallet();
   const { proposal } = useProposal();
@@ -58,10 +73,11 @@ const VotingFooterAction = ({
   if (!account?.address) return <ConnectButton />;
 
   switch (votingVariant) {
-    case "voting":
-      return hasVoted ? <VotedChip /> : <VotingSubmit onClick={onSubmit} isLoading={isLoading} />;
+    case "voting": {
+      if (!isVoter) return;
+      return hasVoted ? <VotedChip /> : <VotingSubmit onClick={onSubmit} isLoading={isLoading} disabled={disabled} />;
+    }
     case "result-win":
-      return <VotedChip />;
     case "result-lost":
       return <VotersModal />;
   }

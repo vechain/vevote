@@ -4,8 +4,10 @@ import { Box, Button, Checkbox, defineStyle, Flex, Radio, Text } from "@chakra-u
 import { useCallback, useMemo } from "react";
 import { motion } from "framer-motion";
 import { useWallet } from "@vechain/vechain-kit";
-import { useHasVoted, useVotesResults } from "@/hooks/useCastVote";
+import { useHasVoted } from "@/hooks/useCastVote";
 import { useProposal } from "./ProposalProvider";
+import { useNodes } from "@/hooks/useUserQueries";
+import { VotedResult } from "@/types/votes";
 
 export type VotingItemVariant = "upcoming" | "voting" | "result-lost" | "result-win";
 
@@ -17,6 +19,7 @@ export type VotingItemProps = {
   choiceIndex: number;
   onClick?: () => void;
   isMostVoted?: boolean;
+  results?: VotedResult;
 };
 
 const variants = (isSelected: boolean) => ({
@@ -50,13 +53,17 @@ export const VotingItem = ({
   onClick,
   isMostVoted,
   choiceIndex,
+  results,
 }: VotingItemProps) => {
   const { account } = useWallet();
   const { proposal } = useProposal();
   const { hasVoted } = useHasVoted({ proposalId: proposal.id });
+  const { nodes } = useNodes({ startDate: proposal?.startDate });
+  const isVoter = useMemo(() => nodes.length > 0, [nodes.length]);
+
   const cannotVote = useMemo(
-    () => !account?.address || hasVoted || variant !== "voting" || proposal.proposer === account.address,
-    [account?.address, hasVoted, proposal.proposer, variant],
+    () => !account?.address || hasVoted || variant !== "voting" || !isVoter,
+    [account?.address, hasVoted, isVoter, variant],
   );
   const handleClick = useCallback(() => {
     if (cannotVote) return;
@@ -84,7 +91,9 @@ export const VotingItem = ({
           variant={variant}
           isSelected={isSelected}
         />
-        {variant !== "upcoming" && <VotesSection choiceIndex={choiceIndex} variant={variant} isSelected={isSelected} />}
+        {variant !== "upcoming" && (
+          <VotesSection choiceIndex={choiceIndex} variant={variant} isSelected={isSelected} results={results} />
+        )}
       </Flex>
     </Button>
   );
@@ -118,28 +127,26 @@ const VotesSection = ({
   choiceIndex,
   isSelected,
   variant,
+  results,
 }: {
   choiceIndex: number;
   variant: VotingItemVariant;
   isSelected: boolean;
+  results?: VotedResult;
 }) => {
   const isProgressDisabled = useMemo(() => variant === "voting" && !isSelected, [variant, isSelected]);
   const { LL } = useI18nContext();
-  const { proposal } = useProposal();
-  const { results, error } = useVotesResults({ proposalId: proposal.id, size: proposal.votingOptions.length });
 
   const votes = useMemo(() => {
-    if (error || !results) return 0;
-
+    if (!results) return 0;
     const matchingResult = results.data.find(r => r.choice === choiceIndex);
     return matchingResult?.totalVoters ?? 0;
-  }, [choiceIndex, error, results]);
+  }, [choiceIndex, results]);
 
   const totalVotes = useMemo(() => {
-    if (error || !results) return 0;
-
+    if (!results) return 0;
     return results.data.reduce((sum, result) => sum + (result.totalVoters ?? 0), 0);
-  }, [error, results]);
+  }, [results]);
 
   const votesPercentage = useMemo(() => {
     if (totalVotes === 0) return 0;

@@ -117,16 +117,25 @@ export const mergeIpfsDetails = (
   });
 };
 
-export const getBlockFromDate = async (date?: Date): Promise<number> => {
-  if (!date) return 0;
+export const getBlockFromDate = async (
+  date: Date,
+): Promise<{
+  number: number;
+  id: string;
+}> => {
   const currentBlock = await thorClient.blocks.getFinalBlockExpanded();
   const currentTimestamp = currentBlock?.timestamp || 0; // in seconds
   const currentBlockNumber = currentBlock?.number || 0; // current block number
 
-  const targetTimestamp = Math.floor(date.getTime() / 1000); // in seconds
+  const targetTimestamp = Math.floor(dayjs(date).unix()); // in seconds
 
   const blocksUntilTarget = Math.floor((targetTimestamp - currentTimestamp) / AVERAGE_BLOCK_TIME);
-  return currentBlockNumber + blocksUntilTarget;
+  const number = currentBlockNumber + blocksUntilTarget;
+  const compressed = await thorClient.blocks.getBlockCompressed(number);
+  return {
+    number,
+    id: compressed?.id || "",
+  };
 };
 
 export const getDateFromBlock = async (blockNumber: number): Promise<Date> => {

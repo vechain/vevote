@@ -1,19 +1,22 @@
+import { useNodes } from "@/hooks/useUserQueries";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { CircleInfoIcon } from "@/icons";
 import { Button, Flex, Icon, Text } from "@chakra-ui/react";
 import { useWallet } from "@vechain/vechain-kit";
 import { useCallback, useMemo } from "react";
-
-//todo: get from user provider
-const isVoter = false;
+import { useProposal } from "./ProposalProvider";
 
 export const BuyANode = () => {
   const { account } = useWallet();
   const { LL } = useI18nContext();
+  const { proposal } = useProposal();
+
+  const { nodes } = useNodes({ startDate: proposal?.startDate });
+  const isVoter = useMemo(() => nodes.length > 0, [nodes.length]);
 
   const connectedAndVoter = useMemo(() => {
     return account?.address && isVoter;
-  }, [account?.address]);
+  }, [account?.address, isVoter]);
 
   const infoText = useMemo(() => {
     if (connectedAndVoter) return LL.proposal.buy_another_node();
