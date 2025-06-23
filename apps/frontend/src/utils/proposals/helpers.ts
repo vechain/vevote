@@ -118,21 +118,16 @@ export const mergeIpfsDetails = (
 };
 
 export const getBlockFromDate = async (
-  date?: Date,
+  date: Date,
 ): Promise<{
   number: number;
   id: string;
 }> => {
-  if (!date)
-    return {
-      number: 0,
-      id: "",
-    };
   const currentBlock = await thorClient.blocks.getFinalBlockExpanded();
   const currentTimestamp = currentBlock?.timestamp || 0; // in seconds
   const currentBlockNumber = currentBlock?.number || 0; // current block number
 
-  const targetTimestamp = Math.floor(date.getTime() / 1000); // in seconds
+  const targetTimestamp = Math.floor(dayjs(date).unix()); // in seconds
 
   const blocksUntilTarget = Math.floor((targetTimestamp - currentTimestamp) / AVERAGE_BLOCK_TIME);
   const number = currentBlockNumber + blocksUntilTarget;

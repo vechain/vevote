@@ -5,7 +5,7 @@ import { NodeManagement__factory } from "@repo/contracts/typechain-types";
 import { ExtendedUserNode, NodeStrengthLevels, UserNode } from "@/types/user";
 
 const contractAddress = getConfig(import.meta.env.VITE_APP_ENV).vevoteContractAddress;
-const nodeManagmentAddress = getConfig(import.meta.env.VITE_APP_ENV).nodeManagementContractAddress;
+const nodeManagementAddress = getConfig(import.meta.env.VITE_APP_ENV).nodeManagementContractAddress;
 
 const contractInterface = VeVote__factory.createInterface();
 const nodeManagementInterface = NodeManagement__factory.createInterface();
@@ -56,14 +56,10 @@ export const getUserRoles = async ({ address }: { address?: string }) => {
   };
 };
 
-export const getUserNodes = async ({ address, blockN }: { address: string; blockN?: string }) => {
-  if (!address) return { nodes: [] };
-
-  console.log("Fetching user nodes for address:", address, "at block:", blockN);
-
+export const getUserNodes = async ({ address, blockN }: { address: string; blockN: string }) => {
   try {
     const nodesRes = await executeCall({
-      contractAddress: nodeManagmentAddress,
+      contractAddress: nodeManagementAddress,
       contractInterface: nodeManagementInterface,
       method: "getUserNodes",
       args: [address],
