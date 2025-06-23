@@ -8,12 +8,15 @@ import { useUser } from "@/contexts/UserProvider";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { CircleInfoIcon, CirclePlusIcon, VoteIcon } from "@/icons";
 import { ProposalCardType, ProposalStatus } from "@/types/proposal";
-import { Button, Flex, Heading, Icon, Link, Tab, TabList, TabPanel, TabPanels, Tabs, Text } from "@chakra-ui/react";
+import { Button, Flex, Heading, Icon, Tab, TabList, TabPanel, TabPanels, Tabs, Text } from "@chakra-ui/react";
 import { useWallet } from "@vechain/vechain-kit";
 import dayjs from "dayjs";
-import { PropsWithChildren, useMemo, useState } from "react";
+import { PropsWithChildren, useCallback, useMemo, useState } from "react";
 import { useCreateProposal } from "../CreateProposal/CreateProposalProvider";
 import { ProposalCard } from "./ProposalCard";
+import { MixPanelEvent, trackEvent } from "@/utils/mixpanel/utilsMixpanel";
+import { Routes } from "@/types/routes";
+import { useNavigate } from "react-router-dom";
 
 const ITEMS_PER_PAGE = 6;
 
@@ -27,6 +30,8 @@ export const Proposals = () => {
   const { LL } = useI18nContext();
 
   const { proposals, loading } = useProposalsEvents();
+
+  const navigate = useNavigate();
 
   const proposalsBySearch = useMemo(() => {
     const searchLower = searchValue.toLowerCase();
@@ -50,6 +55,11 @@ export const Proposals = () => {
 
   const canCreateProposal = useMemo(() => account?.address && isWhitelisted, [account?.address, isWhitelisted]);
 
+  const onCreate = useCallback(() => {
+    trackEvent(MixPanelEvent.PROPOSAL_CREATE);
+    navigate(Routes.CREATE_PROPOSAL);
+  }, [navigate]);
+
   return (
     <>
       <ProposalsHeader />
@@ -60,7 +70,7 @@ export const Proposals = () => {
             {LL.proposals.title()}
           </Heading>
           {canCreateProposal && (
-            <Button as={Link} href="/create-proposal" marginLeft={"auto"}>
+            <Button marginLeft={"auto"} onClick={onCreate}>
               <Icon as={CirclePlusIcon} />
               {LL.proposals.create()}
             </Button>

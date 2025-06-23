@@ -19,8 +19,6 @@ export const VotingListFooter = ({ onSubmit, isLoading }: { onSubmit: () => Prom
   const { formattedProposalDate } = useFormatDate();
   const votingVariant: VotingItemVariant = useMemo(() => getVotingVariant(proposal.status), [proposal.status]);
 
-  const canVote = useMemo(() => account?.address !== proposal.proposer, [account?.address, proposal.proposer]);
-
   const votingNotStarted = useMemo(
     () => proposal.status === "upcoming" || (proposal.status === "voting" && !account?.address),
     [proposal.status, account?.address],
@@ -35,14 +33,13 @@ export const VotingListFooter = ({ onSubmit, isLoading }: { onSubmit: () => Prom
       </InfoBox>
     );
 
-  if (canVote)
-    return (
-      <Flex gap={8} alignItems={"center"} justifyContent={"space-between"} width={"100%"}>
-        <VotingFooterAction onSubmit={onSubmit} votingVariant={votingVariant} isLoading={isLoading} />
-        {/* add error */}
-        {!votingNotStarted && <VotingPower />}
-      </Flex>
-    );
+  return (
+    <Flex gap={8} alignItems={"center"} justifyContent={"space-between"} width={"100%"}>
+      <VotingFooterAction onSubmit={onSubmit} votingVariant={votingVariant} isLoading={isLoading} />
+      {/* add error */}
+      {!votingNotStarted && <VotingPower />}
+    </Flex>
+  );
 };
 
 const VotingFooterAction = ({
