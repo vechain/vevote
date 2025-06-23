@@ -1,4 +1,5 @@
 import mixpanel, { Dict } from "mixpanel-browser";
+import { v4 as uuid } from "uuid";
 
 const MIXPANEL_TOKEN = import.meta.env.VITE_MIXPANEL_TOKEN || "";
 
@@ -13,6 +14,7 @@ export const mixpanelInit = () => {
         console.log("Mixpanel loaded successfully id:", mixpanel.get_distinct_id());
       },
     });
+    mixpanel.identify(uuid());
   } else {
     console.warn("Mixpanel token not found. Make sure VITE_MIXPANEL_TOKEN is set in your environment variables.");
   }
