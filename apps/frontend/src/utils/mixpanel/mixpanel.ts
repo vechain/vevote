@@ -1,6 +1,6 @@
 import mixpanel, { Dict } from "mixpanel-browser";
 
-const MIXPANEL_TOKEN = import.meta.env.VITE_MIXPANEL_TOKEN || "bbf0da6a4dcd75432a35e01af6a75d8a";
+const MIXPANEL_TOKEN = import.meta.env.VITE_MIXPANEL_TOKEN || "";
 
 if (MIXPANEL_TOKEN) {
   mixpanel.init(MIXPANEL_TOKEN, {
