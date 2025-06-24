@@ -44,22 +44,9 @@ export const DeleteProposal = () => {
   const { removeDraftProposal, draftProposal } = useCreateProposal();
 
   const onDelete = useCallback(() => {
-    const proposalId = draftProposal?.title || "draft";
-
-    trackEvent(MixPanelEvent.PROPOSAL_DELETE, { proposalId });
-
-    try {
-      removeDraftProposal();
-      navigate(Routes.HOME);
-
-      trackEvent(MixPanelEvent.PROPOSAL_DELETE_SUCCESS, { proposalId });
-    } catch (error) {
-      trackEvent(MixPanelEvent.PROPOSAL_DELETE_FAILED, {
-        proposalId,
-        error: error instanceof Error ? error.message : "Unknown error",
-      });
-    }
-  }, [navigate, removeDraftProposal, draftProposal]);
+    removeDraftProposal();
+    navigate(Routes.HOME);
+  }, [navigate, removeDraftProposal]);
   return (
     <>
       <Button

@@ -56,7 +56,7 @@ export const Proposals = () => {
   const canCreateProposal = useMemo(() => account?.address && isWhitelisted, [account?.address, isWhitelisted]);
 
   const onCreate = useCallback(() => {
-    trackEvent(MixPanelEvent.PROPOSAL_CREATE);
+    trackEvent(MixPanelEvent.CTA_CREATE_PROPOSAL_CLICKED, { page: "proposals" });
     navigate(Routes.CREATE_PROPOSAL);
   }, [navigate]);
 
