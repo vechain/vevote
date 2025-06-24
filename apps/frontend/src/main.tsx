@@ -63,15 +63,15 @@ const Providers = ({ children }: PropsWithChildren) => {
           network={{
             type: config.network.type,
           }}>
-          <UserProvider>
-            <ThemeProvider>
-              <MixPanelProvider>
+          <MixPanelProvider>
+            <UserProvider>
+              <ThemeProvider>
                 <CreateProposalProvider>
                   <DraftProposalProvider>{children}</DraftProposalProvider>
                 </CreateProposalProvider>
-              </MixPanelProvider>
-            </ThemeProvider>
-          </UserProvider>
+              </ThemeProvider>
+            </UserProvider>
+          </MixPanelProvider>
         </VeChainKitProvider>
       </PersistQueryClientProvider>
     </I18nProvider>
