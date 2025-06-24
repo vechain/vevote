@@ -23,22 +23,28 @@ export const CreateProposalNavigation = () => {
   }, [LL.proposal.create, step]);
   return (
     <PageContainer.Header
-      paddingX={20}
-      paddingY={10}
+      paddingX={{ base: 6, md: 12, lg: 24 }}
+      paddingY={{ base: 4, md: 16 }}
       boxShadow={"0px 0px 12px 1px rgba(0,0,0,0.06)"}
-      background={"white"}>
-      <Flex flexDirection={"column"} alignItems={"start"} gap={6}>
-        <Heading fontSize={30} fontWeight={600} color="primary.700">
-          {LL.proposal.create.title()}
-        </Heading>
-        <Flex flexDirection={"column"} gap={2}>
-          <ProgressBar />
-          <Text fontSize={"18px"} color={"gray.600"}>
-            {description}
-          </Text>
+      background={"white"}
+      alignItems={"start"}
+      flexDirection={"column"}
+      gap={4}>
+      <Flex width={"full"} gap={6} alignItems={"start"}>
+        <Flex flexDirection={"column"} alignItems={"start"} gap={6}>
+          <Heading fontSize={{ base: 18, md: 30 }} fontWeight={600} color="primary.700">
+            {LL.proposal.create.title()}
+          </Heading>
+          <Flex flexDirection={"column"} gap={2}>
+            <ProgressBar />
+          </Flex>
         </Flex>
+        <ExitButton />
       </Flex>
-      <ExitButton />
+
+      <Text fontSize={{ base: "14px", md: "18px" }} color={"gray.600"}>
+        {description}
+      </Text>
     </PageContainer.Header>
   );
 };
