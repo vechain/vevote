@@ -8,7 +8,7 @@ const NavbarContainer = ({ children, ...restProps }: BoxProps) => {
   return (
     <Box
       transition={"all 0.3s"}
-      paddingX={20}
+      paddingX={{ base: 6, md: 20 }}
       paddingY={1}
       position={"fixed"}
       top={0}
@@ -53,13 +53,13 @@ export const Navbar = () => {
         backdropFilter="auto"
         backdropBlur={!showBackground ? "md" : "none"}
         bgColor={!showBackground ? "rgba(38, 20, 112, 0.65)" : "transparent"}
-        paddingX={6}
-        paddingY={4}>
+        paddingX={{ base: 2, md: 6 }}
+        paddingY={{ base: 2, md: 4 }}>
         <Image
           src="/svgs/vevote_logo.svg"
           alt="VeVote Logo"
           width={"auto"}
-          height={showBackground ? "32px" : "24px"}
+          height={{ base: "16px", md: showBackground ? "32px" : "24px" }}
           objectFit={"cover"}
           transition={"all 0.3s"}
         />

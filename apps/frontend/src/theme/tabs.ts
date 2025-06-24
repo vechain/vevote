@@ -5,11 +5,13 @@ const { definePartsStyle, defineMultiStyleConfig } = createMultiStyleConfigHelpe
 
 const defaultVariant = definePartsStyle({
   tab: {
-    fontSize: "14px",
+    whiteSpace: "nowrap",
+    fontSize: { base: "12px", md: "14px" },
     borderRadius: "4px",
     color: "primary.600",
     _selected: {
       backgroundColor: "primary.100",
+      color: "primary.600",
     },
   },
   tablist: {
@@ -42,18 +44,6 @@ const sizes = {
 };
 
 export const tabsTheme = defineMultiStyleConfig({
-  baseStyle: {
-    tab: {
-      minWidth: "80px",
-      height: "40px",
-      fontSize: "14px",
-      fontWeight: "500",
-      color: "gray.600",
-      _selected: {
-        color: "primary.600",
-      },
-    },
-  },
   variants: {
     default: defaultVariant,
   },

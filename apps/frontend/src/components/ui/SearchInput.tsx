@@ -18,7 +18,7 @@ const buttonStyle = defineStyle({
 
 export const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(({ onClear, value, ...props }, ref) => {
   return (
-    <InputWithIcon backgroundColor={"white"} width={"222px"}>
+    <InputWithIcon backgroundColor={"white"} maxWidth={{ base: "280px", md: "222px" }}>
       <InputWithIcon.Icon iconPosition="left">
         <Icon as={SearchIcon} width={4} height={4} />
       </InputWithIcon.Icon>
