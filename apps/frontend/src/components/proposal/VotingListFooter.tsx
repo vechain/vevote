@@ -1,7 +1,7 @@
 import { useI18nContext } from "@/i18n/i18n-react";
 import { InfoBox, infoBoxVariants } from "../ui/InfoBox";
 import { useFormatDate } from "@/hooks/useFormatDate";
-import { useMemo } from "react";
+import { MouseEventHandler, useMemo } from "react";
 import { Button, ButtonProps, Flex, Icon, Link, Text, useBreakpointValue } from "@chakra-ui/react";
 import { DAppKitWalletButton, useWallet } from "@vechain/vechain-kit";
 import { VotingItemVariant } from "./VotingItem";
@@ -12,6 +12,7 @@ import { VotersModal } from "./VotersModal";
 import { useHasVoted } from "@/hooks/useCastVote";
 import { ArrowLinkIcon, ArrowRightIcon, CheckCircleIcon } from "@/icons";
 import { useNodes } from "@/hooks/useUserQueries";
+import { trackEvent, MixPanelEvent } from "@/utils/mixpanel/utilsMixpanel";
 
 type VotingListFooterProps = { onSubmit: () => Promise<void>; isLoading?: boolean; disabled?: boolean };
 
@@ -83,10 +84,20 @@ const VotingFooterAction = ({
   }
 };
 
-const VotingSubmit = (props: ButtonProps) => {
+const VotingSubmit = ({ onClick, ...rest }: ButtonProps) => {
   const { LL } = useI18nContext();
+  const { proposal } = useProposal();
+
+  const handleClick: MouseEventHandler<HTMLButtonElement> = e => {
+    trackEvent(MixPanelEvent.CTA_VOTE_CLICKED, {
+      proposalId: proposal?.id || "",
+      voteOption: "submit",
+    });
+    onClick?.(e);
+  };
+
   return (
-    <Button rightIcon={<Icon as={ArrowRightIcon} />} {...props}>
+    <Button rightIcon={<Icon as={ArrowRightIcon} />} onClick={handleClick} {...rest}>
       {LL.submit()}
     </Button>
   );

@@ -2,19 +2,25 @@ import { analytics } from "@/utils/mixpanel/mixpanel";
 import { useWallet } from "@vechain/vechain-kit";
 import { PropsWithChildren, useEffect, useMemo } from "react";
 import { v4 as uuid } from "uuid";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
 
 export const MixPanelProvider = ({ children }: PropsWithChildren) => {
   const { account } = useWallet();
 
-  const userId = useMemo(() => {
-    const existingId = localStorage.getItem("mixpanel_user_id");
-    return existingId || uuid();
-  }, []);
+  const [userId, setUserId] = useLocalStorage("mixpanel_user_id", "");
+
+  const finalUserId = useMemo(() => {
+    if (!userId) {
+      const newId = uuid();
+      setUserId(newId);
+      return newId;
+    }
+    return userId;
+  }, [userId, setUserId]);
 
   useEffect(() => {
-    localStorage.setItem("mixpanel_user_id", userId);
-    analytics.identify(userId);
-  }, [userId]);
+    analytics.identify(finalUserId);
+  }, [finalUserId]);
 
   useEffect(() => {
     analytics.setUserProperties({

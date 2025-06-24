@@ -1,8 +1,9 @@
 import { ProposalStatus } from "@/types/proposal";
-import { useMemo } from "react";
+import { useMemo, useCallback } from "react";
 import { useCastVote, useVotedChoices } from "./useCastVote";
 import { VotingItemVariant } from "@/components/proposal/VotingItem";
 import { getVotingVariant } from "@/utils/voting";
+import { trackEvent, MixPanelEvent } from "@/utils/mixpanel/utilsMixpanel";
 
 export const SHOW_RESULTS_STATUSES: ProposalStatus[] = [
   "approved",
@@ -22,9 +23,45 @@ export const useVotingBase = (proposal: { id: string; status: ProposalStatus }) 
 
   const votingVariant: VotingItemVariant = useMemo(() => getVotingVariant(proposal.status), [proposal.status]);
 
-  const { sendTransaction, isTransactionPending } = useCastVote({
+  const {
+    sendTransaction: originalSendTransaction,
+    isTransactionPending,
+    txReceipt,
+  } = useCastVote({
     proposalId: proposal.id,
   });
+
+  const sendTransaction = useCallback(
+    async (params: { id: string; selectedOptions: (1 | 0)[] }) => {
+      const voteOption = params.selectedOptions
+        .map((opt, index) => (opt === 1 ? index : null))
+        .filter(i => i !== null)
+        .join(",");
+
+      try {
+        trackEvent(MixPanelEvent.PROPOSAL_VOTE, {
+          proposalId: params.id,
+          vote: voteOption,
+        });
+
+        await originalSendTransaction(params);
+
+        trackEvent(MixPanelEvent.PROPOSAL_VOTE_SUCCESS, {
+          proposalId: params.id,
+          vote: voteOption,
+          transactionId: txReceipt?.meta.txID || "unknown",
+        });
+      } catch (error) {
+        trackEvent(MixPanelEvent.PROPOSAL_VOTE_FAILED, {
+          proposalId: params.id,
+          vote: voteOption,
+          error: error instanceof Error ? error.message : "Unknown error",
+        });
+        throw error;
+      }
+    },
+    [originalSendTransaction, txReceipt?.meta.txID],
+  );
 
   return {
     votedChoices,

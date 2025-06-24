@@ -10,6 +10,7 @@ import { DeleteIcon, MinusCircleIcon } from "@/icons";
 import { useCancelProposal } from "@/hooks/useCancelProposal";
 import { Routes } from "@/types/routes";
 import { useNavigate } from "react-router-dom";
+import { trackEvent, MixPanelEvent } from "@/utils/mixpanel/utilsMixpanel";
 
 export const CancelProposal = ({ proposalId }: { proposalId?: string }) => {
   const { LL } = useI18nContext();
@@ -25,7 +26,7 @@ export const CancelProposal = ({ proposalId }: { proposalId?: string }) => {
   const onSubmit = useCallback(
     async (values: z.infer<typeof schema>) => {
       if (!proposalId) return;
-      sendTransaction({ proposalId, reason: values.reason });
+      await sendTransaction({ proposalId, reason: values.reason });
     },
     [proposalId, sendTransaction],
   );
@@ -38,7 +39,15 @@ export const CancelProposal = ({ proposalId }: { proposalId?: string }) => {
   }, [error, isTransactionPending, navigate, onClose, status, txReceipt]);
   return (
     <>
-      <Button variant="danger" onClick={onOpen} leftIcon={<Icon as={MinusCircleIcon} />}>
+      <Button
+        variant="danger"
+        onClick={() => {
+          trackEvent(MixPanelEvent.CTA_CANCEL_CLICKED, {
+            proposalId: proposalId || "",
+          });
+          onOpen();
+        }}
+        leftIcon={<Icon as={MinusCircleIcon} />}>
         {LL.cancel()}
       </Button>
       <MessageModal
