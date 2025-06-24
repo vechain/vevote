@@ -167,7 +167,7 @@ const EmptyPanel = () => {
           alignItems={"center"}>
           <Icon as={CircleInfoIcon} color={"gray.400"} width={8} height={8} />
         </Flex>
-        <Text color={"gray.600"} fontSize={24}>
+        <Text color={"gray.600"} fontSize={24} whiteSpace={"nowrap"}>
           {LL.proposals.no_proposals()}
         </Text>
       </Flex>
