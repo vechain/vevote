@@ -19,18 +19,34 @@ import { useCallback } from "react";
 import { z } from "zod";
 import { Label } from "../ui/Label";
 import { InputMessage } from "../ui/InputMessage";
+import { executeCall } from "@/utils/contract";
+import { VeVote__factory } from "@repo/contracts";
+import { getConfig } from "@repo/config";
+import { fromStringToUint256 } from "@/utils/proposals/helpers";
 
-export const ExecuteModal = () => {
+export const ExecuteModal = ({ proposalId }: { proposalId: string }) => {
   const { LL } = useI18nContext();
   const { isOpen, onClose, onOpen } = useDisclosure();
+
+  const contractAddress = getConfig(import.meta.env.VITE_APP_ENV).vevoteContractAddress;
+  const contractInterface = VeVote__factory.createInterface();
 
   const schema = z.object({
     link: z.string(),
   });
 
-  const onSubmit = useCallback((values: z.infer<typeof schema>) => {
-    console.log(values);
-  }, []);
+  const onSubmit = useCallback(
+    async (values: z.infer<typeof schema>) => {
+      console.log(values);
+      await executeCall({
+        contractAddress,
+        contractInterface,
+        method: "execute",
+        args: [fromStringToUint256(proposalId)],
+      });
+    },
+    [contractAddress, contractInterface, proposalId],
+  );
 
   return (
     <>

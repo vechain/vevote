@@ -19,6 +19,7 @@ import { ProposalCardType } from "@/types/proposal";
 import { useHasVoted } from "@/hooks/useCastVote";
 import { UserContext } from "@/contexts/UserProvider";
 import { ArrowLeftIcon, ArrowRightIcon, CheckSquareIcon, VoteIcon } from "@/icons";
+import { ExecuteModal } from "@/components/proposal/ExecuteModal";
 
 export const Proposal = () => {
   const { LL } = useI18nContext();
@@ -110,9 +111,7 @@ const ProposalNavbarActions = ({ proposal }: { proposal: ProposalCardType | unde
     <Flex alignItems={"center"} gap={2} marginLeft={"auto"}>
       {isAdminWhitelisted && ["draft"].includes(proposal?.status || "") && <DeleteEditProposal />}
 
-      {isExecutor && proposal?.status === "approved" && (
-        <Button variant={"feedback"}>{LL.proposal.mark_as_executed()}</Button>
-      )}
+      {isExecutor && proposal?.status === "approved" && <ExecuteModal proposalId={proposal?.id} />}
 
       {isVoter &&
         (hasVoted ? (
