@@ -30,7 +30,7 @@ export const CreateProposalNavigation = () => {
       alignItems={"start"}
       flexDirection={"column"}
       gap={4}>
-      <Flex width={"full"} gap={6} alignItems={"start"}>
+      <Flex width={"full"} gap={6} alignItems={{ base: "start", md: "center" }}>
         <Flex flexDirection={"column"} alignItems={"start"} gap={6}>
           <Heading fontSize={{ base: 18, md: 30 }} fontWeight={600} color="primary.700">
             {LL.proposal.create.title()}
