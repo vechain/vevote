@@ -8,8 +8,8 @@ const NavbarContainer = ({ children, ...restProps }: BoxProps) => {
   return (
     <Box
       transition={"all 0.3s"}
-      paddingX={{ base: 6, md: 20 }}
-      paddingY={1}
+      paddingX={{ base: 2, md: 20 }}
+      paddingY={2}
       position={"fixed"}
       top={0}
       left={0}
