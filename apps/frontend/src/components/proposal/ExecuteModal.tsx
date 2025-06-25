@@ -32,21 +32,17 @@ export const ExecuteModal = ({ proposalId }: { proposalId: string }) => {
   const contractInterface = VeVote__factory.createInterface();
 
   const schema = z.object({
-    link: z.string(),
+    link: z.string().optional(),
   });
 
-  const onSubmit = useCallback(
-    async (values: z.infer<typeof schema>) => {
-      console.log(values);
-      await executeCall({
-        contractAddress,
-        contractInterface,
-        method: "execute",
-        args: [fromStringToUint256(proposalId)],
-      });
-    },
-    [contractAddress, contractInterface, proposalId],
-  );
+  const onSubmit = useCallback(async () => {
+    await executeCall({
+      contractAddress,
+      contractInterface,
+      method: "execute",
+      args: [fromStringToUint256(proposalId)],
+    });
+  }, [contractAddress, contractInterface, proposalId]);
 
   return (
     <>
