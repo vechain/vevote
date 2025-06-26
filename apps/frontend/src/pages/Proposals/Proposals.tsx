@@ -74,19 +74,20 @@ export const Proposals = () => {
         </PageContainer.Header>
         <PageContainer.Content>
           <Tabs>
-            <Flex direction={{ base: "column", md: "row" }} gap={{ base: 4, md: 0 }}>
-              <TabList>
-                <Tab fontSize={{ base: "sm", md: "md" }}>{LL.all()}</Tab>
-                <Tab fontSize={{ base: "sm", md: "md" }}>{LL.badge.voting()}</Tab>
-                <Tab fontSize={{ base: "sm", md: "md" }}>{LL.badge.upcoming()}</Tab>
-                <Tab fontSize={{ base: "sm", md: "md" }}>{LL.finished()}</Tab>
+            <Flex direction={{ base: "column", lg: "row" }} gap={{ base: 4, lg: 0 }}>
+              <TabList gridTemplateColumns={"repeat(4, 1fr)"}>
+                <Tab>{LL.all()}</Tab>
+                <Tab>{LL.badge.voting()}</Tab>
+                <Tab>{LL.badge.upcoming()}</Tab>
+                <Tab>{LL.finished()}</Tab>
               </TabList>
               <Flex
-                marginLeft={{ base: 0, md: "auto" }}
+                marginLeft={{ base: 0, lg: "auto" }}
                 gap={4}
                 alignItems={"center"}
-                width={{ base: "100%", md: "auto" }}
-                justifyContent={{ base: "space-between", md: "flex-end" }}>
+                justifyContent={{ base: "space-between", md: "flex-end" }}
+                minWidth="0"
+                overflow="hidden">
                 <SearchInput
                   value={searchValue}
                   onChange={e => setSearchValue(e.target.value)}

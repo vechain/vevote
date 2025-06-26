@@ -5,8 +5,10 @@ const { definePartsStyle, defineMultiStyleConfig } = createMultiStyleConfigHelpe
 
 const defaultVariant = definePartsStyle({
   tab: {
+    columnSpan: "1",
     whiteSpace: "nowrap",
     fontSize: { base: "12px", md: "14px" },
+    fontWeight: 500,
     borderRadius: "4px",
     color: "primary.600",
     _selected: {
@@ -15,12 +17,16 @@ const defaultVariant = definePartsStyle({
     },
   },
   tablist: {
+    overflowX: "auto",
     backgroundColor: "white",
-    width: "fit-content",
+    width: { base: "100%", md: "fit-content" },
     borderWidth: "1px",
     borderColor: "gray.200",
     borderRadius: "8px",
     padding: "4px",
+    display: "grid",
+    gridAutoFlow: "column",
+    gap: "4px",
   },
   tabpanel: {
     paddingX: 0,
