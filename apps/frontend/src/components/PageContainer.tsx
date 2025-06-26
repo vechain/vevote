@@ -6,7 +6,7 @@ const PageContainer = ({ variant = "constrained", ...props }: FlexProps & { vari
     <Flex
       flex={1}
       padding={{ base: "20px", md: "40px" }}
-      minWidth={{ base: "100%", md: "1000px" }}
+      minWidth={{ base: "100%", lg: "1000px" }}
       maxWidth={variant === "constrained" ? "1440px" : "full"}
       width={"full"}
       marginX={"auto"}

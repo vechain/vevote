@@ -59,7 +59,7 @@ export const Banner = () => {
 
 const BottomHeading = ({ children }: PropsWithChildren) => {
   return (
-    <Heading fontSize={{ base: "16px", md: "32px" }} fontWeight={400} color={"primary.300"}>
+    <Heading fontSize={{ base: "16px", md: "20px", lg: "32px" }} fontWeight={400} color={"primary.300"}>
       {children}
     </Heading>
   );
@@ -67,7 +67,7 @@ const BottomHeading = ({ children }: PropsWithChildren) => {
 
 const TopHeading = ({ children }: PropsWithChildren) => {
   return (
-    <Heading fontSize={{ base: "24px", md: "48px" }} fontWeight={300}>
+    <Heading fontSize={{ base: "24px", md: "36px", lg: "48px" }} fontWeight={300}>
       {children}
     </Heading>
   );
