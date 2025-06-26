@@ -28,7 +28,7 @@ export const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(({ onC
       </InputWithIcon.Icon>
       <InputWithIcon.Input paddingInlineEnd={0} minWidth="0" ref={ref} paddingLeft={0} value={value} {...props} />
       {value && onClear && (
-        <Button {...buttonStyle} onClick={onClear}>
+        <Button {...buttonStyle} _hover={{ bg: "white" }} onClick={onClear}>
           <Icon as={CloseIcon} width={4} height={4} />
         </Button>
       )}
