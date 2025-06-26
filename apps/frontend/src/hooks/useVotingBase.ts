@@ -23,11 +23,7 @@ export const useVotingBase = (proposal: { id: string; status: ProposalStatus }) 
 
   const votingVariant: VotingItemVariant = useMemo(() => getVotingVariant(proposal.status), [proposal.status]);
 
-  const {
-    sendTransaction: originalSendTransaction,
-    isTransactionPending,
-    txReceipt,
-  } = useCastVote({
+  const { sendTransaction: originalSendTransaction, isTransactionPending } = useCastVote({
     proposalId: proposal.id,
   });
 
@@ -44,23 +40,28 @@ export const useVotingBase = (proposal: { id: string; status: ProposalStatus }) 
           vote: voteOption,
         });
 
-        await originalSendTransaction(params);
+        const result = await originalSendTransaction(params);
 
         trackEvent(MixPanelEvent.PROPOSAL_VOTE_SUCCESS, {
           proposalId: params.id,
           vote: voteOption,
-          transactionId: txReceipt?.meta.txID || "unknown",
+          transactionId: result.txId,
         });
+
+        return result;
       } catch (error) {
+        const txError = error as { txId?: string; error?: { message?: string }; message?: string };
+        const txId = txError.txId || "unknown";
         trackEvent(MixPanelEvent.PROPOSAL_VOTE_FAILED, {
           proposalId: params.id,
           vote: voteOption,
-          error: error instanceof Error ? error.message : "Unknown error",
+          error: txError.error?.message || txError.message || "Unknown error",
+          transactionId: txId,
         });
         throw error;
       }
     },
-    [originalSendTransaction, txReceipt?.meta.txID],
+    [originalSendTransaction],
   );
 
   return {

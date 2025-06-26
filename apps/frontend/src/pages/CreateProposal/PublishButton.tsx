@@ -3,7 +3,7 @@ import { useI18nContext } from "@/i18n/i18n-react";
 import { Button, Icon, Link, ModalFooter, Text, useDisclosure } from "@chakra-ui/react";
 import { useBuildCreateProposal } from "@/hooks/useBuildCreatePropose";
 import { useCreateProposal } from "./CreateProposalProvider";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { uploadProposalToIpfs } from "@/utils/ipfs/proposal";
 import { getHashProposal } from "@/utils/proposals/proposalsQueries";
 import { useWallet } from "@vechain/vechain-kit";
@@ -23,9 +23,7 @@ export const PublishButton = () => {
   const [newProposalId, setNewProposalId] = useState("");
 
   const { proposalDetails } = useCreateProposal();
-  const {
-    build: { sendTransaction, status, txReceipt },
-  } = useBuildCreateProposal();
+  const { sendTransaction } = useBuildCreateProposal();
 
   const { startBlock, durationBlock } = useGetDatesBlocks({
     startDate: proposalDetails.startDate,
@@ -44,6 +42,7 @@ export const PublishButton = () => {
 
   const onSubmit = useCallback(async () => {
     let proposalId = "";
+    let transactionId = "";
 
     try {
       setIsLoading(true);
@@ -60,7 +59,8 @@ export const PublishButton = () => {
         description,
       };
 
-      await sendTransaction(data);
+      const result = await sendTransaction(data);
+      transactionId = result.txId;
 
       const res = await getHashProposal({ ...data, proposer: account?.address || "" });
       if (res.success) {
@@ -69,28 +69,27 @@ export const PublishButton = () => {
 
         trackEvent(MixPanelEvent.PROPOSAL_PUBLISHED, {
           proposalId,
-          transactionId: txReceipt?.meta.txID || "unknown",
+          transactionId,
         });
+
+        onSuccess();
       }
     } catch (e) {
+      const txError = e as { txId?: string; error?: { message?: string }; message?: string };
+      const errorTxId = txError.txId || transactionId || "unknown";
+
       trackEvent(MixPanelEvent.PROPOSAL_PUBLISH_FAILED, {
         proposalId: proposalId || proposalDetails.title,
-        error: e instanceof Error ? e.message : "Unknown error",
-        transactionId: txReceipt?.meta.txID || "unknown",
+        error: txError.error?.message || txError.message || "Unknown error",
+        transactionId: errorTxId,
       });
       onFailed();
     } finally {
       setIsLoading(false);
     }
-  }, [account?.address, durationBlock, onFailed, proposalDetails, sendTransaction, startBlock, txReceipt?.meta.txID]);
+  }, [account?.address, durationBlock, onFailed, onSuccess, proposalDetails, sendTransaction, startBlock]);
 
   const onTryAgain = useCallback(() => onFailedClose(), [onFailedClose]);
-
-  useEffect(() => {
-    if (newProposalId) {
-      onSuccess();
-    }
-  }, [newProposalId, onFailed, onFailedOpen, onSuccess, status]);
 
   return (
     <>
@@ -98,7 +97,6 @@ export const PublishButton = () => {
         variant={"primary"}
         type="button"
         onClick={() => {
-          // Track CTA click
           trackEvent(MixPanelEvent.CTA_PUBLISH_CLICKED, {
             proposalId: proposalDetails.title,
           });

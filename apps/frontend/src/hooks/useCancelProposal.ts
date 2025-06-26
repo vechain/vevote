@@ -1,6 +1,7 @@
 import { getConfig } from "@repo/config";
 import { VeVote__factory } from "@repo/contracts";
-import { EnhancedClause, useBuildTransaction } from "@vechain/vechain-kit";
+import { EnhancedClause } from "@vechain/vechain-kit";
+import { useVevoteSendTransaction } from "@/utils/hooks/useVevoteSendTransaction";
 import { useCallback } from "react";
 import { trackEvent, MixPanelEvent } from "@/utils/mixpanel/utilsMixpanel";
 
@@ -49,7 +50,7 @@ export const useCancelProposal = () => {
     }
   }, []);
 
-  const { sendTransaction, txReceipt, ...rest } = useBuildTransaction({
+  const { sendTransaction, ...rest } = useVevoteSendTransaction({
     clauseBuilder: buildClauses,
     invalidateCache: true,
     refetchQueryKeys: [["proposalsEvents"]],
@@ -66,24 +67,26 @@ export const useCancelProposal = () => {
 
         trackEvent(MixPanelEvent.PROPOSAL_CANCEL_SUCCESS, {
           proposalId: params.proposalId,
-          transactionId: txReceipt?.meta.txID || "unknown",
+          transactionId: result.txId,
         });
 
         return result;
       } catch (error) {
+        const txError = error as { txId?: string; error?: { message?: string }; message?: string };
+        
         trackEvent(MixPanelEvent.PROPOSAL_CANCEL_FAILED, {
           proposalId: params.proposalId,
-          error: error instanceof Error ? error.message : "Unknown error",
+          error: txError.error?.message || txError.message || "Unknown error",
+          transactionId: txError.txId || "unknown",
         });
         throw error;
       }
     },
-    [sendTransaction, txReceipt?.meta.txID],
+    [sendTransaction],
   );
 
   return {
     ...rest,
-    txReceipt,
     sendTransaction: sendTransactionWithTracking,
   };
 };
