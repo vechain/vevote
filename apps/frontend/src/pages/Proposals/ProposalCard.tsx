@@ -4,11 +4,14 @@ import { useFormatDate } from "@/hooks/useFormatDate";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { CalendarIcon, ChevronRightIcon, ClockIcon } from "@/icons";
 import { ProposalCardType } from "@/types/proposal";
-import { Flex, Icon, Link, Text } from "@chakra-ui/react";
-import { useMemo } from "react";
+import { Button, Flex, Icon, Text } from "@chakra-ui/react";
+import { useCallback, useMemo } from "react";
 import { useHasVoted } from "@/hooks/useCastVote";
+import { useNavigate } from "react-router-dom";
+import { MixPanelEvent, trackEvent } from "@/utils/mixpanel/utilsMixpanel";
 
 export const ProposalCard = ({ status, title, endDate, startDate, id }: ProposalCardType) => {
+  const navigate = useNavigate();
   const variant = useMemo(() => {
     switch (status) {
       case "min-not-reached":
@@ -19,6 +22,14 @@ export const ProposalCard = ({ status, title, endDate, startDate, id }: Proposal
   }, [status]);
 
   const { hasVoted } = useHasVoted({ proposalId: id });
+
+  const onClick = useCallback(() => {
+    trackEvent(MixPanelEvent.CTA_PROPOSAL_CARD_CLICKED, {
+      proposalId: id,
+    });
+    navigate(`/proposal/${id}`);
+  }, [id, navigate]);
+
   return (
     <Flex
       width={"100%"}
@@ -43,9 +54,15 @@ export const ProposalCard = ({ status, title, endDate, startDate, id }: Proposal
           <DateItem startDate={startDate} endDate={endDate} status={status} />
         </Flex>
       </Flex>
-      <Link paddingX={0} bg={"transparent"} _hover={{ bg: "transparent" }} href={`/proposal/${id}`}>
+      <Button
+        variant={"none"}
+        minWidth={"auto"}
+        paddingX={0}
+        bg={"transparent"}
+        _hover={{ bg: "transparent" }}
+        onClick={onClick}>
         <Icon as={ChevronRightIcon} width={4} height={4} color={"gray.500"} />
-      </Link>
+      </Button>
     </Flex>
   );
 };

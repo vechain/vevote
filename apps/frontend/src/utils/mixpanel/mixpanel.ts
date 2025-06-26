@@ -7,7 +7,7 @@ if (MIXPANEL_TOKEN) {
     MIXPANEL_TOKEN,
     {
       debug: import.meta.env.DEV,
-      track_pageview: true,
+      track_pageview: false,
       persistence: "localStorage",
       ignore_dnt: true,
       loaded: function (mixpanel) {
@@ -21,9 +21,6 @@ if (MIXPANEL_TOKEN) {
 }
 
 export const analytics = {
-  log: () => {
-    console.log("LOGS:", Object.keys(mixpanel));
-  },
   track: (eventName: string, properties: Dict = {}) => {
     if (MIXPANEL_TOKEN) {
       mixpanel.vevote.track(eventName, {
@@ -45,14 +42,6 @@ export const analytics = {
   setUserProperties: (properties: Dict) => {
     if (MIXPANEL_TOKEN) {
       mixpanel.vevote.people.set(properties);
-    }
-  },
-
-  trackPageView: (pageName: string) => {
-    if (MIXPANEL_TOKEN) {
-      mixpanel.vevote.track_pageview({
-        page: pageName || window.location.pathname,
-      });
     }
   },
 

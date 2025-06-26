@@ -23,6 +23,7 @@ export enum MixPanelEvent {
   CTA_CANCEL_CLICKED = "CTA Cancel Clicked",
   CTA_EDIT_CLICKED = "CTA Edit Clicked",
   CTA_DELETE_CLICKED = "CTA Delete Clicked",
+  CTA_PROPOSAL_CARD_CLICKED = "CTA Proposal Card Clicked",
 }
 
 export type MixPanelProperties = {
@@ -46,6 +47,7 @@ export type MixPanelProperties = {
   [MixPanelEvent.CTA_CANCEL_CLICKED]: { proposalId: string };
   [MixPanelEvent.CTA_EDIT_CLICKED]: { proposalId: string };
   [MixPanelEvent.CTA_DELETE_CLICKED]: { proposalId: string };
+  [MixPanelEvent.CTA_PROPOSAL_CARD_CLICKED]: { proposalId: string };
 };
 
 // Type-safe trackEvent function with overloads

@@ -1,14 +1,10 @@
 import { PageContainer } from "@/components/PageContainer";
 import { useI18nContext } from "@/i18n/i18n-react";
-import { analytics } from "@/utils/mixpanel/mixpanel";
 import { Heading, Link } from "@chakra-ui/react";
-import { useEffect } from "react";
 
 export const Home = () => {
   const { LL } = useI18nContext();
-  useEffect(() => {
-    analytics.trackPageView("Proposals page viewed");
-  }, []);
+
   return (
     <PageContainer>
       <PageContainer.Header>

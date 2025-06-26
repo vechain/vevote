@@ -7,7 +7,7 @@ import { ProposalProvider } from "@/components/proposal/ProposalProvider";
 import { VotingSection } from "@/components/proposal/VotingSection";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { Box, Button, Flex, Icon, Image, Link, Text } from "@chakra-ui/react";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { useParams } from "react-router";
 import { DeleteEditProposal } from "@/components/proposal/DeleteEditProposal";
 import { useWallet } from "@vechain/vechain-kit";
@@ -21,7 +21,6 @@ import { useUser } from "@/contexts/UserProvider";
 import { ArrowLeftIcon, ArrowRightIcon, CheckSquareIcon, VoteIcon } from "@/icons";
 import { CancelProposal } from "@/components/proposal/CancelProposal";
 import { useNodes } from "@/hooks/useUserQueries";
-import { analytics } from "@/utils/mixpanel/mixpanel";
 
 export const Proposal = () => {
   const { LL } = useI18nContext();
@@ -40,10 +39,6 @@ export const Proposal = () => {
     if (params.proposalId === "draft") return draftProposal || undefined;
     return proposalData;
   }, [draftProposal, params.proposalId, proposalData]);
-
-  useEffect(() => {
-    analytics.trackPageView(`Proposal page viewed: ${params.proposalId || "draft"}`);
-  }, [params.proposalId]);
 
   return (
     <>
