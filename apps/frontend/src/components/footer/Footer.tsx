@@ -1,8 +1,10 @@
 import { useI18nContext } from "@/i18n/i18n-react";
 import { Flex, Link, Text } from "@chakra-ui/react";
+import { useWallet } from "@vechain/vechain-kit";
 
 export const Footer = () => {
   const { LL } = useI18nContext();
+  const { account } = useWallet();
   //TODO: Add the LEGAL links
   return (
     <Flex
@@ -13,7 +15,8 @@ export const Footer = () => {
       justifyContent={"space-between"}
       bgColor="primary.700"
       color={"white"}
-      flexDirection={{ base: "column", md: "row" }}>
+      flexDirection={{ base: "column", md: "row" }}
+      marginBottom={{ base: account?.address ? "100px" : 0, md: 0 }}>
       <Text
         whiteSpace={"pre-line"}
         fontFamily={"Rubik"}
