@@ -33,22 +33,29 @@ export const ProposalCard = ({ status, title, endDate, startDate, id }: Proposal
   return (
     <Flex
       width={"100%"}
-      paddingY={8}
-      paddingLeft={8}
-      paddingRight={6}
+      paddingY={{ base: 4, md: 8 }}
+      paddingLeft={{ base: 4, md: 8 }}
+      paddingRight={{ base: 4, md: 6 }}
       bg={"white"}
       borderRadius={16}
       border={"1px"}
       borderColor={"#F1F2F3"}
-      gap={6}
+      gap={{ base: 4, md: 6 }}
       alignItems={"center"}>
-      <Flex width={"100%"} direction={"column"} gap={6}>
+      <Flex width={"100%"} direction={"column"} gap={{ base: 3, md: 6 }}>
         <Flex gap={4} alignItems={"center"}>
           <IconBadge variant={variant} />
           {hasVoted && <Status text={"Voted"} marginLeft={"auto"} />}
         </Flex>
-        <Flex gap={4} alignItems={"start"} direction={"column"}>
-          <Text overflow={"hidden"} fontSize={20} fontWeight={600} color={"gray.600"}>
+        <Flex gap={{ base: 2, md: 4 }} alignItems={"start"} direction={"column"}>
+          <Text 
+            overflow={"hidden"} 
+            fontSize={{ base: 16, md: 20 }} 
+            fontWeight={600} 
+            color={"gray.600"}
+            lineHeight={{ base: 1.3, md: 1.2 }}
+            noOfLines={{ base: 2, md: 1 }}
+          >
             {title}
           </Text>
           <DateItem startDate={startDate} endDate={endDate} status={status} />
@@ -98,11 +105,11 @@ const DateItem = ({ startDate, endDate, status }: Pick<ProposalCardType, "endDat
 
       {status !== "voting" && (
         <>
-          <Text color={"gray.400"} fontSize={16}>
+          <Text color={"gray.400"} fontSize={{ base: 14, md: 16 }}>
             {status === "upcoming" ? LL.start() : LL.end()}
           </Text>
 
-          <Text fontSize={16}>{stringDate}</Text>
+          <Text fontSize={{ base: 14, md: 16 }}>{stringDate}</Text>
         </>
       )}
       {status === "voting" && <VotingDate votingDate={votingDate} />}
@@ -127,7 +134,7 @@ export const VotingDate = ({
   }, [votingDate?.hours, votingDate?.minutes]);
 
   return (
-    <Flex fontSize={16} alignItems={"center"} color={"gray.600"} gap={1}>
+    <Flex fontSize={{ base: 14, md: 16 }} alignItems={"center"} color={"gray.600"} gap={1}>
       {votingDate?.days && (
         <>
           <Text fontWeight={500}>{votingDate?.days}</Text>
