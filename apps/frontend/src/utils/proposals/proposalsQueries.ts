@@ -22,51 +22,57 @@ export const getProposalsEvents = async (
   proposalId?: string,
 ): Promise<{ proposals: FromEventsToProposalsReturnType }> => {
   try {
-    // Get event ABIs
-    const proposalCreatedEventAbi = thor.contracts.load(contractAddress, VeVote__factory.abi).getEventAbi("VeVoteProposalCreated");
-    const proposalExecutedEventAbi = thor.contracts.load(contractAddress, VeVote__factory.abi).getEventAbi("VeVoteProposalExecuted");
-    const proposalCanceledEventAbi = thor.contracts.load(contractAddress, VeVote__factory.abi).getEventAbi("ProposalCanceled");
+    const proposalCreatedAbi = thor.contracts
+      .load(contractAddress, VeVote__factory.abi)
+      .getEventAbi("VeVoteProposalCreated");
+    const proposalExecutedAbi = thor.contracts
+      .load(contractAddress, VeVote__factory.abi)
+      .getEventAbi("VeVoteProposalExecuted");
+    const proposalCanceledAbi = thor.contracts
+      .load(contractAddress, VeVote__factory.abi)
+      .getEventAbi("ProposalCanceled");
 
-    // Build filter criteria
     const filterCriteria = [
       {
         criteria: {
           address: contractAddress,
-          topic0: proposalCreatedEventAbi.stringSignature,
-          topic1: proposalId ? proposalCreatedEventAbi.encodeFilterTopicsNoNull({ proposalId })[1] : undefined,
+          topic0: proposalCreatedAbi.stringSignature,
+          topic1: proposalId ? proposalCreatedAbi.encodeFilterTopicsNoNull({ proposalId })[1] : undefined,
         },
-        eventAbi: proposalCreatedEventAbi,
+        eventAbi: proposalCreatedAbi,
       },
       {
         criteria: {
           address: contractAddress,
-          topic0: proposalExecutedEventAbi.stringSignature,
-          topic1: proposalId ? proposalExecutedEventAbi.encodeFilterTopicsNoNull({ proposalId })[1] : undefined,
+          topic0: proposalExecutedAbi.stringSignature,
         },
-        eventAbi: proposalExecutedEventAbi,
+        eventAbi: proposalExecutedAbi,
       },
       {
         criteria: {
           address: contractAddress,
-          topic0: proposalCanceledEventAbi.stringSignature,
-          topic1: proposalId ? proposalCanceledEventAbi.encodeFilterTopicsNoNull({ proposalId })[1] : undefined,
+          topic0: proposalCanceledAbi.stringSignature,
         },
-        eventAbi: proposalCanceledEventAbi,
+        eventAbi: proposalCanceledAbi,
       },
     ];
 
-    // Fetch all events
-    const events = await getAllEventLogs({ thor, nodeUrl, filterCriteria });
+    const events = await getAllEventLogs({
+      thor,
+      nodeUrl,
+      filterCriteria,
+    });
 
     const decodedProposalEvents = events
       .map(event => {
         const eventSignature = event.topics[0];
 
-        if (eventSignature === proposalCreatedEventAbi.stringSignature || eventSignature === proposalExecutedEventAbi.stringSignature) {
-          const [proposalId, proposer, description, startBlock, voteDuration, choices, maxSelection] = event.decodedData as [string, string, string, bigint, bigint, string[], bigint];
+        if (eventSignature === proposalCreatedAbi.stringSignature) {
+          const [proposalIdEvent, proposer, description, startBlock, voteDuration, choices, maxSelection] =
+            event.decodedData as [string, string, string, bigint, bigint, string[], bigint];
 
           return {
-            proposalId,
+            proposalId: proposalIdEvent,
             proposer,
             description,
             startTime: startBlock.toString(),
@@ -77,17 +83,37 @@ export const getProposalsEvents = async (
           };
         }
 
+        if (eventSignature === proposalExecutedAbi.stringSignature) {
+          const [proposalIdEvent] = event.decodedData as [string];
+
+          // Filter by proposalId if specified (since executed events don't have indexed proposalId)
+          if (proposalId && proposalIdEvent !== proposalId) {
+            return undefined;
+          }
+
+          // Note: executed events only contain proposalId, full data comes from created events
+          return {
+            proposalId: proposalIdEvent,
+            isExecuted: true,
+          };
+        }
+
         return undefined;
       })
       .filter(Boolean);
 
     const decodedCanceledProposals = events
       .map(event => {
-        if (event.topics[0] === proposalCanceledEventAbi.stringSignature) {
-          const [proposalId, canceller, reason] = event.decodedData as [string, string, string];
+        if (event.topics[0] === proposalCanceledAbi.stringSignature) {
+          const [proposalIdEvent, canceller, reason] = event.decodedData as [string, string, string];
+
+          // Filter by proposalId if specified (since canceled events don't have indexed proposalId)
+          if (proposalId && proposalIdEvent !== proposalId) {
+            return undefined;
+          }
 
           return {
-            proposalId,
+            proposalId: proposalIdEvent,
             canceller,
             reason: reason || "",
           };
