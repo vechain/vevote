@@ -17,7 +17,7 @@ type VotingListFooterProps = { onSubmit: () => Promise<void>; isLoading?: boolea
 
 export const VotingListFooter = ({ onSubmit, isLoading, disabled = false }: VotingListFooterProps) => {
   const { proposal } = useProposal();
-  const { account } = useWallet();
+  const { connection } = useWallet();
   const { LL } = useI18nContext();
   const { formattedProposalDate } = useFormatDate();
   const votingVariant: VotingItemVariant = useMemo(() => getVotingVariant(proposal.status), [proposal.status]);
@@ -25,8 +25,8 @@ export const VotingListFooter = ({ onSubmit, isLoading, disabled = false }: Voti
   const isVoter = useMemo(() => nodes.length > 0, [nodes.length]);
 
   const votingNotStarted = useMemo(
-    () => proposal.status === "upcoming" || (proposal.status === "voting" && !account?.address),
-    [proposal.status, account?.address],
+    () => proposal.status === "upcoming" || (proposal.status === "voting" && !connection.isConnected),
+    [proposal.status, connection.isConnected],
   );
 
   if (votingVariant === "upcoming")
@@ -66,11 +66,11 @@ const VotingFooterAction = ({
   isVoter?: boolean;
   disabled?: boolean;
 }) => {
-  const { account } = useWallet();
+  const { connection } = useWallet();
   const { proposal } = useProposal();
   const { hasVoted } = useHasVoted({ proposalId: proposal?.id || "" });
 
-  if (!account?.address) return <ConnectButton />;
+  if (!connection.isConnected) return <ConnectButton />;
 
   switch (votingVariant) {
     case "voting": {

@@ -222,6 +222,10 @@ type RootTranslation = {
 	 * D​i​s​c​o​n​n​e​c​t
 	 */
 	disconnect: string
+	/**
+	 * C​o​n​n​e​c​t​ ​W​a​l​l​e​t
+	 */
+	connect_wallet: string
 	home: {
 		/**
 		 * H​o​m​e
@@ -904,7 +908,8 @@ type RootTranslation = {
 	}
 	footer: {
 		/**
-		 * A​l​l​ ​R​i​g​h​t​s​ ​R​e​s​e​r​v​e​d​ ​©​ ​V​e​c​h​a​i​n​ ​F​o​u​n​d​a​t​i​o​n​ ​S​a​n​ ​M​a​r​i​n​o​ ​S​.​r​.​l​.
+		 * A​l​l​ ​R​i​g​h​t​s​ ​R​e​s​e​r​v​e​d​ ​
+	​ ​©​ ​V​e​c​h​a​i​n​ ​F​o​u​n​d​a​t​i​o​n​ ​S​a​n​ ​M​a​r​i​n​o​ ​S​.​r​.​l​.
 		 */
 		all_right: string
 		legal: {
@@ -1130,6 +1135,10 @@ JPG, PNG or SVG of maximum of {size}MB.
 	 * Disconnect
 	 */
 	disconnect: () => LocalizedString
+	/**
+	 * Connect Wallet
+	 */
+	connect_wallet: () => LocalizedString
 	home: {
 		/**
 		 * Home
@@ -1804,7 +1813,8 @@ JPG, PNG or SVG of maximum of {size}MB.
 	}
 	footer: {
 		/**
-		 * All Rights Reserved © Vechain Foundation San Marino S.r.l.
+		 * All Rights Reserved 
+	 © Vechain Foundation San Marino S.r.l.
 		 */
 		all_right: () => LocalizedString
 		legal: {

@@ -5,7 +5,7 @@ import { getConfig } from "@repo/config";
 import { VeVote__factory } from "@repo/contracts";
 import { useQuery } from "@tanstack/react-query";
 import { ZERO_ADDRESS } from "@vechain/sdk-core";
-import { EnhancedClause, useBuildTransaction, useConnex, useWallet } from "@vechain/vechain-kit";
+import { EnhancedClause, useBuildTransaction, useThor, useWallet } from "@vechain/vechain-kit";
 import { useCallback } from "react";
 
 const contractAddress = getConfig(import.meta.env.VITE_APP_ENV).vevoteContractAddress;
@@ -67,7 +67,7 @@ export const useCastVote = ({ proposalId }: { proposalId?: string }) => {
 
 export const useVotedChoices = ({ proposalId, enabled }: { proposalId?: string; enabled?: boolean }) => {
   const { account } = useWallet();
-  const { thor } = useConnex();
+  const thor = useThor();
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["votedChoices", proposalId, account?.address],

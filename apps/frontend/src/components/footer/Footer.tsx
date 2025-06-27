@@ -1,10 +1,19 @@
+import { useUser } from "@/contexts/UserProvider";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { Flex, Link, Text } from "@chakra-ui/react";
 import { useWallet } from "@vechain/vechain-kit";
+import { useMemo } from "react";
 
 export const Footer = () => {
   const { LL } = useI18nContext();
-  const { account } = useWallet();
+  const { connection } = useWallet();
+  const { isWhitelisted } = useUser();
+
+  const canCreateProposal = useMemo(
+    () => connection.isConnected && isWhitelisted,
+    [connection.isConnected, isWhitelisted],
+  );
+
   //TODO: Add the LEGAL links
   return (
     <Flex
@@ -16,7 +25,7 @@ export const Footer = () => {
       bgColor="primary.700"
       color={"white"}
       flexDirection={{ base: "column", md: "row" }}
-      marginBottom={{ base: account?.address ? "100px" : 0, md: 0 }}>
+      marginBottom={{ base: canCreateProposal ? "100px" : 0, md: 0 }}>
       <Text
         whiteSpace={"pre-line"}
         fontFamily={"Rubik"}

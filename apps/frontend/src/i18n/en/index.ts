@@ -53,6 +53,7 @@ const en = {
   try_again: "Try Again",
   read_full_description: "Read full description",
   disconnect: "Disconnect",
+  connect_wallet: "Connect Wallet",
   home: {
     title: "Home",
     go_to_proposals: "Go to proposals",

@@ -51,6 +51,10 @@ const Providers = ({ children }: PropsWithChildren) => {
             delegatorUrl: "https://sponsor-testnet.vechain.energy/by/283",
             delegateAllTransactions: true,
           }}
+          loginMethods={[
+            { method: "vechain", gridColumn: 4 },
+            { method: "dappkit", gridColumn: 4 },
+          ]}
           dappKit={{
             allowedWallets: ["veworld", "wallet-connect", "sync2"],
             walletConnectOptions: {

@@ -7,15 +7,15 @@ import { useWallet } from "@vechain/vechain-kit";
 import { PropsWithChildren, useCallback, useEffect } from "react";
 
 export const DraftProposalProvider = ({ children }: PropsWithChildren) => {
-  const { account } = useWallet();
+  const { account, connection } = useWallet();
   const { draftProposal } = useCreateProposal();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
-    if (draftProposal && account?.address && draftProposal.proposer !== account?.address) {
+    if (draftProposal && connection.isConnected && draftProposal.proposer !== account?.address) {
       onOpen();
     }
-  }, [draftProposal, account?.address, onOpen]);
+  }, [draftProposal, account?.address, onOpen, connection.isConnected]);
 
   return (
     <>

@@ -17,7 +17,7 @@ export const Banner = () => {
     <Box
       paddingX={{ base: 6, md: 20 }}
       paddingY={{ base: 16, md: 20 }}
-      bg={{ base: "linear-gradient(102deg, #351C9B 0%, #4324C6 50%, #6042DD 100%)", md: "primary.700" }}>
+      bg={"linear-gradient(102deg, #351C9B 0%, #4324C6 50%, #6042DD 100%)"}>
       <Flex
         alignItems={"center"}
         gap={20}
