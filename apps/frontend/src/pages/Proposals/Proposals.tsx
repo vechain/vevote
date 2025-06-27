@@ -12,12 +12,9 @@ import { ProposalCardType, ProposalStatus } from "@/types/proposal";
 import { Flex, Heading, Icon, Tab, TabList, TabPanel, TabPanels, Tabs, Text } from "@chakra-ui/react";
 import { useWallet } from "@vechain/vechain-kit";
 import dayjs from "dayjs";
-import { PropsWithChildren, useCallback, useMemo, useState } from "react";
+import { PropsWithChildren, useMemo, useState } from "react";
 import { useCreateProposal } from "../CreateProposal/CreateProposalProvider";
 import { ProposalCard } from "./ProposalCard";
-import { MixPanelEvent, trackEvent } from "@/utils/mixpanel/utilsMixpanel";
-import { Routes } from "@/types/routes";
-import { useNavigate } from "react-router-dom";
 
 const ITEMS_PER_PAGE = 6;
 
@@ -31,8 +28,6 @@ export const Proposals = () => {
   const { LL } = useI18nContext();
 
   const { proposals, loading } = useProposalsEvents();
-
-  const navigate = useNavigate();
 
   const proposalsBySearch = useMemo(() => {
     const searchLower = searchValue.toLowerCase();
@@ -55,11 +50,6 @@ export const Proposals = () => {
   }, [proposalsBySearch]);
 
   const canCreateProposal = useMemo(() => account?.address && isWhitelisted, [account?.address, isWhitelisted]);
-
-  const onCreate = useCallback(() => {
-    trackEvent(MixPanelEvent.CTA_CREATE_PROPOSAL_CLICKED, { page: "proposals" });
-    navigate(Routes.CREATE_PROPOSAL);
-  }, [navigate]);
 
   return (
     <>
