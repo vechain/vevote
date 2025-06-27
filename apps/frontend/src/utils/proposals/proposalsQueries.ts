@@ -3,9 +3,9 @@ import { ProposalEvent } from "@/types/blockchain";
 import { BaseOption, ProposalCardType, VotingEnum } from "@/types/proposal";
 import { getConfig } from "@repo/config";
 import { VeVote__factory } from "@repo/contracts";
-import { getAllEvents } from "@vechain/vechain-kit";
+import { getAllEventLogs, ThorClient } from "@vechain/vechain-kit";
 import { ethers } from "ethers";
-import { buildFilterCriteria, executeCall, executeMultipleClauses, getEventMethods } from "../contract";
+import { executeCall, executeMultipleClauses } from "../contract";
 import {
   fromEventsToProposals,
   FromEventsToProposalsReturnType,
@@ -18,48 +18,61 @@ const contractAddress = getConfig(import.meta.env.VITE_APP_ENV).vevoteContractAd
 const contractInterface = VeVote__factory.createInterface();
 
 export const getProposalsEvents = async (
-  thor: Connex.Thor,
+  thor: ThorClient,
   proposalId?: string,
 ): Promise<{ proposals: FromEventsToProposalsReturnType }> => {
   try {
-    // Get event methods
-    const [proposalCreatedEvent, proposalExecutedEvent, proposalCanceledEvent] = getEventMethods({
-      contractInterface,
-      methods: ["VeVoteProposalCreated", "VeVoteProposalExecuted", "ProposalCanceled"],
-    });
+    // Get event ABIs
+    const proposalCreatedEventAbi = thor.contracts.load(contractAddress, VeVote__factory.abi).getEventAbi("VeVoteProposalCreated");
+    const proposalExecutedEventAbi = thor.contracts.load(contractAddress, VeVote__factory.abi).getEventAbi("VeVoteProposalExecuted");
+    const proposalCanceledEventAbi = thor.contracts.load(contractAddress, VeVote__factory.abi).getEventAbi("ProposalCanceled");
 
     // Build filter criteria
-    const filterCriteria = buildFilterCriteria({
-      contractAddress,
-      events: [proposalCreatedEvent, proposalExecutedEvent, proposalCanceledEvent],
-      proposalId,
-    });
+    const filterCriteria = [
+      {
+        criteria: {
+          address: contractAddress,
+          topic0: proposalCreatedEventAbi.stringSignature,
+          topic1: proposalId ? proposalCreatedEventAbi.encodeFilterTopicsNoNull({ proposalId })[1] : undefined,
+        },
+        eventAbi: proposalCreatedEventAbi,
+      },
+      {
+        criteria: {
+          address: contractAddress,
+          topic0: proposalExecutedEventAbi.stringSignature,
+          topic1: proposalId ? proposalExecutedEventAbi.encodeFilterTopicsNoNull({ proposalId })[1] : undefined,
+        },
+        eventAbi: proposalExecutedEventAbi,
+      },
+      {
+        criteria: {
+          address: contractAddress,
+          topic0: proposalCanceledEventAbi.stringSignature,
+          topic1: proposalId ? proposalCanceledEventAbi.encodeFilterTopicsNoNull({ proposalId })[1] : undefined,
+        },
+        eventAbi: proposalCanceledEventAbi,
+      },
+    ];
 
     // Fetch all events
-    const events: Connex.Thor.Filter.Row<"event", object>[] = await getAllEvents({
-      thor,
-      nodeUrl,
-      filterCriteria,
-    });
-
-    // TODO: use SDK once vechain-kit is compatible
-    // const events = subscriptions.getEventSubscriptionUrl(nodeUrl)
+    const events = await getAllEventLogs({ thor, nodeUrl, filterCriteria });
 
     const decodedProposalEvents = events
       .map(event => {
         const eventSignature = event.topics[0];
 
-        if (eventSignature === proposalCreatedEvent.signature || eventSignature === proposalExecutedEvent.signature) {
-          const decoded = proposalCreatedEvent.decode(event.data, event.topics);
+        if (eventSignature === proposalCreatedEventAbi.stringSignature || eventSignature === proposalExecutedEventAbi.stringSignature) {
+          const [proposalId, proposer, description, startBlock, voteDuration, choices, maxSelection] = event.decodedData as [string, string, string, bigint, bigint, string[], bigint];
 
           return {
-            proposalId: decoded.proposalId,
-            proposer: decoded.proposer,
-            description: decoded.description,
-            startTime: decoded.startBlock,
-            voteDuration: decoded.voteDuration,
-            choices: decoded.choices,
-            maxSelection: decoded.maxSelection,
+            proposalId,
+            proposer,
+            description,
+            startTime: startBlock.toString(),
+            voteDuration: voteDuration.toString(),
+            choices,
+            maxSelection: Number(maxSelection),
             minSelection: 1,
           };
         }
@@ -70,13 +83,13 @@ export const getProposalsEvents = async (
 
     const decodedCanceledProposals = events
       .map(event => {
-        if (event.topics[0] === proposalCanceledEvent.signature) {
-          const decoded = proposalCanceledEvent.decode(event.data, event.topics);
+        if (event.topics[0] === proposalCanceledEventAbi.stringSignature) {
+          const [proposalId, canceller, reason] = event.decodedData as [string, string, string];
 
           return {
-            proposalId: decoded.proposalId,
-            canceller: decoded.canceller,
-            reason: decoded.reason || "",
+            proposalId,
+            canceller,
+            reason: reason || "",
           };
         }
 
