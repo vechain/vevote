@@ -288,7 +288,7 @@ const en = {
     decentralized: "Decentralized.",
   },
   footer: {
-    all_right: "All Rights Reserved © Vechain Foundation San Marino S.r.l.",
+    all_right: "All Rights Reserved \n © Vechain Foundation San Marino S.r.l.",
     legal: {
       terms_of_service: "Terms of Service",
       privacy_policy: "Privacy Policy",
