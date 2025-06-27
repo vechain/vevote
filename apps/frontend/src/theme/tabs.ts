@@ -30,7 +30,7 @@ const defaultVariant = definePartsStyle({
   },
   tabpanel: {
     paddingX: 0,
-    paddingTop: 12,
+    paddingTop: { base: "24px", md: "48px" },
   },
 });
 

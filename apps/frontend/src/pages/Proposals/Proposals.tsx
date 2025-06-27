@@ -58,7 +58,7 @@ export const Proposals = () => {
         <PageContainer.Header
           flexDirection={{ base: "column", md: "row" }}
           gap={{ base: 6, md: 0 }}
-          alignItems={"start"}>
+          alignItems={{ base: "start", md: "center" }}>
           <Heading
             fontSize={{ base: 20, md: 32 }}
             fontWeight={600}
@@ -74,7 +74,7 @@ export const Proposals = () => {
         </PageContainer.Header>
         <PageContainer.Content>
           <Tabs>
-            <Flex direction={{ base: "column", lg: "row" }} gap={{ base: 4, lg: 0 }}>
+            <Flex direction={{ base: "column", lg: "row" }} gap={{ base: 6, lg: 0 }}>
               <TabList gridTemplateColumns={"repeat(4, 1fr)"}>
                 <Tab>{LL.all()}</Tab>
                 <Tab>{LL.badge.voting()}</Tab>
