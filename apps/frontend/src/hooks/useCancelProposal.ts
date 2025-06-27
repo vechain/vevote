@@ -3,7 +3,6 @@ import { VeVote__factory } from "@repo/contracts";
 import { EnhancedClause } from "@vechain/vechain-kit";
 import { useVevoteSendTransaction } from "@/utils/hooks/useVevoteSendTransaction";
 import { useCallback } from "react";
-import { trackEvent, MixPanelEvent } from "@/utils/mixpanel/utilsMixpanel";
 
 type ClausesProps = {
   proposalId: string;
@@ -23,25 +22,21 @@ export const useCancelProposal = () => {
         value: 0,
       };
 
-      let createProposalClause = {};
+      const cancelClause = reason
+        ? {
+            ...baseClause,
+            data: contractInterface.encodeFunctionData("cancelWithReason", [proposalId, reason]),
+            abi: JSON.parse(JSON.stringify(contractInterface.getFunction("cancelWithReason"))),
+            comment: `Cancel proposal with reason: ${reason}`,
+          }
+        : {
+            ...baseClause,
+            data: contractInterface.encodeFunctionData("cancel", [proposalId]),
+            abi: JSON.parse(JSON.stringify(contractInterface.getFunction("cancel"))),
+            comment: `Cancel proposal`,
+          };
 
-      if (reason) {
-        createProposalClause = {
-          ...baseClause,
-          data: contractInterface.encodeFunctionData("cancelWithReason", [proposalId, reason]),
-          abi: JSON.parse(JSON.stringify(contractInterface.getFunction("cancelWithReason"))),
-          comment: `Cancel proposal with reason: ${reason}`,
-        };
-      } else {
-        createProposalClause = {
-          ...baseClause,
-          data: contractInterface.encodeFunctionData("cancel", [proposalId]),
-          abi: JSON.parse(JSON.stringify(contractInterface.getFunction("cancel"))),
-          comment: `Cancel proposal`,
-        };
-      }
-
-      clauses.push(createProposalClause as EnhancedClause);
+      clauses.push(cancelClause as EnhancedClause);
 
       return clauses;
     } catch (error) {
@@ -50,43 +45,9 @@ export const useCancelProposal = () => {
     }
   }, []);
 
-  const { sendTransaction, ...rest } = useVevoteSendTransaction({
+  return useVevoteSendTransaction({
     clauseBuilder: buildClauses,
     invalidateCache: true,
     refetchQueryKeys: [["proposalsEvents"]],
   });
-
-  const sendTransactionWithTracking = useCallback(
-    async (params: ClausesProps) => {
-      try {
-        trackEvent(MixPanelEvent.PROPOSAL_CANCEL, {
-          proposalId: params.proposalId,
-        });
-
-        const result = await sendTransaction(params);
-
-        trackEvent(MixPanelEvent.PROPOSAL_CANCEL_SUCCESS, {
-          proposalId: params.proposalId,
-          transactionId: result.txId,
-        });
-
-        return result;
-      } catch (error) {
-        const txError = error as { txId?: string; error?: { message?: string }; message?: string };
-        
-        trackEvent(MixPanelEvent.PROPOSAL_CANCEL_FAILED, {
-          proposalId: params.proposalId,
-          error: txError.error?.message || txError.message || "Unknown error",
-          transactionId: txError.txId || "unknown",
-        });
-        throw error;
-      }
-    },
-    [sendTransaction],
-  );
-
-  return {
-    ...rest,
-    sendTransaction: sendTransactionWithTracking,
-  };
 };
