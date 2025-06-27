@@ -1,6 +1,7 @@
+import { getConfig } from "@repo/config";
 import mixpanel, { Dict } from "mixpanel-browser";
 
-const MIXPANEL_TOKEN = import.meta.env.VITE_MIXPANEL_TOKEN || "";
+const MIXPANEL_TOKEN = getConfig(import.meta.env.VITE_APP_ENV).mixPanelToken || "";
 
 if (MIXPANEL_TOKEN) {
   mixpanel.init(
