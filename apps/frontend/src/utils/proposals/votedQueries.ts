@@ -11,7 +11,7 @@ const contractAddress = getConfig(import.meta.env.VITE_APP_ENV).vevoteContractAd
 const contractInterface = VeVote__factory.createInterface();
 const nodeUrl = getConfig(import.meta.env.VITE_APP_ENV).nodeUrl;
 
-type DecodedVoteCastEvent = [string, bigint, bigint];
+type DecodedVoteCastEvent = [string, bigint, bigint, bigint, string, bigint[], string];
 
 export const getHasVoted = async (proposalId?: string, address?: string) => {
   if (!proposalId || !address) return false;
@@ -36,7 +36,13 @@ export const getHasVoted = async (proposalId?: string, address?: string) => {
 };
 
 export const getVotedChoices = async (thor: ThorClient, proposalId?: string, address?: string) => {
-  if (!proposalId || !address) return { votedChoices: undefined };
+  if (!thor) {
+    return { votedChoices: undefined };
+  }
+  
+  if (!proposalId || !address) {
+    return { votedChoices: undefined };
+  }
 
   try {
     const eventAbi = thor.contracts.load(contractAddress, VeVote__factory.abi).getEventAbi("VoteCast");
@@ -46,7 +52,6 @@ export const getVotedChoices = async (thor: ThorClient, proposalId?: string, add
       proposalId,
     });
 
-    console.log("Topics:", topics);
 
     const filterCriteria = [
       {
@@ -63,21 +68,23 @@ export const getVotedChoices = async (thor: ThorClient, proposalId?: string, add
     const events = await getAllEventLogs({ thor, nodeUrl, filterCriteria });
 
     const votedEvents = events.map(event => {
-      const [voter, proposalId, choices] = event.decodedData as DecodedVoteCastEvent;
+      const [voter, proposalId, choices, weight, reason, stargateNFTs, validator] = event.decodedData as DecodedVoteCastEvent;
 
       const votedChoices = {
         proposalId: proposalId.toString(),
         voter,
         choices: Number(choices).toString(2).split("").reverse(),
+        weight: weight.toString(),
+        reason,
+        stargateNFTs: stargateNFTs.map(nft => nft.toString()),
+        validator,
       };
 
       return votedChoices;
     });
 
     return {
-      votedChoices: votedEvents.filter(
-        event => event.proposalId === proposalId && event.voter === address,
-      )[0] as VotedChoices,
+      votedChoices: votedEvents[0] as VotedChoices,
     };
   } catch (error) {
     console.error(error);

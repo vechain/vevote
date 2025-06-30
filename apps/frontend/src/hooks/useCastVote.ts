@@ -73,7 +73,6 @@ export const useVotedChoices = ({ proposalId, enabled }: { proposalId?: string; 
     enabled: enabled && !!thor && !!proposalId && !!account?.address,
   });
 
-  console.log("Voted Choices:", data?.votedChoices);
 
   return {
     votedChoices: data?.votedChoices,
