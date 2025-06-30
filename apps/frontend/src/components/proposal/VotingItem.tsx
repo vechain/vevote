@@ -137,26 +137,32 @@ const VotesSection = ({
   const isProgressDisabled = useMemo(() => variant === "voting" && !isSelected, [variant, isSelected]);
   const { LL } = useI18nContext();
 
-  const votes = useMemo(() => {
+  const choiceWeight = useMemo(() => {
+    if (!results) return 0;
+    const matchingResult = results.data.find(r => r.choice === choiceIndex);
+    return matchingResult?.totalWeight ?? 0;
+  }, [choiceIndex, results]);
+
+  const totalWeight = useMemo(() => {
+    if (!results) return 0;
+    return results.data.reduce((sum, result) => sum + (result.totalWeight ?? 0), 0);
+  }, [results]);
+
+  const voterCount = useMemo(() => {
     if (!results) return 0;
     const matchingResult = results.data.find(r => r.choice === choiceIndex);
     return matchingResult?.totalVoters ?? 0;
   }, [choiceIndex, results]);
 
-  const totalVotes = useMemo(() => {
-    if (!results) return 0;
-    return results.data.reduce((sum, result) => sum + (result.totalVoters ?? 0), 0);
-  }, [results]);
-
   const votesPercentage = useMemo(() => {
-    if (totalVotes === 0) return 0;
-    return (votes / totalVotes) * 100;
-  }, [votes, totalVotes]);
+    if (totalWeight === 0) return 0;
+    return (choiceWeight / totalWeight) * 100;
+  }, [choiceWeight, totalWeight]);
 
   return (
     <Flex gap={10} alignItems={"center"} justifyContent={"space-between"} width={"100%"}>
       <Text fontWeight={500} color={"gray.500"}>
-        {votes} {LL.votes()}
+        {voterCount} {LL.votes()}
       </Text>
       <ProgressBar votesPercentage={votesPercentage} isDisable={isProgressDisabled} />
       <Text fontWeight={500} color={"gray.500"}>

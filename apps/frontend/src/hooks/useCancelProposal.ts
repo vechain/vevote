@@ -1,6 +1,7 @@
 import { getConfig } from "@repo/config";
 import { VeVote__factory } from "@repo/contracts";
-import { EnhancedClause, useBuildTransaction } from "@vechain/vechain-kit";
+import { EnhancedClause } from "@vechain/vechain-kit";
+import { useVevoteSendTransaction } from "@/utils/hooks/useVevoteSendTransaction";
 import { useCallback } from "react";
 
 type ClausesProps = {
@@ -21,25 +22,21 @@ export const useCancelProposal = () => {
         value: 0,
       };
 
-      let createProposalClause = {};
+      const cancelClause = reason
+        ? {
+            ...baseClause,
+            data: contractInterface.encodeFunctionData("cancelWithReason", [proposalId, reason]),
+            abi: JSON.parse(JSON.stringify(contractInterface.getFunction("cancelWithReason"))),
+            comment: `Cancel proposal with reason: ${reason}`,
+          }
+        : {
+            ...baseClause,
+            data: contractInterface.encodeFunctionData("cancel", [proposalId]),
+            abi: JSON.parse(JSON.stringify(contractInterface.getFunction("cancel"))),
+            comment: `Cancel proposal`,
+          };
 
-      if (reason) {
-        createProposalClause = {
-          ...baseClause,
-          data: contractInterface.encodeFunctionData("cancelWithReason", [proposalId, reason]),
-          abi: JSON.parse(JSON.stringify(contractInterface.getFunction("cancelWithReason"))),
-          comment: `Cancel proposal with reason: ${reason}`,
-        };
-      } else {
-        createProposalClause = {
-          ...baseClause,
-          data: contractInterface.encodeFunctionData("cancel", [proposalId]),
-          abi: JSON.parse(JSON.stringify(contractInterface.getFunction("cancel"))),
-          comment: `Cancel proposal`,
-        };
-      }
-
-      clauses.push(createProposalClause as EnhancedClause);
+      clauses.push(cancelClause as EnhancedClause);
 
       return clauses;
     } catch (error) {
@@ -48,7 +45,7 @@ export const useCancelProposal = () => {
     }
   }, []);
 
-  return useBuildTransaction({
+  return useVevoteSendTransaction({
     clauseBuilder: buildClauses,
     invalidateCache: true,
     refetchQueryKeys: [["proposalsEvents"]],

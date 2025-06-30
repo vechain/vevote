@@ -5,7 +5,8 @@ import { getConfig } from "@repo/config";
 import { VeVote__factory } from "@repo/contracts";
 import { useQuery } from "@tanstack/react-query";
 import { ZERO_ADDRESS } from "@vechain/sdk-core";
-import { EnhancedClause, useBuildTransaction, useConnex, useWallet } from "@vechain/vechain-kit";
+import { EnhancedClause, useConnex, useWallet } from "@vechain/vechain-kit";
+import { useVevoteSendTransaction } from "@/utils/hooks/useVevoteSendTransaction";
 import { useCallback } from "react";
 
 const contractAddress = getConfig(import.meta.env.VITE_APP_ENV).vevoteContractAddress;
@@ -54,7 +55,7 @@ export const useCastVote = ({ proposalId }: { proposalId?: string }) => {
     [],
   );
 
-  return useBuildTransaction({
+  return useVevoteSendTransaction({
     clauseBuilder: buildClauses,
     invalidateCache: true,
     refetchQueryKeys: [

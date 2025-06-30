@@ -1,9 +1,20 @@
 import { useI18nContext } from "@/i18n/i18n-react";
 import { CirclePlusIcon } from "@/icons";
-import { Button, Flex, Icon, Link } from "@chakra-ui/react";
+import { Routes } from "@/types/routes";
+import { MixPanelEvent, trackEvent } from "@/utils/mixpanel/utilsMixpanel";
+import { Button, Flex, Icon } from "@chakra-ui/react";
+import { useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 
 export const CreateProposalButton = () => {
   const { LL } = useI18nContext();
+
+  const navigate = useNavigate();
+
+  const onCreate = useCallback(() => {
+    trackEvent(MixPanelEvent.CTA_CREATE_PROPOSAL_CLICKED, { page: "proposals" });
+    navigate(Routes.CREATE_PROPOSAL);
+  }, [navigate]);
 
   return (
     <>
@@ -25,8 +36,7 @@ export const CreateProposalButton = () => {
         backdropFilter="auto"
         backdropBlur={"7.5px"}>
         <Button
-          as={Link}
-          href="/create-proposal"
+          onClick={onCreate}
           marginLeft={{ base: 0, md: "auto" }}
           size={{ base: "md", md: "lg" }}
           width={{ base: "100%", md: "auto" }}>
@@ -36,9 +46,8 @@ export const CreateProposalButton = () => {
       </Flex>
 
       <Button
-        as={Link}
         display={{ base: "none", md: "inline-flex" }}
-        href="/create-proposal"
+        onClick={onCreate}
         marginLeft={{ base: 0, md: "auto" }}
         size={{ base: "md", md: "lg" }}
         width={{ base: "100%", md: "auto" }}>
