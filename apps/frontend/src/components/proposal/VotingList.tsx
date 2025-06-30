@@ -40,9 +40,14 @@ export const VotingSingleChoice = ({
     const options = proposal.votingOptions.map(option => (option === currentSelection ? 1 : 0));
 
     try {
-      await sendTransaction({ id: proposal.id, selectedOptions: options });
+      const result = await sendTransaction({ id: proposal.id, selectedOptions: options });
+      console.log("Vote successful! Transaction ID:", result.txId);
     } catch (e) {
-      console.error(e);
+      const txError = e as { txId?: string; error?: { message?: string }; message?: string };
+      console.error("Vote failed:", txError.error?.message || txError.message);
+      if (txError.txId) {
+        console.log("Failed transaction ID:", txError.txId);
+      }
     }
   }, [proposal.id, proposal.votingOptions, currentSelection, sendTransaction]);
 
@@ -96,9 +101,14 @@ export const VotingSingleOption = ({
     const options = proposal.votingOptions.map((_, i) => (i === currentSelection ? 1 : 0));
 
     try {
-      await sendTransaction({ id: proposal.id, selectedOptions: options });
+      const result = await sendTransaction({ id: proposal.id, selectedOptions: options });
+      console.log("Vote successful! Transaction ID:", result.txId);
     } catch (e) {
-      console.error(e);
+      const txError = e as { txId?: string; error?: { message?: string }; message?: string };
+      console.error("Vote failed:", txError.error?.message || txError.message);
+      if (txError.txId) {
+        console.log("Failed transaction ID:", txError.txId);
+      }
     }
   }, [proposal.id, proposal.votingOptions, currentSelection, sendTransaction]);
 
@@ -169,9 +179,14 @@ export const VotingMultipleOptions = ({
     const options = proposal.votingOptions.map((_, i) => (currentSelection.includes(i) ? 1 : 0));
 
     try {
-      await sendTransaction({ id: proposal.id, selectedOptions: options });
+      const result = await sendTransaction({ id: proposal.id, selectedOptions: options });
+      console.log("Vote successful! Transaction ID:", result.txId);
     } catch (e) {
-      console.error(e);
+      const txError = e as { txId?: string; error?: { message?: string }; message?: string };
+      console.error("Vote failed:", txError.error?.message || txError.message);
+      if (txError.txId) {
+        console.log("Failed transaction ID:", txError.txId);
+      }
     }
   }, [proposal.id, proposal.votingOptions, currentSelection, sendTransaction]);
 

@@ -1,7 +1,7 @@
 import { useI18nContext } from "@/i18n/i18n-react";
 import { Button, FormControl, Icon, ModalBody, ModalFooter, Text, Textarea, useDisclosure } from "@chakra-ui/react";
 import { MessageModal } from "../ui/ModalSkeleton";
-import { useCallback, useEffect } from "react";
+import { useCallback } from "react";
 import { FormSkeleton } from "../ui/FormSkeleton";
 import { z } from "zod";
 import { Label } from "../ui/Label";
@@ -10,13 +10,14 @@ import { DeleteIcon, MinusCircleIcon } from "@/icons";
 import { useCancelProposal } from "@/hooks/useCancelProposal";
 import { Routes } from "@/types/routes";
 import { useNavigate } from "react-router-dom";
+import { trackEvent, MixPanelEvent } from "@/utils/mixpanel/utilsMixpanel";
 
 export const CancelProposal = ({ proposalId }: { proposalId?: string }) => {
   const { LL } = useI18nContext();
   const { isOpen, onClose, onOpen } = useDisclosure();
   const navigate = useNavigate();
 
-  const { sendTransaction, error, isTransactionPending, txReceipt, status } = useCancelProposal();
+  const { sendTransaction, isTransactionPending } = useCancelProposal();
 
   const schema = z.object({
     reason: z.string().optional(),
@@ -25,20 +26,44 @@ export const CancelProposal = ({ proposalId }: { proposalId?: string }) => {
   const onSubmit = useCallback(
     async (values: z.infer<typeof schema>) => {
       if (!proposalId) return;
-      sendTransaction({ proposalId, reason: values.reason });
-    },
-    [proposalId, sendTransaction],
-  );
+      
+      try {
+        trackEvent(MixPanelEvent.PROPOSAL_CANCEL, {
+          proposalId,
+        });
 
-  useEffect(() => {
-    if (status === "success") {
-      onClose();
-      navigate(Routes.HOME);
-    }
-  }, [error, isTransactionPending, navigate, onClose, status, txReceipt]);
+        const result = await sendTransaction({ proposalId, reason: values.reason });
+
+        trackEvent(MixPanelEvent.PROPOSAL_CANCEL_SUCCESS, {
+          proposalId,
+          transactionId: result.txId,
+        });
+
+        onClose();
+        navigate(Routes.HOME);
+      } catch (error) {
+        const txError = error as { txId?: string; error?: { message?: string }; message?: string };
+        
+        trackEvent(MixPanelEvent.PROPOSAL_CANCEL_FAILED, {
+          proposalId,
+          error: txError.error?.message || txError.message || "Unknown error",
+          transactionId: txError.txId || "unknown",
+        });
+      }
+    },
+    [proposalId, sendTransaction, onClose, navigate],
+  );
   return (
     <>
-      <Button variant="danger" onClick={onOpen} leftIcon={<Icon as={MinusCircleIcon} />}>
+      <Button
+        variant="danger"
+        onClick={() => {
+          trackEvent(MixPanelEvent.CTA_CANCEL_CLICKED, {
+            proposalId: proposalId || "",
+          });
+          onOpen();
+        }}
+        leftIcon={<Icon as={MinusCircleIcon} />}>
         {LL.cancel()}
       </Button>
       <MessageModal

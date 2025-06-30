@@ -46,6 +46,7 @@
     "dayjs": "^1.11.13",
     "ethers": "^6.9.0",
     "framer-motion": "^11.2.12",
+    "mixpanel-browser": "^2.65.0",
     "nyc": "^17.1.0",
     "quill": "2.0.3",
     "react": "^18.2.0",
@@ -62,6 +63,7 @@
   },
   "devDependencies": {
     "@originjs/vite-plugin-commonjs": "^1.0.3",
+    "@types/mixpanel-browser": "^2.60.0",
     "@types/react": "^18.2.37",
     "@types/react-dom": "^18.2.15",
     "@typescript-eslint/eslint-plugin": "^6.10.0",

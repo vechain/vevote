@@ -1,5 +1,6 @@
 import { ProposalDetails } from "@/pages/CreateProposal/CreateProposalProvider";
 import { BaseOption, VotingEnum } from "@/types/proposal";
+import { useVevoteSendTransaction } from "@/utils/hooks/useVevoteSendTransaction";
 import { getConfig } from "@repo/config";
 import { VeVote__factory } from "@repo/contracts";
 import { ABIFunction, Address, Clause } from "@vechain/sdk-core";
@@ -56,7 +57,7 @@ export const useBuildCreateProposal = () => {
     [],
   );
 
-  return useBuildTransaction({
+  return useVevoteSendTransaction({
     clauseBuilder: buildClauses,
   });
 };

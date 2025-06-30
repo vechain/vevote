@@ -3,6 +3,10 @@
 CLAUDE.md
 build/**
 
+# claude
+.claude
+CLAUDE.MD
+
 # Logs
 logs
 *.log

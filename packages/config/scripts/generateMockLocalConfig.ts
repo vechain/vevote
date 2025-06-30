@@ -52,7 +52,8 @@ export const generateMockLocalConfig = () => {
         "transactions": []
       }
     },
-    indexerUrl: "https://indexer.testnet.vechain.org/api/v1"
+    indexerUrl: "https://indexer.testnet.vechain.org/api/v1",
+    mixPanelToken: "bbf0da6a4dcd75432a35e01af6a75d8a"
     }
     export default config;
     `;

@@ -7,6 +7,7 @@ import { useDraftProposal } from "@/hooks/useDraftProposal";
 import { useNavigate } from "react-router-dom";
 import { Routes } from "@/types/routes";
 import { DeleteIcon, EditBoxIcon } from "@/icons";
+import { trackEvent, MixPanelEvent } from "@/utils/mixpanel/utilsMixpanel";
 
 export const DeleteEditProposal = () => {
   const { LL } = useI18nContext();
@@ -20,7 +21,15 @@ export const DeleteEditProposal = () => {
   return (
     <>
       <DeleteProposal />
-      <Button variant={"secondary"} onClick={onEdit} leftIcon={<Icon as={EditBoxIcon} />}>
+      <Button
+        variant={"secondary"}
+        onClick={() => {
+          trackEvent(MixPanelEvent.CTA_EDIT_CLICKED, {
+            proposalId: draftProposal?.title || "draft",
+          });
+          onEdit();
+        }}
+        leftIcon={<Icon as={EditBoxIcon} />}>
         {LL.edit()}
       </Button>
     </>
@@ -32,7 +41,7 @@ export const DeleteProposal = () => {
   const { isOpen, onClose, onOpen } = useDisclosure();
   const navigate = useNavigate();
 
-  const { removeDraftProposal } = useCreateProposal();
+  const { removeDraftProposal, draftProposal } = useCreateProposal();
 
   const onDelete = useCallback(() => {
     removeDraftProposal();
@@ -40,7 +49,15 @@ export const DeleteProposal = () => {
   }, [navigate, removeDraftProposal]);
   return (
     <>
-      <Button variant="danger" onClick={onOpen} leftIcon={<Icon as={DeleteIcon} />}>
+      <Button
+        variant="danger"
+        onClick={() => {
+          trackEvent(MixPanelEvent.CTA_DELETE_CLICKED, {
+            proposalId: draftProposal?.title || "draft",
+          });
+          onOpen();
+        }}
+        leftIcon={<Icon as={DeleteIcon} />}>
         {LL.delete()}
       </Button>
       <MessageModal
