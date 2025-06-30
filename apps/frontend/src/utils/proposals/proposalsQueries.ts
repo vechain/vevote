@@ -36,7 +36,7 @@ export const getProposalsEvents = async (
       {
         criteria: {
           address: contractAddress,
-          topic0: proposalCreatedAbi.stringSignature,
+          topic0: proposalCreatedAbi.signatureHash,
           topic1: proposalId ? proposalCreatedAbi.encodeFilterTopicsNoNull({ proposalId })[1] : undefined,
         },
         eventAbi: proposalCreatedAbi,
@@ -44,14 +44,16 @@ export const getProposalsEvents = async (
       {
         criteria: {
           address: contractAddress,
-          topic0: proposalExecutedAbi.stringSignature,
+          topic0: proposalExecutedAbi.signatureHash,
+          topic1: proposalId ? proposalCreatedAbi.encodeFilterTopicsNoNull({ proposalId })[1] : undefined,
         },
         eventAbi: proposalExecutedAbi,
       },
       {
         criteria: {
           address: contractAddress,
-          topic0: proposalCanceledAbi.stringSignature,
+          topic0: proposalCanceledAbi.signatureHash,
+          topic1: proposalId ? proposalCreatedAbi.encodeFilterTopicsNoNull({ proposalId })[1] : undefined,
         },
         eventAbi: proposalCanceledAbi,
       },
@@ -67,12 +69,12 @@ export const getProposalsEvents = async (
       .map(event => {
         const eventSignature = event.topics[0];
 
-        if (eventSignature === proposalCreatedAbi.stringSignature) {
+        if (eventSignature === proposalCreatedAbi.signatureHash) {
           const [proposalIdEvent, proposer, description, startBlock, voteDuration, choices, maxSelection] =
-            event.decodedData as [string, string, string, bigint, bigint, string[], bigint];
+            event.decodedData as [bigint, string, string, number, number, string[], number];
 
           return {
-            proposalId: proposalIdEvent,
+            proposalId: proposalIdEvent.toString(),
             proposer,
             description,
             startTime: startBlock.toString(),
@@ -83,15 +85,13 @@ export const getProposalsEvents = async (
           };
         }
 
-        if (eventSignature === proposalExecutedAbi.stringSignature) {
+        if (eventSignature === proposalExecutedAbi.signatureHash) {
           const [proposalIdEvent] = event.decodedData as [string];
 
-          // Filter by proposalId if specified (since executed events don't have indexed proposalId)
           if (proposalId && proposalIdEvent !== proposalId) {
             return undefined;
           }
 
-          // Note: executed events only contain proposalId, full data comes from created events
           return {
             proposalId: proposalIdEvent,
             isExecuted: true,
@@ -104,16 +104,15 @@ export const getProposalsEvents = async (
 
     const decodedCanceledProposals = events
       .map(event => {
-        if (event.topics[0] === proposalCanceledAbi.stringSignature) {
-          const [proposalIdEvent, canceller, reason] = event.decodedData as [string, string, string];
+        if (event.topics[0] === proposalCanceledAbi.signatureHash) {
+          const [proposalIdEvent, canceller, reason] = event.decodedData as [bigint, string, string];
 
-          // Filter by proposalId if specified (since canceled events don't have indexed proposalId)
-          if (proposalId && proposalIdEvent !== proposalId) {
+          if (proposalId && proposalIdEvent.toString() !== proposalId) {
             return undefined;
           }
 
           return {
-            proposalId: proposalIdEvent,
+            proposalId: proposalIdEvent.toString(),
             canceller,
             reason: reason || "",
           };
