@@ -4,7 +4,7 @@ import { useVevoteSendTransaction } from "@/utils/hooks/useVevoteSendTransaction
 import { getConfig } from "@repo/config";
 import { VeVote__factory } from "@repo/contracts";
 import { ABIFunction, Address, Clause } from "@vechain/sdk-core";
-import { EnhancedClause, useBuildTransaction } from "@vechain/vechain-kit";
+import { EnhancedClause } from "@vechain/vechain-kit";
 import { ethers } from "ethers";
 import { useCallback } from "react";
 

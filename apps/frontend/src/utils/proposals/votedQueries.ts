@@ -11,7 +11,7 @@ const contractAddress = getConfig(import.meta.env.VITE_APP_ENV).vevoteContractAd
 const contractInterface = VeVote__factory.createInterface();
 const nodeUrl = getConfig(import.meta.env.VITE_APP_ENV).nodeUrl;
 
-type DecodedVoteCastEvent = [bigint, string, bigint];
+type DecodedVoteCastEvent = [string, bigint, bigint];
 
 export const getHasVoted = async (proposalId?: string, address?: string) => {
   if (!proposalId || !address) return false;
@@ -42,9 +42,11 @@ export const getVotedChoices = async (thor: ThorClient, proposalId?: string, add
     const eventAbi = thor.contracts.load(contractAddress, VeVote__factory.abi).getEventAbi("VoteCast");
 
     const topics = eventAbi.encodeFilterTopicsNoNull({
-      address,
+      voter: address,
       proposalId,
     });
+
+    console.log("Topics:", topics);
 
     const filterCriteria = [
       {
@@ -61,7 +63,7 @@ export const getVotedChoices = async (thor: ThorClient, proposalId?: string, add
     const events = await getAllEventLogs({ thor, nodeUrl, filterCriteria });
 
     const votedEvents = events.map(event => {
-      const [proposalId, voter, choices] = event.decodedData as DecodedVoteCastEvent;
+      const [voter, proposalId, choices] = event.decodedData as DecodedVoteCastEvent;
 
       const votedChoices = {
         proposalId: proposalId.toString(),

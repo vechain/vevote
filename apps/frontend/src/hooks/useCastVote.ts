@@ -4,7 +4,7 @@ import { getHasVoted, getVotedChoices, getVotesResults } from "@/utils/proposals
 import { getConfig } from "@repo/config";
 import { VeVote__factory } from "@repo/contracts";
 import { useQuery } from "@tanstack/react-query";
-import { ZERO_ADDRESS } from "@vechain/sdk-core";
+import { ABIFunction, Address, Clause, ZERO_ADDRESS } from "@vechain/sdk-core";
 import { EnhancedClause, useThor, useWallet } from "@vechain/vechain-kit";
 import { useVevoteSendTransaction } from "@/utils/hooks/useVevoteSendTransaction";
 import { useCallback } from "react";
@@ -32,19 +32,16 @@ export const useCastVote = ({ proposalId }: { proposalId?: string }) => {
       const numberChoices = parseInt(selectedOptions.reverse().join(""), 2);
 
       try {
-        const createProposalClause: EnhancedClause = {
-          to: contractAddress,
-          value: 0,
-          data: contractInterface.encodeFunctionData("castVote", [
-            fromStringToUint256(id),
-            numberChoices,
-            ZERO_ADDRESS,
-          ]),
-          comment: `Cast vote`,
-          abi: JSON.parse(JSON.stringify(contractInterface.getFunction("castVote"))),
-        };
+        const encodedData = [fromStringToUint256(id), numberChoices, ZERO_ADDRESS];
 
-        clauses.push(createProposalClause);
+        const interfaceJson = contractInterface.getFunction("castVote")?.format("full");
+        if (!interfaceJson) throw new Error(`Method propose not found`);
+
+        const functionAbi = new ABIFunction(interfaceJson);
+
+        const clause = Clause.callFunction(Address.of(contractAddress), functionAbi, encodedData) as EnhancedClause;
+
+        clauses.push(clause);
 
         return clauses;
       } catch (error) {
@@ -73,8 +70,10 @@ export const useVotedChoices = ({ proposalId, enabled }: { proposalId?: string; 
   const { data, isLoading, error } = useQuery({
     queryKey: ["votedChoices", proposalId, account?.address],
     queryFn: async () => await getVotedChoices(thor, proposalId, account?.address),
-    enabled,
+    enabled: enabled && !!thor && !!proposalId && !!account?.address,
   });
+
+  console.log("Voted Choices:", data?.votedChoices);
 
   return {
     votedChoices: data?.votedChoices,
