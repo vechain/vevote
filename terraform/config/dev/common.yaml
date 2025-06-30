@@ -8,4 +8,3 @@ all_environments:
   TESTNET_STAGING_MNEMONIC: belt enemy list bless taxi produce inner whale urge width sauce release
   public_ipfs_pinning_service: https://api.gateway-proxy.vechain.org/api/v1/pinning/pinFileToIPFS
   vechain_url_devnet: https://galactica.green.dev.node.vechain.org/
-  vite_mixpanel_token: bbf0da6a4dcd75432a35e01af6a75d8a

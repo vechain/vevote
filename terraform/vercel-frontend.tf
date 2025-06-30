@@ -33,11 +33,6 @@ resource "vercel_project" "vevote_frontend" {
       key    = "MNEMONIC"
       value  = local.config.all_environments.mnemonic
       target = ["production", "preview"]
-    },
-    {
-      key    = "VITE_MIXPANEL_TOKEN"
-      value  = local.config.all_environments.vite_mixpanel_token
-      target = ["production", "preview", "development"]
     }
     ] : [
     {
@@ -59,11 +54,6 @@ resource "vercel_project" "vevote_frontend" {
       key    = "MNEMONIC"
       value  = local.config.all_environments.mnemonic
       target = ["production", "preview"]
-    },
-    {
-      key    = "VITE_MIXPANEL_TOKEN"
-      value  = local.config.all_environments.vite_mixpanel_token
-      target = ["production", "preview", "development"]
     }
   ]
 }
