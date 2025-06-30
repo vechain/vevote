@@ -51,7 +51,7 @@ export const executeCall = async <T extends Interface>({
   try {
     const interfaceJson = contractInterface.getFunction(method)?.format("full");
     if (!interfaceJson) throw new Error(`Method ${method} not found`);
-    const functionAbi = new ABIFunction(interfaceJson);
+    const functionAbi = new ABIFunction(interfaceJson) as any; //TODO: Fix type casting
     const results = await thorClient.contracts.executeCall(contractAddress, functionAbi, args, callOptions);
     return results;
   } catch (error) {

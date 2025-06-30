@@ -20,5 +20,5 @@ export const ConnectButton = () => {
 };
 
 const StyledButton = (props: ButtonProps) => {
-  return <Button leftIcon={<Icon as={WalletIcon} />} size={"md"} bg={"primary.700"} {...props} />;
+  return <Button flexShrink={0} leftIcon={<Icon as={WalletIcon} />} size={"md"} bg={"primary.700"} {...props} />;
 };
