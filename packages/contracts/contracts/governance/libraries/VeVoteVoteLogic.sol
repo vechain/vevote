@@ -202,6 +202,26 @@ library VeVoteVoteLogic {
   }
 
   /**
+   * @notice Computes the normalized voting weight of a validator and its apparent endorser.
+   * @param self The storage reference to the VeVoteStorage.
+   * @param endorser The address claiming to endorse the validator.
+   * @param masterAddress The master address of the validator node.
+   * @return weight The normalized voting weight of the validator if eligible, otherwise zero.
+   */
+  function getValidatorVoteWeight(
+    VeVoteStorageTypes.VeVoteStorage storage self,
+    address endorser,
+    address masterAddress
+  ) external view returns (uint256) {
+    if (endorser == address(0) || masterAddress == address(0)) return 0;
+
+    uint256 rawWeight = _determineValidatorVoteWeight(self, endorser, masterAddress);
+    if (rawWeight == 0) return 0;
+
+    return rawWeight / VeVoteConfigurator.getMinStakedAmount(self);
+  }
+
+  /**
    * @notice Retrieves the votes for a proposal.
    * @param self The storage reference for the VeVoteStorage.
    * @param proposalId The ID of the proposal.

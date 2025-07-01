@@ -311,6 +311,14 @@ interface IVeVote is IERC165, IERC6372 {
   function getNodeVoteWeight(uint256 nodeId) external view returns (uint256);
 
   /**
+   * @notice Computes the normalized voting weight of a validator and its apparent endorser.
+   * @param endorser The address that endorses the validator.
+   * @param masterAddress The master address of the validator node.
+   * @return weight The normalized voting weight of the validator if eligible, otherwise zero.
+   */
+  function getValidatorVoteWeight(address endorser, address masterAddress) external view returns (uint256);
+
+  /**
    * @notice Returns the hash of a proposal.
    * @param proposer The address of the proposer.
    * @param startBlock The time when the proposal starts.

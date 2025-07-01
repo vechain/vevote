@@ -238,6 +238,14 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
   /**
    * @inheritdoc IVeVote
    */
+  function getValidatorVoteWeight(address endorser, address masterAddress) external view returns (uint256) {
+    VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
+    return VeVoteVoteLogic.getValidatorVoteWeight($, endorser, masterAddress);
+  }
+
+  /**
+   * @inheritdoc IVeVote
+   */
   function state(uint256 proposalId) external view returns (VeVoteTypes.ProposalState) {
     VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
     return VeVoteStateLogic.state($, proposalId);
