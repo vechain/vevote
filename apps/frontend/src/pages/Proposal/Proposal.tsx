@@ -19,6 +19,7 @@ import { ProposalCardType } from "@/types/proposal";
 import { useHasVoted } from "@/hooks/useCastVote";
 import { useUser } from "@/contexts/UserProvider";
 import { ArrowLeftIcon, ArrowRightIcon, CheckSquareIcon, VoteIcon } from "@/icons";
+import { ExecuteModal } from "@/components/proposal/ExecuteModal";
 import { CancelProposal } from "@/components/proposal/CancelProposal";
 import { useNodes } from "@/hooks/useUserQueries";
 
@@ -118,9 +119,7 @@ const ProposalNavbarActions = ({ proposal }: { proposal: ProposalCardType | unde
       {canEditDraft && <DeleteEditProposal />}
       {canCancel && <CancelProposal proposalId={proposal?.id} />}
 
-      {isExecutor && proposal?.status === "approved" && (
-        <Button variant={"feedback"}>{LL.proposal.mark_as_executed()}</Button>
-      )}
+      {isExecutor && proposal?.status === "approved" && <ExecuteModal proposalId={proposal?.id} />}
 
       {canVote &&
         (hasVoted ? (

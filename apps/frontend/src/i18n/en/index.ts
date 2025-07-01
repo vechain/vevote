@@ -104,6 +104,13 @@ const en = {
       reason: "Reason",
       reason_placeholder: "Write the reason for cancellation...",
     },
+    execute_proposal: {
+      title: "Mark as Executed",
+      description:
+        "If the actions of the proposal have already been executed, you can mark this approved proposal as executed for the voters to know.",
+      label: "Execution / Transaction details",
+      link_placeholder: "Insert link with the proof of the execution",
+    },
     delete_proposal: {
       title: "Delete proposal",
       description:
