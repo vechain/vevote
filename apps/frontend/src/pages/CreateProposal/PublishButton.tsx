@@ -9,9 +9,12 @@ import { getHashProposal } from "@/utils/proposals/proposalsQueries";
 import { useWallet } from "@vechain/vechain-kit";
 import { ArrowRightIcon, CheckIcon, CircleInfoIcon, CircleXIcon, RetryIcon } from "@/icons";
 import { useGetDatesBlocks } from "@/hooks/useGetDatesBlocks";
+import { trackEvent, MixPanelEvent } from "@/utils/mixpanel/utilsMixpanel";
 
 export const PublishButton = () => {
   const { LL } = useI18nContext();
+  const { account } = useWallet();
+
   const { isOpen: isPublishOpen, onClose: onPublishClose, onOpen: onPublishOpen } = useDisclosure();
   const { isOpen: isFailedOpen, onClose: onFailedClose, onOpen: onFailedOpen } = useDisclosure();
   const { isOpen: isSuccessOpen, onClose: onSuccessClose, onOpen: onSuccessOpen } = useDisclosure();
@@ -20,23 +23,32 @@ export const PublishButton = () => {
   const [newProposalId, setNewProposalId] = useState("");
 
   const { proposalDetails } = useCreateProposal();
-  const {
-    build: { sendTransaction },
-    error,
-    resetError,
-  } = useBuildCreateProposal();
+  const { sendTransaction } = useBuildCreateProposal();
 
   const { startBlock, durationBlock } = useGetDatesBlocks({
     startDate: proposalDetails.startDate,
     endDate: proposalDetails.endDate,
   });
 
-  const { account } = useWallet();
+  const onSuccess = useCallback(() => {
+    onPublishClose();
+    onSuccessOpen();
+  }, [onPublishClose, onSuccessOpen]);
+
+  const onFailed = useCallback(() => {
+    onPublishClose();
+    onFailedOpen();
+  }, [onFailedOpen, onPublishClose]);
 
   const onSubmit = useCallback(async () => {
+    let proposalId = "";
+    let transactionId = "";
+
     try {
       setIsLoading(true);
-      resetError();
+      setNewProposalId("");
+
+      trackEvent(MixPanelEvent.PROPOSAL_PUBLISH);
 
       const description = await uploadProposalToIpfs(proposalDetails);
 
@@ -47,40 +59,50 @@ export const PublishButton = () => {
         description,
       };
 
-      await sendTransaction(data);
-
-      if (error) throw new Error(`Failed to sing transaction`);
+      const result = await sendTransaction(data);
+      transactionId = result.txId;
 
       const res = await getHashProposal({ ...data, proposer: account?.address || "" });
+      if (res.success) {
+        proposalId = (res.result.plain as BigInteger).toString();
+        setNewProposalId(proposalId);
 
-      if (res.success) setNewProposalId((res.result.plain as BigInteger).toString());
+        trackEvent(MixPanelEvent.PROPOSAL_PUBLISHED, {
+          proposalId,
+          transactionId,
+        });
 
-      onPublishClose();
-      onSuccessOpen();
+        onSuccess();
+      }
     } catch (e) {
-      onPublishClose();
-      onFailedOpen();
+      const txError = e as { txId?: string; error?: { message?: string }; message?: string };
+      const errorTxId = txError.txId || transactionId || "unknown";
+
+      trackEvent(MixPanelEvent.PROPOSAL_PUBLISH_FAILED, {
+        proposalId: proposalId || proposalDetails.title,
+        error: txError.error?.message || txError.message || "Unknown error",
+        transactionId: errorTxId,
+      });
+      onFailed();
     } finally {
       setIsLoading(false);
     }
-  }, [
-    account?.address,
-    durationBlock,
-    error,
-    onFailedOpen,
-    onPublishClose,
-    onSuccessOpen,
-    proposalDetails,
-    resetError,
-    sendTransaction,
-    startBlock,
-  ]);
+  }, [account?.address, durationBlock, onFailed, onSuccess, proposalDetails, sendTransaction, startBlock]);
 
   const onTryAgain = useCallback(() => onFailedClose(), [onFailedClose]);
 
   return (
     <>
-      <Button variant={"primary"} type="button" onClick={onPublishOpen} rightIcon={<Icon as={ArrowRightIcon} />}>
+      <Button
+        variant={"primary"}
+        type="button"
+        onClick={() => {
+          trackEvent(MixPanelEvent.CTA_PUBLISH_CLICKED, {
+            proposalId: proposalDetails.title,
+          });
+          onPublishOpen();
+        }}
+        rightIcon={<Icon as={ArrowRightIcon} />}>
         {LL.proposal.create.summary_form.publish_proposal()}
       </Button>
       {/* Publish modal */}

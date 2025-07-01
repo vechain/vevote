@@ -27,7 +27,7 @@ export const SortDropdown = ({
   const { LL } = useI18nContext();
   return (
     <Menu>
-      <MenuButton as={Button} variant={"secondary"} size={"icon"} {...restProps}>
+      <MenuButton as={Button} variant={"secondary"} size={"icon"} flexShrink={0} {...restProps}>
         <Icon as={SortDescIcon} />
       </MenuButton>
       <MenuList>

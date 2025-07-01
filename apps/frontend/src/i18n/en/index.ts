@@ -57,6 +57,20 @@ const en = {
     title: "Home",
     go_to_proposals: "Go to proposals",
   },
+  node_names: {
+    none: "No Node",
+    strength: "Strength",
+    thunder: "Thunder",
+    mjolnir: "Mjolnir",
+    vethorx: "VeThor X",
+    strengthx: "Strength X",
+    thunderx: "Thunder X",
+    mjolnirx: "Mjolnir X",
+    flash: "Flash",
+    lightning: "Lightning",
+    dawn: "Dawn",
+    validator: "Validator",
+  },
   field_errors: {
     required: "Required",
     invalid_format: "Invalid format",
@@ -281,7 +295,7 @@ const en = {
     decentralized: "Decentralized.",
   },
   footer: {
-    all_right: "All Rights Reserved © Vechain Foundation San Marino S.r.l.",
+    all_right: "All Rights Reserved \n © Vechain Foundation San Marino S.r.l.",
     legal: {
       terms_of_service: "Terms of Service",
       privacy_policy: "Privacy Policy",

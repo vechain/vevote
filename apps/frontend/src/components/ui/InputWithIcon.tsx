@@ -12,7 +12,6 @@ import { forwardRef } from "react";
 const InputWithIcon = (props: InputGroupProps) => {
   return (
     <InputGroup
-      width={"full"}
       borderRadius={"8px"}
       borderWidth={"1px"}
       borderColor={"gray.200"}

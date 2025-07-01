@@ -5,13 +5,13 @@ const PageContainer = ({ variant = "constrained", ...props }: FlexProps & { vari
   return (
     <Flex
       flex={1}
-      padding={"40px"}
-      minWidth={"1000px"}
+      padding={{ base: "20px", md: "40px" }}
+      minWidth={{ base: "100%", lg: "1000px" }}
       maxWidth={variant === "constrained" ? "1440px" : "full"}
       width={"full"}
       marginX={"auto"}
       flexDirection={"column"}
-      gap={"40px"}
+      gap={{ base: "20px", md: "40px" }}
       {...props}></Flex>
   );
 };

@@ -1,25 +1,25 @@
 import { ProposalsHeader } from "@/components/navbar/Header";
 import { PageContainer } from "@/components/PageContainer";
+import { CreateProposalButton } from "@/components/proposal/CreateProposalButton";
 import { Pagination } from "@/components/ui/Pagination";
 import { SearchInput } from "@/components/ui/SearchInput";
 import { Sort, SortDropdown } from "@/components/ui/SortDropdown";
+import { useUser } from "@/contexts/UserProvider";
 import { useProposalsEvents } from "@/hooks/useProposalsEvents";
-
 import { useI18nContext } from "@/i18n/i18n-react";
-import { ProposalCardType } from "@/types/proposal";
-import { Button, Flex, Heading, Icon, Link, Tab, TabList, TabPanel, TabPanels, Tabs, Text } from "@chakra-ui/react";
+import { CircleInfoIcon, VoteIcon } from "@/icons";
+import { ProposalCardType, ProposalStatus } from "@/types/proposal";
+import { Flex, Heading, Icon, Tab, TabList, TabPanel, TabPanels, Tabs, Text } from "@chakra-ui/react";
+import { useWallet } from "@vechain/vechain-kit";
 import dayjs from "dayjs";
-import { PropsWithChildren, useMemo, useState, useContext } from "react";
+import { PropsWithChildren, useMemo, useState } from "react";
 import { useCreateProposal } from "../CreateProposal/CreateProposalProvider";
 import { ProposalCard } from "./ProposalCard";
-import { CircleInfoIcon, CirclePlusIcon, VoteIcon } from "@/icons";
-import { UserContext } from "@/contexts/UserProvider";
-import { useWallet } from "@vechain/vechain-kit";
 
 const ITEMS_PER_PAGE = 6;
 
 export const Proposals = () => {
-  const { isWhitelisted, isAdmin } = useContext(UserContext);
+  const { isWhitelisted } = useUser();
   const { account } = useWallet();
 
   const { draftProposal } = useCreateProposal();
@@ -32,51 +32,62 @@ export const Proposals = () => {
   const proposalsBySearch = useMemo(() => {
     const searchLower = searchValue.toLowerCase();
     const isDraftProposal = draftProposal && draftProposal?.proposer === account?.address;
-    const mockAndDraft = isDraftProposal ? [draftProposal, ...proposals] : proposals;
-    return mockAndDraft.filter(({ title }) => title.toLowerCase().includes(searchLower));
+    const filteredProposals = proposals.filter(({ title }) => title.toLowerCase().includes(searchLower)).reverse();
+
+    return isDraftProposal ? [draftProposal, ...filteredProposals] : filteredProposals;
   }, [account?.address, draftProposal, proposals, searchValue]);
 
   const proposalsByTabStatus: Record<string, ProposalCardType[]> = useMemo(() => {
+    const finishedStatuses: ProposalStatus[] = ["canceled", "rejected", "min-not-reached"];
     return {
       all: proposalsBySearch,
       voting: proposalsBySearch.filter(({ status }) => status === "voting"),
       upcoming: proposalsBySearch.filter(({ status }) => status === "upcoming"),
-      finished: proposalsBySearch.filter(({ endDate }) => dayjs(endDate).isBefore(dayjs())),
+      finished: proposalsBySearch.filter(
+        ({ endDate, status }) => dayjs(endDate).isBefore(dayjs()) || finishedStatuses.includes(status),
+      ),
     };
   }, [proposalsBySearch]);
 
-  const canCreateProposal = useMemo(() => {
-    if (!account?.address) return false;
-    if (isWhitelisted || isAdmin) return true;
-    return false;
-  }, [account?.address, isAdmin, isWhitelisted]);
+  const canCreateProposal = useMemo(() => account?.address && isWhitelisted, [account?.address, isWhitelisted]);
 
   return (
     <>
       <ProposalsHeader />
       <PageContainer bg={"gray.50"}>
-        <PageContainer.Header>
-          <Heading fontSize={32} fontWeight={600} color="primary.600" display={"flex"} alignItems={"center"} gap={6}>
-            <Icon as={VoteIcon} width={8} height={8} marginRight={2} />
+        <PageContainer.Header
+          flexDirection={{ base: "column", md: "row" }}
+          gap={{ base: 6, md: 0 }}
+          alignItems={{ base: "start", md: "center" }}>
+          <Heading
+            fontSize={{ base: 20, md: 32 }}
+            fontWeight={600}
+            color="primary.600"
+            display={"flex"}
+            alignItems={"center"}
+            gap={{ base: 3, md: 6 }}
+            paddingY={{ base: 4, md: 0 }}>
+            <Icon as={VoteIcon} width={{ base: 6, md: 8 }} height={{ base: 6, md: 8 }} marginRight={2} />
             {LL.proposals.title()}
           </Heading>
-          {canCreateProposal && (
-            <Button as={Link} href="/create-proposal" marginLeft={"auto"}>
-              <Icon as={CirclePlusIcon} />
-              {LL.proposals.create()}
-            </Button>
-          )}
+          {canCreateProposal && <CreateProposalButton />}
         </PageContainer.Header>
         <PageContainer.Content>
           <Tabs>
-            <Flex>
-              <TabList>
+            <Flex direction={{ base: "column", lg: "row" }} gap={{ base: 6, lg: 0 }}>
+              <TabList gridTemplateColumns={"repeat(4, 1fr)"}>
                 <Tab>{LL.all()}</Tab>
                 <Tab>{LL.badge.voting()}</Tab>
                 <Tab>{LL.badge.upcoming()}</Tab>
                 <Tab>{LL.finished()}</Tab>
               </TabList>
-              <Flex marginLeft={"auto"} gap={4} alignItems={"center"}>
+              <Flex
+                marginLeft={{ base: 0, lg: "auto" }}
+                gap={4}
+                alignItems={"center"}
+                justifyContent={{ base: "space-between", md: "flex-end" }}
+                minWidth="0"
+                overflow="hidden">
                 <SearchInput
                   value={searchValue}
                   onChange={e => setSearchValue(e.target.value)}
@@ -157,7 +168,7 @@ const EmptyPanel = () => {
           alignItems={"center"}>
           <Icon as={CircleInfoIcon} color={"gray.400"} width={8} height={8} />
         </Flex>
-        <Text color={"gray.600"} fontSize={24}>
+        <Text color={"gray.600"} fontSize={24} whiteSpace={"nowrap"}>
           {LL.proposals.no_proposals()}
         </Text>
       </Flex>

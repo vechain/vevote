@@ -14,7 +14,7 @@ export const Pagination = ({ current, total, onShowMore, text }: PaginationProps
   return (
     <Flex justifyContent={"flex-start"} alignItems={"center"} marginTop={"24px"} columnGap={"16px"}>
       {current < total && (
-        <Button rightIcon={<Icon as={ArrowDownIcon} />} variant={"secondary"} onClick={onShowMore}>
+        <Button rightIcon={<Icon as={ArrowDownIcon} />} variant={"tertiary"} onClick={onShowMore}>
           {LL.show_more()}
         </Button>
       )}

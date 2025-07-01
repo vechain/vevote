@@ -1,20 +1,16 @@
 import { ProposalDetails } from "@/pages/CreateProposal/CreateProposalProvider";
 import { BaseOption, VotingEnum } from "@/types/proposal";
-import { useBuildTransaction } from "@/utils";
+import { useVevoteSendTransaction } from "@/utils/hooks/useVevoteSendTransaction";
 import { getConfig } from "@repo/config";
 import { VeVote__factory } from "@repo/contracts";
 import { EnhancedClause } from "@vechain/vechain-kit";
 import { ethers } from "ethers";
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 
 const contractAddress = getConfig(import.meta.env.VITE_APP_ENV).vevoteContractAddress;
 const contractInterface = VeVote__factory.createInterface();
 
 export const useBuildCreateProposal = () => {
-  const [error, setError] = useState<string | undefined>(undefined);
-
-  const resetError = useCallback(() => setError(undefined), []);
-
   const buildClauses = useCallback(
     ({
       description,
@@ -77,12 +73,7 @@ export const useBuildCreateProposal = () => {
     [],
   );
 
-  return {
-    build: useBuildTransaction({
-      clauseBuilder: buildClauses,
-      onError: error => setError(error),
-    }),
-    error,
-    resetError,
-  };
+  return useVevoteSendTransaction({
+    clauseBuilder: buildClauses,
+  });
 };

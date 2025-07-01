@@ -12,7 +12,7 @@ import { thorClient } from "../thorClient";
 
 const AVERAGE_BLOCK_TIME = 10; // in seconds
 
-export type FromEventsToProposalsReturnType = ({ ipfsHash: string } & Omit<
+export type FromEventsToProposalsReturnType = ({ ipfsHash: string; reason?: string } & Omit<
   ProposalCardType,
   "status" | "description" | "title" | "votingQuestion" | "headerImage"
 >)[];
@@ -74,6 +74,7 @@ export const fromEventsToProposals = async (events: ProposalEvent[]): Promise<Fr
         endDate,
         votingLimit: event.maxSelection,
         ipfsHash: event.description,
+        reason: event.reason,
       };
 
       switch (votingType) {
@@ -116,15 +117,25 @@ export const mergeIpfsDetails = (
   });
 };
 
-export const getBlockFromDate = async (date: Date): Promise<number> => {
+export const getBlockFromDate = async (
+  date: Date,
+): Promise<{
+  number: number;
+  id: string;
+}> => {
   const currentBlock = await thorClient.blocks.getFinalBlockExpanded();
   const currentTimestamp = currentBlock?.timestamp || 0; // in seconds
   const currentBlockNumber = currentBlock?.number || 0; // current block number
 
-  const targetTimestamp = Math.floor(date.getTime() / 1000); // in seconds
+  const targetTimestamp = Math.floor(dayjs(date).unix()); // in seconds
 
   const blocksUntilTarget = Math.floor((targetTimestamp - currentTimestamp) / AVERAGE_BLOCK_TIME);
-  return currentBlockNumber + blocksUntilTarget;
+  const number = currentBlockNumber + blocksUntilTarget;
+  const compressed = await thorClient.blocks.getBlockCompressed(number);
+  return {
+    number,
+    id: compressed?.id || "",
+  };
 };
 
 export const getDateFromBlock = async (blockNumber: number): Promise<Date> => {

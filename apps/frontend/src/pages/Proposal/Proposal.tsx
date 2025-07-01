@@ -7,7 +7,7 @@ import { ProposalProvider } from "@/components/proposal/ProposalProvider";
 import { VotingSection } from "@/components/proposal/VotingSection";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { Box, Button, Flex, Icon, Image, Link, Text } from "@chakra-ui/react";
-import { useContext, useMemo } from "react";
+import { useMemo } from "react";
 import { useParams } from "react-router";
 import { DeleteEditProposal } from "@/components/proposal/DeleteEditProposal";
 import { useWallet } from "@vechain/vechain-kit";
@@ -17,9 +17,11 @@ import { sanitizeImageUrl } from "@/utils/proposals/helpers";
 import { useProposalEvents } from "@/hooks/useProposalEvent";
 import { ProposalCardType } from "@/types/proposal";
 import { useHasVoted } from "@/hooks/useCastVote";
-import { UserContext } from "@/contexts/UserProvider";
+import { useUser } from "@/contexts/UserProvider";
 import { ArrowLeftIcon, ArrowRightIcon, CheckSquareIcon, VoteIcon } from "@/icons";
 import { ExecuteModal } from "@/components/proposal/ExecuteModal";
+import { CancelProposal } from "@/components/proposal/CancelProposal";
+import { useNodes } from "@/hooks/useUserQueries";
 
 export const Proposal = () => {
   const { LL } = useI18nContext();
@@ -79,7 +81,7 @@ export const Proposal = () => {
                 <PageContainer.Header flexDirection={"column"} gap={10} alignItems={"start"}>
                   <ProposalInfos />
                   <ProposalDetailsCards />
-                  <ProposalInfoBox />
+                  <ProposalInfoBox canceledReason={proposal.reason} />
                 </PageContainer.Header>
                 {proposal.status !== "canceled" && <VotingSection />}
                 <BuyANode />
@@ -92,36 +94,40 @@ export const Proposal = () => {
   );
 };
 
-//todo: get from provider
-const isVoter = false;
-
 const ProposalNavbarActions = ({ proposal }: { proposal: ProposalCardType | undefined }) => {
   const { LL } = useI18nContext();
-  const onVote = () => {
-    console.log("Vote");
-  };
-
+  const { account } = useWallet();
   const { hasVoted } = useHasVoted({ proposalId: proposal?.id || "" });
+  const { isExecutor, isWhitelisted } = useUser();
+  const { nodes } = useNodes({ startDate: proposal?.startDate });
+  const isVoter = useMemo(() => nodes.length > 0, [nodes.length]);
 
-  const { isAdmin, isExecutor, isWhitelisted } = useContext(UserContext);
+  const canVote = useMemo(() => isVoter && ["voting"].includes(proposal?.status || ""), [isVoter, proposal?.status]);
 
-  const isAdminWhitelisted = useMemo(() => isAdmin || isWhitelisted, [isAdmin, isWhitelisted]);
+  const canCancel = useMemo(
+    () => isWhitelisted && account?.address === proposal?.proposer && ["upcoming"].includes(proposal?.status || ""),
+    [account?.address, isWhitelisted, proposal?.proposer, proposal?.status],
+  );
+
+  const canEditDraft = useMemo(
+    () => isWhitelisted && ["draft"].includes(proposal?.status || ""),
+    [isWhitelisted, proposal?.status],
+  );
 
   return (
     <Flex alignItems={"center"} gap={2} marginLeft={"auto"}>
-      {isAdminWhitelisted && ["draft"].includes(proposal?.status || "") && <DeleteEditProposal />}
+      {canEditDraft && <DeleteEditProposal />}
+      {canCancel && <CancelProposal proposalId={proposal?.id} />}
 
       {isExecutor && proposal?.status === "approved" && <ExecuteModal proposalId={proposal?.id} />}
 
-      {isVoter &&
+      {canVote &&
         (hasVoted ? (
           <Button variant={"feedback"} rightIcon={<Icon as={CheckSquareIcon} />}>
             {LL.voted()}
           </Button>
         ) : (
-          <Button onClick={onVote} leftIcon={<Icon as={VoteIcon} />}>
-            {LL.vote()}
-          </Button>
+          <Button leftIcon={<Icon as={VoteIcon} />}>{LL.vote()}</Button>
         ))}
     </Flex>
   );

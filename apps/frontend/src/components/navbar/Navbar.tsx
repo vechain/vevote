@@ -1,15 +1,15 @@
-import { UserContext } from "@/contexts/UserProvider";
+import { useUser } from "@/contexts/UserProvider";
 import { useShowNavbar } from "@/hooks/useShowNavbar";
 import { Box, BoxProps, Flex, FlexProps, Image, useBreakpointValue } from "@chakra-ui/react";
 import { DAppKitWalletButton } from "@vechain/vechain-kit";
-import { PropsWithChildren, useContext, useMemo } from "react";
+import { PropsWithChildren, useMemo } from "react";
 
 const NavbarContainer = ({ children, ...restProps }: BoxProps) => {
   return (
     <Box
       transition={"all 0.3s"}
-      paddingX={20}
-      paddingY={1}
+      paddingX={{ base: 2, md: 20 }}
+      paddingY={2}
       position={"fixed"}
       top={0}
       left={0}
@@ -53,13 +53,13 @@ export const Navbar = () => {
         backdropFilter="auto"
         backdropBlur={!showBackground ? "md" : "none"}
         bgColor={!showBackground ? "rgba(38, 20, 112, 0.65)" : "transparent"}
-        paddingX={6}
-        paddingY={4}>
+        paddingX={{ base: 2, md: 6 }}
+        paddingY={{ base: 2, md: 4 }}>
         <Image
           src="/svgs/vevote_logo.svg"
           alt="VeVote Logo"
           width={"auto"}
-          height={showBackground ? "32px" : "24px"}
+          height={{ base: "16px", md: showBackground ? "32px" : "24px" }}
           objectFit={"cover"}
           transition={"all 0.3s"}
         />
@@ -68,12 +68,10 @@ export const Navbar = () => {
   );
 };
 
-//todo: get from provider
-
 export const ProposalNavbar = ({ children }: PropsWithChildren) => {
   const { showBackground } = useShowNavbar();
 
-  const { isAdmin } = useContext(UserContext);
+  const { isAdmin } = useUser();
 
   const bgVariant = useMemo(() => {
     if (!showBackground) {
