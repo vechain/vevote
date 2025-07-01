@@ -2,6 +2,11 @@ export const formatAddress = (address: string) => {
   return `${address.slice(0, 4)}...${address.slice(-6)}`;
 };
 
+export const areAddressesEqual = (addr1: string | null | undefined, addr2: string | null | undefined): boolean => {
+  if (!addr1 || !addr2) return false;
+  return addr1.toLowerCase() === addr2.toLowerCase();
+};
+
 export const leftPadWithZeros = (str: string, length: number): string => {
   // Remove '0x' prefix if it exists
   const cleanStr = str.startsWith("0x") ? str.slice(2) : str;
