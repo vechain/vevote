@@ -6,7 +6,6 @@ import { areAddressesEqual } from "@/utils/address";
 
 export const useWalletTracking = () => {
   const { connection, account } = useWallet();
-  const previousAddress = useRef(account?.address || "no_address");
   const previousConnection = useRef(connection.isConnected || false);
 
   const [lastTrackedAddress, setLastTrackedAddress] = useLocalStorage<string | null>(
@@ -36,16 +35,14 @@ export const useWalletTracking = () => {
       }
 
       hasProcessedConnection.current = true;
-      previousAddress.current = currentAddress;
       previousConnection.current = true;
     }
 
     if (!connection.isConnected && previousConnection.current) {
       trackEvent(MixPanelEvent.USER_DISCONNECTED, {
-        address: previousAddress.current,
+        address: lastTrackedAddress || "no_address",
       });
 
-      previousAddress.current = "no_address";
       previousConnection.current = false;
       hasProcessedConnection.current = false;
       setLastTrackedAddress(null);
