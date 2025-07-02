@@ -20,7 +20,6 @@ import { VeVoteConstants } from "./VeVoteConstants.sol";
 import { VeVoteConfigurator } from "./VeVoteConfigurator.sol";
 import { IAuthority } from "../../interfaces/IAuthority.sol";
 import { DataTypes } from "../../external/StargateNFT/libraries/DataTypes.sol";
-import { Math } from "@openzeppelin/contracts/utils/math/Math.sol";
 
 /// @title VeVoteVoteLogic
 /// @notice Voting logic for VeVote governance system including casting votes, vote weight calculation, and result tallying.

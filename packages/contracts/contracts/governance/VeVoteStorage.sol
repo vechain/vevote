@@ -14,7 +14,6 @@ pragma solidity 0.8.20;
 import { VeVoteStorageTypes } from "./libraries/VeVoteStorageTypes.sol";
 import { VeVoteClockLogic } from "./libraries/VeVoteClockLogic.sol";
 import { VeVoteTypes } from "./libraries/VeVoteTypes.sol";
-import { VechainNodesDataTypes } from "../libraries/VechainNodesDataTypes.sol";
 import "@openzeppelin/contracts/utils/math/SafeCast.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/utils/structs/Checkpoints.sol";
