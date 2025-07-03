@@ -1,6 +1,6 @@
 import { useI18nContext } from "@/i18n/i18n-react";
 import { VotingEnum } from "@/types/proposal";
-import { Box, Button, Checkbox, defineStyle, Flex, Radio, Text } from "@chakra-ui/react";
+import { Box, Button, Checkbox, defineStyle, Flex, Icon, Radio, Text } from "@chakra-ui/react";
 import { useCallback, useMemo } from "react";
 import { motion } from "framer-motion";
 import { useWallet } from "@vechain/vechain-kit";
@@ -8,6 +8,7 @@ import { useHasVoted } from "@/hooks/useCastVote";
 import { useProposal } from "./ProposalProvider";
 import { useNodes } from "@/hooks/useUserQueries";
 import { VotedResult } from "@/types/votes";
+import { VotingPowerIcon } from "@/icons";
 
 export type VotingItemVariant = "upcoming" | "voting" | "result-lost" | "result-win";
 
@@ -161,17 +162,14 @@ const VotesSection = ({
 
   return (
     <Flex gap={10} alignItems={"end"} justifyContent={"space-between"} width={"100%"}>
-      <Flex gap={1} flexDirection={"column"} alignItems={"start"}>
-        <Text fontWeight={500} color={"gray.500"}>{`${voterCount} ${LL.votes()}`}</Text>
-
-        <Text fontWeight={500} color={"gray.500"}>
-          {LL.voting_power()}
-        </Text>
-      </Flex>
+      <Text fontWeight={500} color={"gray.500"}>{`${voterCount} ${LL.votes()}`}</Text>
       <ProgressBar votesPercentage={votesPercentage} isDisable={isProgressDisabled} />
-      <Text fontWeight={500} color={"gray.500"}>
-        {parseInt(votesPercentage.toString())} {LL.percentage()}
-      </Text>
+      <Flex gap={2}>
+        <Text fontWeight={500} color={"gray.500"}>
+          {parseInt(votesPercentage.toString())} {LL.percentage()}
+        </Text>
+        <Icon as={VotingPowerIcon} color={"gray.500"} w={5} h={5} />
+      </Flex>
     </Flex>
   );
 };
