@@ -160,10 +160,14 @@ const VotesSection = ({
   }, [choiceWeight, totalWeight]);
 
   return (
-    <Flex gap={10} alignItems={"center"} justifyContent={"space-between"} width={"100%"}>
-      <Text fontWeight={500} color={"gray.500"}>
-        {voterCount} {LL.votes()}
-      </Text>
+    <Flex gap={10} alignItems={"end"} justifyContent={"space-between"} width={"100%"}>
+      <Flex gap={1} flexDirection={"column"} alignItems={"start"}>
+        <Text fontWeight={500} color={"gray.500"}>{`${voterCount} ${LL.votes()}`}</Text>
+
+        <Text fontWeight={500} color={"gray.500"}>
+          {LL.voting_power()}
+        </Text>
+      </Flex>
       <ProgressBar votesPercentage={votesPercentage} isDisable={isProgressDisabled} />
       <Text fontWeight={500} color={"gray.500"}>
         {parseInt(votesPercentage.toString())} {LL.percentage()}
