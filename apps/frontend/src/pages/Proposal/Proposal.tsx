@@ -22,6 +22,7 @@ import { ArrowLeftIcon, ArrowRightIcon, CheckSquareIcon, VoteIcon } from "@/icon
 import { ExecuteModal } from "@/components/proposal/ExecuteModal";
 import { CancelProposal } from "@/components/proposal/CancelProposal";
 import { useNodes } from "@/hooks/useUserQueries";
+import { areAddressesEqual } from "@/utils/address";
 
 export const Proposal = () => {
   const { LL } = useI18nContext();
@@ -105,7 +106,10 @@ const ProposalNavbarActions = ({ proposal }: { proposal: ProposalCardType | unde
   const canVote = useMemo(() => isVoter && ["voting"].includes(proposal?.status || ""), [isVoter, proposal?.status]);
 
   const canCancel = useMemo(
-    () => isWhitelisted && account?.address === proposal?.proposer && ["upcoming"].includes(proposal?.status || ""),
+    () =>
+      isWhitelisted &&
+      areAddressesEqual(account?.address, proposal?.proposer) &&
+      ["upcoming"].includes(proposal?.status || ""),
     [account?.address, isWhitelisted, proposal?.proposer, proposal?.status],
   );
 

@@ -48,14 +48,13 @@ export const ProposalCard = ({ status, title, endDate, startDate, id }: Proposal
           {hasVoted && <Status text={"Voted"} marginLeft={"auto"} />}
         </Flex>
         <Flex gap={{ base: 2, md: 4 }} alignItems={"start"} direction={"column"}>
-          <Text 
-            overflow={"hidden"} 
-            fontSize={{ base: 16, md: 20 }} 
-            fontWeight={600} 
+          <Text
+            overflow={"hidden"}
+            fontSize={{ base: 16, md: 20 }}
+            fontWeight={600}
             color={"gray.600"}
             lineHeight={{ base: 1.3, md: 1.2 }}
-            noOfLines={{ base: 2, md: 1 }}
-          >
+            noOfLines={{ base: 2, md: 1 }}>
             {title}
           </Text>
           <DateItem startDate={startDate} endDate={endDate} status={status} />
@@ -129,8 +128,9 @@ export const VotingDate = ({
   const { LL } = useI18nContext();
 
   const hoursMinutes = useMemo(() => {
-    if (votingDate?.hours) return `${votingDate?.hours} ${votingDate?.minutes}`;
-    return `${votingDate?.minutes}`;
+    if (votingDate?.hours && votingDate?.minutes) return `${votingDate?.hours} ${votingDate?.minutes}`;
+    if (votingDate?.hours) return `${votingDate?.hours}`;
+    if (votingDate?.minutes) return `${votingDate?.minutes}`;
   }, [votingDate?.hours, votingDate?.minutes]);
 
   return (
@@ -141,7 +141,8 @@ export const VotingDate = ({
           <Text color={"gray.500"}>{LL.and()}</Text>
         </>
       )}
-      <Text fontWeight={500}>{hoursMinutes}</Text>
+      {hoursMinutes && <Text fontWeight={500}>{hoursMinutes}</Text>}
+
       <Text color={"gray.500"}>{LL.left().toLowerCase()}</Text>
     </Flex>
   );
