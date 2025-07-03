@@ -2,7 +2,7 @@ import { getConfig } from "@repo/config";
 import { executeCall, executeMultipleClauses } from "../contract";
 import { VeVote__factory } from "@repo/contracts";
 import { NodeManagement__factory } from "@repo/contracts/typechain-types";
-import { AmnResponse, ExtendedUserNode, NodeStrengthLevels, UserNode } from "@/types/user";
+import { AmnResponse, ExtendedAMNResponse, ExtendedUserNode, NodeStrengthLevels, UserNode } from "@/types/user";
 import axios from "axios";
 import { IndexerRoutes } from "@/types/indexer";
 
@@ -116,6 +116,7 @@ export const getUserNodes = async ({ address, blockN }: { address: string; block
 
 export const getAMN = async (address?: string) => {
   if (!address) return { data: undefined };
+  let votingPower: number | undefined = undefined;
 
   try {
     const res = await axios.get<AmnResponse>(`${indexerUrl}${IndexerRoutes.MASTER_NODE}`, {
@@ -124,9 +125,23 @@ export const getAMN = async (address?: string) => {
       },
     });
 
-    //TODO: add voting power
+    if (res.data.nodeMaster) {
+      const resCall = await executeCall({
+        contractAddress,
+        contractInterface,
+        method: "getVoteWeight",
+        args: [res.data.nodeMaster],
+      });
 
-    return { data: res.data || [] };
+      if (resCall.success) votingPower = Number(resCall.result.plain);
+    }
+
+    const amnWithVotingPower: ExtendedAMNResponse = {
+      ...res.data,
+      votingPower: votingPower || 0,
+    };
+
+    return { data: amnWithVotingPower };
   } catch (error) {
     console.error(`Failed to fetch votes results: ${error}`);
     return { data: undefined };

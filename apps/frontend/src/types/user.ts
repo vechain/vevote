@@ -65,3 +65,7 @@ export type AmnResponse = {
   blockNumber: number;
   endorser: string;
 };
+
+export type ExtendedAMNResponse = AmnResponse & {
+  votingPower: number;
+};

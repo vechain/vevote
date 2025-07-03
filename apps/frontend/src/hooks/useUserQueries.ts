@@ -1,4 +1,4 @@
-import { AmnResponse } from "@/types/user";
+import { ExtendedAMNResponse } from "@/types/user";
 import { getBlockFromDate } from "@/utils/proposals/helpers";
 import { getAMN, getUserNodes, getUserRoles } from "@/utils/proposals/userQueries";
 import { useQuery } from "@tanstack/react-query";
@@ -6,7 +6,7 @@ import { useWallet } from "@vechain/vechain-kit";
 
 const getNodes = async ({ address, startDate }: { address: string; startDate: Date }) => {
   try {
-    let amn: AmnResponse | undefined = undefined;
+    let amn: ExtendedAMNResponse | undefined = undefined;
     if (address) {
       const { data } = await getAMN(address);
       if (data) amn = data;
@@ -16,8 +16,12 @@ const getNodes = async ({ address, startDate }: { address: string; startDate: Da
     const r = await getUserNodes({ address, blockN: blockN?.number.toString() });
     return {
       nodes: r?.nodes || [],
-      isEndorser: amn?.endorser || false,
-      nodeMaster: amn?.nodeMaster || "",
+      masterNode: {
+        address: amn?.nodeMaster || "",
+        endorser: amn?.endorser || "",
+        blockNumber: amn?.blockNumber || 0,
+        votingPower: amn?.votingPower || 0,
+      },
     };
   } catch (error) {
     console.error("Error fetching nodes:", error);
@@ -36,8 +40,7 @@ export const useNodes = ({ startDate }: { startDate?: Date }) => {
 
   return {
     nodes: data?.nodes || [],
-    isEndorser: data?.isEndorser || false,
-    nodeMaster: data?.nodeMaster || "",
+    masterNode: data?.masterNode,
     isLoading,
     isError: Boolean(error),
   };
