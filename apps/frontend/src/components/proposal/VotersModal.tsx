@@ -80,7 +80,7 @@ export const VotersModal = () => {
   );
 };
 
-const sortOptions = [Sort.Newest, Sort.Oldest, Sort.LeastParticipant, Sort.MostParticipant];
+const sortOptions = [Sort.Newest, Sort.Oldest];
 
 const TableFilters = ({ options, nodes }: { options: string[]; nodes: string[] }) => {
   const { LL } = useI18nContext();

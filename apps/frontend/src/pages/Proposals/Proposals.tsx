@@ -32,10 +32,12 @@ export const Proposals = () => {
   const proposalsBySearch = useMemo(() => {
     const searchLower = searchValue.toLowerCase();
     const isDraftProposal = draftProposal && draftProposal?.proposer === account?.address;
-    const filteredProposals = proposals.filter(({ title }) => title.toLowerCase().includes(searchLower)).reverse();
-
+    const filteredProposals =
+      sort === Sort.Newest
+        ? proposals.filter(({ title }) => title.toLowerCase().includes(searchLower)).reverse()
+        : proposals.filter(({ title }) => title.toLowerCase().includes(searchLower));
     return isDraftProposal ? [draftProposal, ...filteredProposals] : filteredProposals;
-  }, [account?.address, draftProposal, proposals, searchValue]);
+  }, [account?.address, draftProposal, proposals, searchValue, sort]);
 
   const proposalsByTabStatus: Record<string, ProposalCardType[]> = useMemo(() => {
     const finishedStatuses: ProposalStatus[] = ["canceled", "rejected", "min-not-reached"];
@@ -139,7 +141,7 @@ const ProposalsPanel = ({ proposals, loading }: { proposals: ProposalCardType[];
 
 const BasePanel = ({ children }: PropsWithChildren) => {
   return (
-    <TabPanel display={"flex"} flexDirection={"column"} gap={4}>
+    <TabPanel display={"flex"} flexDirection={"column"} gap={{ base: 2, md: 4 }}>
       {children}
     </TabPanel>
   );
