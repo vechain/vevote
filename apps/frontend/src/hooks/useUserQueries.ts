@@ -1,13 +1,24 @@
+import { AmnResponse } from "@/types/user";
 import { getBlockFromDate } from "@/utils/proposals/helpers";
-import { getUserNodes, getUserRoles } from "@/utils/proposals/userQueries";
+import { getAMN, getUserNodes, getUserRoles } from "@/utils/proposals/userQueries";
 import { useQuery } from "@tanstack/react-query";
 import { useWallet } from "@vechain/vechain-kit";
 
 const getNodes = async ({ address, startDate }: { address: string; startDate: Date }) => {
   try {
+    let amn: AmnResponse | undefined = undefined;
+    if (address) {
+      const { data } = await getAMN(address);
+      if (data) amn = data;
+    }
     const blockN = await getBlockFromDate(startDate);
     if (!blockN) return { nodes: [] };
-    return await getUserNodes({ address, blockN: blockN?.number.toString() });
+    const r = await getUserNodes({ address, blockN: blockN?.number.toString() });
+    return {
+      nodes: r?.nodes || [],
+      isEndorser: amn?.endorser || false,
+      nodeMaster: amn?.nodeMaster || "",
+    };
   } catch (error) {
     console.error("Error fetching nodes:", error);
     return { nodes: [] };
@@ -25,6 +36,8 @@ export const useNodes = ({ startDate }: { startDate?: Date }) => {
 
   return {
     nodes: data?.nodes || [],
+    isEndorser: data?.isEndorser || false,
+    nodeMaster: data?.nodeMaster || "",
     isLoading,
     isError: Boolean(error),
   };
