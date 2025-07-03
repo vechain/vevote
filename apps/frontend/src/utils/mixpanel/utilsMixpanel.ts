@@ -2,8 +2,8 @@ import { Dict } from "mixpanel-browser";
 import { analytics } from "./mixpanel";
 
 export enum MixPanelEvent {
-  USER_CONNECTED = "User Connected", //TODO: add with privi integration
-  USER_DISCONNECTED = "User Disconnected", //TODO: add with privi integration
+  USER_CONNECTED = "User Connected",
+  USER_DISCONNECTED = "User Disconnected",
 
   PROPOSAL_PUBLISH = "Proposal Publishing",
   PROPOSAL_PUBLISHED = "Proposal Published",
@@ -27,7 +27,7 @@ export enum MixPanelEvent {
 }
 
 export type MixPanelProperties = {
-  [MixPanelEvent.USER_CONNECTED]: { address: string; walletType: string };
+  [MixPanelEvent.USER_CONNECTED]: { address: string; walletType: string; isInAppBrowser?: boolean };
   [MixPanelEvent.USER_DISCONNECTED]: { address: string };
 
   [MixPanelEvent.PROPOSAL_PUBLISHED]: { proposalId: string; transactionId: string };

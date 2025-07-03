@@ -3,9 +3,9 @@ import { getProposalsFromIpfs } from "@/utils/ipfs/proposal";
 import { mergeIpfsDetails } from "@/utils/proposals/helpers";
 import { getProposalsEvents, getProposalsWithState } from "@/utils/proposals/proposalsQueries";
 import { useQuery } from "@tanstack/react-query";
-import { useConnex } from "@vechain/vechain-kit";
+import { ThorClient, useThor } from "@vechain/vechain-kit";
 
-const getProposals = async (thor: Connex.Thor) => {
+const getProposals = async (thor: ThorClient) => {
   const data = await getProposalsEvents(thor);
   const proposals = data?.proposals || [];
 
@@ -17,7 +17,7 @@ const getProposals = async (thor: Connex.Thor) => {
 };
 
 export const useProposalsEvents = () => {
-  const { thor } = useConnex();
+  const thor = useThor();
 
   const { data: proposals, isLoading } = useQuery({
     queryKey: ["proposalsEvents"],

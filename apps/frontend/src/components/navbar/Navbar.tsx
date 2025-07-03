@@ -1,8 +1,8 @@
 import { useUser } from "@/contexts/UserProvider";
 import { useShowNavbar } from "@/hooks/useShowNavbar";
-import { Box, BoxProps, Flex, FlexProps, Image, useBreakpointValue } from "@chakra-ui/react";
-import { DAppKitWalletButton } from "@vechain/vechain-kit";
+import { Box, BoxProps, Flex, FlexProps, Image } from "@chakra-ui/react";
 import { PropsWithChildren, useMemo } from "react";
+import { ConnectButton } from "../ui/ConnectButton";
 
 const NavbarContainer = ({ children, ...restProps }: BoxProps) => {
   return (
@@ -33,13 +33,7 @@ const NavbarInnerContainer = ({ children, ...restProps }: FlexProps) => {
       gap={6}
       {...restProps}>
       {children}
-      <DAppKitWalletButton
-        style={{ whiteSpace: "nowrap" }}
-        mobile={useBreakpointValue({
-          base: true,
-          md: false,
-        })}
-      />
+      <ConnectButton />
     </Flex>
   );
 };
