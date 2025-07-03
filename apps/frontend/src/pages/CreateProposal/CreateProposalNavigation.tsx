@@ -1,15 +1,18 @@
 import { PageContainer } from "@/components/PageContainer";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { CreateProposalStep } from "@/types/proposal";
-import { Box, Flex, Heading, Text } from "@chakra-ui/react";
+import { Box, Button, Flex, Heading, Icon, Text, useDisclosure } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import { useMemo } from "react";
 import { useCreateProposal } from "./CreateProposalProvider";
-import { ExitButton } from "./ExitButton";
+import { ExitModal } from "./ExitModal";
+import { CloseIcon } from "@/icons";
 
 export const CreateProposalNavigation = () => {
   const { step } = useCreateProposal();
   const { LL } = useI18nContext();
+
+  const { isOpen: isExitOpen, onClose: onExitClose, onOpen: onExitOpen } = useDisclosure();
 
   const description = useMemo(() => {
     switch (step) {
@@ -26,25 +29,44 @@ export const CreateProposalNavigation = () => {
       paddingX={{ base: 6, md: 12, lg: 24 }}
       paddingY={{ base: 4, md: 16 }}
       boxShadow={"0px 0px 12px 1px rgba(0,0,0,0.06)"}
-      background={"white"}
-      alignItems={"start"}
-      flexDirection={"column"}
-      gap={4}>
-      <Flex width={"full"} gap={6} alignItems={{ base: "start", md: "center" }}>
-        <Flex flexDirection={"column"} alignItems={"start"} gap={6}>
-          <Heading fontSize={{ base: 18, md: 30 }} fontWeight={600} color="primary.700">
+      background={"white"}>
+      <Flex flexDirection={"column"} alignItems={"start"} gap={4} width={"full"}>
+        <Flex width={"full"} flexDirection={"row"} justifyContent={"space-between"} alignItems={"center"}>
+          <Heading fontSize={{ base: "18px", md: "30px" }} fontWeight={"semibold"} color="primary.700">
             {LL.proposal.create.title()}
           </Heading>
-          <Flex flexDirection={"column"} gap={2}>
-            <ProgressBar />
-          </Flex>
+          <Button
+            hideFrom={"md"}
+            variant={"secondary"}
+            marginLeft={"auto"}
+            alignItems={"center"}
+            size={{ base: "md", md: "lg" }}
+            gap={2}
+            onClick={onExitOpen}
+            rightIcon={<Icon as={CloseIcon} />}>
+            {LL.exit()}
+          </Button>
         </Flex>
-        <ExitButton />
+        <Flex flexDirection={"column"} gap={2}>
+          <ProgressBar />
+          <Text fontSize={{ base: "14px", md: "18px" }} color={"gray.600"}>
+            {description}
+          </Text>
+        </Flex>
       </Flex>
 
-      <Text fontSize={{ base: "14px", md: "18px" }} color={"gray.600"}>
-        {description}
-      </Text>
+      <Button
+        hideBelow={"md"}
+        variant={"secondary"}
+        marginLeft={"auto"}
+        alignItems={"center"}
+        size={{ base: "md", md: "lg" }}
+        gap={2}
+        onClick={onExitOpen}
+        rightIcon={<Icon as={CloseIcon} />}>
+        {LL.exit()}
+      </Button>
+      <ExitModal isExitOpen={isExitOpen} onExitClose={onExitClose} />
     </PageContainer.Header>
   );
 };

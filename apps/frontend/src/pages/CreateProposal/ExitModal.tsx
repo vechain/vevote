@@ -1,16 +1,15 @@
 import { MessageModal } from "@/components/ui/ModalSkeleton";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { Routes } from "@/types/routes";
-import { Button, Icon, ModalFooter, Text, useDisclosure } from "@chakra-ui/react";
+import { Button, ModalFooter, Text, useDisclosure } from "@chakra-ui/react";
 import { useCallback, useMemo } from "react";
 import { useNavigate } from "react-router";
 import { useCreateProposal } from "./CreateProposalProvider";
 import { CreateProposalStep } from "@/types/proposal";
-import { CheckIcon, CloseIcon, LogoutIcon } from "@/icons";
+import { CheckIcon, LogoutIcon } from "@/icons";
 
-export const ExitButton = () => {
+export const ExitModal = ({ isExitOpen, onExitClose }: { isExitOpen: boolean; onExitClose: () => void }) => {
   const { LL } = useI18nContext();
-  const { isOpen: isExitOpen, onClose: onExitClose, onOpen: onExitOpen } = useDisclosure();
   const { isOpen: isSavedOpen, onClose: onSavedClose, onOpen: onSavedOpen } = useDisclosure();
 
   const navigate = useNavigate();
@@ -41,14 +40,6 @@ export const ExitButton = () => {
 
   return (
     <>
-      <Button
-        marginLeft={"auto"}
-        alignItems={"center"}
-        gap={2}
-        onClick={onExitOpen}
-        rightIcon={<Icon as={CloseIcon} />}>
-        {LL.exit()}
-      </Button>
       <MessageModal
         isOpen={isExitOpen}
         onClose={onExitClose}

@@ -87,16 +87,16 @@ const VotingTypeItem = ({
       alignItems={"center"}
       gap={3}
       width={"100%"}
-      padding={6}
+      padding={{ base: 3, md: 6 }}
       borderWidth={2}
       borderColor={isSelected ? "primary.600" : "gray.200"}
-      borderRadius={16}
+      borderRadius={{ base: 8, md: 16 }}
       onClick={onClick}>
       <Flex gap={1} flex={1} width={"100%"} flexDirection={"column"} alignItems={"start"}>
-        <Text fontSize={18} fontWeight={600} color={isSelected ? "primary.600" : "gray.600"}>
+        <Text fontSize={{ base: 16, md: 18 }} fontWeight={600} color={isSelected ? "primary.600" : "gray.600"}>
           {title}
         </Text>
-        <Text fontWeight={500} color={"gray.500"}>
+        <Text fontSize={{ base: 12, md: 16 }} fontWeight={500} color={"gray.500"}>
           {subtitle}
         </Text>
       </Flex>

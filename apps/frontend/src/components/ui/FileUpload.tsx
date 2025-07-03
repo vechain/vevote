@@ -74,6 +74,7 @@ export const FileUpload = ({
 
   return (
     <Flex
+      direction={{ base: "column", md: "row" }}
       borderWidth={"1px"}
       borderRadius={"8px"}
       borderColor={"gray.200"}
