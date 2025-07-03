@@ -65,7 +65,12 @@ export const Proposal = () => {
         <Box>{"Proposal not found"}</Box>
       ) : (
         <ProposalProvider proposal={proposal}>
-          <PageContainer paddingTop={"200px"} bg={"white"}>
+          <PageContainer
+            padding={0}
+            paddingX={{ base: "20px", md: "40px" }}
+            paddingTop={"192px"}
+            paddingBottom={"80px"}
+            bg={"white"}>
             {isLoading ? (
               <Box>{"Loading"}</Box>
             ) : (
