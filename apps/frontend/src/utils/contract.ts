@@ -51,11 +51,11 @@ export const executeCall = async <T extends Interface>({
   try {
     const interfaceJson = contractInterface.getFunction(method)?.format("full");
     if (!interfaceJson) throw new Error(`Method ${method} not found`);
-    const functionAbi = new ABIFunction(interfaceJson) as any; //TODO: Fix type casting
+    const functionAbi = new ABIFunction(interfaceJson) as any;
     const results = await thorClient.contracts.executeCall(contractAddress, functionAbi, args, callOptions);
     return results;
   } catch (error) {
-    console.error("Error calling multiple methods:", error);
+    console.error("Error calling method:", error);
     throw error;
   }
 };
