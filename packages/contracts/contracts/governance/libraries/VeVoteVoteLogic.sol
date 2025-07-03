@@ -85,6 +85,7 @@ library VeVoteVoteLogic {
    * @param self The storage reference for the VeVoteStorage.
    * @param proposalId The ID of the proposal being voted on.
    * @param choices The bitmask representing the selected vote choices.
+   * @param masterAddress Required parameter — can be zero address. Used to determine validator voting power, if applicable.
    */
   function castVote(
     VeVoteStorageTypes.VeVoteStorage storage self,
