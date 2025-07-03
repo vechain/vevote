@@ -1,5 +1,5 @@
 import { IndexerRoutes } from "@/types/indexer";
-import { VotedChoices, VotedResult } from "@/types/votes";
+import { VotedResult } from "@/types/votes";
 import { getConfig } from "@repo/config";
 import { VeVote__factory } from "@repo/contracts";
 import axios from "axios";
@@ -77,8 +77,6 @@ export const getVotedChoices = async (thor: ThorClient, proposalId?: string, add
         date: new Date(event.meta.blockTimestamp * 1000),
         transactionId: event.meta.txID,
       };
-
-      console.log("Voted Choices:", votedChoices);
 
       return votedChoices;
     });

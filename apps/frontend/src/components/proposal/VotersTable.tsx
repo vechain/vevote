@@ -6,6 +6,7 @@ import { CopyLink } from "../ui/CopyLink";
 import dayjs from "dayjs";
 import { ArrowLinkIcon } from "@/icons";
 import { getConfig } from "@repo/config";
+import { SingleChoiceEnum } from "@/types/proposal";
 
 const VECHAIN_EXPLORER_URL = getConfig(import.meta.env.VITE_APP_ENV).network.explorerUrl;
 
@@ -41,25 +42,46 @@ const AddressCell = ({ value }: { value: string }) => {
   );
 };
 
-// const votedOptionCellVariants = {
-//   yes: defineStyle({
-//     background: "green.100",
-//     color: "green.700",
-//   }),
-//   no: defineStyle({
-//     background: "red.100",
-//     color: "red.700",
-//   }),
-//   default: defineStyle({
-//     background: "gray.100",
-//     color: "gray.700",
-//   }),
-// };
+const votedOptionCellVariants = (choice: string) => {
+  const style = {
+    yes: defineStyle({
+      background: "green.100",
+      color: "green.700",
+    }),
+    no: defineStyle({
+      background: "red.100",
+      color: "red.700",
+    }),
+    default: defineStyle({
+      background: "gray.100",
+      color: "gray.700",
+    }),
+  };
+
+  switch (choice) {
+    case SingleChoiceEnum.YES:
+      return style.yes;
+    case SingleChoiceEnum.NO:
+      return style.no;
+    default:
+      return style.default;
+  }
+};
 
 const VotedOptionCell = ({ options }: { options?: string[] }) => {
   return (
     <Flex gap={2} flexDirection={"column"}>
-      {options?.map(option => <BaseCell value={option} />)}
+      {options?.map(option => (
+        <Text
+          textAlign={"center"}
+          fontWeight={500}
+          fontSize={12}
+          borderRadius={4}
+          p={1}
+          {...votedOptionCellVariants(option)}>
+          {option}
+        </Text>
+      ))}
     </Flex>
   );
 };
