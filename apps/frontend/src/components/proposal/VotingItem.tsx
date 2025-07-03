@@ -55,15 +55,15 @@ export const VotingItem = ({
   choiceIndex,
   results,
 }: VotingItemProps) => {
-  const { account } = useWallet();
+  const { connection } = useWallet();
   const { proposal } = useProposal();
   const { hasVoted } = useHasVoted({ proposalId: proposal.id });
   const { nodes } = useNodes({ startDate: proposal?.startDate });
   const isVoter = useMemo(() => nodes.length > 0, [nodes.length]);
 
   const cannotVote = useMemo(
-    () => !account?.address || hasVoted || variant !== "voting" || !isVoter,
-    [account?.address, hasVoted, isVoter, variant],
+    () => !connection.isConnected || hasVoted || variant !== "voting" || !isVoter,
+    [connection.isConnected, hasVoted, isVoter, variant],
   );
   const handleClick = useCallback(() => {
     if (cannotVote) return;

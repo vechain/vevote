@@ -1,10 +1,11 @@
 import { useCallback, useRef, useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { EnhancedClause, useSendTransaction, useWallet } from "@vechain/vechain-kit";
+import { TransactionReceipt } from "@vechain/sdk-network";
 
 export type VevoteTransactionResult = {
   txId: string;
-  receipt: Connex.Thor.Transaction.Receipt;
+  receipt: TransactionReceipt;
 };
 
 export type VevoteTransactionError = {

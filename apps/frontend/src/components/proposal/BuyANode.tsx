@@ -7,7 +7,7 @@ import { useCallback, useMemo } from "react";
 import { useProposal } from "./ProposalProvider";
 
 export const BuyANode = () => {
-  const { account } = useWallet();
+  const { connection } = useWallet();
   const { LL } = useI18nContext();
   const { proposal } = useProposal();
 
@@ -15,8 +15,8 @@ export const BuyANode = () => {
   const isVoter = useMemo(() => nodes.length > 0, [nodes.length]);
 
   const connectedAndVoter = useMemo(() => {
-    return account?.address && isVoter;
-  }, [account?.address, isVoter]);
+    return connection.isConnected && isVoter;
+  }, [connection.isConnected, isVoter]);
 
   const infoText = useMemo(() => {
     if (connectedAndVoter) return LL.proposal.buy_another_node();

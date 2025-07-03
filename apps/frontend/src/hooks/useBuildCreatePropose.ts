@@ -3,6 +3,7 @@ import { BaseOption, VotingEnum } from "@/types/proposal";
 import { useVevoteSendTransaction } from "@/utils/hooks/useVevoteSendTransaction";
 import { getConfig } from "@repo/config";
 import { VeVote__factory } from "@repo/contracts";
+import { ABIFunction, Address, Clause } from "@vechain/sdk-core";
 import { EnhancedClause } from "@vechain/vechain-kit";
 import { ethers } from "ethers";
 import { useCallback } from "react";
@@ -32,23 +33,8 @@ export const useBuildCreateProposal = () => {
             ? votingOptions.map(c => ethers.encodeBytes32String(c as string))
             : votingOptions.map(c => ethers.encodeBytes32String((c as BaseOption).value));
 
-        const createProposalClause: EnhancedClause = {
-          to: contractAddress,
-          value: 0,
-          data: contractInterface.encodeFunctionData("propose", [
-            description,
-            startBlock,
-            durationBlock - startBlock,
-            encodedChoices,
-            votingLimit || 1,
-            1,
-          ]),
-          comment: `Create new proposal`,
-          abi: JSON.parse(JSON.stringify(contractInterface.getFunction("propose"))),
-        };
+        const encodedData = [description, startBlock, durationBlock - startBlock, encodedChoices, votingLimit || 1, 1];
 
-        //TODO: use sdk once vechain-kit is compatible
-        /* ---------- with sdk
         const interfaceJson = contractInterface.getFunction("propose")?.format("full");
         if (!interfaceJson) throw new Error(`Method propose not found`);
 
@@ -59,8 +45,6 @@ export const useBuildCreateProposal = () => {
           functionAbi,
           encodedData,
         ) as EnhancedClause;
-
-        --------- with sdk */
 
         clauses.push(createProposalClause);
 

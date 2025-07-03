@@ -1,5 +1,6 @@
 .turbo
-
+.claude
+CLAUDE.md
 build/**
 
 # claude

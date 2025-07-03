@@ -1,16 +1,16 @@
-import { useI18nContext } from "@/i18n/i18n-react";
-import { useCreateProposal } from "./CreateProposalProvider";
-import { DAppKitWalletButton, useWallet } from "@vechain/vechain-kit";
-import { ProposalProvider } from "@/components/proposal/ProposalProvider";
-import { Box, Button, Flex, Heading, Icon, Image, Text, useBreakpointValue } from "@chakra-ui/react";
 import { PageContainer } from "@/components/PageContainer";
-import { PropsWithChildren, useEffect, useMemo } from "react";
-import { ProposalInfos } from "@/components/proposal/ProposalInfos";
+import { BuyANode } from "@/components/proposal/BuyANode";
 import { ProposalDetailsCards } from "@/components/proposal/ProposalDetailsCards";
 import { ProposalInfoBox } from "@/components/proposal/ProposalInfoBox";
+import { ProposalInfos } from "@/components/proposal/ProposalInfos";
+import { ProposalProvider } from "@/components/proposal/ProposalProvider";
 import { VotingSection } from "@/components/proposal/VotingSection";
-import { BuyANode } from "@/components/proposal/BuyANode";
+import { useI18nContext } from "@/i18n/i18n-react";
 import { ArrowLeftIcon, ArrowRightIcon, CloseIcon, VoteIcon } from "@/icons";
+import { Box, Button, Flex, Heading, Icon, Image, Text } from "@chakra-ui/react";
+import { useWallet } from "@vechain/vechain-kit";
+import { PropsWithChildren, useEffect, useMemo } from "react";
+import { useCreateProposal } from "./CreateProposalProvider";
 
 export const ProposalPreview = () => {
   const { LL } = useI18nContext();
@@ -55,13 +55,6 @@ export const ProposalPreview = () => {
               {LL.homepage()} <Icon as={ArrowRightIcon} width={5} height={4} /> {LL.proposal.title()}
             </Text>
             <ProposalNavbarActions />
-            <DAppKitWalletButton
-              style={{ whiteSpace: "nowrap" }}
-              mobile={useBreakpointValue({
-                base: true,
-                md: false,
-              })}
-            />
           </Flex>
         </Box>
         <PageContainer paddingTop={"40px"}>
