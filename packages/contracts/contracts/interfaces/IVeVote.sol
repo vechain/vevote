@@ -162,7 +162,7 @@ interface IVeVote is IERC165, IERC6372 {
   /**
    * @dev Emitted when a proposal is executed.
    */
-  event VeVoteProposalExecuted(uint256 proposalId);
+  event VeVoteProposalExecuted(uint256 proposalId, string comment);
 
   /**
    * @notice Emitted when the quorum numerator is updated.
@@ -532,6 +532,14 @@ interface IVeVote is IERC165, IERC6372 {
    * @param proposalId The ID of the proposal to execute.
    */
   function execute(uint256 proposalId) external returns (uint256);
+
+  /**
+   * @notice Marks a proposal as executed.
+   * @dev Allows an admin to mark a proposal as executed.
+   * @param proposalId The ID of the proposal to execute.
+   * @param comment A comment on the proposal execution.
+   */
+  function executeWithComment(uint256 proposalId, string memory comment) external returns (uint256);
 
   /**
    * @notice Updates the minimum voting delay.

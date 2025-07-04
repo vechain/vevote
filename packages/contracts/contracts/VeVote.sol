@@ -434,7 +434,18 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
    */
   function execute(uint256 proposalId) external onlyRole(EXECUTOR_ROLE) returns (uint256) {
     VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
-    return VeVoteProposalLogic.execute($, proposalId);
+    return VeVoteProposalLogic.execute($, proposalId, "");
+  }
+
+  /**
+   * @inheritdoc IVeVote
+   */
+  function executeWithComment(
+    uint256 proposalId,
+    string memory comment
+  ) external onlyRole(EXECUTOR_ROLE) returns (uint256) {
+    VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
+    return VeVoteProposalLogic.execute($, proposalId, comment);
   }
 
   /**

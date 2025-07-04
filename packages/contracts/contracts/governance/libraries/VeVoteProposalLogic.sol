@@ -91,7 +91,7 @@ library VeVoteProposalLogic {
   /**
    * @dev Emitted when a proposal is executed.
    */
-  event VeVoteProposalExecuted(uint256 proposalId);
+  event VeVoteProposalExecuted(uint256 proposalId, string comment);
 
   // ------------------------------- Functions -------------------------------
   // ------------------------------- Setter Functions -------------------------------
@@ -210,7 +210,7 @@ library VeVoteProposalLogic {
    * @param self The storage reference for the VeVoteStorage.
    * @param proposalId The ID of the proposal to execute.
    */
-  function execute(VeVoteStorageTypes.VeVoteStorage storage self, uint256 proposalId) external returns (uint256) {
+  function execute(VeVoteStorageTypes.VeVoteStorage storage self, uint256 proposalId, string memory comment) external returns (uint256) {
     // Validate that proposal is in a succeeded state
     VeVoteStateLogic.validateStateBitmap(
       self,
@@ -221,7 +221,7 @@ library VeVoteProposalLogic {
     // Mark the proposal as executed
     self.proposals[proposalId].executed = true;
 
-    emit VeVoteProposalExecuted(proposalId);
+    emit VeVoteProposalExecuted(proposalId, comment);
 
     return proposalId;
   }

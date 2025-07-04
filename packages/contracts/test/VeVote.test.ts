@@ -975,6 +975,26 @@ describe("VeVote", function () {
       expect(await vevote.state(proposalId)).to.equal(5);
     });
 
+    it("Should be able to pass in comment when executing proposals", async function () {
+      const config = createLocalConfig();
+      config.QUORUM_PERCENTAGE = 0;
+      const { vevote, admin, strengthHolder } = await getOrDeployContractInstances({
+        forceDeploy: true,
+        config,
+      });
+      const tx = await createProposal();
+      const proposalId = await getProposalIdFromTx(tx);
+      await waitForProposalToStart(proposalId);
+      await vevote.connect(strengthHolder).castVote(proposalId, 1, ZeroAddress);
+      await waitForProposalToEnd(proposalId);
+
+      await expect(vevote.connect(admin).executeWithComment(proposalId, "It was executed by me"))
+        .to.emit(vevote, "VeVoteProposalExecuted")
+        .withArgs(proposalId, "It was executed by me");
+
+      expect(await vevote.state(proposalId)).to.equal(5);
+    });
+
     it("Proposals can only be executed when they are in SUCEEDED state", async function () {
       const config = createLocalConfig();
       config.QUORUM_PERCENTAGE = 0;
