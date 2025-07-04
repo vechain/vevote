@@ -448,9 +448,10 @@ type RootTranslation = {
 				 */
 				title: string
 				/**
-				 * A​ ​m​i​n​i​m​u​m​ ​o​f​ ​3​0​%​ ​p​a​r​t​i​c​i​p​a​t​i​o​n​ ​m​u​s​t​ ​b​e​ ​r​e​a​c​h​e​d​ ​t​o​ ​v​a​l​i​d​a​t​e​ ​t​h​e​ ​v​o​t​i​n​g​ ​o​f​ ​t​h​e​ ​p​r​o​p​o​s​a​l​ ​a​n​d​ ​g​e​t​ ​a​p​p​r​o​v​a​l​.
+				 * A​ ​m​i​n​i​m​u​m​ ​o​f​ ​{​q​u​o​r​u​m​}​%​ ​p​a​r​t​i​c​i​p​a​t​i​o​n​ ​m​u​s​t​ ​b​e​ ​r​e​a​c​h​e​d​ ​t​o​ ​v​a​l​i​d​a​t​e​ ​t​h​e​ ​v​o​t​i​n​g​ ​o​f​ ​t​h​e​ ​p​r​o​p​o​s​a​l​ ​a​n​d​ ​g​e​t​ ​a​p​p​r​o​v​a​l​.
+				 * @param {number} quorum
 				 */
-				description: string
+				description: RequiredParams<'quorum'>
 			}
 			approved: {
 				/**
@@ -1377,9 +1378,9 @@ JPG, PNG or SVG of maximum of {size}MB.
 				 */
 				title: () => LocalizedString
 				/**
-				 * A minimum of 30% participation must be reached to validate the voting of the proposal and get approval.
+				 * A minimum of {quorum}% participation must be reached to validate the voting of the proposal and get approval.
 				 */
-				description: () => LocalizedString
+				description: (arg: { quorum: number }) => LocalizedString
 			}
 			approved: {
 				/**

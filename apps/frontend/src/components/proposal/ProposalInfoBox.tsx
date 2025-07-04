@@ -5,6 +5,7 @@ import { useMemo } from "react";
 import { InfoBox, infoBoxVariants } from "../ui/InfoBox";
 import { useProposal } from "./ProposalProvider";
 import { ArrowLinkIcon } from "@/icons";
+import { useQuorum } from "@/hooks/useQuorum";
 
 type ProposalInfoBoxProps = {
   canceledDate?: Date;
@@ -15,15 +16,16 @@ export const ProposalInfoBox = ({ canceledDate, canceledReason }: ProposalInfoBo
   const { proposal } = useProposal();
   const { LL } = useI18nContext();
   const { formattedProposalDate } = useFormatDate();
+  const { quorumPercentage } = useQuorum();
 
   const contentVariant = useMemo(
     () =>
       Object.entries(LL.proposal.info_box).map(([key, value]) => ({
         variant: key,
         title: value.title(),
-        description: value.description(),
+        description: value.description({ quorum: quorumPercentage || 0 }),
       })),
-    [LL.proposal.info_box],
+    [LL.proposal.info_box, quorumPercentage],
   );
 
   const variant = useMemo(() => {

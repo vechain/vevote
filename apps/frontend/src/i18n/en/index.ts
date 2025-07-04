@@ -129,7 +129,7 @@ const en = {
       info: {
         title: "Minimum participation",
         description:
-          "A minimum of 30% participation must be reached to validate the voting of the proposal and get approval.",
+          "A minimum of {quorum:number}% participation must be reached to validate the voting of the proposal and get approval.",
       },
       approved: {
         title: "Minimum participation reached",
