@@ -21,7 +21,6 @@ import { VeVoteVoteLogic } from "./governance/libraries/VeVoteVoteLogic.sol";
 import { VeVoteProposalLogic } from "./governance/libraries/VeVoteProposalLogic.sol";
 import { VeVoteStorageTypes } from "./governance/libraries/VeVoteStorageTypes.sol";
 import { VeVoteConfigurator } from "./governance/libraries/VeVoteConfigurator.sol";
-import { VechainNodesDataTypes } from "./libraries/VechainNodesDataTypes.sol";
 import { INodeManagement } from "./interfaces/INodeManagement.sol";
 import { IStargateNFT } from "./interfaces/IStargateNFT.sol";
 import { IAuthority } from "./interfaces/IAuthority.sol";
