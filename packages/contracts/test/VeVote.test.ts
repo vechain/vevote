@@ -75,6 +75,7 @@ describe("VeVote", function () {
             settingsManager: admin.address,
             nodeWeightManager: admin.address,
             executor: admin.address,
+            whitelistAdmin: admin.address,
           },
         ),
       ).to.be.revertedWithCustomError(vevote, "InvalidInitialization");
@@ -84,6 +85,29 @@ describe("VeVote", function () {
       const { vevote } = await getOrDeployContractInstances({ forceDeploy: true });
 
       expect(await vevote.supportsInterface("0x01ffc9a7")).to.equal(true); // ERC165
+    });
+
+    it("Only users with WHITELISTED_ADMIN_ROLE can grant whitelisted role to users", async () => {
+      const { vevote } = await getOrDeployContractInstances({ forceDeploy: true });
+
+      const WHITELISTED_ADMIN_ROLE = await vevote.WHITELIST_ADMIN_ROLE();
+      const DEFAULT_ADMIN_ROLE = await vevote.DEFAULT_ADMIN_ROLE();
+      const [whitelistedAccount, whitelistedAdmin, defaultAdminAccount] = await ethers.getSigners();
+
+      await vevote.grantRole(DEFAULT_ADMIN_ROLE, defaultAdminAccount.address);
+
+      // Default admin should be able to grant WHITELISTED_ADMIN_ROLE
+      await vevote.connect(defaultAdminAccount).grantRole(WHITELISTED_ADMIN_ROLE, whitelistedAdmin.address);
+      expect(await vevote.hasRole(WHITELISTED_ADMIN_ROLE, whitelistedAdmin.address)).to.be.true;
+
+      // Default admin should not be able to grant WHITELISTED_ROLE
+      await expect(
+        vevote.connect(defaultAdminAccount).grantRole(await vevote.WHITELISTED_ROLE(), whitelistedAccount.address),
+      ).to.be.revertedWithCustomError(vevote, "AccessControlUnauthorizedAccount");
+
+      // Whitelisted admin should be able to grant WHITELISTED_ROLE
+      await vevote.connect(whitelistedAdmin).grantRole(await vevote.WHITELISTED_ROLE(), whitelistedAccount.address);
+      expect(await vevote.hasRole(await vevote.WHITELISTED_ROLE(), whitelistedAccount.address)).to.be.true;
     });
   });
 
