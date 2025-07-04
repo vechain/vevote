@@ -84,18 +84,18 @@ export const ProposalCard = ({ status, title, endDate, startDate, id }: Proposal
 const DateItem = ({ startDate, endDate, status }: Pick<ProposalCardType, "endDate" | "startDate" | "status">) => {
   const { LL } = useI18nContext();
 
-  const { leftVotingDate, formattedDate } = useFormatDate();
+  const { leftVotingDate, formattedProposalDate } = useFormatDate();
 
   const votingDate = useMemo(() => leftVotingDate(endDate), [endDate, leftVotingDate]);
 
   const stringDate = useMemo(() => {
     switch (status) {
       case "upcoming":
-        return formattedDate(startDate);
+        return formattedProposalDate(startDate);
       default:
-        return formattedDate(endDate);
+        return formattedProposalDate(endDate);
     }
-  }, [status, endDate, formattedDate, startDate]);
+  }, [status, formattedProposalDate, startDate, endDate]);
 
   const icon = useMemo(() => {
     switch (status) {
@@ -112,7 +112,7 @@ const DateItem = ({ startDate, endDate, status }: Pick<ProposalCardType, "endDat
 
       {status !== "voting" && (
         <>
-          <Text color={"gray.400"} fontSize={{ base: 14, md: 16 }}>
+          <Text color={"gray.500"} fontSize={{ base: 14, md: 16 }}>
             {status === "upcoming" ? LL.start() : LL.end()}
           </Text>
 
