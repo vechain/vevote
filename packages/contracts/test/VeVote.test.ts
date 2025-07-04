@@ -13,7 +13,7 @@ import {
   waitForProposalToStart,
 } from "./helpers/common";
 import { createNodeHolder, TokenLevelId } from "../scripts/helpers";
-import { ZeroAddress } from "ethers";
+import { ZeroAddress, zeroPadBytes } from "ethers";
 
 describe("VeVote", function () {
   describe("Deployment", function () {
@@ -762,8 +762,21 @@ describe("VeVote", function () {
       expect(await vevote.getVoteWeight(flashHolder.address, ZeroAddress)).to.equal(2000);
       expect(await vevote.getVoteWeight(lighteningHolder.address, ZeroAddress)).to.equal(500);
       expect(await vevote.getVoteWeight(dawnHolder.address, ZeroAddress)).to.equal(100);
+    });
 
-      //TODO: continue
+    it("Should return 0 if a user tries to get validator weight when a master address is set to the zero address", async function () {
+      const { vevote, validatorHolder } = await getOrDeployContractInstances({ forceDeploy: true });
+      expect(await vevote.getValidatorVoteWeight(validatorHolder, ZeroAddress)).to.eql(0n);
+    });
+
+    it("Should return 0 if a user tries to get validator weight when a endorser address is set to the zero address", async function () {
+      const { vevote, admin } = await getOrDeployContractInstances({ forceDeploy: true });
+      expect(await vevote.getValidatorVoteWeight(ZeroAddress, admin.address)).to.eql(0n);
+    });
+
+    it("Should return correct validator vote weight=", async function () {
+      const { vevote, admin, validatorHolder } = await getOrDeployContractInstances({ forceDeploy: true });
+      expect(await vevote.getValidatorVoteWeight(validatorHolder.address, admin.address)).to.eql(500000n);
     });
 
     it("Should split vote weight evenly between all choices when a user votes", async function () {
@@ -971,6 +984,26 @@ describe("VeVote", function () {
       );
 
       await expect(vevote.connect(admin).execute(proposalId)).to.not.be.reverted;
+
+      expect(await vevote.state(proposalId)).to.equal(5);
+    });
+
+    it("Should be able to pass in comment when executing proposals", async function () {
+      const config = createLocalConfig();
+      config.QUORUM_PERCENTAGE = 0;
+      const { vevote, admin, strengthHolder } = await getOrDeployContractInstances({
+        forceDeploy: true,
+        config,
+      });
+      const tx = await createProposal();
+      const proposalId = await getProposalIdFromTx(tx);
+      await waitForProposalToStart(proposalId);
+      await vevote.connect(strengthHolder).castVote(proposalId, 1, ZeroAddress);
+      await waitForProposalToEnd(proposalId);
+
+      await expect(vevote.connect(admin).executeWithComment(proposalId, "It was executed by me"))
+        .to.emit(vevote, "VeVoteProposalExecuted")
+        .withArgs(proposalId, "It was executed by me");
 
       expect(await vevote.state(proposalId)).to.equal(5);
     });

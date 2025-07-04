@@ -18,6 +18,7 @@ import {Time} from "@openzeppelin/contracts/utils/types/Time.sol";
 import {ReentrancyGuardUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol";
 import {IStargateNFT} from "../../interfaces/IStargateNFT.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 /// @title StargateDelegation
 /// @notice This contract allows a user that owns a StargateNFT to start delegating, accumulate VTHO rewards during the delegation period and exit delegation.
@@ -43,6 +44,8 @@ contract StargateDelegation is
     UUPSUpgradeable,
     IStargateDelegation
 {
+    using SafeERC20 for IERC20;
+
     bytes32 public constant UPGRADER_ROLE = keccak256("UPGRADER_ROLE");
     bytes32 public constant OPERATOR_ROLE = keccak256("OPERATOR_ROLE");
 
@@ -186,11 +189,7 @@ contract StargateDelegation is
     /// @dev Only the owner of the NFT can call this function.
     /// @param _tokenId - the tokenId of the NFT
     /// @param _delegateForever - true if the user wants to delegate forever, false otherwise
-    /// @return success - true if the delegation was started successfully, false otherwise
-    function delegate(
-        uint256 _tokenId,
-        bool _delegateForever
-    ) external nonReentrant returns (bool success) {
+    function delegate(uint256 _tokenId, bool _delegateForever) external nonReentrant {
         StargateDelegationStorage storage $ = _getStargateDelegationStorage();
 
         // Check if user owns the NFT or if it's the StargateNFT contract calling the function
@@ -214,7 +213,7 @@ contract StargateDelegation is
         // so we can erase the states (delegationEndBlock, rewardsAccumulationStartBlock)
         // of the previous delegation safely
         if (claimableRewards(_tokenId) > 0) {
-            claimRewards(_tokenId);
+            _claimRewards(_tokenId);
         }
 
         // Check if the NFT level has a reward rate set
@@ -241,47 +240,55 @@ contract StargateDelegation is
             _delegateForever,
             msg.sender
         );
-
-        return true;
     }
 
     /// @notice Exits the delegation of an NFT during the Hayabusa hardfork on VeChainThor
     /// Calling this function will unlock the NFT at the end of the current delegationPeriod, and stop accumulating rewards.
-    /// This action is irreversible. Once asked to exit delegation, to keep delegating the user will need to call
-    /// delegate again.
+    /// This action is irreversible. Designed to be a one-way switch: once a user submits the request, the NFT’s delegation is
+    /// scheduled to end and the only way to resume delegating is to call delegate again after the exit has been processed.
     /// @dev Only the owner of the NFT can call this function.
     /// @param _tokenId - the tokenId of the NFT
-    /// @return success - true if the delegation was exited successfully, false otherwise
-    function requestDelegationExit(uint256 _tokenId) external nonReentrant returns (bool success) {
+    function requestDelegationExit(uint256 _tokenId) external nonReentrant {
         StargateDelegationStorage storage $ = _getStargateDelegationStorage();
-
-        if (!isDelegationActive(_tokenId)) {
-            revert NFTNotDelegated(_tokenId);
-        }
 
         if ($.stargateNFT.ownerOf(_tokenId) != msg.sender) {
             revert UnauthorizedUser(msg.sender);
         }
 
-        // If we've reached the accumulation end block, allow immediate exit
-        uint256 currentBlock = clock();
-        if ($.rewardsAccumulationEndBlock != 0 && currentBlock >= $.rewardsAccumulationEndBlock) {
-            // Allow immediate exit since rewards accumulation has ended
-            $.delegationEndBlock[_tokenId] = currentBlock;
-        } else {
-            // Set the delegationEndBlock to the block after the end of the current delegationPeriod
-            $.delegationEndBlock[_tokenId] = currentDelegationPeriodEndBlock(_tokenId) + 1;
+        if (!isDelegationActive(_tokenId)) {
+            revert NFTNotDelegated(_tokenId);
         }
 
-        emit DelegationExitRequested(_tokenId, $.delegationEndBlock[_tokenId]);
+        // If we've reached the accumulation end block (end of Stargate Simulation period), allow immediate exit
+        // even if the user already requested to exit delegation before
+        uint256 currentBlock = clock();
+        if ($.rewardsAccumulationEndBlock != 0 && currentBlock >= $.rewardsAccumulationEndBlock) {
+            $.delegationEndBlock[_tokenId] = currentBlock;
+            emit DelegationExitRequested(_tokenId, currentBlock);
+            return;
+        }
 
-        return true;
+        // If the user already requested to exit delegation, we revert, avoiding redundant calls
+        if ($.delegationEndBlock[_tokenId] != type(uint256).max) {
+            revert DelegationExitAlreadyRequested();
+        }
+
+        // Set the delegationEndBlock to the block after the end of the current delegationPeriod
+        $.delegationEndBlock[_tokenId] = currentDelegationPeriodEndBlock(_tokenId) + 1;
+        emit DelegationExitRequested(_tokenId, $.delegationEndBlock[_tokenId]);
     }
 
     /// @notice Claims the rewards for a given NFT
     /// @dev Rewards claiming can be triggered by anyone, but the rewards will be sent to the owner of the NFT.
     /// @param _tokenId - the tokenId of the NFT
-    function claimRewards(uint256 _tokenId) public nonReentrant returns (bool success) {
+    function claimRewards(uint256 _tokenId) public nonReentrant {
+        _claimRewards(_tokenId);
+    }
+
+    /// @notice Internal function to claim the rewards for a given NFT
+    /// @dev This function is used to claim the rewards for a given NFT
+    /// @param _tokenId - the tokenId of the NFT
+    function _claimRewards(uint256 _tokenId) internal {
         StargateDelegationStorage storage $ = _getStargateDelegationStorage();
 
         // Get the amount of rewards that the user can claim
@@ -298,19 +305,14 @@ contract StargateDelegation is
             );
         }
 
-        // Send the rewards to the owner of the NFT
-        address recipient = $.stargateNFT.ownerOf(_tokenId);
-        bool transferSuccess = $.vthoToken.transfer(recipient, amountToClaim);
-        if (!transferSuccess) {
-            revert VthoTransferFailed(recipient, amountToClaim);
-        }
-
         // Update start block for rewards accumulation
         $.rewardsAccumulationStartBlock[_tokenId] = clock();
 
-        emit DelegationRewardsClaimed(_tokenId, amountToClaim, msg.sender, recipient);
+        // Send the rewards to the owner of the NFT and revert if it fails
+        address recipient = $.stargateNFT.ownerOf(_tokenId);
+        $.vthoToken.safeTransfer(recipient, amountToClaim);
 
-        return true;
+        emit DelegationRewardsClaimed(_tokenId, amountToClaim, msg.sender, recipient);
     }
 
     // ---------- Admin Setters ---------- //
@@ -591,11 +593,8 @@ contract StargateDelegation is
             return 0;
         }
 
-        // Get the NFT level, if the reward rate for the level is not set, revert
+        // Get the NFT level
         uint256 levelId = $.stargateNFT.getTokenLevel(_tokenId);
-        if ($.vthoRewardPerBlock[levelId] == 0) {
-            revert InvalidNFTLevel(_tokenId, levelId);
-        }
 
         // Calculate the rewards based on the blocks that passed since the last claim
         uint256 rewardRate = $.vthoRewardPerBlock[levelId];

@@ -13,6 +13,9 @@ import { useHasVoted } from "@/hooks/useCastVote";
 import { ArrowLinkIcon, ArrowRightIcon, CheckCircleIcon } from "@/icons";
 import { useNodes } from "@/hooks/useUserQueries";
 import { trackEvent, MixPanelEvent } from "@/utils/mixpanel/utilsMixpanel";
+import { getConfig } from "@repo/config";
+
+const EXPLORER_URL = getConfig(import.meta.env.VITE_APP_ENV).network.explorerUrl;
 
 type VotingListFooterProps = { onSubmit: () => Promise<void>; isLoading?: boolean; disabled?: boolean };
 
@@ -105,13 +108,19 @@ const VotingSubmit = ({ onClick, ...rest }: ButtonProps) => {
 
 const VotedChip = () => {
   const { LL } = useI18nContext();
-  //TODO: see your vote modal
+  const { account } = useWallet();
   return (
     <Flex alignItems={"center"} gap={3}>
       <Button variant={"feedback"} rightIcon={<Icon as={CheckCircleIcon} />}>
         {LL.voted()}
       </Button>
-      <Link color={"primary.500"} display={"flex"} gap={1} alignItems={"center"}>
+      <Link
+        color={"primary.500"}
+        display={"flex"}
+        gap={1}
+        alignItems={"center"}
+        isExternal
+        href={`${EXPLORER_URL}/accounts/${account?.address}/txs`}>
         {LL.proposal.see_your_vote()}
         <Icon as={ArrowLinkIcon} width={4} height={4} />
       </Link>

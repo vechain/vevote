@@ -46,8 +46,13 @@ import { Levels } from "./libraries/Levels.sol";
 /// Some other peculiarities of the Stargate NFT collection are:
 /// 01. Users must deposit the exact amount of VET required to mint an NFT of a certain level, no more, no less
 /// 02. The NFTs have a maturity period, after which they can start generate rewards for delegating to a validator node - see StargateDelegation contract
-/// 09. All NFT levels have a cap, we are adding 3 new levels at launch, and more levels can be added in the future
-/// 10. The NFTs are transferable only when the owner is not delegating
+/// 03. All NFT levels have a cap, we are adding 3 new levels at launch, and more levels can be added in the future
+/// 04. The NFTs are transferable only when the owner is not delegating
+///
+/// When Hayabusa hardfork is activated, the VTHO generation will stop, and the VTHO generation end timestamp will be set to the block number of the hardfork.
+/// Since VTHO generation is calculated based on timestamp, instead of block number, we won't be able to know in advance the exact timestamp before
+/// the hardfork will happen. For this reason the contract will be paused a few hours before the hardfork, and unpaused after we will know the exact timestamp,
+/// to avoid any potential wrong vtho generation end timestamp and rewards calculation.
 /// @dev This contract is UUPS upgradable and AccessControl protected.
 contract StargateNFT is
   AccessControlUpgradeable,
@@ -123,7 +128,9 @@ contract StargateNFT is
 
     // Initialize the contract
     __ERC721_init(_initParams.tokenCollectionName, _initParams.tokenCollectionSymbol);
+    __ERC721Enumerable_init();
     __ERC721Pausable_init();
+    __ReentrancyGuard_init();
     __AccessControl_init();
     __UUPSUpgradeable_init();
 
@@ -210,7 +217,6 @@ contract StargateNFT is
   /// @notice Updates a token level
   /// @param _levelId - The ID of the level to update
   /// @param _name - The name of the level
-  /// @param _isActive - Whether the level is active
   /// @param _isX - Whether the level is an X level
   /// @param _maturityBlocks - The number of blocks before the level can earn rewards
   /// @param _scaledRewardFactor - The scaled reward multiplier for the level
@@ -223,7 +229,6 @@ contract StargateNFT is
   function updateLevel(
     uint8 _levelId,
     string memory _name,
-    bool _isActive,
     bool _isX,
     uint64 _maturityBlocks,
     uint64 _scaledRewardFactor,
@@ -233,20 +238,11 @@ contract StargateNFT is
       _getStargateNFTStorage(),
       _levelId,
       _name,
-      _isActive,
       _isX,
       _maturityBlocks,
       _scaledRewardFactor,
       _vetAmountRequiredToStake
     );
-  }
-
-  /// @notice Toggles the active status of a token level
-  /// @param _levelId - The ID of the level to toggle
-  /// @dev Only the LEVEL_OPERATOR_ROLE can call this function
-  /// Emits a {IStargateNFT.LevelUpdated} event
-  function toggleLevelIsActive(uint8 _levelId) public onlyRole(LEVEL_OPERATOR_ROLE) {
-    Levels.toggleLevelIsActive(_getStargateNFTStorage(), _levelId);
   }
 
   /// @notice Updates the cap for a token level
@@ -290,9 +286,13 @@ contract StargateNFT is
   /// once the VeChain foundation will know the exact timestamp when the VTHO generation will stop
   /// we will set this value. It can be set back to 0, but then rewards will be recalculated based on the
   /// current timestamp. So set it back to 0 with caution.
+  /// @dev Only the DEFAULT_ADMIN_ROLE can call this function when the contract is paused. The reason the contract needs
+  /// to be paused is to ensure that the value is adjusted in a controlled state, avoiding any potential wrong vtho generation end timestamp.
   /// @param _vthoGenerationEndTimestamp The timestamp when the protocol will stop generating VTHO by holding VET
   /// @dev Emits a {IStargateNFT.VthoGenerationEndTimestampUpdated} event
-  function setVthoGenerationEndTimestamp(uint48 _vthoGenerationEndTimestamp) external onlyRole(DEFAULT_ADMIN_ROLE) {
+  function setVthoGenerationEndTimestamp(
+    uint48 _vthoGenerationEndTimestamp
+  ) external whenPaused onlyRole(DEFAULT_ADMIN_ROLE) {
     DataTypes.StargateNFTStorage storage $ = _getStargateNFTStorage();
     Settings.setVthoGenerationEndTimestamp($, _vthoGenerationEndTimestamp);
   }
@@ -311,72 +311,63 @@ contract StargateNFT is
 
   /// @notice Stakes VET and mints an NFT
   /// @param _levelId The ID of the token level to mint, VET as msg.value
-  /// @return success True if the minting was successful
   /// @return tokenId The ID of the minted NFT
   /// @dev Emits a {IStargateNFT.TokenMinted} event
-  function stake(uint8 _levelId) external payable whenNotPaused nonReentrant returns (bool success, uint256 tokenId) {
+  function stake(uint8 _levelId) external payable whenNotPaused nonReentrant returns (uint256 tokenId) {
     DataTypes.StargateNFTStorage storage $ = _getStargateNFTStorage();
 
-    (success, tokenId) = MintingLogic.stake($, _levelId);
+    tokenId = MintingLogic.stake($, _levelId);
   }
 
   /// @notice Stakes VET and mints an NFT, and delegates it
   /// @param _levelId The ID of the token level to mint, VET as msg.value
   /// @param _autorenew Whether the token should be delegated forever
-  /// @return success True if the minting and delegation were successful
   /// @return tokenId The ID of the minted NFT
   /// @dev Emits a {IStargateNFT.TokenMinted} event
   function stakeAndDelegate(
     uint8 _levelId,
     bool _autorenew
-  ) external payable whenNotPaused nonReentrant returns (bool success, uint256 tokenId) {
+  ) external payable whenNotPaused nonReentrant returns (uint256 tokenId) {
     DataTypes.StargateNFTStorage storage $ = _getStargateNFTStorage();
 
-    (success, tokenId) = MintingLogic.stakeAndDelegate($, _levelId, _autorenew);
+    tokenId = MintingLogic.stakeAndDelegate($, _levelId, _autorenew);
   }
 
   /// @notice Migrates a token from the legacy TokenAuction contract to the StargateNFT contract
   /// @param _tokenId - the token ID to migrate
-  /// @return success - true if the migration was successful, will revert otherwise
   /// @dev Emits a {IStargateNFT.TokenMinted} event
-  function migrate(uint256 _tokenId) external payable whenNotPaused nonReentrant returns (bool success) {
+  function migrate(uint256 _tokenId) external payable whenNotPaused nonReentrant {
     DataTypes.StargateNFTStorage storage $ = _getStargateNFTStorage();
 
-    success = MintingLogic.migrate($, _tokenId);
+    MintingLogic.migrate($, _tokenId);
   }
 
   /// @notice Migrates a token from the legacy nodes contract to StargateNFT, and delegates it
   /// @param _tokenId The ID of the token to migrate
   /// @param _autorenew Whether the token should be delegated forever
-  /// @return success True if the migration and delegation were successful
   /// @dev Emits a {IStargateNFT.TokenMinted} event
-  function migrateAndDelegate(
-    uint256 _tokenId,
-    bool _autorenew
-  ) external payable whenNotPaused nonReentrant returns (bool success) {
+  function migrateAndDelegate(uint256 _tokenId, bool _autorenew) external payable whenNotPaused nonReentrant {
     DataTypes.StargateNFTStorage storage $ = _getStargateNFTStorage();
 
-    success = MintingLogic.migrateAndDelegate($, _tokenId, _autorenew);
+    MintingLogic.migrateAndDelegate($, _tokenId, _autorenew);
   }
 
   /// @notice Unstakes a token from the StargateNFT contract, will return the VET to the user and burn the NFT
   /// @param _tokenId - the token ID to unstake
-  /// @return success - true if the unstake was successful, will revert otherwise
   /// @dev Emits a {IStargateNFT.TokenBurned} event
-  function unstake(uint256 _tokenId) external whenNotPaused nonReentrant returns (bool success) {
+  function unstake(uint256 _tokenId) external whenNotPaused nonReentrant {
     DataTypes.StargateNFTStorage storage $ = _getStargateNFTStorage();
 
-    success = MintingLogic.unstake($, _tokenId);
+    MintingLogic.unstake($, _tokenId);
   }
 
   /// @notice Claims base VTHO rewards for a token, generated by the VeChain before the Hayabusa upgrade
   /// @param _tokenId - the token ID to claim rewards for
-  /// @return success - true if the rewards were claimed successfully, will revert otherwise
   /// @dev Emits a {IStargateNFT.BaseVTHORewardsClaimed} event
-  function claimVetGeneratedVtho(uint256 _tokenId) external whenNotPaused nonReentrant returns (bool success) {
+  function claimVetGeneratedVtho(uint256 _tokenId) external whenNotPaused nonReentrant {
     DataTypes.StargateNFTStorage storage $ = _getStargateNFTStorage();
 
-    success = VetGeneratedVtho.claimRewards($, _tokenId);
+    VetGeneratedVtho.claimRewards($, _tokenId);
   }
 
   // ---------- Getters ---------- //
@@ -414,6 +405,12 @@ contract StargateNFT is
   /// @return stargateDelegation - the stargate delegation contract
   function stargateDelegation() external view returns (IStargateDelegation) {
     return _getStargateNFTStorage().stargateDelegation;
+  }
+
+  /// @notice Returns the timestamp when the protocol will stop generating VTHO by holding VET
+  /// @return vthoGenerationEndTimestamp - the timestamp when the protocol will stop generating VTHO by holding VET
+  function vthoGenerationEndTimestamp() external view returns (uint48) {
+    return _getStargateNFTStorage().vthoGenerationEndTimestamp;
   }
 
   /// @notice Returns a list of all token level spec IDs
@@ -476,6 +473,23 @@ contract StargateNFT is
     return Levels.getLevelsCirculatingSuppliesAtBlock($, _blockNumber);
   }
 
+  /// @notice Returns the cap for a given token level
+  /// @param _levelId The ID of the token level to get the cap for
+  /// @return cap The cap of the token level
+  function getCap(uint8 _levelId) external view returns (uint32) {
+    DataTypes.StargateNFTStorage storage $ = _getStargateNFTStorage();
+    return $.cap[_levelId];
+  }
+
+  /// @notice Get the latest token id that was minted
+  /// @dev Ids start from the total supply of the legacy contrat
+  /// @return currentTokenId the latest token id that was minted
+  function getCurrentTokenId() external view returns (uint256) {
+    DataTypes.StargateNFTStorage storage $ = _getStargateNFTStorage();
+
+    return $.currentTokenId;
+  }
+
   /// @notice Returns a token for a given token ID
   /// @param _tokenId The ID of the token to get
   /// @return token The token
@@ -519,15 +533,6 @@ contract StargateNFT is
     DataTypes.StargateNFTStorage storage $ = _getStargateNFTStorage();
 
     return Token.ownerTotalVetStaked($, _owner);
-  }
-
-  /// @notice Returns the blocknumber when the address staked his first token
-  /// @param _owner The address to get staking blocknumber for
-  /// @return stakingSince The blocknumber when the address staked his first token
-  function ownerStakingSince(address _owner) external view returns (uint64) {
-    DataTypes.StargateNFTStorage storage $ = _getStargateNFTStorage();
-
-    return Token.ownerStakingSince($, _owner);
   }
 
   /// @notice Returns the maturity period end block for a given token
@@ -644,21 +649,31 @@ contract StargateNFT is
     return Token.isNormalToken(_getStargateNFTStorage(), _tokenId);
   }
 
+  /// @notice Returns true if a token exists
+  /// @param _tokenId The ID of the token to check
+  /// @return True if the token exists, false otherwise
+  function tokenExists(uint256 _tokenId) external view returns (bool) {
+    address owner = _ownerOf(_tokenId);
+    if (owner == address(0)) {
+      return false;
+    }
+
+    return true;
+  }
+
   // ---------- Override Functions ---------- //
 
   /// @notice Public override of the ERC721Upgradeable.tokenURI function
   /// @param _tokenId - the token ID to get the token URI for
   /// @return tokenURI - the token URI string if the token level ID is not 0, empty string otherwise
   function tokenURI(uint256 _tokenId) public view override(ERC721Upgradeable) returns (string memory) {
+    // check if the token exists
+    _requireOwned(_tokenId);
+
     DataTypes.StargateNFTStorage storage $ = _getStargateNFTStorage();
 
     // Get token level ID
     uint8 levelId = $.tokens[_tokenId].levelId;
-
-    // If token level ID is 0, return empty string
-    if (levelId == 0) {
-      return "";
-    }
 
     return Token.tokenURI($, _tokenId, Strings.toString(levelId));
   }
@@ -693,18 +708,22 @@ contract StargateNFT is
       revert Errors.TokenLocked();
     }
 
-    // If the token has rewards to claim, claim them
-    // (done to avoid loss of rewards when trading or burning the NFT)
+    // Claim pending rewards to avoid loss of rewards when trading or burning the NFT
+    // Base VTHO rewards
     DataTypes.StargateNFTStorage storage $ = _getStargateNFTStorage();
     if (VetGeneratedVtho.claimableRewards($, _tokenId) > 0) {
       VetGeneratedVtho.claimRewards($, _tokenId);
+    }
+
+    // Stargate Delegation rewards
+    if ($.stargateDelegation.claimableRewards(_tokenId) > 0) {
+      $.stargateDelegation.claimRewards(_tokenId);
     }
 
     return super._update(_to, _tokenId, _auth);
   }
 
   /// @notice Internal override of the _increaseBalance function
-  /// @dev Before increasing the balance, we check if the NFT is transferable
   /// @param account - the address to increase the balance for
   /// @param value - the amount to increase the balance by
   function _increaseBalance(

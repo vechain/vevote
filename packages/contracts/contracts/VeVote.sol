@@ -21,7 +21,6 @@ import { VeVoteVoteLogic } from "./governance/libraries/VeVoteVoteLogic.sol";
 import { VeVoteProposalLogic } from "./governance/libraries/VeVoteProposalLogic.sol";
 import { VeVoteStorageTypes } from "./governance/libraries/VeVoteStorageTypes.sol";
 import { VeVoteConfigurator } from "./governance/libraries/VeVoteConfigurator.sol";
-import { VechainNodesDataTypes } from "./libraries/VechainNodesDataTypes.sol";
 import { INodeManagement } from "./interfaces/INodeManagement.sol";
 import { IStargateNFT } from "./interfaces/IStargateNFT.sol";
 import { IAuthority } from "./interfaces/IAuthority.sol";
@@ -238,6 +237,14 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
   /**
    * @inheritdoc IVeVote
    */
+  function getValidatorVoteWeight(address endorser, address masterAddress) external view returns (uint256) {
+    VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
+    return VeVoteVoteLogic.getValidatorVoteWeight($, endorser, masterAddress);
+  }
+
+  /**
+   * @inheritdoc IVeVote
+   */
   function state(uint256 proposalId) external view returns (VeVoteTypes.ProposalState) {
     VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
     return VeVoteStateLogic.state($, proposalId);
@@ -435,7 +442,18 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
    */
   function execute(uint256 proposalId) external onlyRole(EXECUTOR_ROLE) returns (uint256) {
     VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
-    return VeVoteProposalLogic.execute($, proposalId);
+    return VeVoteProposalLogic.execute($, proposalId, "");
+  }
+
+  /**
+   * @inheritdoc IVeVote
+   */
+  function executeWithComment(
+    uint256 proposalId,
+    string memory comment
+  ) external onlyRole(EXECUTOR_ROLE) returns (uint256) {
+    VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
+    return VeVoteProposalLogic.execute($, proposalId, comment);
   }
 
   /**

@@ -39,9 +39,10 @@ library Settings {
 
   /**
    * @notice Emitted when the VTHO generation end timestamp is updated
-   * @param vthoGenerationEndTimestamp The new VTHO generation end timestamp
+   * @param oldVthoGenerationEndTimestamp The old VTHO generation end timestamp
+   * @param newVthoGenerationEndTimestamp The new VTHO generation end timestamp
    */
-  event VthoGenerationEndTimestampSet(uint48 vthoGenerationEndTimestamp);
+  event VthoGenerationEndTimestampSet(uint48 oldVthoGenerationEndTimestamp, uint48 newVthoGenerationEndTimestamp);
 
   // ------------------ Setters ------------------ //
 
@@ -101,8 +102,9 @@ library Settings {
     DataTypes.StargateNFTStorage storage $,
     uint48 _vthoGenerationEndTimestamp
   ) external {
+    uint48 currentVthoGenerationEndTimestamp = $.vthoGenerationEndTimestamp;
     $.vthoGenerationEndTimestamp = _vthoGenerationEndTimestamp;
 
-    emit VthoGenerationEndTimestampSet(_vthoGenerationEndTimestamp);
+    emit VthoGenerationEndTimestampSet(currentVthoGenerationEndTimestamp, _vthoGenerationEndTimestamp);
   }
 }
