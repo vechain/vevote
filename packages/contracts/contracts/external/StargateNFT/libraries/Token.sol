@@ -31,19 +31,9 @@ library Token {
     DataTypes.StargateNFTStorage storage $,
     uint256 _tokenId
   ) public view returns (uint64) {
-    // Get token
-    DataTypes.Token memory token = $.tokens[_tokenId];
+    _requireTokenExists(_tokenId);
 
-    // Validate token exists
-    if (!_tokenExists(token.levelId)) {
-      revert Errors.TokenDoesNotExist(_tokenId);
-    }
-
-    // Get level
-    DataTypes.Level memory tokenLevelSpec = $.levels[token.levelId];
-
-    // Return maturity period end block
-    return token.mintedAtBlock + tokenLevelSpec.maturityBlocks;
+    return $.maturityPeriodEndBlock[_tokenId];
   }
 
   /// @notice Returns true if a token is in the maturity period
@@ -53,11 +43,10 @@ library Token {
     DataTypes.StargateNFTStorage storage $,
     uint256 _tokenId
   ) external view returns (bool) {
-    // Get maturity end block
-    uint64 maturityEndsAtBlock = maturityPeriodEndBlock($, _tokenId);
+    _requireTokenExists(_tokenId);
 
     // Token is still maturing if maturityEndsAtBlock is in the future
-    return Clock._clock() < maturityEndsAtBlock;
+    return $.maturityPeriodEndBlock[_tokenId] > Clock._clock();
   }
 
   // ------------------ Token Supply Getters ------------------ //
@@ -186,15 +175,6 @@ library Token {
     return totalVetStaked;
   }
 
-  /// @notice Getter relies on _idsOwnedBy, which uses balanceOf, which can revert
-  /// @dev This function is used to get the staking since timestamp for an address
-  /// @param _owner The address to get staking since timestamp for
-  /// @return stakingSince The staking since timestamp
-  function ownerStakingSince(DataTypes.StargateNFTStorage storage $, address _owner) external view returns (uint64) {
-    uint256[] memory tokenIds = _idsOwnedBy(_owner);
-    return _getToken($, tokenIds[0]).mintedAtBlock;
-  }
-
   /// @notice A helper function to check if an address has a token of specified type (X or not X)
   /// @dev This breaks the loop as soon as it finds a matching token, avoiding unnecessary iterations
   /// @dev WARNING: This function contains external calls in a loop, which is flagged by static analyzers.
@@ -288,16 +268,6 @@ library Token {
     return _getToken($, _tokenId);
   }
 
-  // ------------------ Existence Validation ------------------ //
-
-  //TODO: does this make sense?
-  /// @notice Returns true if a token exists
-  /// @param _tokenLevelId The ID of the token level to check
-  /// @return True if the token exists, false otherwise
-  function tokenExists(uint8 _tokenLevelId) external pure returns (bool) {
-    return _tokenExists(_tokenLevelId);
-  }
-
   // ------------------ Token URI Getters ------------------ //
 
   /// @notice Returns the token URI for a given token ID and level ID
@@ -323,24 +293,19 @@ library Token {
     DataTypes.StargateNFTStorage storage $,
     uint256 _tokenId
   ) internal view returns (DataTypes.Token memory) {
+    _requireTokenExists(_tokenId);
+
     // Get token
     DataTypes.Token memory token = $.tokens[_tokenId];
-
-    // Validate token exists
-    if (!_tokenExists(token.levelId)) {
-      revert Errors.TokenDoesNotExist(_tokenId);
-    }
 
     return token;
   }
 
-  /// @notice Returns true if a token exists
-  /// @dev This is a helper function to check if a token exists
-  /// @param _tokenLevelId The ID of the token level to check
-  /// @return True if the token exists, false otherwise
-  function _tokenExists(uint8 _tokenLevelId) internal pure returns (bool) {
-    // Token exists if it has a non-zero level ID
-    return _tokenLevelId != 0;
+  /// @notice Throws if a token does not exist
+  /// @param _tokenId The ID of the token to check
+  function _requireTokenExists(uint256 _tokenId) internal view {
+    // ERC721.ownerOf will revert if the token does not exist
+    IStargateNFT(address(this)).ownerOf(_tokenId);
   }
 
   /// @dev See {tokenURI} for details

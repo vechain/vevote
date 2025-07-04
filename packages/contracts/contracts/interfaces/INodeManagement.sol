@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 
 import { DataTypes } from "../external/StargateNFT/libraries/DataTypes.sol";
+import { VechainNodesDataTypes } from "../libraries/VechainNodesDataTypes.sol";
 
 pragma solidity 0.8.20;
 
@@ -39,6 +40,12 @@ interface INodeManagement {
   error NodeManagementNotNodeOwner(uint256 nodeId);
 
   /**
+   * @notice Error indicating that the user does not manage the node.
+   * @param nodeId The ID of the node that the user does not manage.
+   */
+  error NodeManagementNotNodeOwnerOrManager(uint256 nodeId);
+
+  /**
    * @notice Event emitted when a node is delegated or the delegation is removed.
    * @param nodeId The ID of the node being delegated or having its delegation removed.
    * @param delegatee The address to which the node is delegated or from which the delegation is removed.
@@ -49,7 +56,7 @@ interface INodeManagement {
   /**
    *  @dev Emit when the vechain node contract address is set or updated
    */
-  event StargateNFTContractSet(address oldContractAddress, address newContractAddress);
+  event VechainNodeContractSet(address oldContractAddress, address newContractAddress);
 
   /**
    *  @dev Emit when the stargate NFT contract address is set or updated
@@ -165,6 +172,14 @@ interface INodeManagement {
    * @return bool True if the node is a legacy node, false otherwise.
    */
   function isLegacyNode(uint256 nodeId) external view returns (bool);
+
+  /**
+   * @notice Check if a node exists in the VeChainNodes contract or the StargateNFT contract
+   * @param nodeId The ID of the node to check.
+   * @return bool True if the node exists, false otherwise.
+   * @return NodeSource The source of the node.
+   */
+  function exists(uint256 nodeId) external view returns (bool, VechainNodesDataTypes.NodeSource);
 
   /**
    * @notice Returns all tokens associated with a user, including owned and delegated ones.
