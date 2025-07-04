@@ -5,7 +5,7 @@ export const CreateFormWrapper = ({ children, ...restProps }: FlexProps) => {
     <Flex
       maxWidth={"664px"}
       flexDirection={"column"}
-      gap={16}
+      gap={{ base: 12, md: 16 }}
       margin={"auto"}
       paddingY={{ base: 6, lg: 20 }}
       paddingX={{ base: 6, md: 0 }}
