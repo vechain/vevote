@@ -12,7 +12,6 @@ import {
   vthoRewardPerBlockPerLevel,
   TokenLevelId,
   deployAndInitializeLatest,
-  upgradeProxy,
 } from "../helpers";
 import { getConfig } from "@repo/config";
 import { NodeManagement, StargateDelegation, StargateNFT, VeVote } from "../../typechain-types";
@@ -173,7 +172,7 @@ export async function deployAll(config: ContractsConfig) {
     await authorityContractMock.waitForDeployment();
 
     // ---------------------- Create Node Holders ----------------------
-    /* await createNodeHolder(TokenLevelId.Strength, deployer, strengthHolder, stargateMock);
+    await createNodeHolder(TokenLevelId.Strength, deployer, strengthHolder, stargateMock);
     await createNodeHolder(TokenLevelId.Thunder, deployer, thunderHolder, stargateMock);
     await createNodeHolder(TokenLevelId.Mjolnir, deployer, mjolnirHolder, stargateMock);
     await createNodeHolder(TokenLevelId.VeThorX, deployer, veThorXHolder, stargateMock);
@@ -182,7 +181,7 @@ export async function deployAll(config: ContractsConfig) {
     await createNodeHolder(TokenLevelId.MjolnirX, deployer, mjolnirXHolder, stargateMock);
     await createNodeHolder(TokenLevelId.Dawn, deployer, dawnHolder, stargateMock);
     await createNodeHolder(TokenLevelId.Lightning, deployer, lighteningHolder, stargateMock);
-    await createNodeHolder(TokenLevelId.Flash, deployer, flashHolder, stargateMock); */
+    await createNodeHolder(TokenLevelId.Flash, deployer, flashHolder, stargateMock);
     await createValidator(validatorHolder1, authorityContractMock, masterNode1);
     await createValidator(validatorHolder2, authorityContractMock, masterNode2);
   }
@@ -194,15 +193,38 @@ export async function deployAll(config: ContractsConfig) {
   // ---------------------- Deploy Contracts ----------------------
 
   // Deploy the vevote contract
-  const vevote = (await upgradeProxy("VeVote", "VeVote", "0x90a3c072cf8493ccdd9b86b1c9b5d18f86fdf3e0", [], {
-    libraries: {
+  const vevote = (await deployProxy(
+    "VeVote",
+    [
+      {
+        quorumPercentage: config.QUORUM_PERCENTAGE,
+        initialMinVotingDelay: config.INITIAL_MIN_VOTING_DELAY,
+        initialMaxVotingDuration: config.INITIAL_MAX_VOTING_DURATION,
+        initialMinVotingDuration: config.INITIAL_MIN_VOTING_DURATION,
+        initialMaxChoices: config.INITIAL_MAX_CHOICES,
+        nodeManagement: nodeManagementAddress,
+        stargateNFT: await stargateMock.getAddress(),
+        authorityContract: config.AUTHORITY_CONTRACT_ADDRESS,
+        initialMinStakedAmount: config.MIN_VET_STAKE,
+      },
+      {
+        admin: TEMP_ADMIN,
+        upgrader: TEMP_ADMIN,
+        whitelist: [TEMP_ADMIN, whitelistedAccount.address],
+        settingsManager: TEMP_ADMIN,
+        nodeWeightManager: TEMP_ADMIN,
+        executor: TEMP_ADMIN,
+      },
+    ],
+    {
       VeVoteVoteLogic: await veVoteVoteLogic.getAddress(),
       VeVoteStateLogic: await veVoteStateLogic.getAddress(),
       VeVoteQuorumLogic: await veVoteQuoromLogic.getAddress(),
       VeVoteProposalLogic: await veVoteProposalLogic.getAddress(),
       VeVoteConfigurator: await veVoteConfigurator.getAddress(),
     },
-  })) as VeVote;
+    true,
+  )) as VeVote;
 
   const date = new Date(performance.now() - start);
   console.log(`================  Contracts deployed in ${date.getMinutes()}m ${date.getSeconds()}s `);

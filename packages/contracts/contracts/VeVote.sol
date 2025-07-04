@@ -69,8 +69,8 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
   bytes32 public constant UPGRADER_ROLE = keccak256("UPGRADER_ROLE");
   /// @notice The role that can grant the `WHITELISTED_ROLE`
   bytes32 public constant WHITELIST_ADMIN_ROLE = keccak256("WHITELIST_ADMIN_ROLE");
-  /// @notice The role that can update parms related to node voting weights
-  bytes32 public constant NODE_WEIGHT_MANAGER_ROLE = keccak256("NODE_WEIGHT_MANAGER_ROLE");
+  /// @notice The role that create proposals
+  bytes32 public constant WHITELISTED_ROLE = keccak256("WHITELISTED_ROLE");
   /// @notice The role that can execute proposals
   bytes32 public constant EXECUTOR_ROLE = keccak256("EXECUTOR_ROLE");
   /// @notice The role that can update contract settings
