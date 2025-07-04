@@ -133,7 +133,7 @@ const en = {
       },
       approved: {
         title: "Minimum participation reached",
-        description: "The voting participation reached the minimum required of 30% to get approval.",
+        description: "The voting participation reached the minimum required of {quorum:number}% to get approval.",
       },
       executed: {
         title: "Proposal Approved and Executed",
@@ -141,7 +141,8 @@ const en = {
       },
       "min-not-reached": {
         title: "Minimum participation not reached",
-        description: "The voting participation didn’t reached the minimum required of 30% to get approval.",
+        description:
+          "The voting participation didn’t reached the minimum required of {quorum:number}% to get approval.",
       },
       rejected: {
         title: "Proposal Rejected",

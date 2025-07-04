@@ -15,6 +15,7 @@ import dayjs from "dayjs";
 import { PropsWithChildren, useMemo, useState } from "react";
 import { useCreateProposal } from "../CreateProposal/CreateProposalProvider";
 import { ProposalCard } from "./ProposalCard";
+import { areAddressesEqual } from "@/utils/address";
 
 const ITEMS_PER_PAGE = 6;
 
@@ -31,7 +32,7 @@ export const Proposals = () => {
 
   const proposalsBySearch = useMemo(() => {
     const searchLower = searchValue.toLowerCase();
-    const isDraftProposal = draftProposal && draftProposal?.proposer === account?.address;
+    const isDraftProposal = draftProposal && areAddressesEqual(draftProposal?.proposer, account?.address);
     const filteredProposals =
       sort === Sort.Newest
         ? proposals.filter(({ title }) => title.toLowerCase().includes(searchLower)).reverse()
