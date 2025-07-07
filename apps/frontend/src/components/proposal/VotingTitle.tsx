@@ -8,11 +8,11 @@ import { VotingEnum } from "@/types/proposal";
 export const VotingTitle = () => {
   const { proposal } = useProposal();
   const { LL } = useI18nContext();
-  const { account } = useWallet();
+  const { connection } = useWallet();
 
   const votingNotStarted = useMemo(
-    () => proposal.status === "upcoming" || (proposal.status === "voting" && !account?.address),
-    [proposal.status, account?.address],
+    () => proposal.status === "upcoming" || (proposal.status === "voting" && !connection.isConnected),
+    [proposal.status, connection.isConnected],
   );
 
   if (votingNotStarted) {

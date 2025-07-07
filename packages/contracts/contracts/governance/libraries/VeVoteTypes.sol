@@ -75,6 +75,7 @@ library VeVoteTypes {
     address settingsManager;
     address nodeWeightManager;
     address executor;
+    address whitelistAdmin;
   }
 
   /**

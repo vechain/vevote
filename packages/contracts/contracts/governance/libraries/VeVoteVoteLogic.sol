@@ -20,7 +20,6 @@ import { VeVoteConstants } from "./VeVoteConstants.sol";
 import { VeVoteConfigurator } from "./VeVoteConfigurator.sol";
 import { IAuthority } from "../../interfaces/IAuthority.sol";
 import { DataTypes } from "../../external/StargateNFT/libraries/DataTypes.sol";
-import { Math } from "@openzeppelin/contracts/utils/math/Math.sol";
 
 /// @title VeVoteVoteLogic
 /// @notice Voting logic for VeVote governance system including casting votes, vote weight calculation, and result tallying.
@@ -85,6 +84,7 @@ library VeVoteVoteLogic {
    * @param self The storage reference for the VeVoteStorage.
    * @param proposalId The ID of the proposal being voted on.
    * @param choices The bitmask representing the selected vote choices.
+   * @param masterAddress Required parameter — can be zero address. Used to determine validator voting power, if applicable.
    */
   function castVote(
     VeVoteStorageTypes.VeVoteStorage storage self,
@@ -199,6 +199,26 @@ library VeVoteVoteLogic {
     if (nodeInfo.levelId == 0) return 0;
     return
       _getNodeWeight(self, nodeInfo.vetAmountStaked, nodeInfo.levelId) / VeVoteConfigurator.getMinStakedAmount(self);
+  }
+
+  /**
+   * @notice Computes the normalized voting weight of a validator and its apparent endorser.
+   * @param self The storage reference to the VeVoteStorage.
+   * @param endorser The address claiming to endorse the validator.
+   * @param masterAddress The master address of the validator node.
+   * @return weight The normalized voting weight of the validator if eligible, otherwise zero.
+   */
+  function getValidatorVoteWeight(
+    VeVoteStorageTypes.VeVoteStorage storage self,
+    address endorser,
+    address masterAddress
+  ) external view returns (uint256) {
+    if (endorser == address(0) || masterAddress == address(0)) return 0;
+
+    uint256 rawWeight = _determineValidatorVoteWeight(self, endorser, masterAddress);
+    if (rawWeight == 0) return 0;
+
+    return rawWeight / VeVoteConfigurator.getMinStakedAmount(self);
   }
 
   /**

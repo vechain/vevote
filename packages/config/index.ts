@@ -18,6 +18,7 @@ export type AppConfig = {
   ipfsPinningService: string;
   ipfsFetchingService: string;
   indexerUrl: string;
+  mixPanelToken?: string;
 };
 
 export const getConfig = (env?: EnvConfig): AppConfig => {

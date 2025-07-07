@@ -21,7 +21,6 @@ import { VeVoteVoteLogic } from "./governance/libraries/VeVoteVoteLogic.sol";
 import { VeVoteProposalLogic } from "./governance/libraries/VeVoteProposalLogic.sol";
 import { VeVoteStorageTypes } from "./governance/libraries/VeVoteStorageTypes.sol";
 import { VeVoteConfigurator } from "./governance/libraries/VeVoteConfigurator.sol";
-import { VechainNodesDataTypes } from "./libraries/VechainNodesDataTypes.sol";
 import { INodeManagement } from "./interfaces/INodeManagement.sol";
 import { IStargateNFT } from "./interfaces/IStargateNFT.sol";
 import { IAuthority } from "./interfaces/IAuthority.sol";
@@ -68,7 +67,9 @@ import "@openzeppelin/contracts/utils/introspection/IERC165.sol";
 contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgradeable {
   /// @notice The role that can upgrade the contract
   bytes32 public constant UPGRADER_ROLE = keccak256("UPGRADER_ROLE");
-  /// @notice The role that can create proposals
+  /// @notice The role that can grant the `WHITELISTED_ROLE`
+  bytes32 public constant WHITELIST_ADMIN_ROLE = keccak256("WHITELIST_ADMIN_ROLE");
+  /// @notice The role that create proposals
   bytes32 public constant WHITELISTED_ROLE = keccak256("WHITELISTED_ROLE");
   /// @notice The role that can execute proposals
   bytes32 public constant EXECUTOR_ROLE = keccak256("EXECUTOR_ROLE");
@@ -97,6 +98,9 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
     VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
     VeVoteQuorumLogic.updateQuorumNumerator($, data.quorumPercentage);
 
+    // Set WHITELIST_ADMIN_ROLE as the admin for WHITELISTED_ROLE
+    _setRoleAdmin(WHITELISTED_ROLE, WHITELIST_ADMIN_ROLE);
+
     // Validate and set the VeVote roles
     require(address(rolesData.admin) != address(0), "VeVote: Admin address cannot be zero");
     _grantRole(DEFAULT_ADMIN_ROLE, rolesData.admin);
@@ -104,6 +108,7 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
     _grantRole(SETTINGS_MANAGER_ROLE, rolesData.settingsManager);
     _grantRole(NODE_WEIGHT_MANAGER_ROLE, rolesData.nodeWeightManager);
     _grantRole(EXECUTOR_ROLE, rolesData.executor);
+    _grantRole(WHITELIST_ADMIN_ROLE, rolesData.whitelistAdmin);
 
     // Set the whitelist roles
     uint256 whitelistLength = rolesData.whitelist.length;
@@ -233,6 +238,14 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
   function getNodeVoteWeight(uint256 nodeId) external view returns (uint256) {
     VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
     return VeVoteVoteLogic.getNodeVoteWeight($, nodeId);
+  }
+
+  /**
+   * @inheritdoc IVeVote
+   */
+  function getValidatorVoteWeight(address endorser, address masterAddress) external view returns (uint256) {
+    VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
+    return VeVoteVoteLogic.getValidatorVoteWeight($, endorser, masterAddress);
   }
 
   /**
@@ -435,7 +448,18 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
    */
   function execute(uint256 proposalId) external onlyRole(EXECUTOR_ROLE) returns (uint256) {
     VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
-    return VeVoteProposalLogic.execute($, proposalId);
+    return VeVoteProposalLogic.execute($, proposalId, "");
+  }
+
+  /**
+   * @inheritdoc IVeVote
+   */
+  function executeWithComment(
+    uint256 proposalId,
+    string memory comment
+  ) external onlyRole(EXECUTOR_ROLE) returns (uint256) {
+    VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
+    return VeVoteProposalLogic.execute($, proposalId, comment);
   }
 
   /**

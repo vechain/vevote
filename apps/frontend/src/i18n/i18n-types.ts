@@ -222,6 +222,10 @@ type RootTranslation = {
 	 * D​i​s​c​o​n​n​e​c​t
 	 */
 	disconnect: string
+	/**
+	 * C​o​n​n​e​c​t​ ​W​a​l​l​e​t
+	 */
+	connect_wallet: string
 	home: {
 		/**
 		 * H​o​m​e
@@ -387,6 +391,24 @@ type RootTranslation = {
 			 */
 			reason_placeholder: string
 		}
+		execute_proposal: {
+			/**
+			 * M​a​r​k​ ​a​s​ ​E​x​e​c​u​t​e​d
+			 */
+			title: string
+			/**
+			 * I​f​ ​t​h​e​ ​a​c​t​i​o​n​s​ ​o​f​ ​t​h​e​ ​p​r​o​p​o​s​a​l​ ​h​a​v​e​ ​a​l​r​e​a​d​y​ ​b​e​e​n​ ​e​x​e​c​u​t​e​d​,​ ​y​o​u​ ​c​a​n​ ​m​a​r​k​ ​t​h​i​s​ ​a​p​p​r​o​v​e​d​ ​p​r​o​p​o​s​a​l​ ​a​s​ ​e​x​e​c​u​t​e​d​ ​f​o​r​ ​t​h​e​ ​v​o​t​e​r​s​ ​t​o​ ​k​n​o​w​.
+			 */
+			description: string
+			/**
+			 * E​x​e​c​u​t​i​o​n​ ​/​ ​T​r​a​n​s​a​c​t​i​o​n​ ​d​e​t​a​i​l​s
+			 */
+			label: string
+			/**
+			 * I​n​s​e​r​t​ ​l​i​n​k​ ​w​i​t​h​ ​t​h​e​ ​p​r​o​o​f​ ​o​f​ ​t​h​e​ ​e​x​e​c​u​t​i​o​n
+			 */
+			link_placeholder: string
+		}
 		delete_proposal: {
 			/**
 			 * D​e​l​e​t​e​ ​p​r​o​p​o​s​a​l
@@ -426,9 +448,10 @@ type RootTranslation = {
 				 */
 				title: string
 				/**
-				 * A​ ​m​i​n​i​m​u​m​ ​o​f​ ​3​0​%​ ​p​a​r​t​i​c​i​p​a​t​i​o​n​ ​m​u​s​t​ ​b​e​ ​r​e​a​c​h​e​d​ ​t​o​ ​v​a​l​i​d​a​t​e​ ​t​h​e​ ​v​o​t​i​n​g​ ​o​f​ ​t​h​e​ ​p​r​o​p​o​s​a​l​ ​a​n​d​ ​g​e​t​ ​a​p​p​r​o​v​a​l​.
+				 * A​ ​m​i​n​i​m​u​m​ ​o​f​ ​{​q​u​o​r​u​m​}​%​ ​p​a​r​t​i​c​i​p​a​t​i​o​n​ ​m​u​s​t​ ​b​e​ ​r​e​a​c​h​e​d​ ​t​o​ ​v​a​l​i​d​a​t​e​ ​t​h​e​ ​v​o​t​i​n​g​ ​o​f​ ​t​h​e​ ​p​r​o​p​o​s​a​l​ ​a​n​d​ ​g​e​t​ ​a​p​p​r​o​v​a​l​.
+				 * @param {number} quorum
 				 */
-				description: string
+				description: RequiredParams<'quorum'>
 			}
 			approved: {
 				/**
@@ -436,9 +459,10 @@ type RootTranslation = {
 				 */
 				title: string
 				/**
-				 * T​h​e​ ​v​o​t​i​n​g​ ​p​a​r​t​i​c​i​p​a​t​i​o​n​ ​r​e​a​c​h​e​d​ ​t​h​e​ ​m​i​n​i​m​u​m​ ​r​e​q​u​i​r​e​d​ ​o​f​ ​3​0​%​ ​t​o​ ​g​e​t​ ​a​p​p​r​o​v​a​l​.
+				 * T​h​e​ ​v​o​t​i​n​g​ ​p​a​r​t​i​c​i​p​a​t​i​o​n​ ​r​e​a​c​h​e​d​ ​t​h​e​ ​m​i​n​i​m​u​m​ ​r​e​q​u​i​r​e​d​ ​o​f​ ​{​q​u​o​r​u​m​}​%​ ​t​o​ ​g​e​t​ ​a​p​p​r​o​v​a​l​.
+				 * @param {number} quorum
 				 */
-				description: string
+				description: RequiredParams<'quorum'>
 			}
 			executed: {
 				/**
@@ -456,9 +480,10 @@ type RootTranslation = {
 				 */
 				title: string
 				/**
-				 * T​h​e​ ​v​o​t​i​n​g​ ​p​a​r​t​i​c​i​p​a​t​i​o​n​ ​d​i​d​n​’​t​ ​r​e​a​c​h​e​d​ ​t​h​e​ ​m​i​n​i​m​u​m​ ​r​e​q​u​i​r​e​d​ ​o​f​ ​3​0​%​ ​t​o​ ​g​e​t​ ​a​p​p​r​o​v​a​l​.
+				 * T​h​e​ ​v​o​t​i​n​g​ ​p​a​r​t​i​c​i​p​a​t​i​o​n​ ​d​i​d​n​’​t​ ​r​e​a​c​h​e​d​ ​t​h​e​ ​m​i​n​i​m​u​m​ ​r​e​q​u​i​r​e​d​ ​o​f​ ​{​q​u​o​r​u​m​}​%​ ​t​o​ ​g​e​t​ ​a​p​p​r​o​v​a​l​.
+				 * @param {number} quorum
 				 */
-				description: string
+				description: RequiredParams<'quorum'>
 			}
 			rejected: {
 				/**
@@ -904,7 +929,8 @@ type RootTranslation = {
 	}
 	footer: {
 		/**
-		 * A​l​l​ ​R​i​g​h​t​s​ ​R​e​s​e​r​v​e​d​ ​©​ ​V​e​c​h​a​i​n​ ​F​o​u​n​d​a​t​i​o​n​ ​S​a​n​ ​M​a​r​i​n​o​ ​S​.​r​.​l​.
+		 * A​l​l​ ​R​i​g​h​t​s​ ​R​e​s​e​r​v​e​d​ ​
+	​ ​©​ ​V​e​c​h​a​i​n​ ​F​o​u​n​d​a​t​i​o​n​ ​S​a​n​ ​M​a​r​i​n​o​ ​S​.​r​.​l​.
 		 */
 		all_right: string
 		legal: {
@@ -1130,6 +1156,10 @@ JPG, PNG or SVG of maximum of {size}MB.
 	 * Disconnect
 	 */
 	disconnect: () => LocalizedString
+	/**
+	 * Connect Wallet
+	 */
+	connect_wallet: () => LocalizedString
 	home: {
 		/**
 		 * Home
@@ -1293,6 +1323,24 @@ JPG, PNG or SVG of maximum of {size}MB.
 			 */
 			reason_placeholder: () => LocalizedString
 		}
+		execute_proposal: {
+			/**
+			 * Mark as Executed
+			 */
+			title: () => LocalizedString
+			/**
+			 * If the actions of the proposal have already been executed, you can mark this approved proposal as executed for the voters to know.
+			 */
+			description: () => LocalizedString
+			/**
+			 * Execution / Transaction details
+			 */
+			label: () => LocalizedString
+			/**
+			 * Insert link with the proof of the execution
+			 */
+			link_placeholder: () => LocalizedString
+		}
 		delete_proposal: {
 			/**
 			 * Delete proposal
@@ -1332,9 +1380,9 @@ JPG, PNG or SVG of maximum of {size}MB.
 				 */
 				title: () => LocalizedString
 				/**
-				 * A minimum of 30% participation must be reached to validate the voting of the proposal and get approval.
+				 * A minimum of {quorum}% participation must be reached to validate the voting of the proposal and get approval.
 				 */
-				description: () => LocalizedString
+				description: (arg: { quorum: number }) => LocalizedString
 			}
 			approved: {
 				/**
@@ -1342,9 +1390,9 @@ JPG, PNG or SVG of maximum of {size}MB.
 				 */
 				title: () => LocalizedString
 				/**
-				 * The voting participation reached the minimum required of 30% to get approval.
+				 * The voting participation reached the minimum required of {quorum}% to get approval.
 				 */
-				description: () => LocalizedString
+				description: (arg: { quorum: number }) => LocalizedString
 			}
 			executed: {
 				/**
@@ -1362,9 +1410,9 @@ JPG, PNG or SVG of maximum of {size}MB.
 				 */
 				title: () => LocalizedString
 				/**
-				 * The voting participation didn’t reached the minimum required of 30% to get approval.
+				 * The voting participation didn’t reached the minimum required of {quorum}% to get approval.
 				 */
-				description: () => LocalizedString
+				description: (arg: { quorum: number }) => LocalizedString
 			}
 			rejected: {
 				/**
@@ -1804,7 +1852,8 @@ JPG, PNG or SVG of maximum of {size}MB.
 	}
 	footer: {
 		/**
-		 * All Rights Reserved © Vechain Foundation San Marino S.r.l.
+		 * All Rights Reserved 
+	 © Vechain Foundation San Marino S.r.l.
 		 */
 		all_right: () => LocalizedString
 		legal: {

@@ -1,6 +1,6 @@
 import { useI18nContext } from "@/i18n/i18n-react";
 import { VotingEnum } from "@/types/proposal";
-import { Box, Button, Checkbox, defineStyle, Flex, Radio, Text } from "@chakra-ui/react";
+import { Box, Button, Checkbox, defineStyle, Flex, Icon, Radio, Text } from "@chakra-ui/react";
 import { useCallback, useMemo } from "react";
 import { motion } from "framer-motion";
 import { useWallet } from "@vechain/vechain-kit";
@@ -8,6 +8,7 @@ import { useHasVoted } from "@/hooks/useCastVote";
 import { useProposal } from "./ProposalProvider";
 import { useNodes } from "@/hooks/useUserQueries";
 import { VotedResult } from "@/types/votes";
+import { VotingPowerIcon } from "@/icons";
 
 export type VotingItemVariant = "upcoming" | "voting" | "result-lost" | "result-win";
 
@@ -55,15 +56,15 @@ export const VotingItem = ({
   choiceIndex,
   results,
 }: VotingItemProps) => {
-  const { account } = useWallet();
+  const { connection } = useWallet();
   const { proposal } = useProposal();
   const { hasVoted } = useHasVoted({ proposalId: proposal.id });
   const { nodes } = useNodes({ startDate: proposal?.startDate });
   const isVoter = useMemo(() => nodes.length > 0, [nodes.length]);
 
   const cannotVote = useMemo(
-    () => !account?.address || hasVoted || variant !== "voting" || !isVoter,
-    [account?.address, hasVoted, isVoter, variant],
+    () => !connection.isConnected || hasVoted || variant !== "voting" || !isVoter,
+    [connection.isConnected, hasVoted, isVoter, variant],
   );
   const handleClick = useCallback(() => {
     if (cannotVote) return;
@@ -137,31 +138,38 @@ const VotesSection = ({
   const isProgressDisabled = useMemo(() => variant === "voting" && !isSelected, [variant, isSelected]);
   const { LL } = useI18nContext();
 
-  const votes = useMemo(() => {
+  const choiceWeight = useMemo(() => {
+    if (!results) return 0;
+    const matchingResult = results.data.find(r => r.choice === choiceIndex);
+    return matchingResult?.totalWeight ?? 0;
+  }, [choiceIndex, results]);
+
+  const totalWeight = useMemo(() => {
+    if (!results) return 0;
+    return results.data.reduce((sum, result) => sum + (result.totalWeight ?? 0), 0);
+  }, [results]);
+
+  const voterCount = useMemo(() => {
     if (!results) return 0;
     const matchingResult = results.data.find(r => r.choice === choiceIndex);
     return matchingResult?.totalVoters ?? 0;
   }, [choiceIndex, results]);
 
-  const totalVotes = useMemo(() => {
-    if (!results) return 0;
-    return results.data.reduce((sum, result) => sum + (result.totalVoters ?? 0), 0);
-  }, [results]);
-
   const votesPercentage = useMemo(() => {
-    if (totalVotes === 0) return 0;
-    return (votes / totalVotes) * 100;
-  }, [votes, totalVotes]);
+    if (totalWeight === 0) return 0;
+    return (choiceWeight / totalWeight) * 100;
+  }, [choiceWeight, totalWeight]);
 
   return (
-    <Flex gap={10} alignItems={"center"} justifyContent={"space-between"} width={"100%"}>
-      <Text fontWeight={500} color={"gray.500"}>
-        {votes} {LL.votes()}
-      </Text>
+    <Flex gap={10} alignItems={"end"} justifyContent={"space-between"} width={"100%"}>
+      <Text fontWeight={500} color={"gray.500"}>{`${voterCount} ${LL.votes()}`}</Text>
       <ProgressBar votesPercentage={votesPercentage} isDisable={isProgressDisabled} />
-      <Text fontWeight={500} color={"gray.500"}>
-        {parseInt(votesPercentage.toString())} {LL.percentage()}
-      </Text>
+      <Flex gap={2}>
+        <Text fontWeight={500} color={"gray.500"}>
+          {parseInt(votesPercentage.toString())} {LL.percentage()}
+        </Text>
+        <Icon as={VotingPowerIcon} color={"gray.500"} w={5} h={5} />
+      </Flex>
     </Flex>
   );
 };

@@ -19,8 +19,10 @@ import { ProposalCardType } from "@/types/proposal";
 import { useHasVoted } from "@/hooks/useCastVote";
 import { useUser } from "@/contexts/UserProvider";
 import { ArrowLeftIcon, ArrowRightIcon, CheckSquareIcon, VoteIcon } from "@/icons";
+import { ExecuteModal } from "@/components/proposal/ExecuteModal";
 import { CancelProposal } from "@/components/proposal/CancelProposal";
 import { useNodes } from "@/hooks/useUserQueries";
+import { areAddressesEqual } from "@/utils/address";
 
 export const Proposal = () => {
   const { LL } = useI18nContext();
@@ -64,7 +66,12 @@ export const Proposal = () => {
         <Box>{"Proposal not found"}</Box>
       ) : (
         <ProposalProvider proposal={proposal}>
-          <PageContainer paddingTop={"200px"} bg={"white"}>
+          <PageContainer
+            padding={0}
+            paddingX={{ base: "20px", md: "40px" }}
+            paddingTop={"192px"}
+            paddingBottom={"80px"}
+            bg={"white"}>
             {isLoading ? (
               <Box>{"Loading"}</Box>
             ) : (
@@ -104,7 +111,10 @@ const ProposalNavbarActions = ({ proposal }: { proposal: ProposalCardType | unde
   const canVote = useMemo(() => isVoter && ["voting"].includes(proposal?.status || ""), [isVoter, proposal?.status]);
 
   const canCancel = useMemo(
-    () => isWhitelisted && account?.address === proposal?.proposer && ["upcoming"].includes(proposal?.status || ""),
+    () =>
+      isWhitelisted &&
+      areAddressesEqual(account?.address, proposal?.proposer) &&
+      ["upcoming"].includes(proposal?.status || ""),
     [account?.address, isWhitelisted, proposal?.proposer, proposal?.status],
   );
 
@@ -118,9 +128,7 @@ const ProposalNavbarActions = ({ proposal }: { proposal: ProposalCardType | unde
       {canEditDraft && <DeleteEditProposal />}
       {canCancel && <CancelProposal proposalId={proposal?.id} />}
 
-      {isExecutor && proposal?.status === "approved" && (
-        <Button variant={"feedback"}>{LL.proposal.mark_as_executed()}</Button>
-      )}
+      {isExecutor && proposal?.status === "approved" && <ExecuteModal proposalId={proposal?.id} />}
 
       {canVote &&
         (hasVoted ? (

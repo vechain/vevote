@@ -18,6 +18,7 @@ import { CreateProposalProvider } from "./pages/CreateProposal/CreateProposalPro
 import { persister, queryClient } from "./utils/queryClient.ts";
 import { UserProvider } from "./contexts/UserProvider.tsx";
 import { DraftProposalProvider } from "./contexts/DraftProposalProvider.tsx";
+import { MixPanelProvider } from "./contexts/MixPanelProvider.tsx";
 
 loadLocale("en");
 
@@ -51,6 +52,10 @@ const Providers = ({ children }: PropsWithChildren) => {
             delegatorUrl: "https://sponsor-testnet.vechain.energy/by/283",
             delegateAllTransactions: true,
           }}
+          loginMethods={[
+            { method: "vechain", gridColumn: 4 },
+            { method: "dappkit", gridColumn: 4 },
+          ]}
           dappKit={{
             allowedWallets: ["veworld", "wallet-connect", "sync2"],
             walletConnectOptions: {
@@ -62,13 +67,15 @@ const Providers = ({ children }: PropsWithChildren) => {
           network={{
             type: config.network.type,
           }}>
-          <UserProvider>
-            <ThemeProvider>
-              <CreateProposalProvider>
-                <DraftProposalProvider>{children}</DraftProposalProvider>
-              </CreateProposalProvider>
-            </ThemeProvider>
-          </UserProvider>
+          <MixPanelProvider>
+            <UserProvider>
+              <ThemeProvider>
+                <CreateProposalProvider>
+                  <DraftProposalProvider>{children}</DraftProposalProvider>
+                </CreateProposalProvider>
+              </ThemeProvider>
+            </UserProvider>
+          </MixPanelProvider>
         </VeChainKitProvider>
       </PersistQueryClientProvider>
     </I18nProvider>

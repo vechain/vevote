@@ -3,12 +3,13 @@ import { useI18nContext } from "@/i18n/i18n-react";
 import { Button, Icon, Link, ModalFooter, Text, useDisclosure } from "@chakra-ui/react";
 import { useBuildCreateProposal } from "@/hooks/useBuildCreatePropose";
 import { useCreateProposal } from "./CreateProposalProvider";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { uploadProposalToIpfs } from "@/utils/ipfs/proposal";
 import { getHashProposal } from "@/utils/proposals/proposalsQueries";
 import { useWallet } from "@vechain/vechain-kit";
 import { ArrowRightIcon, CheckIcon, CircleInfoIcon, CircleXIcon, RetryIcon } from "@/icons";
 import { useGetDatesBlocks } from "@/hooks/useGetDatesBlocks";
+import { trackEvent, MixPanelEvent } from "@/utils/mixpanel/utilsMixpanel";
 
 export const PublishButton = () => {
   const { LL } = useI18nContext();
@@ -22,9 +23,7 @@ export const PublishButton = () => {
   const [newProposalId, setNewProposalId] = useState("");
 
   const { proposalDetails } = useCreateProposal();
-  const {
-    build: { sendTransaction, status },
-  } = useBuildCreateProposal();
+  const { sendTransaction } = useBuildCreateProposal();
 
   const { startBlock, durationBlock } = useGetDatesBlocks({
     startDate: proposalDetails.startDate,
@@ -42,9 +41,14 @@ export const PublishButton = () => {
   }, [onFailedOpen, onPublishClose]);
 
   const onSubmit = useCallback(async () => {
+    let proposalId = "";
+    let transactionId = "";
+
     try {
       setIsLoading(true);
       setNewProposalId("");
+
+      trackEvent(MixPanelEvent.PROPOSAL_PUBLISH);
 
       const description = await uploadProposalToIpfs(proposalDetails);
 
@@ -55,28 +59,50 @@ export const PublishButton = () => {
         description,
       };
 
-      await sendTransaction(data);
+      const result = await sendTransaction(data);
+      transactionId = result.txId;
 
       const res = await getHashProposal({ ...data, proposer: account?.address || "" });
-      if (res.success) setNewProposalId((res.result.plain as BigInteger).toString());
+      if (res.success) {
+        proposalId = (res.result.plain as BigInteger).toString();
+        setNewProposalId(proposalId);
+
+        trackEvent(MixPanelEvent.PROPOSAL_PUBLISHED, {
+          proposalId,
+          transactionId,
+        });
+
+        onSuccess();
+      }
     } catch (e) {
+      const txError = e as { txId?: string; error?: { message?: string }; message?: string };
+      const errorTxId = txError.txId || transactionId || "unknown";
+
+      trackEvent(MixPanelEvent.PROPOSAL_PUBLISH_FAILED, {
+        proposalId: proposalId || proposalDetails.title,
+        error: txError.error?.message || txError.message || "Unknown error",
+        transactionId: errorTxId,
+      });
       onFailed();
     } finally {
       setIsLoading(false);
     }
-  }, [account?.address, durationBlock, onFailed, proposalDetails, sendTransaction, startBlock]);
+  }, [account?.address, durationBlock, onFailed, onSuccess, proposalDetails, sendTransaction, startBlock]);
 
   const onTryAgain = useCallback(() => onFailedClose(), [onFailedClose]);
 
-  useEffect(() => {
-    if (newProposalId) {
-      onSuccess();
-    }
-  }, [newProposalId, onFailed, onFailedOpen, onSuccess, status]);
-
   return (
     <>
-      <Button variant={"primary"} type="button" onClick={onPublishOpen} rightIcon={<Icon as={ArrowRightIcon} />}>
+      <Button
+        variant={"primary"}
+        type="button"
+        onClick={() => {
+          trackEvent(MixPanelEvent.CTA_PUBLISH_CLICKED, {
+            proposalId: proposalDetails.title,
+          });
+          onPublishOpen();
+        }}
+        rightIcon={<Icon as={ArrowRightIcon} />}>
         {LL.proposal.create.summary_form.publish_proposal()}
       </Button>
       {/* Publish modal */}

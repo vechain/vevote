@@ -12,7 +12,6 @@ interface IStargateNFT is IERC721, IERC721Enumerable {
      * @notice Emitted when a token level is updated
      * @param levelId The ID of the level that was updated
      * @param name The new name of the level
-     * @param isActive The new active status
      * @param isX The new X status
      * @param maturityBlocks The new maturity period in blocks
      * @param scaledRewardFactor The new scaled reward multiplier
@@ -21,7 +20,6 @@ interface IStargateNFT is IERC721, IERC721Enumerable {
     event LevelUpdated(
         uint8 indexed levelId,
         string name,
-        bool isActive,
         bool isX,
         uint64 maturityBlocks,
         uint64 scaledRewardFactor,
@@ -99,9 +97,13 @@ interface IStargateNFT is IERC721, IERC721Enumerable {
 
     /**
      * @notice Emitted when the VTHO generation end timestamp is updated
-     * @param vthoGenerationEndTimestamp The new VTHO generation end timestamp
+     * @param oldVthoGenerationEndTimestamp The old VTHO generation end timestamp
+     * @param newVthoGenerationEndTimestamp The new VTHO generation end timestamp
      */
-    event VthoGenerationEndTimestampSet(uint48 vthoGenerationEndTimestamp);
+    event VthoGenerationEndTimestampSet(
+        uint48 oldVthoGenerationEndTimestamp,
+        uint48 newVthoGenerationEndTimestamp
+    );
 
     /**
      * @notice Emitted when the base URI for the token metadata is updated
@@ -136,17 +138,36 @@ interface IStargateNFT is IERC721, IERC721Enumerable {
 
     function tokensOwnedBy(address _owner) external view returns (DataTypes.Token[] memory);
 
-    function getLevelsCirculatingSuppliesAtBlock(uint48 _blockNumber) external view returns (uint208[] memory);
+    function getLevelsCirculatingSuppliesAtBlock(
+        uint48 _blockNumber
+    ) external view returns (uint208[] memory);
+
+    function tokenExists(uint256 _tokenId) external view returns (bool);
 
     // ------------------ VTHO Rewards Functions ------------------ //
 
     function claimableVetGeneratedVtho(uint256 _tokenId) external view returns (uint256);
 
-    function claimVetGeneratedVtho(uint256 _tokenId) external returns (bool);
+    function claimVetGeneratedVtho(uint256 _tokenId) external;
 
     /*------- Callbacks -------*/
 
     function _safeMintCallback(address to, uint256 tokenId) external;
 
     function _burnCallback(uint256 tokenId) external;
+
+    /*------- Minting Functions -------*/
+
+    function stake(uint8 _levelId) external payable returns (uint256 tokenId);
+
+    function stakeAndDelegate(
+        uint8 _levelId,
+        bool _autorenew
+    ) external payable returns (uint256 tokenId);
+
+    function migrate(uint256 _tokenId) external payable;
+
+    function migrateAndDelegate(uint256 _tokenId, bool _autorenew) external payable;
+
+    function unstake(uint256 _tokenId) external;
 }

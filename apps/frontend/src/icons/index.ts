@@ -46,6 +46,7 @@ import { Edit } from "./Edit";
 import { MinusCircle } from "./MinusCircle";
 import { AlertTriangle } from "./AlertTriangle";
 import { Logout } from "./Logout";
+import { Node } from "./Node";
 
 export {
   Vote as VoteIcon,
@@ -96,4 +97,5 @@ export {
   MinusCircle as MinusCircleIcon,
   AlertTriangle as AlertTriangleIcon,
   Logout as LogoutIcon,
+  Node as NodeIcon,
 };

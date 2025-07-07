@@ -45,9 +45,6 @@ library Errors {
   /// @notice Thrown upon validation of a level id, when the token level spec is not found
   error LevelNotFound(uint8 levelId);
 
-  /// @notice Thrown upon staking, when the token level spec is not active
-  error LevelNotActive(uint8 levelId);
-
   /// @notice Thrown upon staking, when the circulating supply has reached cap for the level
   error LevelCapReached(uint8 levelId);
 
@@ -92,4 +89,9 @@ library Errors {
 
   /// @notice Thrown when the token has no VTHO rewards to claim
   error NoBaseVthoRewardsToClaim(uint256 tokenId);
+
+  // ------------------ Circulating Supply Errors ------------------ //
+
+  /// @notice Thrown when the block number is in the future
+  error BlockInFuture();
 }

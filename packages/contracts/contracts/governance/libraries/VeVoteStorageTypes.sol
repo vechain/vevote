@@ -14,7 +14,6 @@ pragma solidity 0.8.20;
 import { VeVoteTypes } from "./VeVoteTypes.sol";
 import { INodeManagement } from "../../interfaces/INodeManagement.sol";
 import { IStargateNFT } from "../../interfaces/IStargateNFT.sol";
-import "@openzeppelin/contracts/utils/structs/DoubleEndedQueue.sol";
 import "@openzeppelin/contracts/utils/structs/Checkpoints.sol";
 
 /// @title GovernorStorageTypes

@@ -1,7 +1,7 @@
 import { useI18nContext } from "@/i18n/i18n-react";
 import { InfoBox, infoBoxVariants } from "../ui/InfoBox";
 import { useFormatDate } from "@/hooks/useFormatDate";
-import { useMemo } from "react";
+import { MouseEventHandler, useMemo } from "react";
 import { Button, ButtonProps, Flex, Icon, Link, Text, useBreakpointValue } from "@chakra-ui/react";
 import { DAppKitWalletButton, useWallet } from "@vechain/vechain-kit";
 import { VotingItemVariant } from "./VotingItem";
@@ -12,12 +12,16 @@ import { VotersModal } from "./VotersModal";
 import { useHasVoted } from "@/hooks/useCastVote";
 import { ArrowLinkIcon, ArrowRightIcon, CheckCircleIcon } from "@/icons";
 import { useNodes } from "@/hooks/useUserQueries";
+import { trackEvent, MixPanelEvent } from "@/utils/mixpanel/utilsMixpanel";
+import { getConfig } from "@repo/config";
+
+const EXPLORER_URL = getConfig(import.meta.env.VITE_APP_ENV).network.explorerUrl;
 
 type VotingListFooterProps = { onSubmit: () => Promise<void>; isLoading?: boolean; disabled?: boolean };
 
 export const VotingListFooter = ({ onSubmit, isLoading, disabled = false }: VotingListFooterProps) => {
   const { proposal } = useProposal();
-  const { account } = useWallet();
+  const { connection } = useWallet();
   const { LL } = useI18nContext();
   const { formattedProposalDate } = useFormatDate();
   const votingVariant: VotingItemVariant = useMemo(() => getVotingVariant(proposal.status), [proposal.status]);
@@ -25,8 +29,8 @@ export const VotingListFooter = ({ onSubmit, isLoading, disabled = false }: Voti
   const isVoter = useMemo(() => nodes.length > 0, [nodes.length]);
 
   const votingNotStarted = useMemo(
-    () => proposal.status === "upcoming" || (proposal.status === "voting" && !account?.address),
-    [proposal.status, account?.address],
+    () => proposal.status === "upcoming" || (proposal.status === "voting" && !connection.isConnected),
+    [proposal.status, connection.isConnected],
   );
 
   if (votingVariant === "upcoming")
@@ -66,11 +70,11 @@ const VotingFooterAction = ({
   isVoter?: boolean;
   disabled?: boolean;
 }) => {
-  const { account } = useWallet();
+  const { connection } = useWallet();
   const { proposal } = useProposal();
   const { hasVoted } = useHasVoted({ proposalId: proposal?.id || "" });
 
-  if (!account?.address) return <ConnectButton />;
+  if (!connection.isConnected && votingVariant === "voting") return <ConnectButton />;
 
   switch (votingVariant) {
     case "voting": {
@@ -83,10 +87,20 @@ const VotingFooterAction = ({
   }
 };
 
-const VotingSubmit = (props: ButtonProps) => {
+const VotingSubmit = ({ onClick, ...rest }: ButtonProps) => {
   const { LL } = useI18nContext();
+  const { proposal } = useProposal();
+
+  const handleClick: MouseEventHandler<HTMLButtonElement> = e => {
+    trackEvent(MixPanelEvent.CTA_VOTE_CLICKED, {
+      proposalId: proposal?.id || "",
+      voteOption: "submit",
+    });
+    onClick?.(e);
+  };
+
   return (
-    <Button rightIcon={<Icon as={ArrowRightIcon} />} {...props}>
+    <Button rightIcon={<Icon as={ArrowRightIcon} />} onClick={handleClick} {...rest}>
       {LL.submit()}
     </Button>
   );
@@ -94,13 +108,19 @@ const VotingSubmit = (props: ButtonProps) => {
 
 const VotedChip = () => {
   const { LL } = useI18nContext();
-  //TODO: see your vote modal
+  const { account } = useWallet();
   return (
     <Flex alignItems={"center"} gap={3}>
       <Button variant={"feedback"} rightIcon={<Icon as={CheckCircleIcon} />}>
         {LL.voted()}
       </Button>
-      <Link color={"primary.500"} display={"flex"} gap={1} alignItems={"center"}>
+      <Link
+        color={"primary.500"}
+        display={"flex"}
+        gap={1}
+        alignItems={"center"}
+        isExternal
+        href={`${EXPLORER_URL}/accounts/${account?.address}/txs`}>
         {LL.proposal.see_your_vote()}
         <Icon as={ArrowLinkIcon} width={4} height={4} />
       </Link>

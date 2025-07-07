@@ -162,7 +162,7 @@ interface IVeVote is IERC165, IERC6372 {
   /**
    * @dev Emitted when a proposal is executed.
    */
-  event VeVoteProposalExecuted(uint256 proposalId);
+  event VeVoteProposalExecuted(uint256 proposalId, string comment);
 
   /**
    * @notice Emitted when the quorum numerator is updated.
@@ -286,7 +286,7 @@ interface IVeVote is IERC165, IERC6372 {
    * @notice Retrieves the voting weight of an account at a given timepoint.
    * @param account The address of the account.
    * @param timepoint The specific timepoint.
-   * @param masterAddress Required parameter — must be an array (can be empty). Used to determine validator voting power, if applicable.
+   * @param masterAddress Required parameter — can be zero address. Used to determine validator voting power, if applicable.
    * @return The voting weight of the account.
    */
   function getVoteWeightAtTimepoint(
@@ -298,7 +298,7 @@ interface IVeVote is IERC165, IERC6372 {
   /**
    * @notice Retrieves the voting weight of an account at a current timepoint.
    * @param account The address of the account.
-   * @param masterAddress Required parameter — must be an array (can be empty). Used to determine validator voting power, if applicable.
+   * @param masterAddress Required parameter — can be zero address. Used to determine validator voting power, if applicable.
    * @return The voting weight of the account.
    */
   function getVoteWeight(address account, address masterAddress) external view returns (uint256);
@@ -309,6 +309,14 @@ interface IVeVote is IERC165, IERC6372 {
    * @return The voting power of the node.
    */
   function getNodeVoteWeight(uint256 nodeId) external view returns (uint256);
+
+  /**
+   * @notice Computes the normalized voting weight of a validator and its apparent endorser.
+   * @param endorser The address that endorses the validator.
+   * @param masterAddress The master address of the validator node.
+   * @return weight The normalized voting weight of the validator if eligible, otherwise zero.
+   */
+  function getValidatorVoteWeight(address endorser, address masterAddress) external view returns (uint256);
 
   /**
    * @notice Returns the hash of a proposal.
@@ -534,6 +542,14 @@ interface IVeVote is IERC165, IERC6372 {
   function execute(uint256 proposalId) external returns (uint256);
 
   /**
+   * @notice Marks a proposal as executed.
+   * @dev Allows an admin to mark a proposal as executed.
+   * @param proposalId The ID of the proposal to execute.
+   * @param comment A comment on the proposal execution.
+   */
+  function executeWithComment(uint256 proposalId, string memory comment) external returns (uint256);
+
+  /**
    * @notice Updates the minimum voting delay.
    * @param newMinVotingDelay The new minimum voting delay
    */
@@ -601,7 +617,7 @@ interface IVeVote is IERC165, IERC6372 {
    *      or the selected choices violate min/max constraints.
    * @param proposalId The ID of the proposal to vote on.
    * @param choices A bitmask representing the selected choices. Each bit corresponds to a choice index.
-   * @param masterAddress Required parameter — must be an array (can be empty). Used to determine validator voting power, if applicable.
+   * @param masterAddress Required parameter — can be zero address. Used to determine validator voting power, if applicable.
    */
   function castVote(uint256 proposalId, uint32 choices, address masterAddress) external;
 
@@ -612,7 +628,7 @@ interface IVeVote is IERC165, IERC6372 {
    * @param proposalId The ID of the proposal to vote on.
    * @param choices A bitmask representing the selected choices. Each bit corresponds to a choice index.
    * @param reason An optional string explaining the rationale behind the vote. Useful for governance UIs and transparency.
-   * @param masterAddress Required parameter — must be an array (can be empty). Used to determine validator voting power, if applicable.
+   * @param masterAddress Required parameter — can be zero address. Used to determine validator voting power, if applicable.
    */
   function castVoteWithReason(
     uint256 proposalId,

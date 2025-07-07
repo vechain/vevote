@@ -1,20 +1,17 @@
 import { ProposalDetails } from "@/pages/CreateProposal/CreateProposalProvider";
 import { BaseOption, VotingEnum } from "@/types/proposal";
-import { useBuildTransaction } from "@/utils";
+import { useVevoteSendTransaction } from "@/utils/hooks/useVevoteSendTransaction";
 import { getConfig } from "@repo/config";
 import { VeVote__factory } from "@repo/contracts";
+import { ABIFunction, Address, Clause } from "@vechain/sdk-core";
 import { EnhancedClause } from "@vechain/vechain-kit";
 import { ethers } from "ethers";
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 
 const contractAddress = getConfig(import.meta.env.VITE_APP_ENV).vevoteContractAddress;
 const contractInterface = VeVote__factory.createInterface();
 
 export const useBuildCreateProposal = () => {
-  const [error, setError] = useState<string | undefined>(undefined);
-
-  const resetError = useCallback(() => setError(undefined), []);
-
   const buildClauses = useCallback(
     ({
       description,
@@ -36,23 +33,8 @@ export const useBuildCreateProposal = () => {
             ? votingOptions.map(c => ethers.encodeBytes32String(c as string))
             : votingOptions.map(c => ethers.encodeBytes32String((c as BaseOption).value));
 
-        const createProposalClause: EnhancedClause = {
-          to: contractAddress,
-          value: 0,
-          data: contractInterface.encodeFunctionData("propose", [
-            description,
-            startBlock,
-            durationBlock - startBlock,
-            encodedChoices,
-            votingLimit || 1,
-            1,
-          ]),
-          comment: `Create new proposal`,
-          abi: JSON.parse(JSON.stringify(contractInterface.getFunction("propose"))),
-        };
+        const encodedData = [description, startBlock, durationBlock - startBlock, encodedChoices, votingLimit || 1, 1];
 
-        //TODO: use sdk once vechain-kit is compatible
-        /* ---------- with sdk
         const interfaceJson = contractInterface.getFunction("propose")?.format("full");
         if (!interfaceJson) throw new Error(`Method propose not found`);
 
@@ -63,8 +45,6 @@ export const useBuildCreateProposal = () => {
           functionAbi,
           encodedData,
         ) as EnhancedClause;
-
-        --------- with sdk */
 
         clauses.push(createProposalClause);
 
@@ -77,12 +57,7 @@ export const useBuildCreateProposal = () => {
     [],
   );
 
-  return {
-    build: useBuildTransaction({
-      clauseBuilder: buildClauses,
-      onError: error => setError(error),
-    }),
-    error,
-    resetError,
-  };
+  return useVevoteSendTransaction({
+    clauseBuilder: buildClauses,
+  });
 };

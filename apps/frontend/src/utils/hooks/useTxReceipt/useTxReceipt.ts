@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { pollForReceipt } from "./pollForReceipt";
-import { useConnex } from "@vechain/vechain-kit";
+import { useThor } from "@vechain/vechain-kit";
 
 export const txReceiptQueryKey = (txId?: string) => ["TX_RECEIPT", txId];
 
@@ -11,11 +11,11 @@ export const txReceiptQueryKey = (txId?: string) => ["TX_RECEIPT", txId];
  * @returns  the tx receipt
  */
 export const useTxReceipt = (txId?: string, blocksTimeout?: number) => {
-  const { thor } = useConnex();
+  const thor = useThor();
   return useQuery({
     queryKey: txReceiptQueryKey(txId),
     queryFn: () => pollForReceipt(thor, txId, blocksTimeout),
-    enabled: !!txId,
+    enabled: !!txId && !!thor,
     staleTime: Infinity,
   });
 };

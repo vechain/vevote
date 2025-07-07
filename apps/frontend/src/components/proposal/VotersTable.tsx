@@ -1,14 +1,24 @@
 import { createColumnHelper } from "@tanstack/react-table";
-import { VoteItem } from "./VotersModal";
 import { defineStyle, Icon, Link, Text } from "@chakra-ui/react";
 import { formatAddress } from "@/utils/address";
 import { CopyLink } from "../ui/CopyLink";
+import { DataTable } from "../ui/TableSkeleton";
 import dayjs from "dayjs";
-import { useMemo } from "react";
 import { ArrowLinkIcon } from "@/icons";
 import { getConfig } from "@repo/config";
+import { SingleChoiceEnum } from "@/types/proposal";
 
 const VECHAIN_EXPLORER_URL = getConfig(import.meta.env.VITE_APP_ENV).network.explorerUrl;
+
+export type VoteItem = {
+  date: Date;
+  address: string;
+  node: string;
+  nodeId: string;
+  votingPower: number;
+  votedOption: string;
+  transactionId: string;
+};
 
 const columnHelper = createColumnHelper<VoteItem>();
 
@@ -42,30 +52,42 @@ const AddressCell = ({ value }: { value: string }) => {
   );
 };
 
-const votedOptionCellVariants = {
-  yes: defineStyle({
-    background: "green.100",
-    color: "green.700",
-  }),
-  no: defineStyle({
-    background: "red.100",
-    color: "red.700",
-  }),
-  default: defineStyle({
-    background: "gray.100",
-    color: "gray.700",
-  }),
+const votedOptionCellVariants = (choice: string) => {
+  const style = {
+    yes: defineStyle({
+      background: "green.100",
+      color: "green.700",
+    }),
+    no: defineStyle({
+      background: "red.100",
+      color: "red.700",
+    }),
+    default: defineStyle({
+      background: "gray.100",
+      color: "gray.700",
+    }),
+  };
+
+  switch (choice) {
+    case SingleChoiceEnum.YES:
+      return style.yes;
+    case SingleChoiceEnum.NO:
+      return style.no;
+    default:
+      return style.default;
+  }
 };
 
-const VotedOptionCell = ({ value }: { value: string }) => {
-  const variant = useMemo(() => {
-    if (value === "Yes") return votedOptionCellVariants.yes;
-    if (value === "No") return votedOptionCellVariants.no;
-    return votedOptionCellVariants.default;
-  }, [value]);
+const VotedOptionCell = ({ option }: { option: string }) => {
   return (
-    <Text {...variant} textAlign={"center"} fontWeight={500} fontSize={12} borderRadius={4} p={1}>
-      {value}
+    <Text
+      textAlign={"center"}
+      fontWeight={500}
+      fontSize={12}
+      borderRadius={4}
+      p={1}
+      {...votedOptionCellVariants(option)}>
+      {option}
     </Text>
   );
 };
@@ -87,7 +109,7 @@ const TransactionIdCell = ({ value }: { value: string }) => {
   );
 };
 
-export const votersColumn = [
+const votersColumn = [
   columnHelper.accessor("date", {
     cell: data => <BaseCell value={dayjs(data.getValue()).format("DD/MM/YYYY")} />,
     header: () => <TableHeader label="Date" />,
@@ -104,7 +126,7 @@ export const votersColumn = [
     id: "NODE",
   }),
   columnHelper.accessor("nodeId", {
-    cell: data => <BaseCell value={data.getValue()} />,
+    cell: data => <BaseCell value={formatAddress(data.getValue())} />,
     header: () => <TableHeader label="Node ID" />,
     id: "NODE_ID",
   }),
@@ -114,7 +136,7 @@ export const votersColumn = [
     id: "VOTING_POWER",
   }),
   columnHelper.accessor("votedOption", {
-    cell: data => <VotedOptionCell value={data.getValue()} />,
+    cell: data => <VotedOptionCell option={data.getValue()} />,
     header: () => <TableHeader label="Voted Option" />,
     id: "VOTED_OPTION",
   }),
@@ -124,3 +146,11 @@ export const votersColumn = [
     id: "TRANSACTION_ID",
   }),
 ];
+
+interface VotersTableProps {
+  data: VoteItem[];
+}
+
+export const VotersTable = ({ data }: VotersTableProps) => {
+  return <DataTable columns={votersColumn} data={data} />;
+};
