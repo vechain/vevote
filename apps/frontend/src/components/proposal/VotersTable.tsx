@@ -107,7 +107,17 @@ const NodesCell = ({ nodes }: { nodes: string[] }) => {
   return (
     <Flex gap={2} flexDirection={"column"}>
       {nodes.map(node => (
-        <BaseCell value={formatAddress(node)} />
+        <BaseCell value={node} />
+      ))}
+    </Flex>
+  );
+};
+
+const NodeIdsCell = ({ nodeIds }: { nodeIds: string[] }) => {
+  return (
+    <Flex gap={2} flexDirection={"column"}>
+      {nodeIds.map(nodeId => (
+        <BaseCell value={formatAddress(nodeId)} />
       ))}
     </Flex>
   );
@@ -126,8 +136,13 @@ export const votersColumn = [
   }),
   columnHelper.accessor("nodes", {
     cell: data => <NodesCell nodes={data.getValue()} />,
-    header: () => <TableHeader label="Node" />,
+    header: () => <TableHeader label="Nodes" />,
     id: "NODE",
+  }),
+  columnHelper.accessor("nodeIds", {
+    cell: data => <NodeIdsCell nodeIds={data.getValue()} />,
+    header: () => <TableHeader label="Node Ids" />,
+    id: "NODE_IDS",
   }),
   columnHelper.accessor("votingPower", {
     cell: data => <BaseCell value={data.getValue().toString()} />,

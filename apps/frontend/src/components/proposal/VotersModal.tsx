@@ -9,12 +9,15 @@ import { Sort } from "../ui/SortDropdown";
 import { DataTable } from "../ui/TableSkeleton";
 import { useProposal } from "./ProposalProvider";
 import { votersColumn } from "./VotersTable";
-import { TableFilters } from "./TableFilters";
+import { DEFAULT_FILTER, TableFilters } from "./TableFilters";
+import { useVotersNodes } from "@/hooks/useUserQueries";
+import { NodeStrengthLevel } from "@/types/user";
 
 export type VoteItem = {
   date: Date;
   address: string;
   nodes: string[];
+  nodeIds: string[];
   votingPower: number;
   votedOptions: (SingleChoiceEnum | BaseOption["value"])[];
   transactionId: string;
@@ -26,11 +29,15 @@ export const VotersModal = () => {
   const { proposal } = useProposal();
 
   const [sort, setSort] = useState(Sort.Newest);
-  const [selectedOption, setSelectedOption] = useState<string | undefined>(undefined);
-  const [node, setNode] = useState<string | undefined>(undefined);
+  const [selectedOption, setSelectedOption] = useState(DEFAULT_FILTER);
+  const [node, setNode] = useState<NodeStrengthLevel | typeof DEFAULT_FILTER>(DEFAULT_FILTER);
   const [searchQuery, setSearchQuery] = useState<string>("");
 
   const { votedInfo } = useVotesInfo({ proposalId: proposal.id });
+
+  const { nodes } = useVotersNodes({
+    nodeIds: votedInfo?.flatMap(vote => vote.stargateNFTs) || [],
+  });
 
   const getVotingChoicesFromBinary = useCallback(
     (choices: string[]) => {
@@ -52,21 +59,24 @@ export const VotersModal = () => {
         (vote): VoteItem => ({
           date: vote.date,
           address: vote.voter,
-          nodes: vote.stargateNFTs,
+          nodeIds: vote.stargateNFTs,
+          nodes: nodes.filter(node => vote.stargateNFTs.includes(node.id)).map(node => node.name),
           votingPower: Number(vote.weight) / 100,
           votedOptions: getVotingChoicesFromBinary(vote.choices) || [],
           transactionId: vote.transactionId,
         }),
       ) || []
     );
-  }, [getVotingChoicesFromBinary, votedInfo]);
+  }, [getVotingChoicesFromBinary, nodes, votedInfo]);
 
   const filteredVotes = useMemo(() => {
     const filtered = votes.filter(vote => {
-      const matchesNode = node ? vote.nodes.includes(node) : true;
-      const matchesOption = selectedOption
-        ? vote.votedOptions.includes(selectedOption as SingleChoiceEnum | BaseOption["value"])
-        : true;
+      const matchesNode =
+        node && node !== DEFAULT_FILTER ? nodes.some(n => n.name === node && vote.nodes.includes(n.name)) : true;
+      const matchesOption =
+        selectedOption && selectedOption !== DEFAULT_FILTER
+          ? vote.votedOptions.includes(selectedOption as SingleChoiceEnum | BaseOption["value"])
+          : true;
       const matchesSearch = searchQuery ? vote.address.toLowerCase().includes(searchQuery.toLowerCase()) : true;
 
       return matchesNode && matchesOption && matchesSearch;
@@ -82,19 +92,20 @@ export const VotersModal = () => {
     });
 
     return filtered;
-  }, [votes, node, selectedOption, searchQuery, sort]);
+  }, [votes, node, nodes, selectedOption, searchQuery, sort]);
 
-  const nodes = useMemo(() => {
-    return votes.reduce((acc, value) => {
-      value.nodes.forEach(node => {
-        if (!acc.includes(node)) acc.push(node);
-      });
+  const nodeOptions = useMemo(() => {
+    const reduceNodes = nodes.reduce((acc, node) => {
+      if (!acc.includes(node.name)) {
+        acc.push(node.name);
+      }
       return acc;
     }, [] as string[]);
-  }, [votes]);
+    return [DEFAULT_FILTER, ...reduceNodes];
+  }, [nodes]);
 
   const options = useMemo(() => {
-    return votes.reduce(
+    const baseOptions = votes.reduce(
       (acc, value) => {
         value?.votedOptions.forEach(option => {
           if (!acc.includes(option)) acc.push(option);
@@ -103,6 +114,7 @@ export const VotersModal = () => {
       },
       [] as VoteItem["votedOptions"],
     );
+    return [DEFAULT_FILTER, ...baseOptions];
   }, [votes]);
 
   return (
@@ -114,7 +126,7 @@ export const VotersModal = () => {
         <ModalHeader>
           <ModalTitle title={LL.voters()} icon={UserCheckIcon} />
           <TableFilters
-            nodes={nodes}
+            nodes={nodeOptions}
             options={options}
             selectedOption={selectedOption}
             setSelectedOption={setSelectedOption}
