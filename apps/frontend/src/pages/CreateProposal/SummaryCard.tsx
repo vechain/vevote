@@ -1,7 +1,7 @@
 import { FileUploadChild } from "@/components/ui/FileUploadChild";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { ZodFile } from "@/utils/zod";
-import { Flex, Heading, Icon, Text } from "@chakra-ui/react";
+import { Flex, Grid, GridItem, Heading, Icon, Text } from "@chakra-ui/react";
 import { PropsWithChildren, useMemo } from "react";
 import dayjs from "dayjs";
 import { BaseOption, VotingChoices, VotingEnum } from "@/types/proposal";
@@ -155,31 +155,45 @@ const OptionsItem = ({ votingOptions, votingType, label }: OptionsItemProps) => 
         {label}
       </Text>
 
-      <Flex width={{ base: "full", md: "75%" }}>
-        {votingType === VotingEnum.SINGLE_CHOICE && (
-          <Text
-            fontSize={{ base: 14, md: 16 }}
-            color={"gray.600"}
-            overflow={"hidden"}
-            textOverflow={"ellipsis"}
-            whiteSpace={"nowrap"}>
-            {votingOptions.join(" / ")}
-          </Text>
-        )}
-        {(votingType === VotingEnum.MULTIPLE_OPTIONS || votingType === VotingEnum.SINGLE_OPTION) &&
-          (votingOptions as BaseOption[]).map((value, id) => {
+      {votingType === VotingEnum.SINGLE_CHOICE && (
+        <Text
+          width={{ base: "full", md: "75%" }}
+          fontSize={{ base: 14, md: 16 }}
+          color={"gray.600"}
+          overflow={"hidden"}
+          textOverflow={"ellipsis"}
+          whiteSpace={"nowrap"}>
+          {votingOptions.join(" / ")}
+        </Text>
+      )}
+      {(votingType === VotingEnum.MULTIPLE_OPTIONS || votingType === VotingEnum.SINGLE_OPTION) && (
+        <Grid templateColumns={"repeat(3, 1fr)"} width={{ base: "full", md: "75%" }} gap={2}>
+          {(votingOptions as BaseOption[]).map((value, id) => {
             return (
-              <Flex width={"full"} key={value.id} flexDirection={"column"} alignItems={"start"}>
+              <GridItem
+                colSpan={1}
+                display={"flex"}
+                key={value.id}
+                flexDirection={"column"}
+                alignItems={"start"}
+                overflow={"hidden"}
+                textOverflow={"ellipsis"}>
                 <Text color={"gray.500"} fontSize={14}>
                   {LL.number_option({ index: id + 1 })}
                 </Text>
-                <Text fontSize={{ base: 14, md: 16 }} color={"gray.600"}>
+                <Text
+                  width={"100%"}
+                  overflow={"hidden"}
+                  textOverflow={"ellipsis"}
+                  fontSize={{ base: 14, md: 16 }}
+                  color={"gray.600"}>
                   {value.value}
                 </Text>
-              </Flex>
+              </GridItem>
             );
           })}
-      </Flex>
+        </Grid>
+      )}
     </Flex>
   );
 };

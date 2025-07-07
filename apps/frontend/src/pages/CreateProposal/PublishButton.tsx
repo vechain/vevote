@@ -81,6 +81,7 @@ export const PublishButton = () => {
       </Button>
       {/* Publish modal */}
       <MessageModal
+        size={{ base: "cover", sm: "sm", md: "xl" }}
         isOpen={isPublishOpen}
         onClose={onPublishClose}
         icon={CircleInfoIcon}
