@@ -42,10 +42,6 @@ export const useVotersData = ({
     return map;
   }, [nodes]);
 
-  const nodeNamesSet = useMemo(() => {
-    return new Set(nodes.map(node => node.name));
-  }, [nodes]);
-
   const getVotingChoicesFromBinary = useCallback(
     (choices: string[]) => {
       return choices
@@ -123,7 +119,7 @@ export const useVotersData = ({
       if (node && node !== DEFAULT_FILTER && vote.node !== node) return acc;
       if (selectedOption && selectedOption !== DEFAULT_FILTER && vote.votedOption !== selectedOption) return acc;
       if (searchQuery && !vote.address.toLowerCase().includes(searchQuery.toLowerCase())) return acc;
-      
+
       acc.push(vote);
       return acc;
     }, []);
