@@ -1,14 +1,24 @@
 import { createColumnHelper } from "@tanstack/react-table";
-import { VoteItem } from "./VotersModal";
-import { defineStyle, Flex, Icon, Link, Text } from "@chakra-ui/react";
+import { defineStyle, Icon, Link, Text } from "@chakra-ui/react";
 import { formatAddress } from "@/utils/address";
 import { CopyLink } from "../ui/CopyLink";
+import { DataTable } from "../ui/TableSkeleton";
 import dayjs from "dayjs";
 import { ArrowLinkIcon } from "@/icons";
 import { getConfig } from "@repo/config";
 import { SingleChoiceEnum } from "@/types/proposal";
 
 const VECHAIN_EXPLORER_URL = getConfig(import.meta.env.VITE_APP_ENV).network.explorerUrl;
+
+export type VoteItem = {
+  date: Date;
+  address: string;
+  node: string;
+  nodeId: string;
+  votingPower: number;
+  votedOption: string;
+  transactionId: string;
+};
 
 const columnHelper = createColumnHelper<VoteItem>();
 
@@ -68,21 +78,17 @@ const votedOptionCellVariants = (choice: string) => {
   }
 };
 
-const VotedOptionCell = ({ options }: { options?: string[] }) => {
+const VotedOptionCell = ({ option }: { option: string }) => {
   return (
-    <Flex gap={2} flexDirection={"column"}>
-      {options?.map(option => (
-        <Text
-          textAlign={"center"}
-          fontWeight={500}
-          fontSize={12}
-          borderRadius={4}
-          p={1}
-          {...votedOptionCellVariants(option)}>
-          {option}
-        </Text>
-      ))}
-    </Flex>
+    <Text
+      textAlign={"center"}
+      fontWeight={500}
+      fontSize={12}
+      borderRadius={4}
+      p={1}
+      {...votedOptionCellVariants(option)}>
+      {option}
+    </Text>
   );
 };
 
@@ -103,27 +109,7 @@ const TransactionIdCell = ({ value }: { value: string }) => {
   );
 };
 
-const NodesCell = ({ nodes }: { nodes: string[] }) => {
-  return (
-    <Flex gap={2} flexDirection={"column"}>
-      {nodes.map(node => (
-        <BaseCell value={node} />
-      ))}
-    </Flex>
-  );
-};
-
-const NodeIdsCell = ({ nodeIds }: { nodeIds: string[] }) => {
-  return (
-    <Flex gap={2} flexDirection={"column"}>
-      {nodeIds.map(nodeId => (
-        <BaseCell value={formatAddress(nodeId)} />
-      ))}
-    </Flex>
-  );
-};
-
-export const votersColumn = [
+const votersColumn = [
   columnHelper.accessor("date", {
     cell: data => <BaseCell value={dayjs(data.getValue()).format("DD/MM/YYYY")} />,
     header: () => <TableHeader label="Date" />,
@@ -134,23 +120,23 @@ export const votersColumn = [
     header: () => <TableHeader label="Address" />,
     id: "ADDRESS",
   }),
-  columnHelper.accessor("nodes", {
-    cell: data => <NodesCell nodes={data.getValue()} />,
-    header: () => <TableHeader label="Nodes" />,
+  columnHelper.accessor("node", {
+    cell: data => <BaseCell value={data.getValue()} />,
+    header: () => <TableHeader label="Node" />,
     id: "NODE",
   }),
-  columnHelper.accessor("nodeIds", {
-    cell: data => <NodeIdsCell nodeIds={data.getValue()} />,
-    header: () => <TableHeader label="Node Ids" />,
-    id: "NODE_IDS",
+  columnHelper.accessor("nodeId", {
+    cell: data => <BaseCell value={formatAddress(data.getValue())} />,
+    header: () => <TableHeader label="Node ID" />,
+    id: "NODE_ID",
   }),
   columnHelper.accessor("votingPower", {
     cell: data => <BaseCell value={data.getValue().toString()} />,
     header: () => <TableHeader label="Voting Power" />,
     id: "VOTING_POWER",
   }),
-  columnHelper.accessor("votedOptions", {
-    cell: data => <VotedOptionCell options={data.getValue()} />,
+  columnHelper.accessor("votedOption", {
+    cell: data => <VotedOptionCell option={data.getValue()} />,
     header: () => <TableHeader label="Voted Option" />,
     id: "VOTED_OPTION",
   }),
@@ -160,3 +146,11 @@ export const votersColumn = [
     id: "TRANSACTION_ID",
   }),
 ];
+
+interface VotersTableProps {
+  data: VoteItem[];
+}
+
+export const VotersTable = ({ data }: VotersTableProps) => {
+  return <DataTable columns={votersColumn} data={data} />;
+};

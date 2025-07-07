@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction } from "react";
 import { Sort } from "../ui/SortDropdown";
-import { VoteItem } from "./VotersModal";
+import { VoteItem } from "./VotersTable";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { Flex } from "@chakra-ui/react";
 import { SearchInput } from "../ui/SearchInput";
@@ -13,7 +13,7 @@ export const DEFAULT_FILTER = "All";
 const sortOptions = [Sort.Newest, Sort.Oldest];
 
 type TableFiltersProps = {
-  options: VoteItem["votedOptions"];
+  options: VoteItem["votedOption"][];
   nodes: string[];
   selectedOption?: string;
   setSelectedOption: Dispatch<SetStateAction<string>>;
