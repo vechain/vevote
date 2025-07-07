@@ -13,12 +13,9 @@ import {
   TokenLevelId,
   deployAndInitializeLatest,
 } from "../helpers";
-import { getConfig } from "@repo/config";
 import { NodeManagement, StargateDelegation, StargateNFT, VeVote } from "../../typechain-types";
 import { deployLibraries } from "../helpers/deployLibraries";
 import { createValidator } from "../helpers/validators";
-
-const appConfig = getConfig();
 
 export async function deployAll(config: ContractsConfig) {
   const start = performance.now();
@@ -131,6 +128,8 @@ export async function deployAll(config: ContractsConfig) {
       },
     )) as StargateNFT;
 
+    stargateSCAddress = await stargateMock.getAddress();
+
     (await initializeProxy(
       stargateDelegationProxyAddress,
       "StargateDelegation",
@@ -203,7 +202,7 @@ export async function deployAll(config: ContractsConfig) {
         initialMinVotingDuration: config.INITIAL_MIN_VOTING_DURATION,
         initialMaxChoices: config.INITIAL_MAX_CHOICES,
         nodeManagement: nodeManagementAddress,
-        stargateNFT: await stargateMock.getAddress(),
+        stargateNFT: stargateSCAddress,
         authorityContract: config.AUTHORITY_CONTRACT_ADDRESS,
         initialMinStakedAmount: config.MIN_VET_STAKE,
       },
