@@ -1,11 +1,14 @@
 import { getBlockFromDate } from "@/utils/proposals/helpers";
-import { getUserNodes, getUserRoles } from "@/utils/proposals/userQueries";
+import { getNodesName, getUserNodes, getUserRoles } from "@/utils/proposals/userQueries";
 import { useQuery } from "@tanstack/react-query";
 import { useWallet } from "@vechain/vechain-kit";
+import dayjs from "dayjs";
 
 const getNodes = async ({ address, startDate }: { address: string; startDate: Date }) => {
   try {
-    const blockN = await getBlockFromDate(startDate);
+    const today = dayjs();
+    const blockDate = dayjs(startDate).isAfter(today) ? today.toDate() : startDate;
+    const blockN = await getBlockFromDate(blockDate);
     if (!blockN) return { nodes: [] };
     return await getUserNodes({ address, blockN: blockN?.number.toString() });
   } catch (error) {
@@ -42,6 +45,19 @@ export const useUserRoles = () => {
   return {
     roles: data,
     isLoading: !error && !data,
+    isError: Boolean(error),
+  };
+};
+
+export const useVotersNodes = ({ nodeIds }: { nodeIds: string[] }) => {
+  const { data, error, isLoading } = useQuery({
+    queryKey: ["votersNodes", nodeIds],
+    queryFn: async () => await getNodesName({ nodeIds }),
+  });
+
+  return {
+    nodes: data || [],
+    isLoading,
     isError: Boolean(error),
   };
 };

@@ -54,12 +54,11 @@ export const useCastVote = ({ proposalId }: { proposalId?: string }) => {
 
   return useVevoteSendTransaction({
     clauseBuilder: buildClauses,
-    invalidateCache: true,
     refetchQueryKeys: [
       ["hasVoted", proposalId, account?.address],
-      ["votesResults", proposalId],
       ["votedChoices", proposalId, account?.address],
     ],
+    delayedRefetchKeys: [["votesResults", proposalId]],
   });
 };
 

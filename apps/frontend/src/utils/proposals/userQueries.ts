@@ -110,3 +110,21 @@ export const getUserNodes = async ({ address, blockN }: { address: string; block
     console.error("Error fetching user nodes:", error);
   }
 };
+
+export const getNodesName = async ({ nodeIds }: { nodeIds: string[] }) => {
+  const res = await executeMultipleClauses({
+    contractAddress: nodeManagementAddress,
+    contractInterface: nodeManagementInterface,
+    methodsWithArgs: nodeIds.map(nodeId => ({
+      method: "getNodeLevel" as const,
+      args: [nodeId],
+    })),
+  });
+
+  const nodeLevels = res.map((result, id) => ({
+    id: nodeIds[id],
+    name: result.success ? NodeStrengthLevels[result.result.plain as number] : "Unknown",
+  }));
+
+  return nodeLevels;
+};

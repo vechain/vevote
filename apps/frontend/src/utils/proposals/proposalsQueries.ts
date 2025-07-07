@@ -45,7 +45,7 @@ export const getProposalsEvents = async (
         criteria: {
           address: contractAddress,
           topic0: proposalExecutedAbi.signatureHash,
-          topic1: proposalId ? proposalCreatedAbi.encodeFilterTopicsNoNull({ proposalId })[1] : undefined,
+          topic1: proposalId ? proposalExecutedAbi.encodeFilterTopicsNoNull({ proposalId })[1] : undefined,
         },
         eventAbi: proposalExecutedAbi,
       },
@@ -53,7 +53,7 @@ export const getProposalsEvents = async (
         criteria: {
           address: contractAddress,
           topic0: proposalCanceledAbi.signatureHash,
-          topic1: proposalId ? proposalCreatedAbi.encodeFilterTopicsNoNull({ proposalId })[1] : undefined,
+          topic1: proposalId ? proposalCanceledAbi.encodeFilterTopicsNoNull({ proposalId })[1] : undefined,
         },
         eventAbi: proposalCanceledAbi,
       },
