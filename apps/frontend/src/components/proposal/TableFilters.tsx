@@ -1,22 +1,24 @@
 import { Dispatch, SetStateAction } from "react";
 import { Sort } from "../ui/SortDropdown";
-import { VoteItem } from "./VotersModal";
+import { VoteItem } from "./VotersTable";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { Flex } from "@chakra-ui/react";
 import { SearchInput } from "../ui/SearchInput";
 import { VotingBaseDropdown } from "./VotingBaseDropdown";
-import { FilterIcon, SortDescIcon } from "@/icons";
-import { formatAddress } from "@/utils/address";
+import { FilterIcon, NodeIcon, SortDescIcon } from "@/icons";
+import { NodeStrengthLevel } from "@/types/user";
+
+export const DEFAULT_FILTER = "All";
 
 const sortOptions = [Sort.Newest, Sort.Oldest];
 
 type TableFiltersProps = {
-  options: VoteItem["votedOptions"];
+  options: VoteItem["votedOption"][];
   nodes: string[];
   selectedOption?: string;
-  setSelectedOption: Dispatch<SetStateAction<string | undefined>>;
-  node?: string;
-  setNode: Dispatch<SetStateAction<string | undefined>>;
+  setSelectedOption: Dispatch<SetStateAction<string>>;
+  node?: NodeStrengthLevel | typeof DEFAULT_FILTER;
+  setNode: Dispatch<SetStateAction<NodeStrengthLevel | typeof DEFAULT_FILTER>>;
   sort: Sort;
   setSort: Dispatch<SetStateAction<Sort>>;
   searchQuery: string;
@@ -51,8 +53,7 @@ export const TableFilters = ({
         options={options}
         selectedOption={selectedOption}
         onChange={v => {
-          if (v === selectedOption) setSelectedOption(undefined);
-          else setSelectedOption(v as string);
+          setSelectedOption(v as string);
         }}
         ms={"auto"}
         icon={FilterIcon}
@@ -62,11 +63,9 @@ export const TableFilters = ({
         options={nodes}
         selectedOption={node}
         onChange={v => {
-          if (v === node) setNode(undefined);
-          else setNode(v as string);
+          setNode(v as NodeStrengthLevel | typeof DEFAULT_FILTER);
         }}
-        icon={FilterIcon}
-        renderValue={value => formatAddress(value as string)}
+        icon={NodeIcon}
       />
       <VotingBaseDropdown
         label="Sort by"

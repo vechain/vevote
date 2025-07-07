@@ -74,7 +74,7 @@ const VotingFooterAction = ({
   const { proposal } = useProposal();
   const { hasVoted } = useHasVoted({ proposalId: proposal?.id || "" });
 
-  if (!connection.isConnected) return <ConnectButton />;
+  if (!connection.isConnected && votingVariant === "voting") return <ConnectButton />;
 
   switch (votingVariant) {
     case "voting": {
