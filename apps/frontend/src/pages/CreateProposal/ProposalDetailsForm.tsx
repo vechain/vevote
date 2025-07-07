@@ -50,48 +50,64 @@ export const ProposalDetailsForm = () => {
       {({ register, errors, watch }) => {
         const title = watch("title");
         return (
-          <CreateFormWrapper>
-            <FormControl isInvalid={Boolean(errors.title)}>
-              <Label label={LLDetailsForm.title()} />
-              <Input width={"full"} placeholder={LLDetailsForm.title_placeholder()} {...register("title")} />
-              <InputMessage
-                error={errors.title?.message}
-                message={LL.filed_length({ current: title.length, max: TITLE_MAX_CHARS })}
-              />
-            </FormControl>
-
-            <FormControl isInvalid={Boolean(errors.description)}>
-              <Label label={LLDetailsForm.description()} />
-              <TextEditorControlled<ProposalDetailsSchema> name="description" />
-              <InputMessage error={errors.description?.message} />
-            </FormControl>
-
-            <FormControl isInvalid={Boolean(errors.headerImage)}>
-              <Label label={LLDetailsForm.header_image()} />
-              <ImageUploadControlled name="headerImage" />
-            </FormControl>
-
-            <Flex flexDirection={"column"} gap={4}>
-              <Label label={LLDetailsForm.voting_calendar()} />
-
-              <FormControl isInvalid={Boolean(errors.startDate)}>
-                <Text color={"gray.600"} fontWeight={600} paddingBottom={2}>
-                  {LL.start()}
-                </Text>
-                <DateTimeInputControlled name={"startDate"} />
-                <InputMessage error={errors.startDate?.message} />
+          <>
+            <CreateFormWrapper>
+              <FormControl isInvalid={Boolean(errors.title)}>
+                <Label label={LLDetailsForm.title()} />
+                <Input width={"full"} placeholder={LLDetailsForm.title_placeholder()} {...register("title")} />
+                <InputMessage
+                  error={errors.title?.message}
+                  message={LL.filed_length({ current: title.length, max: TITLE_MAX_CHARS })}
+                />
               </FormControl>
 
-              <FormControl isInvalid={Boolean(errors.endDate)}>
-                <Text color={"gray.600"} fontWeight={600} paddingBottom={2}>
-                  {LL.end()}
-                </Text>
-                <DateTimeInputControlled name={"endDate"} />
-                <InputMessage error={errors.endDate?.message} />
+              <FormControl isInvalid={Boolean(errors.description)}>
+                <Label label={LLDetailsForm.description()} />
+                <TextEditorControlled<ProposalDetailsSchema> name="description" />
+                <InputMessage error={errors.description?.message} />
               </FormControl>
-            </Flex>
 
-            <Flex justifyContent={"space-between"}>
+              <FormControl isInvalid={Boolean(errors.headerImage)}>
+                <Label label={LLDetailsForm.header_image()} />
+                <ImageUploadControlled name="headerImage" />
+              </FormControl>
+
+              <Flex flexDirection={"column"} gap={4}>
+                <Label label={LLDetailsForm.voting_calendar()} />
+
+                <FormControl isInvalid={Boolean(errors.startDate)}>
+                  <Text fontSize={{ base: 14, md: 16 }} color={"gray.600"} fontWeight={600} paddingBottom={2}>
+                    {LL.start()}
+                  </Text>
+                  <DateTimeInputControlled name={"startDate"} />
+                  <InputMessage error={errors.startDate?.message} />
+                </FormControl>
+
+                <FormControl isInvalid={Boolean(errors.endDate)}>
+                  <Text fontSize={{ base: 14, md: 16 }} color={"gray.600"} fontWeight={600} paddingBottom={2}>
+                    {LL.end()}
+                  </Text>
+                  <DateTimeInputControlled name={"endDate"} />
+                  <InputMessage error={errors.endDate?.message} />
+                </FormControl>
+              </Flex>
+              <Flex justifyContent={"space-between"} hideBelow={"md"}>
+                <Button variant={"secondary"} disabled leftIcon={<Icon as={ArrowLeftIcon} />}>
+                  {LL.back()}
+                </Button>
+                <Button type="submit" rightIcon={<Icon as={ArrowRightIcon} />}>
+                  {LL.next()}
+                </Button>
+              </Flex>
+            </CreateFormWrapper>
+            <Flex
+              hideFrom={"md"}
+              width={"full"}
+              mx={"auto"}
+              px={6}
+              py={4}
+              bgColor={{ base: "white" }}
+              justifyContent={"space-between"}>
               <Button variant={"secondary"} disabled leftIcon={<Icon as={ArrowLeftIcon} />}>
                 {LL.back()}
               </Button>
@@ -99,7 +115,7 @@ export const ProposalDetailsForm = () => {
                 {LL.next()}
               </Button>
             </Flex>
-          </CreateFormWrapper>
+          </>
         );
       }}
     </FormSkeleton>

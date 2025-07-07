@@ -41,43 +41,60 @@ export const ProposalSetupForm = () => {
         const nextDisabled = votingOptions.filter(Boolean).length < 2;
 
         return (
-          <CreateFormWrapper>
-            <FormControl isInvalid={Boolean(errors.votingType)}>
-              <Label label={LLSetupForm.voting_type()} />
-              <Label.Subtitle label={LLSetupForm.voting_type_subtitle()} />
-              <VotingTypeSelectControlled />
-            </FormControl>
+          <>
+            <CreateFormWrapper>
+              <FormControl isInvalid={Boolean(errors.votingType)}>
+                <Label label={LLSetupForm.voting_type()} />
+                <Label.Subtitle label={LLSetupForm.voting_type_subtitle()} />
+                <VotingTypeSelectControlled />
+              </FormControl>
 
-            <FormControl isInvalid={Boolean(errors.votingQuestion)}>
-              <Label label={LLSetupForm.voting_question()} />
-              <Label.Subtitle label={LLSetupForm.voting_question_subtitle()} />
-              <Input
-                width={"full"}
-                placeholder={LLSetupForm.voting_question_placeholder()}
-                {...register("votingQuestion")}
-              />
-              <InputMessage
-                error={errors.votingQuestion?.message}
-                message={LL.filed_length({ current: (votingQuestion ?? "").length, max: QUESTION_MAX_CHAR })}
-              />
-            </FormControl>
+              <FormControl isInvalid={Boolean(errors.votingQuestion)}>
+                <Label label={LLSetupForm.voting_question()} />
+                <Label.Subtitle label={LLSetupForm.voting_question_subtitle()} />
+                <Input
+                  width={"full"}
+                  placeholder={LLSetupForm.voting_question_placeholder()}
+                  {...register("votingQuestion")}
+                />
+                <InputMessage
+                  error={errors.votingQuestion?.message}
+                  message={LL.filed_length({ current: (votingQuestion ?? "").length, max: QUESTION_MAX_CHAR })}
+                />
+              </FormControl>
 
-            {votingType === VotingEnum.SINGLE_CHOICE && <SingleChoiceFields />}
-            {votingType === VotingEnum.SINGLE_OPTION && <SingleOptionsFields />}
-            {votingType === VotingEnum.MULTIPLE_OPTIONS && <MultipleOptionFields />}
+              {votingType === VotingEnum.SINGLE_CHOICE && <SingleChoiceFields />}
+              {votingType === VotingEnum.SINGLE_OPTION && <SingleOptionsFields />}
+              {votingType === VotingEnum.MULTIPLE_OPTIONS && <MultipleOptionFields />}
 
-            <Flex justifyContent={"space-between"}>
-              <Button
-                variant={"secondary"}
-                onClick={() => setStep(CreateProposalStep.VOTING_DETAILS)}
-                leftIcon={<Icon as={ArrowLeftIcon} />}>
+              <Flex justifyContent={"space-between"} hideBelow={"md"}>
+                <Button
+                  variant={"secondary"}
+                  onClick={() => setStep(CreateProposalStep.VOTING_DETAILS)}
+                  leftIcon={<Icon as={ArrowLeftIcon} />}>
+                  {LL.back()}
+                </Button>
+                <Button type="submit" isDisabled={nextDisabled} rightIcon={<Icon as={ArrowRightIcon} />}>
+                  {LL.next()}
+                </Button>
+              </Flex>
+            </CreateFormWrapper>
+            <Flex
+              hideFrom={"md"}
+              width={"full"}
+              mx={"auto"}
+              px={6}
+              py={4}
+              bgColor={{ base: "white" }}
+              justifyContent={"space-between"}>
+              <Button variant={"secondary"} disabled leftIcon={<Icon as={ArrowLeftIcon} />}>
                 {LL.back()}
               </Button>
-              <Button type="submit" isDisabled={nextDisabled} rightIcon={<Icon as={ArrowRightIcon} />}>
+              <Button type="submit" rightIcon={<Icon as={ArrowRightIcon} />}>
                 {LL.next()}
               </Button>
             </Flex>
-          </CreateFormWrapper>
+          </>
         );
       }}
     </FormSkeleton>
@@ -98,13 +115,13 @@ const SingleChoiceFields = () => {
         <Flex flexDirection={"column"} gap={2}>
           {defaultSingleChoice.map(choice => (
             <Box
-              padding={6}
+              padding={{ base: 4, md: 6 }}
               key={choice}
               borderRadius={12}
               borderWidth={2}
               borderColor={"gray.200"}
               background={"gray.100"}>
-              <Text fontSize={18} fontWeight={600} color={"gray.400"}>
+              <Text fontSize={{ base: 14, md: 18 }} fontWeight={600} color={"gray.400"}>
                 {choice}
               </Text>
             </Box>
