@@ -46,7 +46,7 @@ export const ProposalInfoBox = ({ canceledDate, canceledReason }: ProposalInfoBo
 
   return (
     <InfoBox variant={variant}>
-      <Flex flex={1} flexDirection={"column"} gap={1}>
+      <Flex flex={1} flexDirection={"column"} gap={1} overflow={"hidden"}>
         <Heading fontSize={18} fontWeight={500} color={infoBoxVariants[variant].style.color}>
           {selectedVariant?.title}
         </Heading>
@@ -57,11 +57,12 @@ export const ProposalInfoBox = ({ canceledDate, canceledReason }: ProposalInfoBo
           <Text
             fontSize={14}
             color={"gray.600"}
-            paddingY={3}
+            paddingY={2}
             paddingX={4}
             bg={"gray.200"}
             marginTop={4}
-            borderRadius={8}>
+            borderRadius={8}
+            noOfLines={3}>
             {canceledReason}
           </Text>
         )}
