@@ -31,6 +31,8 @@ export const CopyLink = ({
         onClick={copy}
         variant="ghost"
         minWidth={"fit-content"}
+        minH={"fit-content"}
+        height={"fit-content"}
         color={props.color}
         padding={0}
         leftIcon={<Icon as={CopyIcon} width={4} height={4} />}

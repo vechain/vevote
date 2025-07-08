@@ -1,9 +1,10 @@
 import { useFormatDate } from "@/hooks/useFormatDate";
 import { useI18nContext } from "@/i18n/i18n-react";
-import { Flex, Grid, Heading, Icon, Link, Text } from "@chakra-ui/react";
+import { Flex, FlexProps, Grid, Heading, Icon, Link, Text, useBreakpointValue } from "@chakra-ui/react";
 import { CopyLink } from "../ui/CopyLink";
+import { Slider } from "../ui/Slider";
 import { formatAddress } from "@/utils/address";
-import { PropsWithChildren, SVGProps } from "react";
+import { PropsWithChildren, SVGProps, useMemo } from "react";
 import { useProposal } from "./ProposalProvider";
 import { ArrowLinkIcon, CalendarCheckIcon, EditBoxIcon, UsersIcon } from "@/icons";
 import { getConfig } from "@repo/config";
@@ -13,9 +14,10 @@ const VECHAIN_EXPLORER_URL = getConfig(import.meta.env.VITE_APP_ENV).network.exp
 export const ProposalDetailsCards = () => {
   const { proposal } = useProposal();
   const { LL } = useI18nContext();
+  const isMobile = useBreakpointValue({ base: true, md: false });
 
-  return (
-    <Grid templateColumns="repeat(3, 1fr)" gap={6} width={"100%"}>
+  const cards = useMemo(
+    () => [
       <DetailsCardsItem title={LL.proposal.proposed_by()} icon={EditBoxIcon}>
         <Flex gap={2} alignItems={"start"} flexDirection={"column"}>
           <Flex gap={2} alignItems={{ base: "start", md: "center" }} flexDirection={{ base: "column", md: "row" }}>
@@ -31,15 +33,15 @@ export const ProposalDetailsCards = () => {
               {formatAddress(proposal.proposer)}
             </CopyLink>
           </Flex>
-          <DateDetails date={proposal.createdAt} label={LL.on()} />
+          <DateDetails date={proposal.createdAt} label={LL.on()} flexDirection={"row"} gap={3} />
         </Flex>
-      </DetailsCardsItem>
+      </DetailsCardsItem>,
       <DetailsCardsItem title={LL.proposal.voting_calendar()} icon={CalendarCheckIcon}>
         <Flex gap={2} alignItems={"start"} flexDirection={"column"}>
           <DateDetails date={proposal.startDate} label={LL.start()} />
           <DateDetails date={proposal.endDate} label={LL.end()} />
         </Flex>
-      </DetailsCardsItem>
+      </DetailsCardsItem>,
       <DetailsCardsItem title={LL.proposal.who_can_vote()} icon={UsersIcon}>
         <Flex gap={2} alignItems={"start"} flexDirection={"column"}>
           <Text color="gray.600">{LL.proposal.node_holders()}</Text>
@@ -54,7 +56,18 @@ export const ProposalDetailsCards = () => {
             <Icon as={ArrowLinkIcon} width={4} height={4} />
           </Link>
         </Flex>
-      </DetailsCardsItem>
+      </DetailsCardsItem>,
+    ],
+    [LL, proposal],
+  );
+
+  if (isMobile) {
+    return <Slider showDots={true}>{cards}</Slider>;
+  }
+
+  return (
+    <Grid templateColumns="repeat(3, 1fr)" gap={6} width={"100%"}>
+      {cards}
     </Grid>
   );
 };
@@ -72,7 +85,8 @@ const DetailsCardsItem = ({ icon, title, children }: DetailsCardsItemProps) => {
       gap={6}
       alignItems={"start"}
       borderRadius={16}
-      bg={"gray.50"}>
+      bg={"gray.50"}
+      h={"100%"}>
       <Heading
         fontSize={{ base: 16, md: 20 }}
         fontWeight={600}
@@ -88,14 +102,15 @@ const DetailsCardsItem = ({ icon, title, children }: DetailsCardsItemProps) => {
   );
 };
 
-const DateDetails = ({ date, label }: { date?: Date; label: string }) => {
+const DateDetails = ({ date, label, ...rest }: FlexProps & { date?: Date; label: string }) => {
   const { formattedProposalDate } = useFormatDate();
   return (
     <Flex
       gap={{ base: 1, md: 3 }}
       alignItems={{ base: "start", md: "center" }}
-      flexDirection={{ base: "column", md: "row" }}>
-      <Text minW={10} color="gray.500" fontSize={{ base: 14, md: 16 }}>
+      flexDirection={{ base: "column", md: "row" }}
+      {...rest}>
+      <Text minW={{ base: "auto", md: 3 }} color="gray.500" fontSize={{ base: 14, md: 16 }}>
         {label}
       </Text>
       <Text color="gray.600" fontWeight={500} fontSize={{ base: 14, md: 16 }}>
