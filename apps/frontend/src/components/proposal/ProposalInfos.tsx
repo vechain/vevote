@@ -27,14 +27,14 @@ export const ProposalInfos = () => {
 
   return (
     <>
-      <Flex flexDirection={"column"} gap={6} alignItems={"start"}>
+      <Flex flexDirection={"column"} gap={{ base: 4, md: 6 }} alignItems={"start"}>
         <IconBadge variant={infoVariant} />
-        <Heading fontSize={32} fontWeight={600} color="primary.700">
+        <Heading fontSize={{ base: 20, md: 32 }} fontWeight={600} color="primary.700">
           {proposal.title}
         </Heading>
       </Flex>
       <Flex flexDirection={"column"} gap={4} alignItems={"start"}>
-        <Heading fontSize={20} fontWeight={600} color="primary.700">
+        <Heading fontSize={{ base: 16, md: 20 }} fontWeight={600} color="primary.700">
           {LL.description()}
         </Heading>
         <ReadOnlyEditorContainer maxHeight={maxHeight}>
@@ -47,7 +47,8 @@ export const ProposalInfos = () => {
           alignItems={"center"}
           color={"primary.600"}
           onClick={readFull}
-          gap={1.5}>
+          gap={1.5}
+          fontSize={{ base: "14px", md: "16px" }}>
           {LL.read_full_description()}
           <Icon
             as={ChevronDownIcon}

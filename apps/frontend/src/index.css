@@ -91,6 +91,11 @@ h6 {
 }
 
 @media (max-width: 768px) {
+  .ql-container.ql-snow {
+    font-size: 14px;
+    line-height: 20px;
+  }
+
   .ql-toolbar.ql-snow {
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;

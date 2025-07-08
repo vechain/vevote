@@ -67,13 +67,13 @@ export const Proposal = () => {
           <PageContainer
             padding={0}
             paddingX={{ base: "20px", md: "40px" }}
-            paddingTop={"192px"}
+            paddingTop={{ base: "112px", md: "192px" }}
             paddingBottom={"80px"}
             bg={"white"}>
             {isLoading ? (
               <Box>{"Loading"}</Box>
             ) : (
-              <>
+              <Flex flexDirection={"column"} gap={10} width={"full"}>
                 <Image
                   src={sanitizeImageUrl(proposal.headerImage?.url)}
                   borderRadius={16}
@@ -89,7 +89,7 @@ export const Proposal = () => {
                 </PageContainer.Header>
                 {proposal.status !== "canceled" && <VotingSection />}
                 <BuyANode />
-              </>
+              </Flex>
             )}
           </PageContainer>
         </ProposalProvider>
