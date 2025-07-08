@@ -81,13 +81,13 @@ export const VotingItem = ({ isSelected, kind, label, variant, onClick, choiceIn
       gap={4}
       onClick={handleClick}
       {...variants(isSelected)[variant]}>
-      <Flex gap={2} alignItems={"center"} width={"100%"} flexDirection={"column"}>
+      <Flex gap={2} alignItems={"start"} width={"100%"} flexDirection={"column"}>
         {showMostVoted && (
           <Text
-            display={{ base: "none", md: "block" }}
-            paddingX={3}
-            paddingY={1}
+            display={{ md: "none" }}
+            paddingX={1}
             fontWeight={500}
+            fontSize={12}
             color={"primary.700"}
             bg={"primary.200"}
             borderRadius={6}>
