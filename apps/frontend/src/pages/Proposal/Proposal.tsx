@@ -10,14 +10,15 @@ import { ProposalInfos } from "@/components/proposal/ProposalInfos";
 import { ProposalProvider } from "@/components/proposal/ProposalProvider";
 import { VotingSection } from "@/components/proposal/VotingSection";
 import { BackButton } from "@/components/ui/BackButton";
+import { VotedChip } from "@/components/ui/VotedChip";
 import { useUser } from "@/contexts/UserProvider";
 import { useHasVoted } from "@/hooks/useCastVote";
 import { useProposalEvents } from "@/hooks/useProposalEvent";
 import { useI18nContext } from "@/i18n/i18n-react";
-import { ArrowRightIcon, CheckSquareIcon } from "@/icons";
+import { ArrowRightIcon } from "@/icons";
 import { ProposalCardType } from "@/types/proposal";
 import { sanitizeImageUrl } from "@/utils/proposals/helpers";
-import { Box, Button, Flex, Icon, Image, Text } from "@chakra-ui/react";
+import { Box, Flex, Icon, Image, Text } from "@chakra-ui/react";
 import { useWallet } from "@vechain/vechain-kit";
 import { useMemo } from "react";
 import { useParams } from "react-router";
@@ -101,7 +102,6 @@ export const Proposal = () => {
 };
 
 const ProposalNavbarActions = ({ proposal }: { proposal: ProposalCardType | undefined }) => {
-  const { LL } = useI18nContext();
   const { hasVoted } = useHasVoted({ proposalId: proposal?.id || "" });
   const { isExecutor, isWhitelisted } = useUser();
 
@@ -122,11 +122,7 @@ const ProposalNavbarActions = ({ proposal }: { proposal: ProposalCardType | unde
 
       {isExecutor && proposal?.status === "approved" && <ExecuteModal proposalId={proposal?.id} />}
 
-      {["voting"].includes(proposal?.status || "") && hasVoted && (
-        <Button variant={"feedback"} rightIcon={<Icon as={CheckSquareIcon} />}>
-          {LL.voted()}
-        </Button>
-      )}
+      {["voting"].includes(proposal?.status || "") && hasVoted && <VotedChip />}
     </Flex>
   );
 };

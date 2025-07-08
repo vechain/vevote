@@ -57,7 +57,13 @@ export const VotersModal = () => {
 
   return (
     <>
-      <Button onClick={handleModalOpen} variant={"secondary"} leftIcon={<Icon as={UserCheckIcon} width={5} height={5} />}>
+      <Button
+        onClick={handleModalOpen}
+        variant={"secondary"}
+        leftIcon={<Icon as={UserCheckIcon} boxSize={5} />}
+        size={{ base: "md", md: "lg" }}
+        width={{ base: "full", md: "auto" }}
+        order={{ base: 2, md: 1 }}>
         {LL.proposal.see_all_voters()}
       </Button>
       <ModalSkeleton isOpen={isOpen} onClose={onClose} size={"4xl"}>

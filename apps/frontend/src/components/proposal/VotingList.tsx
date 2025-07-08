@@ -117,18 +117,20 @@ export const VotingSingleOption = ({
   return (
     <Flex gap={8} alignItems="start" flexDirection="column" width="100%">
       <VotingTitle />
-      {proposal.votingOptions.map((option, index) => (
-        <VotingItem
-          key={index}
-          label={option.value}
-          isSelected={currentSelection === index}
-          kind={VotingEnum.SINGLE_OPTION}
-          variant={votingVariant}
-          choiceIndex={index + 1}
-          onClick={() => setSelectedOption(index)}
-          results={results}
-        />
-      ))}
+      <Flex gap={2} alignItems="start" flexDirection="column" width="100%">
+        {proposal.votingOptions.map((option, index) => (
+          <VotingItem
+            key={index}
+            label={option.value}
+            isSelected={currentSelection === index}
+            kind={VotingEnum.SINGLE_OPTION}
+            variant={votingVariant}
+            choiceIndex={index + 1}
+            onClick={() => setSelectedOption(index)}
+            results={results}
+          />
+        ))}
+      </Flex>
       <VotingListFooter
         onSubmit={onSubmit}
         isLoading={isTransactionPending}
@@ -195,18 +197,20 @@ export const VotingMultipleOptions = ({
   return (
     <Flex gap={8} alignItems="start" flexDirection="column" width="100%">
       <VotingTitle />
-      {proposal.votingOptions.map((option, index) => (
-        <VotingItem
-          key={index}
-          label={option.value}
-          isSelected={currentSelection.includes(index)}
-          kind={VotingEnum.MULTIPLE_OPTIONS}
-          variant={votingVariant}
-          choiceIndex={index + 1}
-          onClick={() => handleSelectedOptions(index)}
-          results={results}
-        />
-      ))}
+      <Flex gap={2} alignItems="start" flexDirection="column" width="100%">
+        {proposal.votingOptions.map((option, index) => (
+          <VotingItem
+            key={index}
+            label={option.value}
+            isSelected={currentSelection.includes(index)}
+            kind={VotingEnum.MULTIPLE_OPTIONS}
+            variant={votingVariant}
+            choiceIndex={index + 1}
+            onClick={() => handleSelectedOptions(index)}
+            results={results}
+          />
+        ))}
+      </Flex>
       <VotingListFooter onSubmit={onSubmit} isLoading={isTransactionPending} disabled={currentSelection.length === 0} />
     </Flex>
   );

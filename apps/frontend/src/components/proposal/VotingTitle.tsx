@@ -39,7 +39,7 @@ export const VotingTitle = () => {
     );
   }
   return (
-    <Flex gap={1}>
+    <Flex gap={1} fontSize={{ base: 14, md: 16 }}>
       <Text fontWeight={500} color="gray.500">
         {LL.select_between()}
       </Text>

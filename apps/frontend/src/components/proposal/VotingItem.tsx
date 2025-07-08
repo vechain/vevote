@@ -48,13 +48,16 @@ const variants = (isSelected: boolean) => ({
 });
 
 export const VotingItem = ({ isSelected, kind, label, variant, onClick, choiceIndex, results }: VotingItemProps) => {
+  const { LL } = useI18nContext();
+
   const { connection } = useWallet();
   const { proposal } = useProposal();
   const { hasVoted } = useHasVoted({ proposalId: proposal.id });
   const { nodes } = useNodes({ startDate: proposal?.startDate });
-  const isVoter = useMemo(() => nodes.length > 0, [nodes.length]);
 
+  const isVoter = useMemo(() => nodes.length > 0, [nodes.length]);
   const isMostVoted = useMemo(() => calculateMostVoted(results, choiceIndex), [results, choiceIndex]);
+  const showMostVoted = useMemo(() => variant === "result-win" && isMostVoted, [variant, isMostVoted]);
 
   const cannotVote = useMemo(
     () => !connection.isConnected || hasVoted || variant !== "voting" || !isVoter,
@@ -66,22 +69,34 @@ export const VotingItem = ({ isSelected, kind, label, variant, onClick, choiceIn
   }, [cannotVote, onClick]);
   return (
     <Button
-      variant={"tertiary"}
+      variant={"none"}
       _focus={{ boxShadow: "none" }}
       transition={"all 0.2s"}
       height={"100%"}
       display={"flex"}
       width={"100%"}
-      padding={6}
+      padding={{ base: 4, md: 6 }}
       borderRadius={12}
       flexDirection={"column"}
       gap={4}
       onClick={handleClick}
       {...variants(isSelected)[variant]}>
       <Flex gap={2} alignItems={"center"} width={"100%"} flexDirection={"column"}>
+        {showMostVoted && (
+          <Text
+            display={{ base: "none", md: "block" }}
+            paddingX={3}
+            paddingY={1}
+            fontWeight={500}
+            color={"primary.700"}
+            bg={"primary.200"}
+            borderRadius={6}>
+            {LL.most_voted()}
+          </Text>
+        )}
         <VotingItemHeader
           label={label}
-          isMostVoted={isMostVoted}
+          showMostVoted={showMostVoted}
           kind={kind}
           variant={variant}
           isSelected={isSelected}
@@ -96,13 +111,12 @@ export const VotingItem = ({ isSelected, kind, label, variant, onClick, choiceIn
 
 const VotingItemHeader = ({
   label,
-  isMostVoted,
+  showMostVoted,
   kind,
   variant,
   isSelected,
-}: Omit<VotingItemProps, "choiceIndex"> & { isMostVoted: boolean }) => {
+}: Omit<VotingItemProps, "choiceIndex"> & { showMostVoted: boolean }) => {
   const { LL } = useI18nContext();
-  const showMostVoted = useMemo(() => variant === "result-win" && isMostVoted, [variant, isMostVoted]);
   return (
     <Flex gap={2} alignItems={"center"} justifyContent={"space-between"} width={"100%"} flex={1}>
       <Text fontSize={{ base: 14, md: 18 }} fontWeight={600} color={variant === "upcoming" ? "gray.400" : "gray.600"}>
@@ -110,7 +124,14 @@ const VotingItemHeader = ({
       </Text>
       <Flex gap={4} alignItems={"center"}>
         {showMostVoted && (
-          <Text paddingX={3} paddingY={1} fontWeight={500} color={"primary.700"} bg={"primary.200"} borderRadius={6}>
+          <Text
+            display={{ base: "none", md: "block" }}
+            paddingX={3}
+            paddingY={1}
+            fontWeight={500}
+            color={"primary.700"}
+            bg={"primary.200"}
+            borderRadius={6}>
             {LL.most_voted()}
           </Text>
         )}

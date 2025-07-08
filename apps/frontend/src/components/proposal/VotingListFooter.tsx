@@ -10,11 +10,12 @@ import { getVotingVariant } from "@/utils/voting";
 import { VotingPowerModal } from "./VotingPowerModal";
 import { VotersModal } from "./VotersModal";
 import { useHasVoted } from "@/hooks/useCastVote";
-import { ArrowLinkIcon, ArrowRightIcon, CheckCircleIcon } from "@/icons";
+import { ArrowLinkIcon, ArrowRightIcon } from "@/icons";
 import { useNodes } from "@/hooks/useUserQueries";
 import { trackEvent, MixPanelEvent } from "@/utils/mixpanel/utilsMixpanel";
 import { getConfig } from "@repo/config";
 import { ConnectButton } from "../ui/ConnectButton";
+import { VotedChip } from "../ui/VotedChip";
 
 const EXPLORER_URL = getConfig(import.meta.env.VITE_APP_ENV).network.explorerUrl;
 
@@ -86,7 +87,11 @@ const VotingFooterAction = ({
   switch (votingVariant) {
     case "voting": {
       if (!isVoter) return;
-      return hasVoted ? <VotedChip /> : <VotingSubmit onClick={onSubmit} isLoading={isLoading} disabled={disabled} />;
+      return hasVoted ? (
+        <VotedChipButton />
+      ) : (
+        <VotingSubmit onClick={onSubmit} isLoading={isLoading} disabled={disabled} />
+      );
     }
     case "result-win":
     case "result-lost":
@@ -109,7 +114,7 @@ const VotingSubmit = ({ onClick, ...rest }: ButtonProps) => {
   return (
     <Button
       order={{ base: 2, md: 1 }}
-      size={{ base: "sm", md: "md" }}
+      size={{ base: "md", md: "lg" }}
       w={{ base: "full", md: "auto" }}
       rightIcon={<Icon as={ArrowRightIcon} />}
       onClick={handleClick}
@@ -119,16 +124,20 @@ const VotingSubmit = ({ onClick, ...rest }: ButtonProps) => {
   );
 };
 
-const VotedChip = () => {
+const VotedChipButton = () => {
   const { LL } = useI18nContext();
   const { account } = useWallet();
   return (
-    <Flex alignItems={"center"} gap={3} order={{ base: 2, md: 1 }}>
-      <Button variant={"feedback"} rightIcon={<Icon as={CheckCircleIcon} />}>
-        {LL.voted()}
-      </Button>
+    <Flex
+      alignItems={"center"}
+      gap={3}
+      order={{ base: 2, md: 1 }}
+      flexDirection={{ base: "column", md: "row" }}
+      w={{ base: "full", md: "auto" }}>
+      <VotedChip w={{ base: "full", md: "auto" }} />
       <Link
-        color={"primary.500"}
+        color={"primary.700"}
+        fontWeight={500}
         display={"flex"}
         gap={1}
         alignItems={"center"}
