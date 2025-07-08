@@ -55,7 +55,13 @@ export const ModalTitle = ({
   icon?: (props: SVGProps<SVGSVGElement>) => JSX.Element;
 }) => {
   return (
-    <Heading fontSize={20} fontWeight={600} color={"primary.600"} display={"flex"} alignItems={"center"} gap={2}>
+    <Heading
+      fontSize={{ base: 16, md: 20 }}
+      fontWeight={600}
+      color={"primary.600"}
+      display={"flex"}
+      alignItems={"center"}
+      gap={2}>
       {icon && <Icon as={icon} color={"primary.600"} />}
       {title}
     </Heading>
