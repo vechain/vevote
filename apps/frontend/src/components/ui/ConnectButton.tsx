@@ -13,12 +13,31 @@ export const ConnectButton = () => {
 
   if (!connection.isConnected) return <StyledButton onClick={openConnectModal}>{LL.connect_wallet()}</StyledButton>;
   return (
-    <StyledButton bg={"white"} color={"gray.600"} _hover={{ bg: "gray.200" }} onClick={openAccountModal}>
-      {formatAddress(account?.address || "")}
-    </StyledButton>
+    <>
+      <StyledButton
+        bg={"white"}
+        color={"gray.600"}
+        _hover={{ bg: "gray.200" }}
+        onClick={openAccountModal}
+        display={{ base: "none", md: "flex" }}
+        leftIcon={<Icon as={WalletIcon} />}>
+        {formatAddress(account?.address || "")}
+      </StyledButton>
+      <StyledButton
+        bg={"white"}
+        color={"gray.600"}
+        _hover={{ bg: "gray.200" }}
+        onClick={openAccountModal}
+        display={{ base: "flex", md: "none" }}
+        size={"md"}
+        minWidth={"40px"}
+        w={"40px"}
+        leftIcon={<Icon as={WalletIcon} w={5} h={5} />}
+      />
+    </>
   );
 };
 
 const StyledButton = (props: ButtonProps) => {
-  return <Button flexShrink={0} leftIcon={<Icon as={WalletIcon} />} size={"md"} bg={"primary.700"} {...props} />;
+  return <Button flexShrink={0} size={"md"} bg={"primary.700"} {...props} />;
 };
