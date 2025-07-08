@@ -14,12 +14,11 @@ export const ProposalDetailsCards = () => {
   const { proposal } = useProposal();
   const { LL } = useI18nContext();
 
-  const { formattedProposalDate } = useFormatDate();
   return (
     <Grid templateColumns="repeat(3, 1fr)" gap={6} width={"100%"}>
       <DetailsCardsItem title={LL.proposal.proposed_by()} icon={EditBoxIcon}>
         <Flex gap={2} alignItems={"start"} flexDirection={"column"}>
-          <Flex gap={2} alignItems={"center"}>
+          <Flex gap={2} alignItems={{ base: "start", md: "center" }} flexDirection={{ base: "column", md: "row" }}>
             <Text fontWeight={500} color="gray.600">
               {LL.proposal.vechain_foundation()}
             </Text>
@@ -32,33 +31,13 @@ export const ProposalDetailsCards = () => {
               {formatAddress(proposal.proposer)}
             </CopyLink>
           </Flex>
-          <Flex gap={3} alignItems={"center"}>
-            <Text color="gray.500">{LL.on()}</Text>
-            <Text color="gray.600" fontWeight={500}>
-              {formattedProposalDate(proposal.createdAt)}
-            </Text>
-          </Flex>
+          <DateDetails date={proposal.createdAt} label={LL.on()} />
         </Flex>
       </DetailsCardsItem>
       <DetailsCardsItem title={LL.proposal.voting_calendar()} icon={CalendarCheckIcon}>
         <Flex gap={2} alignItems={"start"} flexDirection={"column"}>
-          <Flex gap={3} alignItems={"center"}>
-            <Text minW={10} color="gray.500">
-              {LL.start()}
-            </Text>
-            <Text color="gray.600" fontWeight={500}>
-              {formattedProposalDate(proposal.startDate)}
-            </Text>
-          </Flex>
-
-          <Flex gap={3} alignItems={"center"}>
-            <Text minW={10} color="gray.500">
-              {LL.end()}
-            </Text>
-            <Text color="gray.600" fontWeight={500}>
-              {formattedProposalDate(proposal.endDate)}
-            </Text>
-          </Flex>
+          <DateDetails date={proposal.startDate} label={LL.start()} />
+          <DateDetails date={proposal.endDate} label={LL.end()} />
         </Flex>
       </DetailsCardsItem>
       <DetailsCardsItem title={LL.proposal.who_can_vote()} icon={UsersIcon}>
@@ -87,12 +66,41 @@ type DetailsCardsItemProps = PropsWithChildren<{
 
 const DetailsCardsItem = ({ icon, title, children }: DetailsCardsItemProps) => {
   return (
-    <Flex flexDirection={"column"} padding={10} gap={6} alignItems={"start"} borderRadius={16} bg={"gray.50"}>
-      <Heading fontSize={20} fontWeight={600} color="primary.700" display={"flex"} gap={4} alignItems={"center"}>
-        <Icon as={icon} boxSize={6} color="primary.700" />
+    <Flex
+      flexDirection={"column"}
+      padding={{ base: 6, md: 10 }}
+      gap={6}
+      alignItems={"start"}
+      borderRadius={16}
+      bg={"gray.50"}>
+      <Heading
+        fontSize={{ base: 16, md: 20 }}
+        fontWeight={600}
+        color="primary.700"
+        display={"flex"}
+        gap={4}
+        alignItems={"center"}>
+        <Icon as={icon} boxSize={{ base: 5, md: 6 }} color="primary.700" />
         {title}
       </Heading>
       {children}
+    </Flex>
+  );
+};
+
+const DateDetails = ({ date, label }: { date?: Date; label: string }) => {
+  const { formattedProposalDate } = useFormatDate();
+  return (
+    <Flex
+      gap={{ base: 1, md: 3 }}
+      alignItems={{ base: "start", md: "center" }}
+      flexDirection={{ base: "column", md: "row" }}>
+      <Text minW={10} color="gray.500" fontSize={{ base: 14, md: 16 }}>
+        {label}
+      </Text>
+      <Text color="gray.600" fontWeight={500} fontSize={{ base: 14, md: 16 }}>
+        {formattedProposalDate(date)}
+      </Text>
     </Flex>
   );
 };

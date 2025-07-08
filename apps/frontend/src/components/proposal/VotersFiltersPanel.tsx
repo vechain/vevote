@@ -38,21 +38,33 @@ export const VotersFiltersPanel = ({
 }: VotersFiltersProps) => {
   const { LL } = useI18nContext();
 
-  const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    onSearchChange(e.target.value);
-  }, [onSearchChange]);
+  const handleSearchChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      onSearchChange(e.target.value);
+    },
+    [onSearchChange],
+  );
 
-  const handleOptionChange = useCallback((value: unknown) => {
-    onSelectedOptionChange(value as string);
-  }, [onSelectedOptionChange]);
+  const handleOptionChange = useCallback(
+    (value: unknown) => {
+      onSelectedOptionChange(value as string);
+    },
+    [onSelectedOptionChange],
+  );
 
-  const handleNodeChange = useCallback((value: unknown) => {
-    onNodeChange(value as NodeStrengthLevel | typeof DEFAULT_FILTER);
-  }, [onNodeChange]);
+  const handleNodeChange = useCallback(
+    (value: unknown) => {
+      onNodeChange(value as NodeStrengthLevel | typeof DEFAULT_FILTER);
+    },
+    [onNodeChange],
+  );
 
-  const handleSortChange = useCallback((value: unknown) => {
-    onSortChange(value as Sort);
-  }, [onSortChange]);
+  const handleSortChange = useCallback(
+    (value: unknown) => {
+      onSortChange(value as Sort);
+    },
+    [onSortChange],
+  );
 
   const optionsWithAll = useMemo(() => [DEFAULT_FILTER, ...options], [options]);
   const nodesWithAll = useMemo(() => [DEFAULT_FILTER, ...nodes], [nodes]);
@@ -89,6 +101,7 @@ export const VotersFiltersPanel = ({
         selectedOption={sort}
         onChange={handleSortChange}
         icon={SortDescIcon}
+        renderValue={(value: Sort) => LL.filters.sort[value]()}
       />
     </Flex>
   );
