@@ -55,7 +55,7 @@ export const ProposalInfoBox = ({ canceledDate, canceledReason }: ProposalInfoBo
         </Text>
         {canceledReason && (
           <Text
-            fontSize={14}
+            fontSize={{ base: 12, md: 14 }}
             color={"gray.600"}
             paddingY={2}
             paddingX={4}

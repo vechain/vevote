@@ -68,7 +68,7 @@ export const Proposal = () => {
             padding={0}
             paddingX={{ base: "20px", md: "40px" }}
             paddingTop={{ base: "112px", md: "192px" }}
-            paddingBottom={"80px"}
+            paddingBottom={{ base: 10, md: 20 }}
             bg={"white"}>
             {isLoading ? (
               <Box>{"Loading"}</Box>
@@ -87,8 +87,12 @@ export const Proposal = () => {
                   <ProposalDetailsCards />
                   <ProposalInfoBox canceledReason={proposal.reason} />
                 </PageContainer.Header>
-                {proposal.status !== "canceled" && <VotingSection />}
-                <BuyANode />
+                {proposal.status !== "canceled" && (
+                  <>
+                    <VotingSection />
+                    <BuyANode />
+                  </>
+                )}
               </Flex>
             )}
           </PageContainer>
