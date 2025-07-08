@@ -27,7 +27,9 @@ const en = {
   cancel: "Cancel",
   percentage: "%",
   submit: "Submit",
+  submit_vote: "Submit Vote",
   voting_power: "Voting Power",
+  your_voting_power: "Your voting power",
   voted: "Voted",
   vote: "Vote",
   wallet: "Wallet",
@@ -54,6 +56,7 @@ const en = {
   read_full_description: "Read full description",
   disconnect: "Disconnect",
   connect_wallet: "Connect Wallet",
+  connect_wallet_to_vote: "Connect your wallet to vote",
   home: {
     title: "Home",
     go_to_proposals: "Go to proposals",

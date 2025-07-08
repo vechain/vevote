@@ -4,17 +4,23 @@ import { formatAddress } from "@/utils/address";
 import { Button, ButtonProps, Icon } from "@chakra-ui/react";
 import { useAccountModal, useConnectModal, useWallet } from "@vechain/vechain-kit";
 
-export const ConnectButton = () => {
+export const ConnectButton = ({ text, ...props }: ButtonProps & { text?: string }) => {
   const { connection, account } = useWallet();
 
   const { LL } = useI18nContext();
   const { open: openConnectModal } = useConnectModal();
   const { open: openAccountModal } = useAccountModal();
 
-  if (!connection.isConnected) return <StyledButton onClick={openConnectModal}>{LL.connect_wallet()}</StyledButton>;
+  if (!connection.isConnected)
+    return (
+      <StyledButton leftIcon={<Icon as={WalletIcon} />} onClick={openConnectModal} {...props}>
+        {text || LL.connect_wallet()}
+      </StyledButton>
+    );
   return (
     <>
       <StyledButton
+        {...props}
         bg={"white"}
         color={"gray.600"}
         _hover={{ bg: "gray.200" }}
@@ -24,6 +30,7 @@ export const ConnectButton = () => {
         {formatAddress(account?.address || "")}
       </StyledButton>
       <StyledButton
+        {...props}
         bg={"white"}
         color={"gray.600"}
         _hover={{ bg: "gray.200" }}
@@ -32,12 +39,12 @@ export const ConnectButton = () => {
         size={"md"}
         minWidth={"40px"}
         w={"40px"}
-        leftIcon={<Icon as={WalletIcon} w={5} h={5} />}
+        leftIcon={<Icon as={WalletIcon} boxSize={5} />}
       />
     </>
   );
 };
 
 const StyledButton = (props: ButtonProps) => {
-  return <Button flexShrink={0} size={"md"} bg={"primary.700"} {...props} />;
+  return <Button flexShrink={0} size={"md"} {...props} />;
 };

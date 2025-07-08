@@ -49,6 +49,7 @@ export const BuyANode = () => {
         </Text>
         <Button
           onClick={onBuyNode}
+          backgroundColor={connectedAndVoter ? "gray.200" : "primary.700"}
           variant={connectedAndVoter ? "secondary" : "primary"}
           size={{ base: "sm", md: "md" }}
           rightIcon={<Icon as={ArrowLinkIcon} boxSize={{ base: 4, md: 6 }} />}>

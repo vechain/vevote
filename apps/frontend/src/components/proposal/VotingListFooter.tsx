@@ -2,8 +2,8 @@ import { useI18nContext } from "@/i18n/i18n-react";
 import { InfoBox, infoBoxVariants } from "../ui/InfoBox";
 import { useFormatDate } from "@/hooks/useFormatDate";
 import { MouseEventHandler, useMemo } from "react";
-import { Button, ButtonProps, Flex, Icon, Link, Text, useBreakpointValue } from "@chakra-ui/react";
-import { DAppKitWalletButton, useWallet } from "@vechain/vechain-kit";
+import { Button, ButtonProps, Flex, Icon, Link, Text } from "@chakra-ui/react";
+import { useWallet } from "@vechain/vechain-kit";
 import { VotingItemVariant } from "./VotingItem";
 import { useProposal } from "./ProposalProvider";
 import { getVotingVariant } from "@/utils/voting";
@@ -14,6 +14,7 @@ import { ArrowLinkIcon, ArrowRightIcon, CheckCircleIcon } from "@/icons";
 import { useNodes } from "@/hooks/useUserQueries";
 import { trackEvent, MixPanelEvent } from "@/utils/mixpanel/utilsMixpanel";
 import { getConfig } from "@repo/config";
+import { ConnectButton } from "../ui/ConnectButton";
 
 const EXPLORER_URL = getConfig(import.meta.env.VITE_APP_ENV).network.explorerUrl;
 
@@ -43,7 +44,12 @@ export const VotingListFooter = ({ onSubmit, isLoading, disabled = false }: Voti
     );
 
   return (
-    <Flex gap={8} alignItems={"center"} justifyContent={"space-between"} width={"100%"}>
+    <Flex
+      gap={8}
+      alignItems={"center"}
+      justifyContent={"space-between"}
+      width={"100%"}
+      flexDirection={{ base: "column", md: "row" }}>
       <VotingFooterAction
         onSubmit={onSubmit}
         votingVariant={votingVariant}
@@ -51,7 +57,6 @@ export const VotingListFooter = ({ onSubmit, isLoading, disabled = false }: Voti
         isVoter={isVoter}
         disabled={disabled}
       />
-      {/* add error */}
       {!votingNotStarted && isVoter && <VotingPower />}
     </Flex>
   );
@@ -70,11 +75,13 @@ const VotingFooterAction = ({
   isVoter?: boolean;
   disabled?: boolean;
 }) => {
+  const { LL } = useI18nContext();
   const { connection } = useWallet();
   const { proposal } = useProposal();
   const { hasVoted } = useHasVoted({ proposalId: proposal?.id || "" });
 
-  if (!connection.isConnected && votingVariant === "voting") return <ConnectButton />;
+  if (!connection.isConnected && votingVariant === "voting")
+    return <ConnectButton w={{ base: "full", md: "auto" }} text={LL.connect_wallet_to_vote()} />;
 
   switch (votingVariant) {
     case "voting": {
@@ -100,8 +107,14 @@ const VotingSubmit = ({ onClick, ...rest }: ButtonProps) => {
   };
 
   return (
-    <Button rightIcon={<Icon as={ArrowRightIcon} />} onClick={handleClick} {...rest}>
-      {LL.submit()}
+    <Button
+      order={{ base: 2, md: 1 }}
+      size={{ base: "sm", md: "md" }}
+      w={{ base: "full", md: "auto" }}
+      rightIcon={<Icon as={ArrowRightIcon} />}
+      onClick={handleClick}
+      {...rest}>
+      {LL.submit_vote()}
     </Button>
   );
 };
@@ -110,7 +123,7 @@ const VotedChip = () => {
   const { LL } = useI18nContext();
   const { account } = useWallet();
   return (
-    <Flex alignItems={"center"} gap={3}>
+    <Flex alignItems={"center"} gap={3} order={{ base: 2, md: 1 }}>
       <Button variant={"feedback"} rightIcon={<Icon as={CheckCircleIcon} />}>
         {LL.voted()}
       </Button>
@@ -131,22 +144,16 @@ const VotedChip = () => {
 const VotingPower = () => {
   const { LL } = useI18nContext();
   return (
-    <Flex alignItems={"center"} gap={3}>
+    <Flex
+      order={{ base: 1, md: 2 }}
+      alignItems={"center"}
+      gap={3}
+      justifyContent={{ base: "space-between", md: "center" }}
+      width={{ base: "100%", md: "auto" }}>
       <Text fontSize={12} fontWeight={600} color={"gray.500"}>
-        {LL.voting_power()}
+        {LL.your_voting_power()}
       </Text>
       <VotingPowerModal />
     </Flex>
-  );
-};
-
-const ConnectButton = () => {
-  return (
-    <DAppKitWalletButton
-      mobile={useBreakpointValue({
-        base: true,
-        md: false,
-      })}
-    />
   );
 };

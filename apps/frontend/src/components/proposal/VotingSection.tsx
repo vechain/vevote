@@ -1,11 +1,12 @@
+import { useVotesResults } from "@/hooks/useCastVote";
 import { useI18nContext } from "@/i18n/i18n-react";
+import { VoteIcon } from "@/icons";
 import { VotingEnum } from "@/types/proposal";
-import { Box, BoxProps, Flex, Heading, Icon, Text } from "@chakra-ui/react";
+import { Flex, Heading, Icon, Text } from "@chakra-ui/react";
 import { PropsWithChildren } from "react";
 import { useProposal } from "./ProposalProvider";
+import { SectionLimiter } from "./SectionLimiter";
 import { VotingMultipleOptions, VotingSingleChoice, VotingSingleOption } from "./VotingList";
-import { VoteIcon } from "@/icons";
-import { useVotesResults } from "@/hooks/useCastVote";
 
 export const VotingSection = () => {
   const { proposal } = useProposal();
@@ -71,13 +72,5 @@ const VotingSectionContent = ({ children }: PropsWithChildren) => {
     <SectionLimiter maxWidth={"864px"} marginX={"auto"} width={"100%"}>
       {children}
     </SectionLimiter>
-  );
-};
-
-const SectionLimiter = ({ children, ...restProps }: BoxProps) => {
-  return (
-    <Box paddingY={{ base: 6, md: 10 }} paddingX={{ base: 6, md: 11 }} {...restProps}>
-      {children}
-    </Box>
   );
 };

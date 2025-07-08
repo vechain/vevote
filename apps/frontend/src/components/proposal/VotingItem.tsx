@@ -104,7 +104,7 @@ const VotingItemHeader = ({ label, isMostVoted, kind, variant, isSelected }: Omi
   const { LL } = useI18nContext();
   return (
     <Flex gap={2} alignItems={"center"} justifyContent={"space-between"} width={"100%"} flex={1}>
-      <Text fontSize={18} fontWeight={600} color={variant === "upcoming" ? "gray.400" : "gray.600"}>
+      <Text fontSize={{ base: 14, md: 18 }} fontWeight={600} color={variant === "upcoming" ? "gray.400" : "gray.600"}>
         {label}
       </Text>
       <Flex gap={4} alignItems={"center"}>
@@ -161,14 +161,14 @@ const VotesSection = ({
   }, [choiceWeight, totalWeight]);
 
   return (
-    <Flex gap={10} alignItems={"end"} justifyContent={"space-between"} width={"100%"}>
-      <Text fontWeight={500} color={"gray.500"}>{`${voterCount} ${LL.votes()}`}</Text>
+    <Flex gap={{ base: 3, md: 10 }} alignItems={"center"} justifyContent={"space-between"} width={"100%"}>
+      <Text fontWeight={500} color={"gray.500"} fontSize={{ base: 12, md: 16 }}>{`${voterCount} ${LL.votes()}`}</Text>
       <ProgressBar votesPercentage={votesPercentage} isDisable={isProgressDisabled} />
-      <Flex gap={2}>
-        <Text fontWeight={500} color={"gray.500"}>
+      <Flex gap={2} alignItems={"center"}>
+        <Text fontWeight={500} color={"gray.500"} fontSize={{ base: 12, md: 16 }}>
           {parseInt(votesPercentage.toString())} {LL.percentage()}
         </Text>
-        <Icon as={VotingPowerIcon} color={"gray.500"} w={5} h={5} />
+        <Icon as={VotingPowerIcon} color={"gray.500"} boxSize={{ base: 3, md: 5 }} />
       </Flex>
     </Flex>
   );
@@ -176,7 +176,7 @@ const VotesSection = ({
 
 const ProgressBar = ({ votesPercentage, isDisable }: { votesPercentage: number; isDisable: boolean }) => {
   return (
-    <Box flex={1} height={4} backgroundColor={"gray.200"} borderRadius={4}>
+    <Box flex={1} height={{ base: 2, md: 4 }} backgroundColor={"gray.200"} borderRadius={4}>
       <motion.div
         style={{ borderRadius: 4, backgroundColor: isDisable ? "#AAAFB6" : "#6042DD", height: "100%" }}
         initial={{ width: "0%" }}

@@ -17,7 +17,7 @@ export const VotingTitle = () => {
 
   if (votingNotStarted) {
     return (
-      <Text fontWeight={500} color="gray.500">
+      <Text fontWeight={500} color="gray.500" fontSize={{ base: 14, md: 16 }}>
         {LL.voting_list.voting_options()}
       </Text>
     );
@@ -25,7 +25,7 @@ export const VotingTitle = () => {
 
   if (proposal.votingType !== VotingEnum.MULTIPLE_OPTIONS) {
     return (
-      <Flex gap={1}>
+      <Flex gap={1} fontSize={{ base: 14, md: 16 }}>
         <Text fontWeight={500} color="gray.500">
           {LL.select()}
         </Text>

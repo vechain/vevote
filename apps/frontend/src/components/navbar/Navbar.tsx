@@ -33,7 +33,7 @@ const NavbarInnerContainer = ({ children, ...restProps }: FlexProps) => {
       gap={6}
       {...restProps}>
       {children}
-      <ConnectButton />
+      <ConnectButton bg={"primary.700"} />
     </Flex>
   );
 };
