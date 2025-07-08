@@ -13,10 +13,12 @@ export const DraftProposalProvider = ({ children }: PropsWithChildren) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
-    if (draftProposal && connection.isConnected && !areAddressesEqual(draftProposal.proposer, account?.address)) {
+    if (!connection.isConnected || !account?.address) return;
+    if (draftProposal && !areAddressesEqual(draftProposal.proposer, account?.address)) {
       onOpen();
     }
-  }, [draftProposal, account?.address, onOpen, connection.isConnected]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [draftProposal, account?.address, onOpen]);
 
   return (
     <>

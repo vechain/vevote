@@ -9,6 +9,8 @@ import { useProposal } from "./ProposalProvider";
 import { useNodes } from "@/hooks/useUserQueries";
 import { VotedResult } from "@/types/votes";
 import { VotingPowerIcon } from "@/icons";
+import { calculateMostVoted } from "@/utils/votingResults";
+import { useVotesSectionCalculations } from "@/hooks/useVotesSectionCalculations";
 
 export type VotingItemVariant = "upcoming" | "voting" | "result-lost" | "result-win";
 
@@ -19,7 +21,6 @@ export type VotingItemProps = {
   variant: VotingItemVariant;
   choiceIndex: number;
   onClick?: () => void;
-  isMostVoted?: boolean;
   results?: VotedResult;
 };
 
@@ -46,21 +47,14 @@ const variants = (isSelected: boolean) => ({
   }),
 });
 
-export const VotingItem = ({
-  isSelected,
-  kind,
-  label,
-  variant,
-  onClick,
-  isMostVoted,
-  choiceIndex,
-  results,
-}: VotingItemProps) => {
+export const VotingItem = ({ isSelected, kind, label, variant, onClick, choiceIndex, results }: VotingItemProps) => {
   const { connection } = useWallet();
   const { proposal } = useProposal();
   const { hasVoted } = useHasVoted({ proposalId: proposal.id });
   const { nodes } = useNodes({ startDate: proposal?.startDate });
   const isVoter = useMemo(() => nodes.length > 0, [nodes.length]);
+
+  const isMostVoted = useMemo(() => calculateMostVoted(results, choiceIndex), [results, choiceIndex]);
 
   const cannotVote = useMemo(
     () => !connection.isConnected || hasVoted || variant !== "voting" || !isVoter,
@@ -100,15 +94,22 @@ export const VotingItem = ({
   );
 };
 
-const VotingItemHeader = ({ label, isMostVoted, kind, variant, isSelected }: Omit<VotingItemProps, "choiceIndex">) => {
+const VotingItemHeader = ({
+  label,
+  isMostVoted,
+  kind,
+  variant,
+  isSelected,
+}: Omit<VotingItemProps, "choiceIndex"> & { isMostVoted: boolean }) => {
   const { LL } = useI18nContext();
+  const showMostVoted = useMemo(() => variant === "result-win" && isMostVoted, [variant, isMostVoted]);
   return (
     <Flex gap={2} alignItems={"center"} justifyContent={"space-between"} width={"100%"} flex={1}>
       <Text fontSize={{ base: 14, md: 18 }} fontWeight={600} color={variant === "upcoming" ? "gray.400" : "gray.600"}>
         {label}
       </Text>
       <Flex gap={4} alignItems={"center"}>
-        {isMostVoted && (
+        {showMostVoted && (
           <Text paddingX={3} paddingY={1} fontWeight={500} color={"primary.700"} bg={"primary.200"} borderRadius={6}>
             {LL.most_voted()}
           </Text>
@@ -138,27 +139,10 @@ const VotesSection = ({
   const isProgressDisabled = useMemo(() => variant === "voting" && !isSelected, [variant, isSelected]);
   const { LL } = useI18nContext();
 
-  const choiceWeight = useMemo(() => {
-    if (!results) return 0;
-    const matchingResult = results.data.find(r => r.choice === choiceIndex);
-    return matchingResult?.totalWeight ?? 0;
-  }, [choiceIndex, results]);
-
-  const totalWeight = useMemo(() => {
-    if (!results) return 0;
-    return results.data.reduce((sum, result) => sum + (result.totalWeight ?? 0), 0);
-  }, [results]);
-
-  const voterCount = useMemo(() => {
-    if (!results) return 0;
-    const matchingResult = results.data.find(r => r.choice === choiceIndex);
-    return matchingResult?.totalVoters ?? 0;
-  }, [choiceIndex, results]);
-
-  const votesPercentage = useMemo(() => {
-    if (totalWeight === 0) return 0;
-    return (choiceWeight / totalWeight) * 100;
-  }, [choiceWeight, totalWeight]);
+  const { voterCount, votesPercentage } = useVotesSectionCalculations({
+    results,
+    choiceIndex,
+  });
 
   return (
     <Flex gap={{ base: 3, md: 10 }} alignItems={"center"} justifyContent={"space-between"} width={"100%"}>
