@@ -52,20 +52,22 @@ export const VotingSingleChoice = ({
   }, [proposal.id, proposal.votingOptions, currentSelection, sendTransaction]);
 
   return (
-    <Flex gap={8} alignItems="start" flexDirection="column" width="100%">
+    <Flex gap={{ base: 6, md: 8 }} alignItems="start" flexDirection="column" width="100%">
       <VotingTitle />
-      {proposal.votingOptions.map((option, index) => (
-        <VotingItem
-          key={index}
-          label={option}
-          isSelected={currentSelection === option}
-          kind={VotingEnum.SINGLE_CHOICE}
-          variant={votingVariant}
-          choiceIndex={index + 1}
-          onClick={() => setSelectedOption(option)}
-          results={results}
-        />
-      ))}
+      <Flex gap={2} alignItems="start" flexDirection="column" width="100%">
+        {proposal.votingOptions.map((option, index) => (
+          <VotingItem
+            key={index}
+            label={option}
+            isSelected={currentSelection === option}
+            kind={VotingEnum.SINGLE_CHOICE}
+            variant={votingVariant}
+            choiceIndex={index + 1}
+            onClick={() => setSelectedOption(option)}
+            results={results}
+          />
+        ))}
+      </Flex>
       <VotingListFooter
         onSubmit={onSubmit}
         isLoading={isTransactionPending}

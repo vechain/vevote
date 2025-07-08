@@ -44,16 +44,21 @@ const VotingSectionHeader = () => {
       <Flex
         maxWidth={"864px"}
         marginX={"auto"}
-        paddingY={10}
-        paddingX={11}
+        paddingX={{ md: 11 }}
         flexDirection={"column"}
         alignItems={"start"}
         gap={6}>
-        <Heading fontSize={20} fontWeight={600} color="primary.700" display={"flex"} gap={2} alignItems={"center"}>
+        <Heading
+          fontSize={{ base: 16, md: 20 }}
+          fontWeight={600}
+          color="primary.700"
+          display={"flex"}
+          gap={2}
+          alignItems={"center"}>
           <Icon as={VoteIcon} />
           {LL.voting()}
         </Heading>
-        <Text fontSize={24} color={"gray.600"} fontWeight={500}>
+        <Text fontSize={{ base: 16, md: 24 }} color={"gray.600"} fontWeight={500}>
           {proposal.votingQuestion}
         </Text>
       </Flex>
@@ -71,7 +76,7 @@ const VotingSectionContent = ({ children }: PropsWithChildren) => {
 
 const SectionLimiter = ({ children, ...restProps }: BoxProps) => {
   return (
-    <Box paddingY={10} paddingX={11} {...restProps}>
+    <Box paddingY={{ base: 6, md: 10 }} paddingX={{ base: 6, md: 11 }} {...restProps}>
       {children}
     </Box>
   );
