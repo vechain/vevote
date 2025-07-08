@@ -70,7 +70,7 @@ export const VotersFiltersPanel = ({
   const nodesWithAll = useMemo(() => [DEFAULT_FILTER, ...nodes], [nodes]);
 
   return (
-    <Flex gap={4} alignItems={"center"} pt={8} width={"full"}>
+    <Flex gap={4} alignItems={"center"} pt={8} width={"full"} flexDirection={{ base: "column", md: "row" }}>
       <SearchInput
         size={"sm"}
         placeholder={LL.proposal.voters_table.filters.search_by_address()}
@@ -78,31 +78,33 @@ export const VotersFiltersPanel = ({
         onChange={handleSearchChange}
       />
 
-      <VotingBaseDropdown
-        label="Voting Options"
-        options={optionsWithAll}
-        selectedOption={selectedOption}
-        onChange={handleOptionChange}
-        ms={"auto"}
-        icon={FilterIcon}
-      />
+      <Flex gap={{ base: 3, md: 4 }}>
+        <VotingBaseDropdown
+          label="Voting Options"
+          options={optionsWithAll}
+          selectedOption={selectedOption}
+          onChange={handleOptionChange}
+          ms={"auto"}
+          icon={FilterIcon}
+        />
 
-      <VotingBaseDropdown
-        label="Node"
-        options={nodesWithAll}
-        selectedOption={node}
-        onChange={handleNodeChange}
-        icon={NodeIcon}
-      />
+        <VotingBaseDropdown
+          label="Node"
+          options={nodesWithAll}
+          selectedOption={node}
+          onChange={handleNodeChange}
+          icon={NodeIcon}
+        />
 
-      <VotingBaseDropdown
-        label="Sort by"
-        options={sortOptions}
-        selectedOption={sort}
-        onChange={handleSortChange}
-        icon={SortDescIcon}
-        renderValue={(value: Sort) => LL.filters.sort[value]()}
-      />
+        <VotingBaseDropdown
+          label="Sort by"
+          options={sortOptions}
+          selectedOption={sort}
+          onChange={handleSortChange}
+          icon={SortDescIcon}
+          renderValue={(value: Sort) => LL.filters.sort[value]()}
+        />
+      </Flex>
     </Flex>
   );
 };

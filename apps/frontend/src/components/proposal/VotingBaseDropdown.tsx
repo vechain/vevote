@@ -22,10 +22,23 @@ export const VotingBaseDropdown = <T extends Option>({
 }) => {
   return (
     <Menu autoSelect={false}>
-      <MenuButton as={Button} variant={"secondary"} padding={0} {...restProps}>
-        <Flex paddingY={2} paddingX={4} gap={3} alignItems={"center"} color={"gray.600"} height={"40px"}>
+      <MenuButton
+        as={Button}
+        variant={"secondary"}
+        size={{ base: "md", md: "lg" }}
+        w={{ base: "full", md: "auto" }}
+        padding={0}
+        {...restProps}>
+        <Flex
+          paddingY={2}
+          paddingX={4}
+          gap={{ base: 0, md: 3 }}
+          alignItems={"center"}
+          justifyContent={"center"}
+          color={"gray.600"}
+          height={"40px"}>
           {label && (
-            <Text fontSize={14} fontWeight={600}>
+            <Text fontSize={14} fontWeight={600} display={{ base: "none", md: "block" }}>
               {label}
             </Text>
           )}
