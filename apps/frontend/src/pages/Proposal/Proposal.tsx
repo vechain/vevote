@@ -18,11 +18,9 @@ import { useProposalEvents } from "@/hooks/useProposalEvent";
 import { ProposalCardType } from "@/types/proposal";
 import { useHasVoted } from "@/hooks/useCastVote";
 import { useUser } from "@/contexts/UserProvider";
-import { ArrowLeftIcon, ArrowRightIcon, CheckSquareIcon, VoteIcon } from "@/icons";
+import { ArrowLeftIcon, ArrowRightIcon, CheckSquareIcon } from "@/icons";
 import { ExecuteModal } from "@/components/proposal/ExecuteModal";
 import { CancelProposal } from "@/components/proposal/CancelProposal";
-import { useNodes } from "@/hooks/useUserQueries";
-import { areAddressesEqual } from "@/utils/address";
 
 export const Proposal = () => {
   const { LL } = useI18nContext();
@@ -102,20 +100,12 @@ export const Proposal = () => {
 
 const ProposalNavbarActions = ({ proposal }: { proposal: ProposalCardType | undefined }) => {
   const { LL } = useI18nContext();
-  const { account } = useWallet();
   const { hasVoted } = useHasVoted({ proposalId: proposal?.id || "" });
   const { isExecutor, isWhitelisted } = useUser();
-  const { nodes } = useNodes({ startDate: proposal?.startDate });
-  const isVoter = useMemo(() => nodes.length > 0, [nodes.length]);
-
-  const canVote = useMemo(() => isVoter && ["voting"].includes(proposal?.status || ""), [isVoter, proposal?.status]);
 
   const canCancel = useMemo(
-    () =>
-      isWhitelisted &&
-      areAddressesEqual(account?.address, proposal?.proposer) &&
-      ["upcoming"].includes(proposal?.status || ""),
-    [account?.address, isWhitelisted, proposal?.proposer, proposal?.status],
+    () => isWhitelisted && ["upcoming"].includes(proposal?.status || ""),
+    [isWhitelisted, proposal?.status],
   );
 
   const canEditDraft = useMemo(
@@ -130,14 +120,11 @@ const ProposalNavbarActions = ({ proposal }: { proposal: ProposalCardType | unde
 
       {isExecutor && proposal?.status === "approved" && <ExecuteModal proposalId={proposal?.id} />}
 
-      {canVote &&
-        (hasVoted ? (
-          <Button variant={"feedback"} rightIcon={<Icon as={CheckSquareIcon} />}>
-            {LL.voted()}
-          </Button>
-        ) : (
-          <Button leftIcon={<Icon as={VoteIcon} />}>{LL.vote()}</Button>
-        ))}
+      {["voting"].includes(proposal?.status || "") && hasVoted && (
+        <Button variant={"feedback"} rightIcon={<Icon as={CheckSquareIcon} />}>
+          {LL.voted()}
+        </Button>
+      )}
     </Flex>
   );
 };
