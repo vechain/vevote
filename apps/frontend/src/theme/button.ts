@@ -132,7 +132,7 @@ export const buttonTheme = defineStyleConfig({
     },
     feedback: {
       backgroundColor: colors.green[50],
-      textColor: colors.green[700],
+      textColor: colors.green[300],
       border: "1px",
       borderColor: "transparent",
       _hover: {

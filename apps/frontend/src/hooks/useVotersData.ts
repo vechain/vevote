@@ -18,11 +18,15 @@ export const useVotersData = ({
   votingType,
   votingOptions,
   filters,
+  page = 1,
+  pageSize = 10,
 }: {
   proposalId: string;
   votingType: VotingEnum;
   votingOptions: SingleChoiceEnum[] | BaseOption[];
   filters: VotersFilters;
+  page?: number;
+  pageSize?: number;
 }) => {
   const { votedInfo, isLoading: isVotesLoading, error: votesError } = useVotesInfo({ proposalId });
 
@@ -108,7 +112,7 @@ export const useVotersData = ({
 
   const nodeOptions = useMemo(() => {
     const usedNodes = new Set(votes.map(vote => vote.node).filter(Boolean));
-    return Array.from(usedNodes);
+    return Array.from(usedNodes) as NodeStrengthLevel[];
   }, [votes]);
 
   const filteredVotes = useMemo(() => {
@@ -131,8 +135,30 @@ export const useVotersData = ({
     return filtered;
   }, [votes, filters]);
 
+  const paginationData = useMemo(() => {
+    const totalItems = filteredVotes.length;
+    const totalPages = Math.ceil(totalItems / pageSize);
+    const startIndex = (page - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    const paginatedVotes = filteredVotes.slice(startIndex, endIndex);
+
+    return {
+      votes: paginatedVotes,
+      pagination: {
+        currentPage: page,
+        totalPages,
+        totalItems,
+        pageSize,
+        hasNextPage: page < totalPages,
+        hasPreviousPage: page > 1,
+      },
+    };
+  }, [filteredVotes, page, pageSize]);
+
   return {
-    votes: filteredVotes,
+    votes: paginationData.votes,
+    pagination: paginationData.pagination,
+    allVotes: filteredVotes, // Keep all filtered votes for backward compatibility
     filterOptions,
     nodeOptions,
     isLoading: isVotesLoading || isNodesLoading,

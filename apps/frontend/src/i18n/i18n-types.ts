@@ -118,9 +118,17 @@ type RootTranslation = {
 	 */
 	submit: string
 	/**
+	 * S​u​b​m​i​t​ ​V​o​t​e
+	 */
+	submit_vote: string
+	/**
 	 * V​o​t​i​n​g​ ​P​o​w​e​r
 	 */
 	voting_power: string
+	/**
+	 * Y​o​u​r​ ​v​o​t​i​n​g​ ​p​o​w​e​r
+	 */
+	your_voting_power: string
 	/**
 	 * V​o​t​e​d
 	 */
@@ -226,6 +234,10 @@ type RootTranslation = {
 	 * C​o​n​n​e​c​t​ ​W​a​l​l​e​t
 	 */
 	connect_wallet: string
+	/**
+	 * C​o​n​n​e​c​t​ ​y​o​u​r​ ​w​a​l​l​e​t​ ​t​o​ ​v​o​t​e
+	 */
+	connect_wallet_to_vote: string
 	home: {
 		/**
 		 * H​o​m​e
@@ -312,6 +324,10 @@ type RootTranslation = {
 		 * @param {string} days
 		 */
 		end_after_max_duration: RequiredParams<'days'>
+		/**
+		 * F​a​i​l​e​d​ ​t​o​ ​l​o​a​d​ ​v​o​t​e​r​s​ ​d​a​t​a​.​ ​P​l​e​a​s​e​ ​t​r​y​ ​a​g​a​i​n​.
+		 */
+		failed_load_voters: string
 	}
 	voting_list: {
 		/**
@@ -1056,9 +1072,17 @@ export type TranslationFunctions = {
 	 */
 	submit: () => LocalizedString
 	/**
+	 * Submit Vote
+	 */
+	submit_vote: () => LocalizedString
+	/**
 	 * Voting Power
 	 */
 	voting_power: () => LocalizedString
+	/**
+	 * Your voting power
+	 */
+	your_voting_power: () => LocalizedString
 	/**
 	 * Voted
 	 */
@@ -1160,6 +1184,10 @@ JPG, PNG or SVG of maximum of {size}MB.
 	 * Connect Wallet
 	 */
 	connect_wallet: () => LocalizedString
+	/**
+	 * Connect your wallet to vote
+	 */
+	connect_wallet_to_vote: () => LocalizedString
 	home: {
 		/**
 		 * Home
@@ -1245,6 +1273,10 @@ JPG, PNG or SVG of maximum of {size}MB.
 		 * The end date must be within {days} days of the start date
 		 */
 		end_after_max_duration: (arg: { days: string }) => LocalizedString
+		/**
+		 * Failed to load voters data. Please try again.
+		 */
+		failed_load_voters: () => LocalizedString
 	}
 	voting_list: {
 		/**

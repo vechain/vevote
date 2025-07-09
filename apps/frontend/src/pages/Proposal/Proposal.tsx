@@ -1,28 +1,28 @@
 import { ProposalNavbar } from "@/components/navbar/Navbar";
 import { PageContainer } from "@/components/PageContainer";
+import { BuyANode } from "@/components/proposal/BuyANode";
+import { CancelProposal } from "@/components/proposal/CancelProposal";
+import { DeleteEditProposal } from "@/components/proposal/DeleteEditProposal";
+import { ExecuteModal } from "@/components/proposal/ExecuteModal";
 import { ProposalDetailsCards } from "@/components/proposal/ProposalDetailsCards";
 import { ProposalInfoBox } from "@/components/proposal/ProposalInfoBox";
 import { ProposalInfos } from "@/components/proposal/ProposalInfos";
 import { ProposalProvider } from "@/components/proposal/ProposalProvider";
 import { VotingSection } from "@/components/proposal/VotingSection";
+import { BackButton } from "@/components/ui/BackButton";
+import { VotedChip } from "@/components/ui/VotedChip";
+import { useUser } from "@/contexts/UserProvider";
+import { useHasVoted } from "@/hooks/useCastVote";
+import { useProposalEvents } from "@/hooks/useProposalEvent";
 import { useI18nContext } from "@/i18n/i18n-react";
-import { Box, Button, Flex, Icon, Image, Link, Text } from "@chakra-ui/react";
+import { ArrowRightIcon } from "@/icons";
+import { ProposalCardType } from "@/types/proposal";
+import { sanitizeImageUrl } from "@/utils/proposals/helpers";
+import { Box, Flex, Icon, Image, Text } from "@chakra-ui/react";
+import { useWallet } from "@vechain/vechain-kit";
 import { useMemo } from "react";
 import { useParams } from "react-router";
-import { DeleteEditProposal } from "@/components/proposal/DeleteEditProposal";
-import { useWallet } from "@vechain/vechain-kit";
-import { BuyANode } from "@/components/proposal/BuyANode";
 import { useCreateProposal } from "../CreateProposal/CreateProposalProvider";
-import { sanitizeImageUrl } from "@/utils/proposals/helpers";
-import { useProposalEvents } from "@/hooks/useProposalEvent";
-import { ProposalCardType } from "@/types/proposal";
-import { useHasVoted } from "@/hooks/useCastVote";
-import { useUser } from "@/contexts/UserProvider";
-import { ArrowLeftIcon, ArrowRightIcon, CheckSquareIcon, VoteIcon } from "@/icons";
-import { ExecuteModal } from "@/components/proposal/ExecuteModal";
-import { CancelProposal } from "@/components/proposal/CancelProposal";
-import { useNodes } from "@/hooks/useUserQueries";
-import { areAddressesEqual } from "@/utils/address";
 
 export const Proposal = () => {
   const { LL } = useI18nContext();
@@ -46,16 +46,13 @@ export const Proposal = () => {
     <>
       <ProposalNavbar>
         <Flex alignItems={"center"} gap={6} width={"full"}>
-          <Button
-            as={Link}
-            gap={2}
+          <BackButton />
+          <Text
+            display={{ base: "none", md: "flex" }}
+            fontSize={"14px"}
+            color={"primary.200"}
             alignItems={"center"}
-            href="/"
-            variant={"secondary"}
-            leftIcon={<Icon as={ArrowLeftIcon} />}>
-            {LL.back()}
-          </Button>
-          <Text display={"flex"} fontSize={"14px"} color={"primary.200"} alignItems={"center"} gap={1}>
+            gap={1}>
             {LL.homepage()} <Icon as={ArrowRightIcon} width={5} height={4} /> {LL.proposal.title()}
           </Text>
           {account?.address && <ProposalNavbarActions proposal={proposal} />}
@@ -69,13 +66,13 @@ export const Proposal = () => {
           <PageContainer
             padding={0}
             paddingX={{ base: "20px", md: "40px" }}
-            paddingTop={"192px"}
-            paddingBottom={"80px"}
+            paddingTop={{ base: "112px", md: "192px" }}
+            paddingBottom={{ base: 10, md: 20 }}
             bg={"white"}>
             {isLoading ? (
               <Box>{"Loading"}</Box>
             ) : (
-              <>
+              <Flex flexDirection={"column"} gap={10} width={"full"}>
                 <Image
                   src={sanitizeImageUrl(proposal.headerImage?.url)}
                   borderRadius={16}
@@ -89,9 +86,13 @@ export const Proposal = () => {
                   <ProposalDetailsCards />
                   <ProposalInfoBox canceledReason={proposal.reason} />
                 </PageContainer.Header>
-                {proposal.status !== "canceled" && <VotingSection />}
-                <BuyANode />
-              </>
+                {proposal.status !== "canceled" && (
+                  <>
+                    <VotingSection />
+                    <BuyANode />
+                  </>
+                )}
+              </Flex>
             )}
           </PageContainer>
         </ProposalProvider>
@@ -100,22 +101,13 @@ export const Proposal = () => {
   );
 };
 
-const ProposalNavbarActions = ({ proposal }: { proposal?: ProposalCardType }) => {
-  const { LL } = useI18nContext();
-  const { account } = useWallet();
+const ProposalNavbarActions = ({ proposal }: { proposal: ProposalCardType | undefined }) => {
   const { hasVoted } = useHasVoted({ proposalId: proposal?.id || "" });
   const { isExecutor, isWhitelisted } = useUser();
-  const { nodes } = useNodes({ startDate: proposal?.startDate });
-  const isVoter = useMemo(() => nodes.length > 0, [nodes.length]);
-
-  const canVote = useMemo(() => isVoter && ["voting"].includes(proposal?.status || ""), [isVoter, proposal?.status]);
 
   const canCancel = useMemo(
-    () =>
-      isWhitelisted &&
-      areAddressesEqual(account?.address, proposal?.proposer) &&
-      ["upcoming"].includes(proposal?.status || ""),
-    [account?.address, isWhitelisted, proposal?.proposer, proposal?.status],
+    () => isWhitelisted && ["upcoming"].includes(proposal?.status || ""),
+    [isWhitelisted, proposal?.status],
   );
 
   const canEditDraft = useMemo(
@@ -130,14 +122,7 @@ const ProposalNavbarActions = ({ proposal }: { proposal?: ProposalCardType }) =>
 
       {isExecutor && proposal?.status === "approved" && <ExecuteModal proposalId={proposal?.id} />}
 
-      {canVote &&
-        (hasVoted ? (
-          <Button variant={"feedback"} rightIcon={<Icon as={CheckSquareIcon} />}>
-            {LL.voted()}
-          </Button>
-        ) : (
-          <Button leftIcon={<Icon as={VoteIcon} />}>{LL.vote()}</Button>
-        ))}
+      {["voting"].includes(proposal?.status || "") && hasVoted && <VotedChip />}
     </Flex>
   );
 };

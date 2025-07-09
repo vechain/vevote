@@ -33,7 +33,7 @@ const NavbarInnerContainer = ({ children, ...restProps }: FlexProps) => {
       gap={6}
       {...restProps}>
       {children}
-      <ConnectButton />
+      <ConnectButton bg={"primary.700"} />
     </Flex>
   );
 };
@@ -79,8 +79,8 @@ export const ProposalNavbar = ({ children }: PropsWithChildren) => {
   return (
     <NavbarContainer
       bg={bgVariant}
-      paddingX={showBackground ? 20 : 6}
-      paddingY={showBackground ? 10 : 6}
+      paddingX={{ base: 4, md: showBackground ? 20 : 6 }}
+      paddingY={{ base: 6, md: showBackground ? 10 : 6 }}
       backdropBlur={!showBackground ? "md" : "none"}>
       <NavbarInnerContainer>{children}</NavbarInnerContainer>
     </NavbarContainer>
