@@ -24,6 +24,11 @@ export type VotingItemProps = {
   results?: VotedResult;
 };
 
+type VotingItemHeaderProps = Omit<VotingItemProps, "choiceIndex" | "results"> & {
+  showMostVoted: boolean;
+  isVoter?: boolean;
+};
+
 const variants = (isSelected: boolean) => ({
   upcoming: defineStyle({
     bg: "gray.100",
@@ -100,6 +105,7 @@ export const VotingItem = ({ isSelected, kind, label, variant, onClick, choiceIn
           kind={kind}
           variant={variant}
           isSelected={isSelected}
+          isVoter={isVoter}
         />
         {variant !== "upcoming" && (
           <VotesSection choiceIndex={choiceIndex} variant={variant} isSelected={isSelected} results={results} />
@@ -109,14 +115,13 @@ export const VotingItem = ({ isSelected, kind, label, variant, onClick, choiceIn
   );
 };
 
-const VotingItemHeader = ({
-  label,
-  showMostVoted,
-  kind,
-  variant,
-  isSelected,
-}: Omit<VotingItemProps, "choiceIndex"> & { showMostVoted: boolean }) => {
+const VotingItemHeader = ({ label, showMostVoted, kind, variant, isSelected, isVoter }: VotingItemHeaderProps) => {
   const { LL } = useI18nContext();
+  const showCheckRadio = useMemo(
+    () =>
+      (kind === VotingEnum.SINGLE_OPTION || kind === VotingEnum.SINGLE_CHOICE) && isVoter && variant !== "result-lost",
+    [kind, isVoter, variant],
+  );
   return (
     <Flex gap={2} alignItems={"center"} justifyContent={"space-between"} width={"100%"} flex={1}>
       <Text fontSize={{ base: 14, md: 18 }} fontWeight={600} color={variant === "upcoming" ? "gray.400" : "gray.600"}>
@@ -136,11 +141,7 @@ const VotingItemHeader = ({
           </Text>
         )}
 
-        {[VotingEnum.SINGLE_OPTION, VotingEnum.SINGLE_CHOICE].includes(kind) ? (
-          <Radio isChecked={isSelected} />
-        ) : (
-          <Checkbox isChecked={isSelected} />
-        )}
+        {showCheckRadio ? <Radio isChecked={isSelected} /> : <Checkbox isChecked={isSelected} />}
       </Flex>
     </Flex>
   );

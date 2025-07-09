@@ -59,7 +59,7 @@ export const VotingPowerModal = () => {
         onClick={onOpen}
         variant={"secondary"}
         leftIcon={<Icon as={VotingPowerIcon} boxSize={5} />}
-        size={{ base: "sm", md: "md" }}>
+        size={{ base: "md", md: "lg" }}>
         {totalVotingPower}
       </Button>
       <ModalSkeleton isOpen={isOpen} onClose={onClose}>
