@@ -85,19 +85,6 @@ export const getProposalsEvents = async (
           };
         }
 
-        if (eventSignature === proposalExecutedAbi.signatureHash) {
-          const [proposalIdEvent] = event.decodedData as [string];
-
-          if (proposalId && proposalIdEvent !== proposalId) {
-            return undefined;
-          }
-
-          return {
-            proposalId: proposalIdEvent,
-            isExecuted: true,
-          };
-        }
-
         return undefined;
       })
       .filter(Boolean);
@@ -122,15 +109,40 @@ export const getProposalsEvents = async (
       })
       .filter(Boolean);
 
+    const decodedExecutedProposals = events
+      .map(event => {
+        if (event.topics[0] === proposalExecutedAbi.signatureHash) {
+          const [proposalIdEvent, executedProposalLink] = event.decodedData as [bigint, string];
+
+          if (proposalId && proposalIdEvent.toString() !== proposalId) {
+            return undefined;
+          }
+
+          return {
+            proposalId: proposalIdEvent.toString(),
+            executedProposalLink,
+          };
+        }
+
+        return undefined;
+      })
+      .filter(Boolean);
+
     const mergedProposals: ProposalEvent[] = decodedProposalEvents
       .map(proposal => {
         const canceledProposal = decodedCanceledProposals.find(
           canceled => canceled?.proposalId === proposal?.proposalId,
         );
 
-        return canceledProposal
-          ? { ...proposal, canceller: canceledProposal.canceller, reason: canceledProposal.reason }
-          : proposal;
+        const executedProposal = decodedExecutedProposals.find(
+          executed => executed?.proposalId === proposal?.proposalId,
+        );
+
+        return {
+          ...proposal,
+          ...(canceledProposal && { canceller: canceledProposal.canceller, reason: canceledProposal.reason }),
+          ...(executedProposal && { executedProposalLink: executedProposal.executedProposalLink }),
+        };
       })
       .filter(Boolean) as ProposalEvent[];
 

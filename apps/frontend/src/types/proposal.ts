@@ -56,4 +56,5 @@ export type ProposalCardType = ProposalDetails & {
   proposer: string;
   createdAt: Date;
   reason?: string;
+  executedProposalLink?: string;
 };

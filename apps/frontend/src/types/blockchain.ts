@@ -9,6 +9,7 @@ export type ProposalEvent = {
   minSelection: number;
   canceller?: string;
   reason?: string;
+  executedProposalLink?: string;
 };
 
 export enum ProposalState {

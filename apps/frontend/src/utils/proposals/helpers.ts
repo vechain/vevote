@@ -12,7 +12,7 @@ import { thorClient } from "../thorClient";
 
 const AVERAGE_BLOCK_TIME = 10; // in seconds
 
-export type FromEventsToProposalsReturnType = ({ ipfsHash: string; reason?: string } & Omit<
+export type FromEventsToProposalsReturnType = ({ ipfsHash: string } & Omit<
   ProposalCardType,
   "status" | "description" | "title" | "votingQuestion" | "headerImage"
 >)[];
@@ -75,6 +75,7 @@ export const fromEventsToProposals = async (events: ProposalEvent[]): Promise<Fr
         votingLimit: event.maxSelection,
         ipfsHash: event.description,
         reason: event.reason,
+        executedProposalLink: event.executedProposalLink,
       };
 
       switch (votingType) {

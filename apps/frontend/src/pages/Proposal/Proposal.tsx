@@ -100,7 +100,7 @@ export const Proposal = () => {
   );
 };
 
-const ProposalNavbarActions = ({ proposal }: { proposal: ProposalCardType | undefined }) => {
+const ProposalNavbarActions = ({ proposal }: { proposal?: ProposalCardType }) => {
   const { LL } = useI18nContext();
   const { account } = useWallet();
   const { hasVoted } = useHasVoted({ proposalId: proposal?.id || "" });
