@@ -9,6 +9,7 @@ export const VotedChip = (props: ButtonProps) => {
       variant={"feedback"}
       rightIcon={<Icon as={CheckCircleIcon} boxSize={{ base: 5, md: 6 }} />}
       size={{ base: "md", md: "lg" }}
+      pointerEvents={"none"}
       {...props}>
       {LL.voted()}
     </Button>
