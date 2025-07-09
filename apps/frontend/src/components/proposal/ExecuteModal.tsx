@@ -14,43 +14,38 @@ import {
 } from "@chakra-ui/react";
 import { MessageModal } from "../ui/ModalSkeleton";
 import { CheckDoubleIcon, CheckIcon, LinkIcon } from "@/icons";
-import { FormSkeleton } from "../ui/FormSkeleton";
-import { useCallback } from "react";
+import { FormSkeleton, FormSkeletonProps } from "../ui/FormSkeleton";
+import { useCallback, useMemo } from "react";
 import { z } from "zod";
 import { Label } from "../ui/Label";
 import { InputMessage } from "../ui/InputMessage";
-import { executeCall } from "@/utils/contract";
-import { VeVote__factory } from "@repo/contracts";
-import { getConfig } from "@repo/config";
-import { fromStringToUint256 } from "@/utils/proposals/helpers";
+import { useExecuteProposal } from "@/hooks/useExecuteProposal";
 
 export const ExecuteModal = ({ proposalId }: { proposalId: string }) => {
   const { LL } = useI18nContext();
   const { isOpen, onClose, onOpen } = useDisclosure();
+  const { sendTransaction, isTransactionPending, isWaitingForWalletConfirmation } = useExecuteProposal({ proposalId });
 
-  const contractAddress = getConfig(import.meta.env.VITE_APP_ENV).vevoteContractAddress;
-  const contractInterface = VeVote__factory.createInterface();
+  const isLoading = useMemo(
+    () => isTransactionPending || isWaitingForWalletConfirmation,
+    [isTransactionPending, isWaitingForWalletConfirmation],
+  );
 
   const schema = z.object({
     link: z.string(),
   });
 
-  const onSubmit = useCallback(
-    async ({ link }: z.infer<typeof schema>) => {
+  const onSubmit: FormSkeletonProps<z.infer<typeof schema>>["onSubmit"] = useCallback(
+    async ({ link }, { setError }) => {
       try {
-        await executeCall({
-          contractAddress,
-          contractInterface,
-          method: "executeWithComment",
-          args: [fromStringToUint256(proposalId), link],
-        });
-      } catch (error) {
-        console.error("Error executing proposal:", error);
-      } finally {
+        await sendTransaction({ proposalId, link });
         onClose();
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : "Failed to execute proposal";
+        setError("link", { message: errorMessage });
       }
     },
-    [contractAddress, contractInterface, onClose, proposalId],
+    [sendTransaction, proposalId, onClose],
   );
 
   return (
@@ -101,7 +96,13 @@ export const ExecuteModal = ({ proposalId }: { proposalId: string }) => {
                 <Button flex={1} variant={"tertiary"} onClick={onClose}>
                   {LL.cancel()}
                 </Button>
-                <Button flex={1} variant={"primary"} type="submit" rightIcon={<Icon as={CheckIcon} />}>
+                <Button
+                  flex={1}
+                  variant={"primary"}
+                  type="submit"
+                  rightIcon={<Icon as={CheckIcon} />}
+                  isLoading={isLoading}
+                  loadingText={LL.confirm()}>
                   {LL.confirm()}
                 </Button>
               </ModalFooter>
