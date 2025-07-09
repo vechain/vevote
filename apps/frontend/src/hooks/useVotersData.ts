@@ -132,7 +132,7 @@ export const useVotersData = ({
       return [...filtered].reverse();
     }
 
-    return [...filtered, ...filtered, ...filtered];
+    return filtered;
   }, [votes, filters]);
 
   const paginationData = useMemo(() => {
