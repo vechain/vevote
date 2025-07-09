@@ -7,6 +7,7 @@ import { Sort } from "../ui/SortDropdown";
 import { useProposal } from "./ProposalProvider";
 import { VotersTable } from "./VotersTable";
 import { VotersFiltersPanel, DEFAULT_FILTER } from "./VotersFiltersPanel";
+import { TablePagination } from "../ui/TablePagination";
 import { useVotersData } from "@/hooks/useVotersData";
 import { NodeStrengthLevel } from "@/types/user";
 import { useDebounce } from "@/hooks/useDebounce";
@@ -20,10 +21,11 @@ export const VotersModal = () => {
   const [node, setNode] = useState<NodeStrengthLevel | typeof DEFAULT_FILTER>(DEFAULT_FILTER);
   const [sort, setSort] = useState(Sort.Newest);
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [currentPage, setCurrentPage] = useState(1);
 
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
 
-  const { votes, filterOptions, nodeOptions, isLoading, error } = useVotersData({
+  const { votes, pagination, filterOptions, nodeOptions, isLoading, error } = useVotersData({
     proposalId: proposal.id,
     votingType: proposal.votingType,
     votingOptions: proposal.votingOptions,
@@ -33,22 +35,32 @@ export const VotersModal = () => {
       sort,
       searchQuery: debouncedSearchQuery,
     },
+    page: currentPage,
+    pageSize: 10,
   });
 
   const handleSelectedOptionChange = useCallback((value: string) => {
     setSelectedOption(value);
+    setCurrentPage(1); // Reset to first page when filtering
   }, []);
 
   const handleNodeChange = useCallback((value: NodeStrengthLevel | typeof DEFAULT_FILTER) => {
     setNode(value);
+    setCurrentPage(1); // Reset to first page when filtering
   }, []);
 
   const handleSortChange = useCallback((value: Sort) => {
     setSort(value);
+    setCurrentPage(1); // Reset to first page when filtering
   }, []);
 
   const handleSearchChange = useCallback((value: string) => {
     setSearchQuery(value);
+    setCurrentPage(1); // Reset to first page when searching
+  }, []);
+
+  const handlePageChange = useCallback((page: number) => {
+    setCurrentPage(page);
   }, []);
 
   const handleModalOpen = useCallback(() => {
@@ -92,6 +104,13 @@ export const VotersModal = () => {
           )}
           {!isLoading && !error && <VotersTable data={votes} />}
         </ModalBody>
+        {!isLoading && !error && pagination && pagination.totalPages > 1 && (
+          <TablePagination
+            currentPage={pagination.currentPage}
+            totalPages={pagination.totalPages}
+            onPageChange={handlePageChange}
+          />
+        )}
       </ModalSkeleton>
     </>
   );
