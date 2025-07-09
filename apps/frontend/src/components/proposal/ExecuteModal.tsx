@@ -32,17 +32,26 @@ export const ExecuteModal = ({ proposalId }: { proposalId: string }) => {
   const contractInterface = VeVote__factory.createInterface();
 
   const schema = z.object({
-    link: z.string().optional(),
+    link: z.string(),
   });
 
-  const onSubmit = useCallback(async () => {
-    await executeCall({
-      contractAddress,
-      contractInterface,
-      method: "execute",
-      args: [fromStringToUint256(proposalId)],
-    });
-  }, [contractAddress, contractInterface, proposalId]);
+  const onSubmit = useCallback(
+    async ({ link }: z.infer<typeof schema>) => {
+      try {
+        await executeCall({
+          contractAddress,
+          contractInterface,
+          method: "executeWithComment",
+          args: [fromStringToUint256(proposalId), link],
+        });
+      } catch (error) {
+        console.error("Error executing proposal:", error);
+      } finally {
+        onClose();
+      }
+    },
+    [contractAddress, contractInterface, onClose, proposalId],
+  );
 
   return (
     <>
@@ -65,7 +74,7 @@ export const ExecuteModal = ({ proposalId }: { proposalId: string }) => {
                   </Text>
                   <FormControl isInvalid={Boolean(errors.link)}>
                     <Label fontSize={16} label={LL.proposal.execute_proposal.label()} />
-                    <InputGroup>
+                    <InputGroup width={"full"}>
                       <InputLeftAddon
                         display={"flex"}
                         alignItems={"center"}
@@ -79,6 +88,7 @@ export const ExecuteModal = ({ proposalId }: { proposalId: string }) => {
                       <Input
                         type="text"
                         width="full"
+                        maxWidth={"full"}
                         placeholder={LL.proposal.execute_proposal.link_placeholder()}
                         {...register("link")}
                       />
