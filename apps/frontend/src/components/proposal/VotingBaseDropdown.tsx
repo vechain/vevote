@@ -12,7 +12,7 @@ export const VotingBaseDropdown = <T extends Option>({
   icon,
   renderValue,
   ...restProps
-}: Omit<MenuButtonProps, "children"> & {
+}: Omit<MenuButtonProps, "children" | "onChange"> & {
   icon: (props: SVGProps<SVGSVGElement>) => JSX.Element;
   label?: string;
   options: T[];
@@ -21,15 +21,27 @@ export const VotingBaseDropdown = <T extends Option>({
   renderValue?: (value: T) => any;
 }) => {
   return (
-    <Menu autoSelect={false}>
-      <MenuButton as={Button} variant={"secondary"} padding={0} {...restProps}>
-        <Flex paddingY={2} paddingX={4} gap={3} alignItems={"center"} color={"gray.600"} height={"40px"}>
+    <Menu>
+      <MenuButton
+        as={Button}
+        variant={"secondary"}
+        size={{ base: "md", md: "lg" }}
+        w={{ base: "100%", md: "fit-content" }}
+        {...restProps}>
+        <Flex
+          paddingY={2}
+          paddingX={4}
+          gap={{ base: 0, md: 3 }}
+          alignItems={"center"}
+          justifyContent={"center"}
+          color={"gray.600"}
+          w={{ base: "100%", md: "fit-content" }}>
           {label && (
-            <Text fontSize={14} fontWeight={600}>
+            <Text fontSize={14} fontWeight={600} display={{ base: "none", md: "block" }}>
               {label}
             </Text>
           )}
-          <Icon as={icon} width={"20px"} height={"20px"} />
+          <Icon as={icon} boxSize={5} />
         </Flex>
       </MenuButton>
       <MenuList>

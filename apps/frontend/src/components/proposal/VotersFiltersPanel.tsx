@@ -13,7 +13,7 @@ const sortOptions = [Sort.Newest, Sort.Oldest];
 
 export interface VotersFiltersProps {
   options: string[];
-  nodes: string[];
+  nodes: NodeStrengthLevel[];
   selectedOption: string;
   onSelectedOptionChange: (value: string) => void;
   node: NodeStrengthLevel | typeof DEFAULT_FILTER;
@@ -38,27 +38,42 @@ export const VotersFiltersPanel = ({
 }: VotersFiltersProps) => {
   const { LL } = useI18nContext();
 
-  const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    onSearchChange(e.target.value);
-  }, [onSearchChange]);
+  const handleSearchChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      onSearchChange(e.target.value);
+    },
+    [onSearchChange],
+  );
 
-  const handleOptionChange = useCallback((value: unknown) => {
-    onSelectedOptionChange(value as string);
-  }, [onSelectedOptionChange]);
+  const handleOptionChange = useCallback(
+    (value: string) => {
+      onSelectedOptionChange(value);
+    },
+    [onSelectedOptionChange],
+  );
 
-  const handleNodeChange = useCallback((value: unknown) => {
-    onNodeChange(value as NodeStrengthLevel | typeof DEFAULT_FILTER);
-  }, [onNodeChange]);
+  const handleNodeChange = useCallback(
+    (value: NodeStrengthLevel | typeof DEFAULT_FILTER) => {
+      onNodeChange(value);
+    },
+    [onNodeChange],
+  );
 
-  const handleSortChange = useCallback((value: unknown) => {
-    onSortChange(value as Sort);
-  }, [onSortChange]);
+  const handleSortChange = useCallback(
+    (value: Sort) => {
+      onSortChange(value);
+    },
+    [onSortChange],
+  );
 
   const optionsWithAll = useMemo(() => [DEFAULT_FILTER, ...options], [options]);
-  const nodesWithAll = useMemo(() => [DEFAULT_FILTER, ...nodes], [nodes]);
+  const nodesWithAll: (NodeStrengthLevel | typeof DEFAULT_FILTER)[] = useMemo(
+    () => [DEFAULT_FILTER, ...nodes],
+    [nodes],
+  );
 
   return (
-    <Flex gap={4} alignItems={"center"} pt={8} width={"full"}>
+    <Flex gap={4} alignItems={"center"} pt={8} width={"full"} flexDirection={{ base: "column", md: "row" }}>
       <SearchInput
         size={"sm"}
         placeholder={LL.proposal.voters_table.filters.search_by_address()}
@@ -66,30 +81,33 @@ export const VotersFiltersPanel = ({
         onChange={handleSearchChange}
       />
 
-      <VotingBaseDropdown
-        label="Voting Options"
-        options={optionsWithAll}
-        selectedOption={selectedOption}
-        onChange={handleOptionChange}
-        ms={"auto"}
-        icon={FilterIcon}
-      />
+      <Flex gap={{ base: 3, md: 4 }} width={{ base: "full", md: "fit-content" }}>
+        <VotingBaseDropdown
+          label="Voting Options"
+          options={optionsWithAll}
+          selectedOption={selectedOption}
+          onChange={handleOptionChange}
+          ms={"auto"}
+          icon={FilterIcon}
+        />
 
-      <VotingBaseDropdown
-        label="Node"
-        options={nodesWithAll}
-        selectedOption={node}
-        onChange={handleNodeChange}
-        icon={NodeIcon}
-      />
+        <VotingBaseDropdown
+          label="Node"
+          options={nodesWithAll}
+          selectedOption={node}
+          onChange={handleNodeChange}
+          icon={NodeIcon}
+        />
 
-      <VotingBaseDropdown
-        label="Sort by"
-        options={sortOptions}
-        selectedOption={sort}
-        onChange={handleSortChange}
-        icon={SortDescIcon}
-      />
+        <VotingBaseDropdown
+          label="Sort by"
+          options={sortOptions}
+          selectedOption={sort}
+          onChange={handleSortChange}
+          icon={SortDescIcon}
+          renderValue={(value: Sort) => LL.filters.sort[value]()}
+        />
+      </Flex>
     </Flex>
   );
 };

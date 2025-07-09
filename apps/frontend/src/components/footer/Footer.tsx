@@ -3,15 +3,18 @@ import { useI18nContext } from "@/i18n/i18n-react";
 import { Flex, Link, Text } from "@chakra-ui/react";
 import { useWallet } from "@vechain/vechain-kit";
 import { useMemo } from "react";
+import { useLocation } from "react-router-dom";
 
 export const Footer = () => {
   const { LL } = useI18nContext();
   const { connection } = useWallet();
   const { isWhitelisted } = useUser();
 
+  const location = useLocation();
+
   const canCreateProposal = useMemo(
-    () => connection.isConnected && isWhitelisted,
-    [connection.isConnected, isWhitelisted],
+    () => connection.isConnected && isWhitelisted && location.pathname === "/",
+    [connection.isConnected, isWhitelisted, location.pathname],
   );
 
   //TODO: Add the LEGAL links

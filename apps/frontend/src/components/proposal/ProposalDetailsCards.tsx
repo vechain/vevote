@@ -1,9 +1,10 @@
 import { useFormatDate } from "@/hooks/useFormatDate";
 import { useI18nContext } from "@/i18n/i18n-react";
-import { Flex, Grid, Heading, Icon, Link, Text } from "@chakra-ui/react";
+import { Flex, FlexProps, Grid, Heading, Icon, Link, Text, useBreakpointValue } from "@chakra-ui/react";
 import { CopyLink } from "../ui/CopyLink";
+import { Slider } from "../ui/Slider";
 import { formatAddress } from "@/utils/address";
-import { PropsWithChildren, SVGProps } from "react";
+import { PropsWithChildren, SVGProps, useMemo } from "react";
 import { useProposal } from "./ProposalProvider";
 import { ArrowLinkIcon, CalendarCheckIcon, EditBoxIcon, UsersIcon } from "@/icons";
 import { getConfig } from "@repo/config";
@@ -13,13 +14,13 @@ const VECHAIN_EXPLORER_URL = getConfig(import.meta.env.VITE_APP_ENV).network.exp
 export const ProposalDetailsCards = () => {
   const { proposal } = useProposal();
   const { LL } = useI18nContext();
+  const isMobile = useBreakpointValue({ base: true, md: false });
 
-  const { formattedProposalDate } = useFormatDate();
-  return (
-    <Grid templateColumns="repeat(3, 1fr)" gap={6} width={"100%"}>
+  const cards = useMemo(
+    () => [
       <DetailsCardsItem title={LL.proposal.proposed_by()} icon={EditBoxIcon}>
         <Flex gap={2} alignItems={"start"} flexDirection={"column"}>
-          <Flex gap={2} alignItems={"center"}>
+          <Flex gap={2} alignItems={{ base: "start", md: "center" }} flexDirection={{ base: "column", md: "row" }}>
             <Text fontWeight={500} color="gray.600">
               {LL.proposal.vechain_foundation()}
             </Text>
@@ -32,35 +33,15 @@ export const ProposalDetailsCards = () => {
               {formatAddress(proposal.proposer)}
             </CopyLink>
           </Flex>
-          <Flex gap={3} alignItems={"center"}>
-            <Text color="gray.500">{LL.on()}</Text>
-            <Text color="gray.600" fontWeight={500}>
-              {formattedProposalDate(proposal.createdAt)}
-            </Text>
-          </Flex>
+          <DateDetails date={proposal.createdAt} label={LL.on()} flexDirection={"row"} gap={3} />
         </Flex>
-      </DetailsCardsItem>
+      </DetailsCardsItem>,
       <DetailsCardsItem title={LL.proposal.voting_calendar()} icon={CalendarCheckIcon}>
         <Flex gap={2} alignItems={"start"} flexDirection={"column"}>
-          <Flex gap={3} alignItems={"center"}>
-            <Text minW={10} color="gray.500">
-              {LL.start()}
-            </Text>
-            <Text color="gray.600" fontWeight={500}>
-              {formattedProposalDate(proposal.startDate)}
-            </Text>
-          </Flex>
-
-          <Flex gap={3} alignItems={"center"}>
-            <Text minW={10} color="gray.500">
-              {LL.end()}
-            </Text>
-            <Text color="gray.600" fontWeight={500}>
-              {formattedProposalDate(proposal.endDate)}
-            </Text>
-          </Flex>
+          <DateDetails date={proposal.startDate} label={LL.start()} />
+          <DateDetails date={proposal.endDate} label={LL.end()} />
         </Flex>
-      </DetailsCardsItem>
+      </DetailsCardsItem>,
       <DetailsCardsItem title={LL.proposal.who_can_vote()} icon={UsersIcon}>
         <Flex gap={2} alignItems={"start"} flexDirection={"column"}>
           <Text color="gray.600">{LL.proposal.node_holders()}</Text>
@@ -75,7 +56,18 @@ export const ProposalDetailsCards = () => {
             <Icon as={ArrowLinkIcon} width={4} height={4} />
           </Link>
         </Flex>
-      </DetailsCardsItem>
+      </DetailsCardsItem>,
+    ],
+    [LL, proposal],
+  );
+
+  if (isMobile) {
+    return <Slider showDots={true}>{cards}</Slider>;
+  }
+
+  return (
+    <Grid templateColumns="repeat(3, 1fr)" gap={6} width={"100%"}>
+      {cards}
     </Grid>
   );
 };
@@ -87,12 +79,43 @@ type DetailsCardsItemProps = PropsWithChildren<{
 
 const DetailsCardsItem = ({ icon, title, children }: DetailsCardsItemProps) => {
   return (
-    <Flex flexDirection={"column"} padding={10} gap={6} alignItems={"start"} borderRadius={16} bg={"gray.50"}>
-      <Heading fontSize={20} fontWeight={600} color="primary.700" display={"flex"} gap={4} alignItems={"center"}>
-        <Icon as={icon} boxSize={6} color="primary.700" />
+    <Flex
+      flexDirection={"column"}
+      padding={{ base: 6, md: 10 }}
+      gap={6}
+      alignItems={"start"}
+      borderRadius={16}
+      bg={"gray.50"}
+      h={"100%"}>
+      <Heading
+        fontSize={{ base: 16, md: 20 }}
+        fontWeight={600}
+        color="primary.700"
+        display={"flex"}
+        gap={4}
+        alignItems={"center"}>
+        <Icon as={icon} boxSize={{ base: 5, md: 6 }} color="primary.700" />
         {title}
       </Heading>
       {children}
+    </Flex>
+  );
+};
+
+const DateDetails = ({ date, label, ...rest }: FlexProps & { date?: Date; label: string }) => {
+  const { formattedProposalDate } = useFormatDate();
+  return (
+    <Flex
+      gap={{ base: 1, md: 3 }}
+      alignItems={{ base: "start", md: "center" }}
+      flexDirection={{ base: "column", md: "row" }}
+      {...rest}>
+      <Text minW={{ base: "auto", md: 3 }} color="gray.500" fontSize={{ base: 14, md: 16 }}>
+        {label}
+      </Text>
+      <Text color="gray.600" fontWeight={500} fontSize={{ base: 14, md: 16 }}>
+        {formattedProposalDate(date)}
+      </Text>
     </Flex>
   );
 };

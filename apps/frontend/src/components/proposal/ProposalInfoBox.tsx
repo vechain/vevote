@@ -47,15 +47,15 @@ export const ProposalInfoBox = ({ canceledDate, canceledReason }: ProposalInfoBo
   return (
     <InfoBox variant={variant}>
       <Flex flex={1} flexDirection={"column"} gap={1} overflow={"hidden"}>
-        <Heading fontSize={18} fontWeight={500} color={infoBoxVariants[variant].style.color}>
+        <Heading fontSize={{ base: 14, md: 18 }} fontWeight={500} color={infoBoxVariants[variant].style.color}>
           {selectedVariant?.title}
         </Heading>
-        <Text fontSize={14} color={"gray.600"}>
+        <Text fontSize={{ base: 12, md: 14 }} color={"gray.600"}>
           {selectedVariant?.description}
         </Text>
         {canceledReason && (
           <Text
-            fontSize={14}
+            fontSize={{ base: 12, md: 14 }}
             color={"gray.600"}
             paddingY={2}
             paddingX={4}

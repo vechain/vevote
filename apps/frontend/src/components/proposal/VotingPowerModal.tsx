@@ -55,12 +55,16 @@ export const VotingPowerModal = () => {
 
   return (
     <>
-      <Button onClick={onOpen} variant={"secondary"} leftIcon={<Icon as={VotingPowerIcon} width={5} height={5} />}>
+      <Button
+        onClick={onOpen}
+        variant={"secondary"}
+        leftIcon={<Icon as={VotingPowerIcon} boxSize={5} />}
+        size={{ base: "md", md: "lg" }}>
         {totalVotingPower}
       </Button>
       <ModalSkeleton isOpen={isOpen} onClose={onClose}>
         <ModalHeader>
-          <ModalTitle title={LL.proposal.voting_power.title()} icon={VotingPowerIcon} />
+          <ModalTitle title={LL.your_voting_power()} icon={VotingPowerIcon} />
         </ModalHeader>
         <ModalBody>
           <Flex flexDirection={"column"} gap={8}>
@@ -72,10 +76,14 @@ export const VotingPowerModal = () => {
                 <NodesList nodesList={nodesList} />
                 <NodesFooter totalVotingPower={totalVotingPower} />
               </Flex>
-              <Flex padding={4} borderRadius={12} background={"primary.100"} flexDirection={"column"} gap={3}>
-                <Text fontSize={14} color={"gray.600"}>
-                  {LL.proposal.voting_power.calculation({ snapshot })}
-                </Text>
+              <Flex
+                fontSize={{ base: 12, md: 14 }}
+                padding={4}
+                borderRadius={12}
+                background={"primary.100"}
+                flexDirection={"column"}
+                gap={3}>
+                <Text color={"gray.600"}>{LL.proposal.voting_power.calculation({ snapshot })}</Text>
                 <Text color={"gray.600"} fontWeight={500} display={"flex"} gap={2} alignItems={"center"}>
                   {LL.block()}
                   <Link
@@ -87,7 +95,7 @@ export const VotingPowerModal = () => {
                     isExternal
                     href={`${VECHAIN_EXPLORER_URL}/blocks/${block.id}`}>
                     {block.number}
-                    <Icon as={ArrowLinkIcon} width={4} height={4} />
+                    <Icon as={ArrowLinkIcon} boxSize={4} />
                   </Link>
                 </Text>
               </Flex>
@@ -106,7 +114,7 @@ const VotingWallet = () => {
   return (
     <Text display={"inline-flex"} alignItems={"center"} gap={2} color={"gray.600"}>
       {`${LL.wallet()}:`}
-      <CopyLink isExternal textToCopy={account?.address} color={"primary.500"} fontWeight={500}>
+      <CopyLink isExternal textToCopy={account?.address} color={"primary.700"} fontWeight={500}>
         {formatAddress(account?.address || "")}
       </CopyLink>
     </Text>
@@ -116,7 +124,12 @@ const VotingWallet = () => {
 const NodesHeader = () => {
   const { LL } = useI18nContext();
   return (
-    <Flex alignItems={"center"} justifyContent={"space-between"} fontSize={14} fontWeight={600} color={"gray.500"}>
+    <Flex
+      alignItems={"center"}
+      justifyContent={"space-between"}
+      fontSize={{ base: 12, md: 14 }}
+      fontWeight={600}
+      color={"gray.500"}>
       <Text>{LL.node()}</Text>
       <Text>{LL.proposal.voting_power.title()}</Text>
     </Flex>
@@ -127,7 +140,13 @@ const NodesList = ({ nodesList }: { nodesList: NodeItem[] }) => {
   return (
     <Flex flexDirection={"column"} borderBottomWidth={1} borderColor={"gray.200"}>
       {nodesList.map(({ multiplier, nodeName, votingPower }, index) => (
-        <Flex key={index} alignItems={"center"} color={"gray.600"} paddingY={1.5} gap={8}>
+        <Flex
+          key={index}
+          alignItems={"center"}
+          color={"gray.600"}
+          paddingY={1.5}
+          gap={8}
+          fontSize={{ base: 14, md: 16 }}>
           <Text minWidth={"30px"}>{`${multiplier}x`}</Text>
           <Text flex={1}>{nodeName}</Text>
           <Text>{votingPower}</Text>
@@ -146,7 +165,8 @@ const NodesFooter = ({ totalVotingPower }: { totalVotingPower: number }) => {
       gap={8}
       fontWeight={600}
       alignItems={"center"}
-      justifyContent={"space-between"}>
+      justifyContent={"space-between"}
+      fontSize={{ base: 14, md: 16 }}>
       <Text>{LL.proposal.voting_power.total_voting_power()}</Text>
       <Text>{totalVotingPower}</Text>
     </Flex>

@@ -23,7 +23,7 @@ import { MixPanelProvider } from "./contexts/MixPanelProvider.tsx";
 loadLocale("en");
 
 const config = getConfig(import.meta.env.VITE_APP_ENV);
-const PROJECT_ID = config.WCProjectId || "542d5caba6ac73d527683a5b84b636fb";
+const PROJECT_ID = config.WCProjectId || "";
 
 const walletConnectOptions: WalletConnectOptions = {
   projectId: PROJECT_ID,
