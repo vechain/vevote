@@ -46,5 +46,5 @@ export const ConnectButton = ({ text, ...props }: ButtonProps & { text?: string 
 };
 
 const StyledButton = (props: ButtonProps) => {
-  return <Button flexShrink={0} size={"md"} {...props} />;
+  return <Button flexShrink={0} size={{ base: "md", md: "lg" }} {...props} />;
 };
