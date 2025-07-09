@@ -122,7 +122,7 @@ const en = {
         "If you delete this draft, all the information of the proposal will not be possible to recover anymore.",
       confirmation: "Are you sure you want to delete it?",
       no_go_back: "No, go back",
-      yes_delete: "Yes, Delete Proposal",
+      yes_delete: "Yes, Delete",
     },
     draft_dialog: {
       title: "Draft proposal",

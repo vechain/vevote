@@ -64,7 +64,7 @@ export const ExecuteModal = ({ proposalId }: { proposalId: string }) => {
             <>
               <ModalBody>
                 <Flex direction="column" gap={3}>
-                  <Text fontSize={14} color={"gray.600"} textAlign={"center"}>
+                  <Text fontSize={{ base: 12, md: 14 }} color={"gray.600"} textAlign={"center"}>
                     {LL.proposal.execute_proposal.description()}
                   </Text>
                   <FormControl isInvalid={Boolean(errors.link)}>
@@ -93,7 +93,7 @@ export const ExecuteModal = ({ proposalId }: { proposalId: string }) => {
                 </Flex>
               </ModalBody>
               <ModalFooter width={"full"} gap={4} mt={7}>
-                <Button flex={1} variant={"tertiary"} onClick={onClose}>
+                <Button flex={1} variant={"tertiary"} onClick={onClose} size={{ base: "md", md: "lg" }}>
                   {LL.cancel()}
                 </Button>
                 <Button
@@ -102,7 +102,8 @@ export const ExecuteModal = ({ proposalId }: { proposalId: string }) => {
                   type="submit"
                   rightIcon={<Icon as={CheckIcon} />}
                   isLoading={isLoading}
-                  loadingText={LL.confirm()}>
+                  loadingText={LL.confirm()}
+                  size={{ base: "md", md: "lg" }}>
                   {LL.confirm()}
                 </Button>
               </ModalFooter>

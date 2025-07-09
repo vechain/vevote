@@ -66,14 +66,29 @@ export const ProposalInfoBox = ({ canceledDate, canceledReason }: ProposalInfoBo
             {canceledReason}
           </Text>
         )}
+        {variant === "executed" && proposal.executedProposalLink && (
+          <Button
+            as={Link}
+            mt={2}
+            display={{ base: "flex", md: "none" }}
+            size={"md"}
+            variant={"secondary"}
+            alignSelf={"start"}
+            gap={2}
+            rightIcon={<Icon as={ArrowLinkIcon} />}
+            href={proposal.executedProposalLink}
+            isExternal>
+            {LL.see_details()}
+          </Button>
+        )}
       </Flex>
       {variant === "executed" && proposal.executedProposalLink && (
         <Button
+          as={Link}
+          display={{ base: "none", md: "flex" }}
           variant={"secondary"}
-          alignSelf={"center"}
           gap={2}
           rightIcon={<Icon as={ArrowLinkIcon} />}
-          as={Link}
           href={proposal.executedProposalLink}
           isExternal>
           {LL.see_details()}
