@@ -12,7 +12,7 @@ export const VotingBaseDropdown = <T extends Option>({
   icon,
   renderValue,
   ...restProps
-}: Omit<MenuButtonProps, "children"> & {
+}: Omit<MenuButtonProps, "children" | "onChange"> & {
   icon: (props: SVGProps<SVGSVGElement>) => JSX.Element;
   label?: string;
   options: T[];

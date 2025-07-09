@@ -112,7 +112,7 @@ export const useVotersData = ({
 
   const nodeOptions = useMemo(() => {
     const usedNodes = new Set(votes.map(vote => vote.node).filter(Boolean));
-    return Array.from(usedNodes);
+    return Array.from(usedNodes) as NodeStrengthLevel[];
   }, [votes]);
 
   const filteredVotes = useMemo(() => {

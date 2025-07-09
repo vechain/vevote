@@ -324,6 +324,10 @@ type RootTranslation = {
 		 * @param {string} days
 		 */
 		end_after_max_duration: RequiredParams<'days'>
+		/**
+		 * F​a​i​l​e​d​ ​t​o​ ​l​o​a​d​ ​v​o​t​e​r​s​ ​d​a​t​a​.​ ​P​l​e​a​s​e​ ​t​r​y​ ​a​g​a​i​n​.
+		 */
+		failed_load_voters: string
 	}
 	voting_list: {
 		/**
@@ -1269,6 +1273,10 @@ JPG, PNG or SVG of maximum of {size}MB.
 		 * The end date must be within {days} days of the start date
 		 */
 		end_after_max_duration: (arg: { days: string }) => LocalizedString
+		/**
+		 * Failed to load voters data. Please try again.
+		 */
+		failed_load_voters: () => LocalizedString
 	}
 	voting_list: {
 		/**

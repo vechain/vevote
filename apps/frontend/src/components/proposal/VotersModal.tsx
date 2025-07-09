@@ -41,36 +41,32 @@ export const VotersModal = () => {
 
   const handleSelectedOptionChange = useCallback((value: string) => {
     setSelectedOption(value);
-    setCurrentPage(1); // Reset to first page when filtering
+    setCurrentPage(1);
   }, []);
 
   const handleNodeChange = useCallback((value: NodeStrengthLevel | typeof DEFAULT_FILTER) => {
     setNode(value);
-    setCurrentPage(1); // Reset to first page when filtering
+    setCurrentPage(1);
   }, []);
 
   const handleSortChange = useCallback((value: Sort) => {
     setSort(value);
-    setCurrentPage(1); // Reset to first page when filtering
+    setCurrentPage(1);
   }, []);
 
   const handleSearchChange = useCallback((value: string) => {
     setSearchQuery(value);
-    setCurrentPage(1); // Reset to first page when searching
+    setCurrentPage(1);
   }, []);
 
   const handlePageChange = useCallback((page: number) => {
     setCurrentPage(page);
   }, []);
 
-  const handleModalOpen = useCallback(() => {
-    onOpen();
-  }, [onOpen]);
-
   return (
     <>
       <Button
-        onClick={handleModalOpen}
+        onClick={onOpen}
         variant={"secondary"}
         leftIcon={<Icon as={UserCheckIcon} boxSize={5} />}
         size={{ base: "md", md: "lg" }}
@@ -99,7 +95,7 @@ export const VotersModal = () => {
           {error && (
             <Alert status="error">
               <AlertIcon />
-              Failed to load voters data. Please try again.
+              {LL.field_errors.failed_load_voters()}
             </Alert>
           )}
           {!isLoading && !error && <VotersTable data={votes} />}

@@ -13,7 +13,7 @@ const sortOptions = [Sort.Newest, Sort.Oldest];
 
 export interface VotersFiltersProps {
   options: string[];
-  nodes: string[];
+  nodes: NodeStrengthLevel[];
   selectedOption: string;
   onSelectedOptionChange: (value: string) => void;
   node: NodeStrengthLevel | typeof DEFAULT_FILTER;
@@ -46,28 +46,31 @@ export const VotersFiltersPanel = ({
   );
 
   const handleOptionChange = useCallback(
-    (value: unknown) => {
-      onSelectedOptionChange(value as string);
+    (value: string) => {
+      onSelectedOptionChange(value);
     },
     [onSelectedOptionChange],
   );
 
   const handleNodeChange = useCallback(
-    (value: unknown) => {
-      onNodeChange(value as NodeStrengthLevel | typeof DEFAULT_FILTER);
+    (value: NodeStrengthLevel | typeof DEFAULT_FILTER) => {
+      onNodeChange(value);
     },
     [onNodeChange],
   );
 
   const handleSortChange = useCallback(
-    (value: unknown) => {
-      onSortChange(value as Sort);
+    (value: Sort) => {
+      onSortChange(value);
     },
     [onSortChange],
   );
 
   const optionsWithAll = useMemo(() => [DEFAULT_FILTER, ...options], [options]);
-  const nodesWithAll = useMemo(() => [DEFAULT_FILTER, ...nodes], [nodes]);
+  const nodesWithAll: (NodeStrengthLevel | typeof DEFAULT_FILTER)[] = useMemo(
+    () => [DEFAULT_FILTER, ...nodes],
+    [nodes],
+  );
 
   return (
     <Flex gap={4} alignItems={"center"} pt={8} width={"full"} flexDirection={{ base: "column", md: "row" }}>
