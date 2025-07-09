@@ -12,7 +12,6 @@ const resetModalItemsStyle = {
 
 const defaultVariant = definePartsStyle({
   dialog: {
-    maxWidth: { base: "327px", md: "480px" },
     padding: { base: "24px", md: "40px" },
     bg: "white",
     borderRadius: "16px",

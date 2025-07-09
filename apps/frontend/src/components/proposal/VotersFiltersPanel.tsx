@@ -78,7 +78,7 @@ export const VotersFiltersPanel = ({
         onChange={handleSearchChange}
       />
 
-      <Flex gap={{ base: 3, md: 4 }}>
+      <Flex gap={{ base: 3, md: 4 }} width={{ base: "full", md: "fit-content" }}>
         <VotingBaseDropdown
           label="Voting Options"
           options={optionsWithAll}
