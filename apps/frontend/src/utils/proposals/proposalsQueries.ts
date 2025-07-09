@@ -1,6 +1,5 @@
 import { ProposalDetails } from "@/pages/CreateProposal/CreateProposalProvider";
-import { ProposalEvent } from "@/types/blockchain";
-import { BaseOption, ProposalCardType, VotingEnum } from "@/types/proposal";
+import { BaseOption, ProposalCardType, ProposalEvent, VotingEnum } from "@/types/proposal";
 import { getConfig } from "@repo/config";
 import { VeVote__factory } from "@repo/contracts";
 import { getAllEventLogs, ThorClient } from "@vechain/vechain-kit";

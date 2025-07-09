@@ -1,5 +1,12 @@
-import { ProposalEvent, ProposalState } from "@/types/blockchain";
-import { BaseOption, ProposalCardType, ProposalStatus, SingleChoiceEnum, VotingEnum } from "@/types/proposal";
+import {
+  BaseOption,
+  ProposalCardType,
+  ProposalEvent,
+  ProposalState,
+  ProposalStatus,
+  SingleChoiceEnum,
+  VotingEnum,
+} from "@/types/proposal";
 import dayjs from "dayjs";
 import { ethers } from "ethers";
 import { v4 as uuidv4 } from "uuid";
