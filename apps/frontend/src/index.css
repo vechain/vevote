@@ -23,6 +23,13 @@ h6 {
   border-color: #e2e8f0;
 }
 
+:has(> .ql-toolbar.ql-snow)[data-error="true"] {
+  border-width: 2px;
+  border-style: solid;
+  border-radius: 8px;
+  border-color: #e53e3e;
+}
+
 .ql-container.ql-snow {
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
