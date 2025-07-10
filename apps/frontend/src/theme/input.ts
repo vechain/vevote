@@ -18,7 +18,8 @@ const mediumInput = defineStyle({
   width: { base: "100%", sm: "288px" },
   maxWidth: { base: "100%", sm: "288px" },
   height: "48px",
-  ...paddingInput,
+  paddingX: "8px",
+  paddingY: "4px",
 });
 
 const fullInput = defineStyle({

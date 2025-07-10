@@ -51,7 +51,7 @@ export const BuyANode = () => {
           onClick={onBuyNode}
           backgroundColor={connectedAndVoter ? "gray.200" : "primary.700"}
           variant={connectedAndVoter ? "secondary" : "primary"}
-          size={{ base: "sm", md: "md" }}
+          size={{ base: "md", md: "lg" }}
           rightIcon={<Icon as={ArrowLinkIcon} boxSize={{ base: 4, md: 6 }} />}>
           {LL.buy_a_node()}
         </Button>
