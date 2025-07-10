@@ -2,7 +2,7 @@ import { useI18nContext } from "@/i18n/i18n-react";
 import { ArrowLeftIcon } from "@/icons";
 import { Button, ButtonProps, Icon, Link } from "@chakra-ui/react";
 
-export const BackButton = () => {
+export const BackButton = (props: ButtonProps) => {
   const { LL } = useI18nContext();
   return (
     <>
@@ -10,10 +10,11 @@ export const BackButton = () => {
         display={{
           base: "none",
           md: "flex",
-        }}>
+        }}
+        {...props}>
         {LL.back()}
       </BaseButton>
-      <BaseButton display={{ base: "flex", md: "none" }} size={"md"} minWidth={"40px"} w={"40px"} />
+      <BaseButton display={{ base: "flex", md: "none" }} size={"md"} minWidth={"40px"} w={"40px"} {...props} />
     </>
   );
 };
