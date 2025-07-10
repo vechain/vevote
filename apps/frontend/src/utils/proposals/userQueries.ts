@@ -128,3 +128,20 @@ export const getNodesName = async ({ nodeIds }: { nodeIds: string[] }) => {
 
   return nodeLevels;
 };
+
+export const getAllUsersNodes = async (address: string) => {
+  const res = await executeCall({
+    contractAddress: nodeManagementAddress,
+    contractInterface: nodeManagementInterface,
+    method: "getNodeIds",
+    args: [address],
+  });
+
+  if (!res.success) return [];
+
+  const nodes = (res.result.plain as bigint[]).map(n => n.toString());
+
+  return {
+    nodes,
+  };
+};
