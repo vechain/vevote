@@ -22,6 +22,7 @@ export const TextEditorControlled = <T extends FieldValues>({ name }: TextEditor
           defaultValue={defaultValues?.["description"]}
           onTextChange={({ oldContent, delta }) => {
             const newContent = oldContent.compose(delta);
+            console.log("New content:", newContent);
             const isEmpty = JSON.stringify(newContent) === JSON.stringify({ ops: [{ insert: "\n" }] });
             if (isEmpty) onChange([]);
             else onChange(newContent.ops);
