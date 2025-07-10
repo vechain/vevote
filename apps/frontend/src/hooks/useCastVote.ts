@@ -39,7 +39,7 @@ export const useCastVote = ({ proposalId }: { proposalId?: string }) => {
 
         const functionAbi = new ABIFunction(interfaceJson);
 
-        const clause = Clause.callFunction(Address.of(contractAddress), functionAbi, encodedData) as EnhancedClause;
+        const clause = Clause.callFunction(Address.of(contractAddress), functionAbi, encodedData);
 
         clauses.push(clause);
 

@@ -59,9 +59,7 @@ export const Slider = ({ children, showDots = true, gap = 4, className }: Slider
             damping: 30,
           }}>
           {children.map((child, index) => (
-            <GridItem key={index}>
-              {child}
-            </GridItem>
+            <GridItem key={index}>{child}</GridItem>
           ))}
         </MotionGrid>
       </Box>

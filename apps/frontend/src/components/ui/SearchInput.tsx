@@ -10,7 +10,8 @@ type SearchInputProps = InputProps & {
 const buttonStyle = defineStyle({
   position: "absolute",
   right: "0",
-  top: "0",
+  top: "50%",
+  transform: "translateY(-50%)",
   bottom: "0",
   variant: "ghost",
   minWidth: "40px",
@@ -26,9 +27,17 @@ export const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(({ onC
       <InputWithIcon.Icon iconPosition="left">
         <Icon as={SearchIcon} width={4} height={4} />
       </InputWithIcon.Icon>
-      <InputWithIcon.Input paddingInlineEnd={0} minWidth="0" ref={ref} paddingLeft={0} value={value} {...props} />
+      <InputWithIcon.Input
+        paddingInlineEnd={0}
+        minWidth="0"
+        ref={ref}
+        paddingLeft={0}
+        value={value}
+        size={{ base: "sm", md: "md" }}
+        {...props}
+      />
       {value && onClear && (
-        <Button {...buttonStyle} _hover={{ bg: "white" }} onClick={onClear}>
+        <Button {...buttonStyle} _hover={{ bg: "white" }} onClick={onClear} size={{ base: "sm", md: "md" }}>
           <Icon as={CloseIcon} width={4} height={4} />
         </Button>
       )}

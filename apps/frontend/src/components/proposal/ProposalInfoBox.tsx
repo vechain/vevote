@@ -1,6 +1,6 @@
 import { useFormatDate } from "@/hooks/useFormatDate";
 import { useI18nContext } from "@/i18n/i18n-react";
-import { Button, Flex, Heading, Icon, Text } from "@chakra-ui/react";
+import { Button, Flex, Heading, Icon, Link, Text } from "@chakra-ui/react";
 import { useMemo } from "react";
 import { InfoBox, infoBoxVariants } from "../ui/InfoBox";
 import { useProposal } from "./ProposalProvider";
@@ -66,9 +66,31 @@ export const ProposalInfoBox = ({ canceledDate, canceledReason }: ProposalInfoBo
             {canceledReason}
           </Text>
         )}
+        {variant === "executed" && proposal.executedProposalLink && (
+          <Button
+            as={Link}
+            mt={2}
+            display={{ base: "flex", md: "none" }}
+            size={"md"}
+            variant={"secondary"}
+            alignSelf={"start"}
+            gap={2}
+            rightIcon={<Icon as={ArrowLinkIcon} />}
+            href={proposal.executedProposalLink}
+            isExternal>
+            {LL.see_details()}
+          </Button>
+        )}
       </Flex>
-      {variant === "executed" && (
-        <Button variant={"secondary"} alignSelf={"center"} gap={2} rightIcon={<Icon as={ArrowLinkIcon} />}>
+      {variant === "executed" && proposal.executedProposalLink && (
+        <Button
+          as={Link}
+          display={{ base: "none", md: "flex" }}
+          variant={"secondary"}
+          gap={2}
+          rightIcon={<Icon as={ArrowLinkIcon} />}
+          href={proposal.executedProposalLink}
+          isExternal>
           {LL.see_details()}
         </Button>
       )}

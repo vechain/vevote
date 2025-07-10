@@ -29,15 +29,14 @@ type MessageModalProps = Omit<ModalProps, "variant"> & {
   title?: string;
   iconColor?: ColorProps["color"];
 };
-
 export const MessageModal = ({ children, title, icon, iconColor = "primary.500", ...props }: MessageModalProps) => {
   return (
     <BaseModal isCentered {...props}>
       <ModalOverlay />
       <ModalContent gap={2}>
         <ModalHeader textAlign={"center"} display={"flex"} flexDirection={"column"} alignItems={"center"}>
-          <Icon color={iconColor} width={16} height={16} as={icon} paddingBottom={6} />
-          <Text fontSize={20} color={"gray.600"} fontWeight={600}>
+          <Icon color={iconColor} boxSize={{ base: 14, md: 16 }} as={icon} paddingBottom={6} />
+          <Text fontSize={{ base: 16, md: 20 }} color={"gray.600"} fontWeight={600}>
             {title}
           </Text>
         </ModalHeader>
