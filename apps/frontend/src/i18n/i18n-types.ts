@@ -443,7 +443,7 @@ type RootTranslation = {
 			 */
 			no_go_back: string
 			/**
-			 * Y​e​s​,​ ​D​e​l​e​t​e​ ​P​r​o​p​o​s​a​l
+			 * Y​e​s​,​ ​D​e​l​e​t​e
 			 */
 			yes_delete: string
 		}
@@ -1391,7 +1391,7 @@ JPG, PNG or SVG of maximum of {size}MB.
 			 */
 			no_go_back: () => LocalizedString
 			/**
-			 * Yes, Delete Proposal
+			 * Yes, Delete
 			 */
 			yes_delete: () => LocalizedString
 		}

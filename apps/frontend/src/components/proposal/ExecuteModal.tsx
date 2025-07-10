@@ -14,35 +14,39 @@ import {
 } from "@chakra-ui/react";
 import { MessageModal } from "../ui/ModalSkeleton";
 import { CheckDoubleIcon, CheckIcon, LinkIcon } from "@/icons";
-import { FormSkeleton } from "../ui/FormSkeleton";
-import { useCallback } from "react";
+import { FormSkeleton, FormSkeletonProps } from "../ui/FormSkeleton";
+import { useCallback, useMemo } from "react";
 import { z } from "zod";
 import { Label } from "../ui/Label";
 import { InputMessage } from "../ui/InputMessage";
-import { executeCall } from "@/utils/contract";
-import { VeVote__factory } from "@repo/contracts";
-import { getConfig } from "@repo/config";
-import { fromStringToUint256 } from "@/utils/proposals/helpers";
+import { useExecuteProposal } from "@/hooks/useExecuteProposal";
 
 export const ExecuteModal = ({ proposalId }: { proposalId: string }) => {
   const { LL } = useI18nContext();
   const { isOpen, onClose, onOpen } = useDisclosure();
+  const { sendTransaction, isTransactionPending, isWaitingForWalletConfirmation } = useExecuteProposal({ proposalId });
 
-  const contractAddress = getConfig(import.meta.env.VITE_APP_ENV).vevoteContractAddress;
-  const contractInterface = VeVote__factory.createInterface();
+  const isLoading = useMemo(
+    () => isTransactionPending || isWaitingForWalletConfirmation,
+    [isTransactionPending, isWaitingForWalletConfirmation],
+  );
 
   const schema = z.object({
-    link: z.string().optional(),
+    link: z.string(),
   });
 
-  const onSubmit = useCallback(async () => {
-    await executeCall({
-      contractAddress,
-      contractInterface,
-      method: "execute",
-      args: [fromStringToUint256(proposalId)],
-    });
-  }, [contractAddress, contractInterface, proposalId]);
+  const onSubmit: FormSkeletonProps<z.infer<typeof schema>>["onSubmit"] = useCallback(
+    async ({ link }, { setError }) => {
+      try {
+        await sendTransaction({ proposalId, link });
+        onClose();
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : "Failed to execute proposal";
+        setError("link", { message: errorMessage });
+      }
+    },
+    [sendTransaction, proposalId, onClose],
+  );
 
   return (
     <>
@@ -60,12 +64,12 @@ export const ExecuteModal = ({ proposalId }: { proposalId: string }) => {
             <>
               <ModalBody>
                 <Flex direction="column" gap={3}>
-                  <Text fontSize={14} color={"gray.600"} textAlign={"center"}>
+                  <Text fontSize={{ base: 12, md: 14 }} color={"gray.600"} textAlign={"center"}>
                     {LL.proposal.execute_proposal.description()}
                   </Text>
                   <FormControl isInvalid={Boolean(errors.link)}>
                     <Label fontSize={16} label={LL.proposal.execute_proposal.label()} />
-                    <InputGroup>
+                    <InputGroup width={"full"}>
                       <InputLeftAddon
                         display={"flex"}
                         alignItems={"center"}
@@ -79,6 +83,7 @@ export const ExecuteModal = ({ proposalId }: { proposalId: string }) => {
                       <Input
                         type="text"
                         width="full"
+                        maxWidth={"full"}
                         placeholder={LL.proposal.execute_proposal.link_placeholder()}
                         {...register("link")}
                       />
@@ -88,10 +93,17 @@ export const ExecuteModal = ({ proposalId }: { proposalId: string }) => {
                 </Flex>
               </ModalBody>
               <ModalFooter width={"full"} gap={4} mt={7}>
-                <Button flex={1} variant={"tertiary"} onClick={onClose}>
+                <Button flex={1} variant={"tertiary"} onClick={onClose} size={{ base: "md", md: "lg" }}>
                   {LL.cancel()}
                 </Button>
-                <Button flex={1} variant={"primary"} type="submit" rightIcon={<Icon as={CheckIcon} />}>
+                <Button
+                  flex={1}
+                  variant={"primary"}
+                  type="submit"
+                  rightIcon={<Icon as={CheckIcon} />}
+                  isLoading={isLoading}
+                  loadingText={LL.confirm()}
+                  size={{ base: "md", md: "lg" }}>
                   {LL.confirm()}
                 </Button>
               </ModalFooter>

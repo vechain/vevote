@@ -46,7 +46,7 @@ export const ExitModal = ({ isExitOpen, onExitClose }: { isExitOpen: boolean; on
         icon={LogoutIcon}
         iconColor={"red.600"}
         title={LL.proposal.create.exit_proposal.title()}>
-        <Text textAlign={"center"} fontSize={14} color={"gray.600"}>
+        <Text textAlign={"center"} fontSize={{ base: 12, md: 14 }} color={"gray.600"}>
           {exitDescription}
         </Text>
         {draftProposal && step === CreateProposalStep.VOTING_SUMMARY && (
@@ -56,11 +56,11 @@ export const ExitModal = ({ isExitOpen, onExitClose }: { isExitOpen: boolean; on
         )}
 
         <ModalFooter width={"full"} gap={4} justifyContent={"space-between"} mt={7}>
-          <Button width={"full"} variant={"danger"} onClick={onExit}>
+          <Button width={"full"} variant={"danger"} onClick={onExit} size={{ base: "md", md: "lg" }}>
             {LL.proposal.create.exit_proposal.exit_button()}
           </Button>
           {step === CreateProposalStep.VOTING_SUMMARY && (
-            <Button width={"full"} variant={"tertiary"} onClick={onSave}>
+            <Button width={"full"} variant={"tertiary"} onClick={onSave} size={{ base: "md", md: "lg" }}>
               {LL.proposal.create.exit_proposal.save_button()}
             </Button>
           )}
@@ -72,11 +72,11 @@ export const ExitModal = ({ isExitOpen, onExitClose }: { isExitOpen: boolean; on
         icon={CheckIcon}
         iconColor={"primary.500"}
         title={LL.proposal.create.draft_saved.title()}>
-        <Text textAlign={"center"} fontSize={14} color={"gray.600"}>
+        <Text textAlign={"center"} fontSize={{ base: 12, md: 14 }} color={"gray.600"}>
           {LL.proposal.create.draft_saved.description()}
         </Text>
         <ModalFooter width={"full"} justifyContent={"space-center"} mt={7}>
-          <Button width={"full"} onClick={onContinue}>
+          <Button width={"full"} onClick={onContinue} size={{ base: "md", md: "lg" }}>
             {LL.continue()}
           </Button>
         </ModalFooter>

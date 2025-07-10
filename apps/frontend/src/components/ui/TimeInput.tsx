@@ -8,7 +8,14 @@ export const TimeInput = (props: InputProps) => {
       <InputWithIcon.Icon iconPosition="left">
         <Icon as={ClockIcon} width={4} height={4} color={"gray.500"} />
       </InputWithIcon.Icon>
-      <InputWithIcon.Input {...props} size={"full"} paddingLeft={"0px"} type={"time"} justifyContent={"center"} />
+      <InputWithIcon.Input
+        {...props}
+        size={"full"}
+        paddingLeft={"0px"}
+        type={"time"}
+        justifyContent={"center"}
+        maxWidth={{ base: "100px", md: "full" }}
+      />
     </InputWithIcon>
   );
 };
