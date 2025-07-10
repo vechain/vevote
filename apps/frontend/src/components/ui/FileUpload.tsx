@@ -29,6 +29,7 @@ export type FileUploadProps = PropsWithChildren<{
   formats: FileUploadFormats;
   isDisabled?: boolean;
   isLoading?: boolean;
+  isError?: boolean;
   onError?: (error: string) => void;
   onSuccess?: () => void;
 }>;
@@ -42,6 +43,7 @@ export const FileUpload = ({
   isLoading,
   onError,
   onSuccess,
+  isError,
   ...props
 }: FileUploadProps) => {
   const { LL } = useI18nContext();
@@ -75,9 +77,9 @@ export const FileUpload = ({
   return (
     <Flex
       direction={{ base: "column", md: "row" }}
-      borderWidth={"1px"}
+      borderWidth={isError ? "2px" : "1px"}
+      borderColor={isError ? "red.500" : "gray.200"}
       borderRadius={"8px"}
-      borderColor={"gray.200"}
       padding={"16px"}
       alignItems={"center"}
       gap={"24px"}

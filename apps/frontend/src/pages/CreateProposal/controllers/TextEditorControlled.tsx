@@ -15,15 +15,18 @@ export const TextEditorControlled = <T extends FieldValues>({ name }: TextEditor
     <Controller
       name={name}
       control={control}
-      render={({ field: { onChange }, formState: { defaultValues } }) => (
+      render={({ field: { onChange }, formState: { defaultValues, errors } }) => (
         <TextEditor
           ref={quillRef}
           readOnly={false}
           defaultValue={defaultValues?.["description"]}
           onTextChange={({ oldContent, delta }) => {
             const newContent = oldContent.compose(delta);
-            onChange(newContent.ops);
+            const isEmpty = JSON.stringify(newContent) === JSON.stringify({ ops: [{ insert: "\n" }] });
+            if (isEmpty) onChange([]);
+            else onChange(newContent.ops);
           }}
+          isError={!!errors[name]?.message}
         />
       )}
     />
