@@ -83,6 +83,7 @@ export const useVotesResults = ({ proposalId, size }: { proposalId?: string; siz
   const { data, isLoading, error } = useQuery({
     queryKey: ["votesResults", proposalId],
     queryFn: async () => await getVotesResults(proposalId, size),
+    refetchInterval: 10000,
   });
 
   return {
