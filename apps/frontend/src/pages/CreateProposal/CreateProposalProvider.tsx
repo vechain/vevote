@@ -43,7 +43,7 @@ export type ProposalDetails = {
 
 export const DEFAULT_PROPOSAL: ProposalDetails = {
   title: "",
-  description: DEFAULT_DESCRIPTION_TEMPLATE.ops,
+  description: DEFAULT_DESCRIPTION_TEMPLATE().ops,
   votingQuestion: "",
   votingLimit: 1,
   votingType: VotingEnum.SINGLE_CHOICE,
@@ -82,7 +82,10 @@ export const CreateProposalProvider = ({ children }: PropsWithChildren) => {
     "draft-proposal",
     null,
   );
-  const [proposalDetails, setProposalDetails] = useState<ProposalDetails>(DEFAULT_PROPOSAL);
+  const [proposalDetails, setProposalDetails] = useState<ProposalDetails>({
+    ...DEFAULT_PROPOSAL,
+    description: DEFAULT_DESCRIPTION_TEMPLATE(account?.address).ops,
+  });
   const [step, setStep] = useState<CreateProposalStep>(CreateProposalStep.VOTING_DETAILS);
 
   const saveDraftProposal = useCallback(async () => {
