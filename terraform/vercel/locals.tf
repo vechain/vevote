@@ -1,0 +1,7 @@
+# pull in workspace specific environment settings from yaml file under environments directory
+# can then be used as local.env.<key> in other files
+locals {
+  config      = merge(yamldecode(file("../config/${terraform.workspace}/common.yaml")))
+  parts       = (terraform.workspace)
+  environment = local.parts
+}
