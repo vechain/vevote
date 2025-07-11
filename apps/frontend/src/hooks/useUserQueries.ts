@@ -72,7 +72,7 @@ export const useAllUserNodes = () => {
   });
 
   return {
-    nodes: data,
+    allNodes: data?.nodes || [],
     isLoading,
     isError: Boolean(error),
   };

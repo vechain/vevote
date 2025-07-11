@@ -12,11 +12,10 @@ import { ProposalCardType, ProposalStatus } from "@/types/proposal";
 import { Flex, Heading, Icon, Tab, TabList, TabPanel, TabPanels, Tabs, Text } from "@chakra-ui/react";
 import { useWallet } from "@vechain/vechain-kit";
 import dayjs from "dayjs";
-import { PropsWithChildren, useEffect, useMemo, useState } from "react";
+import { PropsWithChildren, useMemo, useState } from "react";
 import { useCreateProposal } from "../CreateProposal/CreateProposalProvider";
 import { ProposalCard } from "./ProposalCard";
 import { areAddressesEqual } from "@/utils/address";
-import { useAllUserNodes } from "@/hooks/useUserQueries";
 
 const ITEMS_PER_PAGE = 6;
 
@@ -54,12 +53,6 @@ export const Proposals = () => {
   }, [proposalsBySearch]);
 
   const canCreateProposal = useMemo(() => account?.address && isWhitelisted, [account?.address, isWhitelisted]);
-
-  const { nodes } = useAllUserNodes();
-
-  useEffect(() => {
-    console.log("All User Nodes_____________________:", nodes);
-  }, [nodes]);
 
   return (
     <>

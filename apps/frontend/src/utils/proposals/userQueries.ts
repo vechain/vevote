@@ -2,7 +2,7 @@ import { getConfig } from "@repo/config";
 import { executeCall, executeMultipleClauses } from "../contract";
 import { VeVote__factory } from "@repo/contracts";
 import { NodeManagement__factory } from "@repo/contracts/typechain-types";
-import { ExtendedUserNode, NodeStrengthLevels, UserNode } from "@/types/user";
+import { ExtendedUserNode, NodeStrengthLevels, StargateNode, UserNode } from "@/types/user";
 
 const contractAddress = getConfig(import.meta.env.VITE_APP_ENV).vevoteContractAddress;
 const nodeManagementAddress = getConfig(import.meta.env.VITE_APP_ENV).nodeManagementContractAddress;
@@ -130,16 +130,24 @@ export const getNodesName = async ({ nodeIds }: { nodeIds: string[] }) => {
 };
 
 export const getAllUsersNodes = async (address: string) => {
-  const res = await executeCall({
+  const [allNodesRes, stargateNodesRes] = await executeMultipleClauses({
     contractAddress: nodeManagementAddress,
     contractInterface: nodeManagementInterface,
-    method: "getNodeIds",
-    args: [address],
+    methodsWithArgs: [
+      { method: "getNodeIds", args: [address] },
+      { method: "getUserStargateNFTsInfo", args: [address] },
+    ],
   });
 
-  if (!res.success) return [];
+  if (!allNodesRes.success || !stargateNodesRes.success) return { nodes: [] };
 
-  const nodes = (res.result.plain as bigint[]).map(n => n.toString());
+  const AllNodes = (allNodesRes.result.plain as bigint[]).map(n => n.toString());
+  const stargateNodes = (stargateNodesRes.result.plain as StargateNode[]).map(n => n.tokenId.toString());
+
+  const nodes = AllNodes.map(nodeId => ({
+    nodeId,
+    isStargate: stargateNodes.includes(nodeId),
+  }));
 
   return {
     nodes,

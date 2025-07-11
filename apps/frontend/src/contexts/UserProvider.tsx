@@ -1,5 +1,7 @@
-import { useUserRoles } from "@/hooks/useUserQueries";
-import { createContext, useContext, useMemo } from "react";
+import { StargateWarningModal } from "@/components/proposal/StargateWarningModal";
+import { useAllUserNodes, useUserRoles } from "@/hooks/useUserQueries";
+import { useDisclosure } from "@chakra-ui/react";
+import { createContext, useContext, useEffect, useMemo } from "react";
 
 const DEFAULT_ROLES = {
   isAdmin: false,
@@ -24,13 +26,26 @@ export const UserContext = createContext<UserContextProps>({
 });
 
 export const UserProvider = (props: React.PropsWithChildren) => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const { roles } = useUserRoles();
+  const { allNodes } = useAllUserNodes();
 
   const ctxValue = useMemo(() => {
     return { ...(roles ?? DEFAULT_ROLES) };
   }, [roles]);
 
-  return <UserContext.Provider value={ctxValue}>{props.children}</UserContext.Provider>;
+  useEffect(() => {
+    if (allNodes?.some(node => !node.isStargate)) {
+      onOpen();
+    }
+  }, [allNodes, onOpen]);
+
+  return (
+    <UserContext.Provider value={ctxValue}>
+      {props.children}
+      <StargateWarningModal isOpen={isOpen} onClose={onClose} />
+    </UserContext.Provider>
+  );
 };
 
 export const useUser = () => {

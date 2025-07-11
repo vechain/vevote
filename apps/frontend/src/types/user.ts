@@ -30,6 +30,14 @@ export type ExtendedUserNode = UserNode & {
   nodeName: NodeStrengthLevel;
 };
 
+export type StargateNode = {
+  lastVthoClaimTimestamp: number;
+  levelId: number;
+  mintedAtBlock: bigint;
+  tokenId: bigint;
+  vetAmountStaked: bigint;
+};
+
 export enum NodeStrengthLevel {
   None = "none",
   Strength = "strength",
