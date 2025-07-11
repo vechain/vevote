@@ -943,6 +943,32 @@ type RootTranslation = {
 		 */
 		decentralized: string
 	}
+	stargate_warning: {
+		/**
+		 * S​t​a​r​g​a​t​e​ ​N​o​d​e​ ​M​i​g​r​a​t​i​o​n​ ​R​e​q​u​i​r​e​d
+		 */
+		title: string
+		/**
+		 * Y​o​u​ ​h​a​v​e​ ​1​ ​o​r​ ​m​o​r​e​ ​n​o​n​-​m​i​g​r​a​t​e​d​ ​n​o​d​e​s​.​ ​P​l​e​a​s​e​ ​m​i​g​r​a​t​e​ ​t​h​e​m​ ​a​s​ ​s​o​o​n​ ​a​s​ ​p​o​s​s​i​b​l​e​ ​t​o​ ​c​o​n​t​i​n​u​e​ ​v​o​t​i​n​g​.
+		 */
+		description: string
+		/**
+		 * h​t​t​p​s​:​/​/​a​p​p​.​s​t​a​r​g​a​t​e​.​v​e​c​h​a​i​n​.​o​r​g​/
+		 */
+		migration_link: string
+		/**
+		 * I​f​ ​a​ ​p​r​o​p​o​s​a​l​ ​h​a​s​ ​a​l​r​e​a​d​y​ ​s​t​a​r​t​e​d​,​ ​y​o​u​ ​w​i​l​l​ ​n​o​t​ ​b​e​ ​a​b​l​e​ ​t​o​ ​v​o​t​e​ ​o​n​ ​i​t​ ​e​v​e​n​ ​a​f​t​e​r​ ​m​i​g​r​a​t​i​o​n​.​ ​O​n​l​y​ ​f​u​t​u​r​e​ ​p​r​o​p​o​s​a​l​s​ ​w​i​l​l​ ​b​e​ ​a​v​a​i​l​a​b​l​e​ ​f​o​r​ ​v​o​t​i​n​g​.
+		 */
+		ongoing_proposal_warning: string
+		/**
+		 * I​f​ ​y​o​u​ ​w​a​n​t​ ​t​o​ ​c​o​n​t​i​n​u​e​ ​a​n​y​w​a​y​,​ ​w​r​i​t​e​ ​t​h​i​s​ ​t​e​x​t​:​ ​a​g​r​e​e​-​w​i​t​h​-​t​h​i​s
+		 */
+		confirmation_instruction: string
+		/**
+		 * P​l​e​a​s​e​ ​t​y​p​e​ ​e​x​a​c​t​l​y​ ​'​a​g​r​e​e​-​w​i​t​h​-​t​h​i​s​'​ ​t​o​ ​c​o​n​t​i​n​u​e
+		 */
+		confirmation_error: string
+	}
 	footer: {
 		/**
 		 * A​l​l​ ​R​i​g​h​t​s​ ​R​e​s​e​r​v​e​d​ ​
@@ -1881,6 +1907,32 @@ JPG, PNG or SVG of maximum of {size}MB.
 		 * Decentralized.
 		 */
 		decentralized: () => LocalizedString
+	}
+	stargate_warning: {
+		/**
+		 * Stargate Node Migration Required
+		 */
+		title: () => LocalizedString
+		/**
+		 * You have 1 or more non-migrated nodes. Please migrate them as soon as possible to continue voting.
+		 */
+		description: () => LocalizedString
+		/**
+		 * https://app.stargate.vechain.org/
+		 */
+		migration_link: () => LocalizedString
+		/**
+		 * If a proposal has already started, you will not be able to vote on it even after migration. Only future proposals will be available for voting.
+		 */
+		ongoing_proposal_warning: () => LocalizedString
+		/**
+		 * If you want to continue anyway, write this text: agree-with-this
+		 */
+		confirmation_instruction: () => LocalizedString
+		/**
+		 * Please type exactly 'agree-with-this' to continue
+		 */
+		confirmation_error: () => LocalizedString
 	}
 	footer: {
 		/**

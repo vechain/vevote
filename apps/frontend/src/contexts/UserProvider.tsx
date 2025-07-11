@@ -1,5 +1,6 @@
 import { StargateWarningModal } from "@/components/proposal/StargateWarningModal";
 import { useAllUserNodes, useUserRoles } from "@/hooks/useUserQueries";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { useDisclosure } from "@chakra-ui/react";
 import { createContext, useContext, useEffect, useMemo } from "react";
 
@@ -29,21 +30,22 @@ export const UserProvider = (props: React.PropsWithChildren) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { roles } = useUserRoles();
   const { allNodes } = useAllUserNodes();
+  const [hasAccepted, setHasAccepted] = useLocalStorage("stargate-warning-accepted", false);
 
   const ctxValue = useMemo(() => {
     return { ...(roles ?? DEFAULT_ROLES) };
   }, [roles]);
 
   useEffect(() => {
-    if (allNodes?.some(node => !node.isStargate)) {
+    if (allNodes?.some(node => !node.isStargate) && !hasAccepted) {
       onOpen();
     }
-  }, [allNodes, onOpen]);
+  }, [allNodes, onOpen, hasAccepted]);
 
   return (
     <UserContext.Provider value={ctxValue}>
       {props.children}
-      <StargateWarningModal isOpen={isOpen} onClose={onClose} />
+      <StargateWarningModal isOpen={isOpen} onClose={onClose} setHasAccepted={setHasAccepted} />
     </UserContext.Provider>
   );
 };
