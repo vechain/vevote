@@ -45,7 +45,7 @@ export const ProposalInfos = () => {
           {proposal.title}
         </Heading>
       </Flex>
-      <Flex flexDirection={"column"} gap={4} alignItems={"start"}>
+      <Flex flexDirection={"column"} gap={4} alignItems={"start"} width={"full"}>
         <Heading fontSize={{ base: 16, md: 20 }} fontWeight={600} color="primary.700">
           {LL.description()}
         </Heading>
@@ -84,17 +84,18 @@ const ReadOnlyEditorContainer = forwardRef<
     <motion.div
       ref={ref}
       initial={{ height: "4lh" }}
-      animate={{ 
-        height: isExpanded ? `${contentHeight}px` : "4lh"
+      animate={{
+        height: isExpanded ? `${contentHeight}px` : "4lh",
       }}
-      transition={{ 
+      transition={{
         duration: 0.4,
-        ease: [0.25, 0.46, 0.45, 0.94]
+        ease: [0.25, 0.46, 0.45, 0.94],
       }}
-      style={{ 
-        overflow: "hidden", 
+      style={{
+        width: "100%",
+        overflow: "hidden",
         lineHeight: 1.6,
-        willChange: "height"
+        willChange: "height",
       }}>
       {children}
     </motion.div>
