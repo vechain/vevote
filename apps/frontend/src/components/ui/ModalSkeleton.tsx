@@ -33,7 +33,7 @@ export const MessageModal = ({ children, title, icon, iconColor = "primary.500",
   return (
     <BaseModal isCentered {...props}>
       <ModalOverlay />
-      <ModalContent gap={2}>
+      <ModalContent gap={2} maxWidth={{ base: "327px", md: "480px" }}>
         <ModalHeader textAlign={"center"} display={"flex"} flexDirection={"column"} alignItems={"center"}>
           <Icon color={iconColor} boxSize={{ base: 14, md: 16 }} as={icon} paddingBottom={6} />
           <Text fontSize={{ base: 16, md: 20 }} color={"gray.600"} fontWeight={600}>
