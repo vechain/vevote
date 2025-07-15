@@ -42,7 +42,7 @@ type EditorProps = {
 };
 
 const toolbarOptions = [
-  // { size: ["small", false, "large"] },
+  { size: ["small", false, "large"] },
   "bold",
   "italic",
   "underline",
