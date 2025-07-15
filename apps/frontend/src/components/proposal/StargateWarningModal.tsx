@@ -1,4 +1,4 @@
-import { CircleInfoIcon } from "@/icons";
+import { AlertTriangleIcon } from "@/icons";
 import { MessageModal } from "../ui/ModalSkeleton";
 import { Button, Flex, FormControl, Input, Link, ModalBody, ModalFooter, Text } from "@chakra-ui/react";
 import { useI18nContext } from "@/i18n/i18n-react";
@@ -7,7 +7,7 @@ import { InputMessage } from "../ui/InputMessage";
 import { FormSkeleton } from "../ui/FormSkeleton";
 import { z } from "zod";
 import { useCallback } from "react";
-import { InfoBox } from "../ui/InfoBox";
+import { GenericInfoBox } from "../ui/GenericInfoBox";
 
 type StargateWarningModalProps = {
   isOpen: boolean;
@@ -35,22 +35,22 @@ export const StargateWarningModal = ({ isOpen, onClose, setHasAccepted }: Starga
     <MessageModal
       isOpen={isOpen}
       onClose={onClose}
-      icon={CircleInfoIcon}
-      iconColor={"red.500"}
+      icon={AlertTriangleIcon}
+      iconColor={"primary.blue"}
       title={LL.stargate_warning.title()}
       closeOnOverlayClick={false}>
       <FormSkeleton schema={schema} onSubmit={onSubmit}>
         {({ register, errors }) => (
           <>
             <ModalBody>
-              <Flex direction={"column"} gap={2} mb={6}>
+              <Flex direction={"column"} gap={4} mb={6}>
                 <Text fontSize={{ base: 12, md: 14 }} color={"gray.600"} lineHeight={1.5}>
                   {LL.stargate_warning.description()}
                 </Text>
 
-                <InfoBox variant="info">
+                <GenericInfoBox variant="warning">
                   <Text fontSize={{ base: 12, md: 14 }}>{LL.stargate_warning.ongoing_proposal_warning()}</Text>
-                </InfoBox>
+                </GenericInfoBox>
 
                 <Button as={Link} display={"block"} href={stargateUrl} isExternal textAlign="center">
                   {"Go to Stargate Migration"}
