@@ -41,7 +41,16 @@ type EditorProps = {
   isError?: boolean;
 };
 
-const toolbarOptions = ["bold", "italic", "underline", "strike", { list: "ordered" }, { list: "bullet" }, "link"];
+const toolbarOptions = [
+  { size: ["small", false, "large"] },
+  "bold",
+  "italic",
+  "underline",
+  "strike",
+  { list: "ordered" },
+  { list: "bullet" },
+  "link",
+];
 
 const TextEditor = forwardRef<Quill, EditorProps>(
   ({ readOnly = false, defaultValue, onTextChange, onSelectionChange, isError }, ref) => {
