@@ -42,6 +42,7 @@ const config: AppConfig = {
   ipfsPinningService: "https://api.gateway-proxy.vechain.org/api/v1/pinning/pinFileToIPFS",
   ipfsFetchingService: "https://api.gateway-proxy.vechain.org/ipfs",
   indexerUrl: "https://indexer.testnet.vechain.org/api/v1",
+  WCProjectId: "ac75393318ee8f3cf0a071978c8dd607",
   mixPanelToken: "bbf0da6a4dcd75432a35e01af6a75d8a",
 };
 export default config;

@@ -114,6 +114,24 @@ export const getUserNodes = async ({ address, blockN }: { address: string; block
   }
 };
 
+export const getNodesName = async ({ nodeIds }: { nodeIds: string[] }) => {
+  const res = await executeMultipleClauses({
+    contractAddress: nodeManagementAddress,
+    contractInterface: nodeManagementInterface,
+    methodsWithArgs: nodeIds.map(nodeId => ({
+      method: "getNodeLevel" as const,
+      args: [nodeId],
+    })),
+  });
+
+  const nodeLevels = res.map((result, id) => ({
+    id: nodeIds[id],
+    name: result.success ? NodeStrengthLevels[result.result.plain as number] : "Unknown",
+  }));
+
+  return nodeLevels;
+};
+
 export const getAMN = async (address?: string) => {
   if (!address) return { data: undefined };
   let votingPower: number | undefined = undefined;

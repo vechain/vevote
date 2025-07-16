@@ -18,7 +18,7 @@ const PageContainer = ({ variant = "constrained", ...props }: FlexProps & { vari
 
 const Header = ({ children, ...props }: FlexProps) => {
   return (
-    <Flex alignItems={"center"} {...props}>
+    <Flex alignItems={{ base: "start", md: "center" }} {...props}>
       {children}
     </Flex>
   );

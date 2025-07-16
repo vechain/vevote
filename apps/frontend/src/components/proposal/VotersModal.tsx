@@ -1,119 +1,113 @@
 import { useI18nContext } from "@/i18n/i18n-react";
-import { Button, Flex, Icon, ModalBody, ModalHeader, useDisclosure } from "@chakra-ui/react";
-import { useMemo, useState } from "react";
+import { UserCheckIcon } from "@/icons";
+import { Button, Icon, ModalBody, ModalHeader, useDisclosure, Spinner, Alert, AlertIcon } from "@chakra-ui/react";
+import { useCallback, useState } from "react";
 import { ModalSkeleton, ModalTitle } from "../ui/ModalSkeleton";
-import { SearchInput } from "../ui/SearchInput";
 import { Sort } from "../ui/SortDropdown";
-import { DataTable } from "../ui/TableSkeleton";
-import { votersColumn } from "./VotersTable";
-import { VotingBaseDropdown } from "./VotingBaseDropdown";
-import { FilterIcon, SortDescIcon, UserCheckIcon } from "@/icons";
-
-export type VoteItem = {
-  date: Date;
-  address: string;
-  node: string;
-  nodeId: string;
-  votingPower: number;
-  votedOption: string;
-  transactionId: string;
-};
+import { useProposal } from "./ProposalProvider";
+import { VotersTable } from "./VotersTable";
+import { VotersFiltersPanel, DEFAULT_FILTER } from "./VotersFiltersPanel";
+import { TablePagination } from "../ui/TablePagination";
+import { useVotersData } from "@/hooks/useVotersData";
+import { NodeStrengthLevel } from "@/types/user";
+import { useDebounce } from "@/hooks/useDebounce";
 
 export const VotersModal = () => {
   const { LL } = useI18nContext();
   const { isOpen, onClose, onOpen } = useDisclosure();
+  const { proposal } = useProposal();
 
-  //todo: get votes from blockchain
-  const votes = useMemo(
-    () => [
-      {
-        date: new Date(),
-        address: "0x1234567890abcdef1234567890abcdef12345678",
-        node: "Node Name",
-        nodeId: "Node ID",
-        votingPower: 100,
-        votedOption: "Option A",
-        transactionId: "0xe1081a72832b983f5252a654436e2e0dc08e737b2ea553ada40735d67be3c14a",
-      },
-      {
-        date: new Date(),
-        address: "0x1234567890abcdef1234567890abcdef12345678",
-        node: "Node Name 2",
-        nodeId: "Node ID 2",
-        votingPower: 3000,
-        votedOption: "Yes",
-        transactionId: "0xe1081a72832b983f5252a654436e2e0dc08e737b2ea553ada40735d67be3c14a",
-      },
-    ],
-    [],
-  );
+  const [selectedOption, setSelectedOption] = useState(DEFAULT_FILTER);
+  const [node, setNode] = useState<NodeStrengthLevel | typeof DEFAULT_FILTER>(DEFAULT_FILTER);
+  const [sort, setSort] = useState(Sort.Newest);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [currentPage, setCurrentPage] = useState(1);
 
-  const nodes = useMemo(() => {
-    return votes.reduce((acc, value) => {
-      if (!acc.includes(value.node)) acc.push(value.node);
-      return acc;
-    }, [] as string[]);
-  }, [votes]);
+  const debouncedSearchQuery = useDebounce(searchQuery, 300);
 
-  const options = useMemo(() => {
-    return votes.reduce((acc, value) => {
-      if (!acc.includes(value.votedOption)) acc.push(value.votedOption);
-      return acc;
-    }, [] as string[]);
-  }, [votes]);
+  const { votes, pagination, filterOptions, nodeOptions, isLoading, error } = useVotersData({
+    proposalId: proposal.id,
+    votingType: proposal.votingType,
+    votingOptions: proposal.votingOptions,
+    filters: {
+      selectedOption,
+      node,
+      sort,
+      searchQuery: debouncedSearchQuery,
+    },
+    page: currentPage,
+    pageSize: 10,
+  });
+
+  const handleSelectedOptionChange = useCallback((value: string) => {
+    setSelectedOption(value);
+    setCurrentPage(1);
+  }, []);
+
+  const handleNodeChange = useCallback((value: NodeStrengthLevel | typeof DEFAULT_FILTER) => {
+    setNode(value);
+    setCurrentPage(1);
+  }, []);
+
+  const handleSortChange = useCallback((value: Sort) => {
+    setSort(value);
+    setCurrentPage(1);
+  }, []);
+
+  const handleSearchChange = useCallback((value: string) => {
+    setSearchQuery(value);
+    setCurrentPage(1);
+  }, []);
+
+  const handlePageChange = useCallback((page: number) => {
+    setCurrentPage(page);
+  }, []);
 
   return (
     <>
-      <Button onClick={onOpen} variant={"secondary"} leftIcon={<Icon as={UserCheckIcon} width={5} height={5} />}>
+      <Button
+        onClick={onOpen}
+        variant={"secondary"}
+        leftIcon={<Icon as={UserCheckIcon} boxSize={5} />}
+        size={{ base: "md", md: "lg" }}
+        width={{ base: "full", md: "auto" }}
+        order={{ base: 2, md: 1 }}>
         {LL.proposal.see_all_voters()}
       </Button>
       <ModalSkeleton isOpen={isOpen} onClose={onClose} size={"4xl"}>
         <ModalHeader>
           <ModalTitle title={LL.voters()} icon={UserCheckIcon} />
-          <TableFilters nodes={nodes} options={options} />
+          <VotersFiltersPanel
+            options={filterOptions}
+            nodes={nodeOptions}
+            selectedOption={selectedOption}
+            onSelectedOptionChange={handleSelectedOptionChange}
+            node={node}
+            onNodeChange={handleNodeChange}
+            sort={sort}
+            onSortChange={handleSortChange}
+            searchQuery={searchQuery}
+            onSearchChange={handleSearchChange}
+          />
         </ModalHeader>
         <ModalBody overflowX={"auto"}>
-          <DataTable columns={votersColumn} data={votes} />
+          {isLoading && <Spinner size="lg" />}
+          {error && (
+            <Alert status="error">
+              <AlertIcon />
+              {LL.field_errors.failed_load_voters()}
+            </Alert>
+          )}
+          {!isLoading && !error && <VotersTable data={votes} />}
         </ModalBody>
+        {!isLoading && !error && pagination && pagination.totalPages > 1 && (
+          <TablePagination
+            currentPage={pagination.currentPage}
+            totalPages={pagination.totalPages}
+            onPageChange={handlePageChange}
+          />
+        )}
       </ModalSkeleton>
     </>
-  );
-};
-
-const sortOptions = [Sort.Newest, Sort.Oldest, Sort.LeastParticipant, Sort.MostParticipant];
-
-const TableFilters = ({ options, nodes }: { options: string[]; nodes: string[] }) => {
-  const { LL } = useI18nContext();
-  const [sort, setSort] = useState(Sort.Newest);
-  const [selectedOption, setSelectedOption] = useState("");
-  const [node, setNode] = useState("");
-
-  return (
-    <Flex gap={4} alignItems={"center"} pt={8} width={"full"}>
-      <SearchInput size={"sm"} placeholder={LL.proposal.voters_table.filters.search_by_address()} />
-
-      <VotingBaseDropdown
-        label="Voting Options"
-        options={options}
-        selectedOption={selectedOption}
-        setSelectedOption={setSelectedOption}
-        ms={"auto"}
-        icon={FilterIcon}
-      />
-      <VotingBaseDropdown
-        label="Node"
-        options={nodes}
-        selectedOption={node}
-        setSelectedOption={setNode}
-        icon={FilterIcon}
-      />
-      <VotingBaseDropdown
-        label="Sort by"
-        options={sortOptions}
-        selectedOption={sort}
-        setSelectedOption={setSort}
-        icon={SortDescIcon}
-      />
-    </Flex>
   );
 };

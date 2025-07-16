@@ -29,6 +29,7 @@ export type FileUploadProps = PropsWithChildren<{
   formats: FileUploadFormats;
   isDisabled?: boolean;
   isLoading?: boolean;
+  isError?: boolean;
   onError?: (error: string) => void;
   onSuccess?: () => void;
 }>;
@@ -42,6 +43,7 @@ export const FileUpload = ({
   isLoading,
   onError,
   onSuccess,
+  isError,
   ...props
 }: FileUploadProps) => {
   const { LL } = useI18nContext();
@@ -74,13 +76,15 @@ export const FileUpload = ({
 
   return (
     <Flex
-      borderWidth={"1px"}
+      direction={{ base: "column", md: "row" }}
+      borderWidth={isError ? "2px" : "1px"}
+      borderColor={isError ? "red.500" : "gray.200"}
       borderRadius={"8px"}
-      borderColor={"gray.200"}
       padding={"16px"}
       alignItems={"center"}
       gap={"24px"}
-      backgroundColor={"white"}>
+      backgroundColor={"white"}
+      flexDirection={{ base: "column", md: "row" }}>
       {children}
       <DefaultFileUpload {...defaultFileUploadProps} />
     </Flex>
@@ -99,16 +103,17 @@ const DefaultFileUpload = ({ isDisabled, getRootProps, getInputProps }: FileUplo
   const { LL } = useI18nContext();
   return (
     <Flex paddingTop={"8px"} flexDirection={"column"} gap={"24px"}>
-      <Text fontSize={14} color={"gray.500"} whiteSpace={"pre"}>
+      <Text fontSize={{ base: "12px", md: "14px" }} color={"gray.500"}>
         {LL.file_upload_description({ size: bytesToMB(MAX_SIZE) })}
       </Text>
 
-      <Box {...getRootProps()} width={"fit-content"}>
+      <Box {...getRootProps()} width={{ base: "100%", md: "fit-content" }}>
         <Button
           leftIcon={<Icon width={5} height={5} as={UploadIcon} />}
           variant={"secondary"}
           isDisabled={isDisabled}
-          size={"md"}>
+          size={"md"}
+          width={{ base: "100%", md: "fit-content" }}>
           <input {...getInputProps()} />
           {LL.upload()}
         </Button>

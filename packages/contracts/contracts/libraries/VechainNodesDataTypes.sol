@@ -4,7 +4,6 @@ pragma solidity 0.8.20;
 library VechainNodesDataTypes {
   /**
    * @dev The strength level of each node.
-   * TODO: Ensure this is up to date with the latest node levels.
    */
   enum NodeStrengthLevel {
     None,
@@ -16,21 +15,28 @@ library VechainNodesDataTypes {
     VeThorX,
     StrengthX,
     ThunderX,
-    MjolnirX,
-    // New Node levels
-    Flash,
-    Lightning,
-    Dawn,
-    // Validator Node levels
-    Validator
+    MjolnirX
   }
 
   /**
-   * @dev Node level and minimum balance information for a node.
+   * @dev The score of a node.
    */
-  struct NodeLevelInfo {
-    uint256 nodeId;
-    VechainNodesDataTypes.NodeStrengthLevel nodeLevel;
-    uint256 minBalance;
+  struct NodeStrengthScores {
+    uint256 strength;
+    uint256 thunder;
+    uint256 mjolnir;
+    uint256 veThorX;
+    uint256 strengthX;
+    uint256 thunderX;
+    uint256 mjolnirX;
+  }
+
+  /**
+   * @dev The source of a node: VeChainNodes legacy contract or Stargate.
+   */
+  enum NodeSource {
+    None,
+    VeChainNodes,
+    StargateNFT
   }
 }

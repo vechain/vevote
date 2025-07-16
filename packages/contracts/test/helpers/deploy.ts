@@ -219,6 +219,7 @@ export const getOrDeployContractInstances = async ({ forceDeploy = false, config
         settingsManager: admin.address,
         nodeWeightManager: admin.address,
         executor: admin.address,
+        whitelistAdmin: admin.address,
       },
     ],
     {

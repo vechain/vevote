@@ -15,9 +15,9 @@ export const FileUploadChild = ({ value }: FileUploadChildProps) => {
       objectFit={"contain"}
       alt="logo"
       src={value.url}
-      minWidth="260"
-      maxWidth="260"
-      height="104"
+      minWidth={{ base: "100%", md: "260px" }}
+      maxWidth={{ base: "100%", md: "260px" }}
+      height={{ base: "100px", md: "104px" }}
     />
   );
 };

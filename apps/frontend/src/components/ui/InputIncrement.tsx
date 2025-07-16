@@ -19,7 +19,11 @@ const buttonStyle = defineStyle({
 export const InputIncrement = forwardRef<HTMLInputElement, InputIncrementProps>(
   ({ onDecrement, onIncrement, isMaxDisable, isMinDisable, ...props }, ref) => {
     return (
-      <InputWithIcon borderWidth={"1px"} paddingX={2} width={"180px"}>
+      <InputWithIcon
+        borderWidth={"1px"}
+        transition={"width 0.2s ease-in-out "}
+        paddingX={2}
+        width={{ base: "full", sm: "180px" }}>
         <Button isDisabled={isMinDisable} {...buttonStyle} onClick={onDecrement}>
           <Icon as={MinusIcon} />
         </Button>

@@ -1,10 +1,11 @@
 import { useFormatDate } from "@/hooks/useFormatDate";
 import { useI18nContext } from "@/i18n/i18n-react";
-import { Button, Flex, Heading, Icon, Text } from "@chakra-ui/react";
+import { Button, Flex, Heading, Icon, Link, Text } from "@chakra-ui/react";
 import { useMemo } from "react";
 import { InfoBox, infoBoxVariants } from "../ui/InfoBox";
 import { useProposal } from "./ProposalProvider";
 import { ArrowLinkIcon } from "@/icons";
+import { useQuorum } from "@/hooks/useQuorum";
 
 type ProposalInfoBoxProps = {
   canceledDate?: Date;
@@ -15,15 +16,16 @@ export const ProposalInfoBox = ({ canceledDate, canceledReason }: ProposalInfoBo
   const { proposal } = useProposal();
   const { LL } = useI18nContext();
   const { formattedProposalDate } = useFormatDate();
+  const { quorumPercentage } = useQuorum();
 
   const contentVariant = useMemo(
     () =>
       Object.entries(LL.proposal.info_box).map(([key, value]) => ({
         variant: key,
         title: value.title(),
-        description: value.description(),
+        description: value.description({ quorum: quorumPercentage || 0 }),
       })),
-    [LL.proposal.info_box],
+    [LL.proposal.info_box, quorumPercentage],
   );
 
   const variant = useMemo(() => {
@@ -44,28 +46,51 @@ export const ProposalInfoBox = ({ canceledDate, canceledReason }: ProposalInfoBo
 
   return (
     <InfoBox variant={variant}>
-      <Flex flex={1} flexDirection={"column"} gap={1}>
-        <Heading fontSize={18} fontWeight={500} color={infoBoxVariants[variant].style.color}>
+      <Flex flex={1} flexDirection={"column"} gap={1} overflow={"hidden"}>
+        <Heading fontSize={{ base: 14, md: 18 }} fontWeight={500} color={infoBoxVariants[variant].style.color}>
           {selectedVariant?.title}
         </Heading>
-        <Text fontSize={14} color={"gray.600"}>
+        <Text fontSize={{ base: 12, md: 14 }} color={"gray.600"}>
           {selectedVariant?.description}
         </Text>
         {canceledReason && (
           <Text
-            fontSize={14}
+            fontSize={{ base: 12, md: 14 }}
             color={"gray.600"}
-            paddingY={3}
+            paddingY={2}
             paddingX={4}
             bg={"gray.200"}
             marginTop={4}
-            borderRadius={8}>
+            borderRadius={8}
+            noOfLines={3}>
             {canceledReason}
           </Text>
         )}
+        {variant === "executed" && proposal.executedProposalLink && (
+          <Button
+            as={Link}
+            mt={2}
+            display={{ base: "flex", md: "none" }}
+            size={"md"}
+            variant={"secondary"}
+            alignSelf={"start"}
+            gap={2}
+            rightIcon={<Icon as={ArrowLinkIcon} />}
+            href={proposal.executedProposalLink}
+            isExternal>
+            {LL.see_details()}
+          </Button>
+        )}
       </Flex>
-      {variant === "executed" && (
-        <Button variant={"secondary"} alignSelf={"center"} gap={2} rightIcon={<Icon as={ArrowLinkIcon} />}>
+      {variant === "executed" && proposal.executedProposalLink && (
+        <Button
+          as={Link}
+          display={{ base: "none", md: "flex" }}
+          variant={"secondary"}
+          gap={2}
+          rightIcon={<Icon as={ArrowLinkIcon} />}
+          href={proposal.executedProposalLink}
+          isExternal>
           {LL.see_details()}
         </Button>
       )}

@@ -33,6 +33,7 @@ library DataTypes {
     mapping(uint8 levelId => Checkpoints.Trace208) circulatingSupply; // Token levels management: Mapping level ID to circulating supply
     mapping(uint8 levelId => uint32) cap; // Token levels management: Mapping level ID to cap aka max supply
     mapping(uint256 tokenId => Token) tokens; // Token tracking: Mapping token ID to token
+    mapping(uint256 tokenId => uint64) maturityPeriodEndBlock; // Token tracking: Maturity period end block
   }
 
   struct StargateNFTInitParams {
@@ -52,7 +53,6 @@ library DataTypes {
 
   struct Level {
     string name; // Name of the level (e.g., "Thunder", "Mjolnir")
-    bool isActive; // Whether the level is active
     bool isX; // Whether the level is for X-tokens
     uint8 id; // ID to identify the level, as a continuation of the legacy strength levels
     uint64 maturityBlocks; // Maturity period in blocks

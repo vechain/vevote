@@ -9,7 +9,7 @@ const Label = ({ label, isOptional, children, ...rest }: LabelProps) => {
   const { LL } = useI18nContext();
   return (
     <Flex gap={"8px"}>
-      <FormLabel flex={1} fontSize={20} color={"gray.600"} fontWeight={600} {...rest}>
+      <FormLabel flex={1} fontSize={{ base: 16, md: 20 }} color={"gray.600"} fontWeight={600} {...rest}>
         {label}
       </FormLabel>
       {children && children}

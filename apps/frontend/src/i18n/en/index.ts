@@ -27,7 +27,9 @@ const en = {
   cancel: "Cancel",
   percentage: "%",
   submit: "Submit",
+  submit_vote: "Submit Vote",
   voting_power: "Voting Power",
+  your_voting_power: "Your voting power",
   voted: "Voted",
   vote: "Vote",
   wallet: "Wallet",
@@ -54,6 +56,7 @@ const en = {
   read_full_description: "Read full description",
   disconnect: "Disconnect",
   connect_wallet: "Connect Wallet",
+  connect_wallet_to_vote: "Connect your wallet to vote",
   home: {
     title: "Home",
     go_to_proposals: "Go to proposals",
@@ -79,6 +82,11 @@ const en = {
     end_before_today: "The end date must be in the future",
     start_after_today: "The start date must be in the future",
     end_after_max_duration: "The end date must be within {days:string} days of the start date",
+    failed_load_voters: "Failed to load voters data. Please try again.",
+    descriptions_errors: {
+      placeholders_not_replaced: "Please replace placeholder text with your own content before submitting the proposal.",
+      empty_description: "Description cannot be empty. Please provide content for your proposal.",
+    },
   },
   voting_list: {
     voting_options: "Voting options:",
@@ -118,7 +126,7 @@ const en = {
         "If you delete this draft, all the information of the proposal will not be possible to recover anymore.",
       confirmation: "Are you sure you want to delete it?",
       no_go_back: "No, go back",
-      yes_delete: "Yes, Delete Proposal",
+      yes_delete: "Yes, Delete",
     },
     draft_dialog: {
       title: "Draft proposal",
@@ -129,11 +137,11 @@ const en = {
       info: {
         title: "Minimum participation",
         description:
-          "A minimum of 30% participation must be reached to validate the voting of the proposal and get approval.",
+          "A minimum of {quorum:number}% participation must be reached to validate the voting of the proposal and get approval.",
       },
       approved: {
         title: "Minimum participation reached",
-        description: "The voting participation reached the minimum required of 30% to get approval.",
+        description: "The voting participation reached the minimum required of {quorum:number}% to get approval.",
       },
       executed: {
         title: "Proposal Approved and Executed",
@@ -141,7 +149,8 @@ const en = {
       },
       "min-not-reached": {
         title: "Minimum participation not reached",
-        description: "The voting participation didn’t reached the minimum required of 30% to get approval.",
+        description:
+          "The voting participation didn’t reached the minimum required of {quorum:number}% to get approval.",
       },
       rejected: {
         title: "Proposal Rejected",

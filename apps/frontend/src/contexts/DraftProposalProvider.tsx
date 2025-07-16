@@ -2,6 +2,7 @@ import { MessageModal } from "@/components/ui/ModalSkeleton";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { CircleInfoIcon } from "@/icons";
 import { useCreateProposal } from "@/pages/CreateProposal/CreateProposalProvider";
+import { areAddressesEqual } from "@/utils/address";
 import { Button, ModalBody, ModalFooter, Text, useDisclosure } from "@chakra-ui/react";
 import { useWallet } from "@vechain/vechain-kit";
 import { PropsWithChildren, useCallback, useEffect } from "react";
@@ -12,10 +13,12 @@ export const DraftProposalProvider = ({ children }: PropsWithChildren) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
-    if (draftProposal && connection.isConnected && draftProposal.proposer !== account?.address) {
+    if (!connection.isConnected || !account?.address) return;
+    if (draftProposal && !areAddressesEqual(draftProposal.proposer, account?.address)) {
       onOpen();
     }
-  }, [draftProposal, account?.address, onOpen, connection.isConnected]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [draftProposal, account?.address, onOpen]);
 
   return (
     <>

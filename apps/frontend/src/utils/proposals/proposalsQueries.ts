@@ -1,6 +1,5 @@
 import { ProposalDetails } from "@/pages/CreateProposal/CreateProposalProvider";
-import { ProposalEvent } from "@/types/blockchain";
-import { BaseOption, ProposalCardType, VotingEnum } from "@/types/proposal";
+import { BaseOption, ProposalCardType, ProposalEvent, VotingEnum } from "@/types/proposal";
 import { getConfig } from "@repo/config";
 import { VeVote__factory } from "@repo/contracts";
 import { getAllEventLogs, ThorClient } from "@vechain/vechain-kit";
@@ -45,7 +44,7 @@ export const getProposalsEvents = async (
         criteria: {
           address: contractAddress,
           topic0: proposalExecutedAbi.signatureHash,
-          topic1: proposalId ? proposalCreatedAbi.encodeFilterTopicsNoNull({ proposalId })[1] : undefined,
+          topic1: proposalId ? proposalExecutedAbi.encodeFilterTopicsNoNull({ proposalId })[1] : undefined,
         },
         eventAbi: proposalExecutedAbi,
       },
@@ -53,7 +52,7 @@ export const getProposalsEvents = async (
         criteria: {
           address: contractAddress,
           topic0: proposalCanceledAbi.signatureHash,
-          topic1: proposalId ? proposalCreatedAbi.encodeFilterTopicsNoNull({ proposalId })[1] : undefined,
+          topic1: proposalId ? proposalCanceledAbi.encodeFilterTopicsNoNull({ proposalId })[1] : undefined,
         },
         eventAbi: proposalCanceledAbi,
       },
@@ -85,19 +84,6 @@ export const getProposalsEvents = async (
           };
         }
 
-        if (eventSignature === proposalExecutedAbi.signatureHash) {
-          const [proposalIdEvent] = event.decodedData as [string];
-
-          if (proposalId && proposalIdEvent !== proposalId) {
-            return undefined;
-          }
-
-          return {
-            proposalId: proposalIdEvent,
-            isExecuted: true,
-          };
-        }
-
         return undefined;
       })
       .filter(Boolean);
@@ -122,15 +108,40 @@ export const getProposalsEvents = async (
       })
       .filter(Boolean);
 
+    const decodedExecutedProposals = events
+      .map(event => {
+        if (event.topics[0] === proposalExecutedAbi.signatureHash) {
+          const [proposalIdEvent, executedProposalLink] = event.decodedData as [bigint, string];
+
+          if (proposalId && proposalIdEvent.toString() !== proposalId) {
+            return undefined;
+          }
+
+          return {
+            proposalId: proposalIdEvent.toString(),
+            executedProposalLink,
+          };
+        }
+
+        return undefined;
+      })
+      .filter(Boolean);
+
     const mergedProposals: ProposalEvent[] = decodedProposalEvents
       .map(proposal => {
         const canceledProposal = decodedCanceledProposals.find(
           canceled => canceled?.proposalId === proposal?.proposalId,
         );
 
-        return canceledProposal
-          ? { ...proposal, canceller: canceledProposal.canceller, reason: canceledProposal.reason }
-          : proposal;
+        const executedProposal = decodedExecutedProposals.find(
+          executed => executed?.proposalId === proposal?.proposalId,
+        );
+
+        return {
+          ...proposal,
+          ...(canceledProposal && { canceller: canceledProposal.canceller, reason: canceledProposal.reason }),
+          ...(executedProposal && { executedProposalLink: executedProposal.executedProposalLink }),
+        };
       })
       .filter(Boolean) as ProposalEvent[];
 

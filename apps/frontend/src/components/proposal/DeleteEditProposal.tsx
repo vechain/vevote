@@ -23,14 +23,15 @@ export const DeleteEditProposal = () => {
       <DeleteProposal />
       <Button
         variant={"secondary"}
+        size={{ base: "md", md: "lg" }}
         onClick={() => {
           trackEvent(MixPanelEvent.CTA_EDIT_CLICKED, {
             proposalId: draftProposal?.title || "draft",
           });
           onEdit();
         }}
-        leftIcon={<Icon as={EditBoxIcon} />}>
-        {LL.edit()}
+        leftIcon={<Icon as={EditBoxIcon} boxSize={{ base: 5, md: 6 }} />}>
+        <Text display={{ base: "none", md: "block" }}>{LL.edit()}</Text>
       </Button>
     </>
   );
@@ -51,14 +52,15 @@ export const DeleteProposal = () => {
     <>
       <Button
         variant="danger"
+        size={{ base: "md", md: "lg" }}
         onClick={() => {
           trackEvent(MixPanelEvent.CTA_DELETE_CLICKED, {
             proposalId: draftProposal?.title || "draft",
           });
           onOpen();
         }}
-        leftIcon={<Icon as={DeleteIcon} />}>
-        {LL.delete()}
+        leftIcon={<Icon as={DeleteIcon} boxSize={{ base: 5, md: 6 }} />}>
+        <Text display={{ base: "none", md: "block" }}>{LL.delete()}</Text>
       </Button>
       <MessageModal
         isOpen={isOpen}
@@ -67,18 +69,18 @@ export const DeleteProposal = () => {
         iconColor={"red.600"}
         title={LL.proposal.delete_proposal.title()}>
         <ModalBody>
-          <Text fontSize={14} color={"gray.600"} py={2} textAlign={"center"}>
+          <Text fontSize={{ base: 12, md: 14 }} color={"gray.600"} py={2} textAlign={"center"}>
             {LL.proposal.delete_proposal.description()}
           </Text>
-          <Text fontSize={14} color={"gray.600"} fontWeight={500} textAlign={"center"}>
+          <Text fontSize={{ base: 12, md: 14 }} color={"gray.600"} fontWeight={500} textAlign={"center"}>
             {LL.proposal.delete_proposal.confirmation()}
           </Text>
         </ModalBody>
         <ModalFooter width={"full"} gap={4} mt={7}>
-          <Button flex={1} variant={"secondary"} onClick={onClose}>
+          <Button flex={1} variant={"secondary"} onClick={onClose} size={{ base: "md", md: "lg" }}>
             {LL.proposal.delete_proposal.no_go_back()}
           </Button>
-          <Button flex={1} variant={"danger"} onClick={onDelete}>
+          <Button flex={1} variant={"danger"} onClick={onDelete} size={{ base: "md", md: "lg" }}>
             {LL.proposal.delete_proposal.yes_delete()}
           </Button>
         </ModalFooter>

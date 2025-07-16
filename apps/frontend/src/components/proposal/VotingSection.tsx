@@ -1,11 +1,12 @@
+import { useVotesResults } from "@/hooks/useCastVote";
 import { useI18nContext } from "@/i18n/i18n-react";
+import { VoteIcon } from "@/icons";
 import { VotingEnum } from "@/types/proposal";
-import { Box, BoxProps, Flex, Heading, Icon, Text } from "@chakra-ui/react";
+import { Flex, Heading, Icon, Text } from "@chakra-ui/react";
 import { PropsWithChildren } from "react";
 import { useProposal } from "./ProposalProvider";
+import { SectionLimiter } from "./SectionLimiter";
 import { VotingMultipleOptions, VotingSingleChoice, VotingSingleOption } from "./VotingList";
-import { VoteIcon } from "@/icons";
-import { useVotesResults } from "@/hooks/useCastVote";
 
 export const VotingSection = () => {
   const { proposal } = useProposal();
@@ -44,16 +45,21 @@ const VotingSectionHeader = () => {
       <Flex
         maxWidth={"864px"}
         marginX={"auto"}
-        paddingY={10}
-        paddingX={11}
+        paddingX={{ md: 11 }}
         flexDirection={"column"}
         alignItems={"start"}
         gap={6}>
-        <Heading fontSize={20} fontWeight={600} color="primary.700" display={"flex"} gap={2} alignItems={"center"}>
+        <Heading
+          fontSize={{ base: 16, md: 20 }}
+          fontWeight={600}
+          color="primary.700"
+          display={"flex"}
+          gap={2}
+          alignItems={"center"}>
           <Icon as={VoteIcon} />
           {LL.voting()}
         </Heading>
-        <Text fontSize={24} color={"gray.600"} fontWeight={500}>
+        <Text fontSize={{ base: 16, md: 24 }} color={"gray.600"} fontWeight={500}>
           {proposal.votingQuestion}
         </Text>
       </Flex>
@@ -66,13 +72,5 @@ const VotingSectionContent = ({ children }: PropsWithChildren) => {
     <SectionLimiter maxWidth={"864px"} marginX={"auto"} width={"100%"}>
       {children}
     </SectionLimiter>
-  );
-};
-
-const SectionLimiter = ({ children, ...restProps }: BoxProps) => {
-  return (
-    <Box paddingY={10} paddingX={11} {...restProps}>
-      {children}
-    </Box>
   );
 };

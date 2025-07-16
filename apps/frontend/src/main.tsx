@@ -23,9 +23,10 @@ import { MixPanelProvider } from "./contexts/MixPanelProvider.tsx";
 loadLocale("en");
 
 const config = getConfig(import.meta.env.VITE_APP_ENV);
+const PROJECT_ID = config.WCProjectId || "";
 
 const walletConnectOptions: WalletConnectOptions = {
-  projectId: "a0b855ceaf109dbc8426479a4c3d38d8",
+  projectId: PROJECT_ID,
   metadata: {
     name: "Sample VeChain dApp",
     description: "A sample VeChain dApp",

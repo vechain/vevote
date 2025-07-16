@@ -48,12 +48,8 @@ library MintingLogic {
 
   /// @notice Stakes VET and mints an NFT
   /// @param _levelId The ID of the token level to mint, VET as msg.value
-  /// @return success True if the minting was successful
   /// @return tokenId The ID of the minted NFT
-  function stake(
-    DataTypes.StargateNFTStorage storage $,
-    uint8 _levelId
-  ) external returns (bool success, uint256 tokenId) {
+  function stake(DataTypes.StargateNFTStorage storage $, uint8 _levelId) external returns (uint256 tokenId) {
     return _stake($, _levelId);
   }
 
@@ -61,32 +57,31 @@ library MintingLogic {
   /// This way the user can do both actions in a single transaction, without having to call the StargateDelegation contract separately.
   /// @param _levelId The ID of the token level to mint, VET as msg.value
   /// @param _autorenew Whether the token should be delegated forever
-  /// @return success True if the minting and delegation were successful
   /// @return tokenId The ID of the minted NFT
   function stakeAndDelegate(
     DataTypes.StargateNFTStorage storage $,
     uint8 _levelId,
     bool _autorenew
-  ) external returns (bool success, uint256 tokenId) {
+  ) external returns (uint256 tokenId) {
     // Stake the token
-    (success, tokenId) = _stake($, _levelId);
-    if (!success) {
-      revert Errors.TokenMintingFailed();
+    tokenId = _stake($, _levelId);
+
+    // Check if the owner changed in the stake process, if yes revert
+    // (Eg: receiver is a smart contract with onERC721Received() fallback that transfers the NFT)
+    address owner = IStargateNFT(address(this)).ownerOf(tokenId);
+    if (owner != msg.sender) {
+      revert Errors.NotOwner(tokenId, msg.sender, owner);
     }
 
     // Delegate the token
-    success = $.stargateDelegation.delegate(tokenId, _autorenew);
-    if (!success) {
-      revert Errors.TokenMintingFailed();
-    }
+    $.stargateDelegation.delegate(tokenId, _autorenew);
 
-    return (true, tokenId);
+    return tokenId;
   }
 
   /// @notice Migrates a token from the legacy nodes contract to StargateNFT, preserving the tokenId
   /// @param _tokenId The ID of the token to migrate
-  /// @return success True if the migration was successful
-  function migrate(DataTypes.StargateNFTStorage storage $, uint256 _tokenId) external returns (bool success) {
+  function migrate(DataTypes.StargateNFTStorage storage $, uint256 _tokenId) external {
     return _migrate($, _tokenId);
   }
 
@@ -95,32 +90,26 @@ library MintingLogic {
   /// in a single transaction, without having to call the StargateDelegation contract separately.
   /// @param _tokenId The ID of the token to migrate
   /// @param _autorenew Whether the token should be delegated forever
-  /// @return success True if the migration and delegation were successful
-  function migrateAndDelegate(
-    DataTypes.StargateNFTStorage storage $,
-    uint256 _tokenId,
-    bool _autorenew
-  ) external returns (bool success) {
+  function migrateAndDelegate(DataTypes.StargateNFTStorage storage $, uint256 _tokenId, bool _autorenew) external {
     // Migrate the token
-    success = _migrate($, _tokenId);
-    if (!success) {
-      revert Errors.TokenMintingFailed();
+    _migrate($, _tokenId);
+
+    // Check if the owner changed in the migration process, if yes revert
+    // (Eg: receiver is a smart contract with onERC721Received() fallback that transfers the NFT)
+    address owner = IStargateNFT(address(this)).ownerOf(_tokenId);
+    if (owner != msg.sender) {
+      // will revert if token owner changed during migrate proccess
+      revert Errors.NotOwner(_tokenId, msg.sender, owner);
     }
 
     // Delegate the token
-    success = $.stargateDelegation.delegate(_tokenId, _autorenew);
-    if (!success) {
-      revert Errors.TokenMintingFailed();
-    }
-
-    return true;
+    $.stargateDelegation.delegate(_tokenId, _autorenew);
   }
 
   /// @notice Unstakes a token and returns the VET to the owner
   /// @dev If the token has pending VTHO rewards, claim them
   /// @param _tokenId The ID of the token to unstake
-  /// @return success True if the unstake was successful
-  function unstake(DataTypes.StargateNFTStorage storage $, uint256 _tokenId) external returns (bool success) {
+  function unstake(DataTypes.StargateNFTStorage storage $, uint256 _tokenId) external {
     // Get token, will revert if token does not exist
     DataTypes.Token memory token = Token._getToken($, _tokenId);
 
@@ -148,6 +137,7 @@ library MintingLogic {
 
     // Clean up token state
     delete $.tokens[_tokenId];
+    delete $.maturityPeriodEndBlock[_tokenId];
 
     // Update circulating supply, update cap if token is X
     Levels._decrementLevelCirculatingSupply($, token.levelId);
@@ -156,7 +146,7 @@ library MintingLogic {
     }
 
     // Return VET to caller
-    (success, ) = owner.call{ value: token.vetAmountStaked }("");
+    (bool success, ) = owner.call{ value: token.vetAmountStaked }("");
     if (!success) {
       revert Errors.VetTransferFailed(owner, token.vetAmountStaked);
     }
@@ -164,24 +154,14 @@ library MintingLogic {
     // Emit event
     // solhint-disable-next-line reentrancy -  This function is secure against reentrancy
     emit TokenBurned(owner, token.levelId, _tokenId, token.vetAmountStaked);
-
-    return true;
   }
 
   // ------------------ Internal ------------------ //
 
   /// @dev Internal function for {stake} and {stakeAndDelegate}
-  function _stake(
-    DataTypes.StargateNFTStorage storage $,
-    uint8 _levelId
-  ) internal returns (bool success, uint256 tokenId) {
+  function _stake(DataTypes.StargateNFTStorage storage $, uint8 _levelId) internal returns (uint256 tokenId) {
     // Get token level spec (reverts if not found)
     DataTypes.Level memory level = Levels._getLevel($, _levelId);
-
-    // Validate level is active
-    if (!level.isActive) {
-      revert Errors.LevelNotActive(_levelId);
-    }
 
     // Validate level circulating supply has not reached cap
     if (Levels._getCirculatingSupply($, _levelId) >= $.cap[_levelId]) {
@@ -210,18 +190,21 @@ library MintingLogic {
       lastVthoClaimTimestamp: Clock._timestamp()
     });
 
+    // Update the maturity period end block
+    $.maturityPeriodEndBlock[tokenId] = Clock._clock() + level.maturityBlocks;
+
     // Call the mint callback on the main contract to mint the NFT
     IStargateNFT(address(this))._safeMintCallback(msg.sender, tokenId);
 
     // solhint-disable-next-line reentrancy -  Allow emiting event after callback
     emit TokenMinted(msg.sender, _levelId, false, tokenId, msg.value);
 
-    return (true, tokenId);
+    return tokenId;
   }
 
   /// @dev Internal function used by {migrate} and {migrateAndDelegate}
   /// @dev Refer to the migration strategy written at the top of the file
-  function _migrate(DataTypes.StargateNFTStorage storage $, uint256 _tokenId) internal returns (bool success) {
+  function _migrate(DataTypes.StargateNFTStorage storage $, uint256 _tokenId) internal {
     // Validate token is not migrated yet
     // - if token level ID is not 0, it already exists on StargateNFT
     // - if token owner is 0, it does not exist in legacy nodes contract - burned or not minted
@@ -268,6 +251,10 @@ library MintingLogic {
       lastVthoClaimTimestamp: Clock._timestamp()
     });
 
+    // Update the maturity period end block
+    // Note: maturity period is not applied to migrated tokens
+    $.maturityPeriodEndBlock[_tokenId] = Clock._clock();
+
     // Destroy the token in the legacy nodes contract
     $.legacyNodes.downgradeTo(_tokenId, 0);
 
@@ -283,7 +270,5 @@ library MintingLogic {
 
     // solhint-disable-next-line reentrancy -  Allow emitting event after callback
     emit TokenMinted(msg.sender, level, true, _tokenId, msg.value);
-
-    return true;
   }
 }

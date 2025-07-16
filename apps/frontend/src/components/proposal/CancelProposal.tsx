@@ -26,7 +26,7 @@ export const CancelProposal = ({ proposalId }: { proposalId?: string }) => {
   const onSubmit = useCallback(
     async (values: z.infer<typeof schema>) => {
       if (!proposalId) return;
-      
+
       try {
         trackEvent(MixPanelEvent.PROPOSAL_CANCEL, {
           proposalId,
@@ -43,7 +43,7 @@ export const CancelProposal = ({ proposalId }: { proposalId?: string }) => {
         navigate(Routes.HOME);
       } catch (error) {
         const txError = error as { txId?: string; error?: { message?: string }; message?: string };
-        
+
         trackEvent(MixPanelEvent.PROPOSAL_CANCEL_FAILED, {
           proposalId,
           error: txError.error?.message || txError.message || "Unknown error",
@@ -57,6 +57,7 @@ export const CancelProposal = ({ proposalId }: { proposalId?: string }) => {
     <>
       <Button
         variant="danger"
+        size={{ base: "md", md: "lg" }}
         onClick={() => {
           trackEvent(MixPanelEvent.CTA_CANCEL_CLICKED, {
             proposalId: proposalId || "",
@@ -77,7 +78,7 @@ export const CancelProposal = ({ proposalId }: { proposalId?: string }) => {
           {({ register, errors }) => (
             <>
               <ModalBody>
-                <Text fontSize={14} color={"gray.600"} py={2} textAlign={"center"}>
+                <Text fontSize={{ base: 12, md: 14 }} color={"gray.600"} py={2} textAlign={"center"}>
                   {LL.proposal.cancel_proposal.description()}
                 </Text>
                 <FormControl isInvalid={Boolean(errors.reason)}>
@@ -87,10 +88,15 @@ export const CancelProposal = ({ proposalId }: { proposalId?: string }) => {
                 </FormControl>
               </ModalBody>
               <ModalFooter width={"full"} gap={4} mt={7}>
-                <Button flex={1} variant={"secondary"} onClick={onClose}>
+                <Button flex={1} variant={"secondary"} onClick={onClose} size={{ base: "md", md: "lg" }}>
                   {LL.go_back()}
                 </Button>
-                <Button flex={1} variant={"danger"} type="submit" isLoading={isTransactionPending}>
+                <Button
+                  flex={1}
+                  variant={"danger"}
+                  type="submit"
+                  isLoading={isTransactionPending}
+                  size={{ base: "md", md: "lg" }}>
                   {LL.proposal.cancel_proposal.title()}
                 </Button>
               </ModalFooter>

@@ -68,7 +68,11 @@ export const InfoBox = ({ children, variant, ...restProps }: InfoBoxProps) => {
       width={"100%"}
       gap={3}
       {...restProps}>
-      <Icon as={infoBoxVariants[variant].icon} color={infoBoxVariants[variant].style.color} />
+      <Icon
+        as={infoBoxVariants[variant].icon}
+        color={infoBoxVariants[variant].style.color}
+        boxSize={{ base: 4, md: 6 }}
+      />
       {children}
     </Flex>
   );

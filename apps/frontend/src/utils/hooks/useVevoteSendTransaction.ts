@@ -16,6 +16,10 @@ export type VevoteTransactionError = {
 export type VevoteSendTransactionProps<ClausesParams> = {
   clauseBuilder: (props: ClausesParams) => EnhancedClause[];
   refetchQueryKeys?: (string | undefined)[][];
+  delayedRefetchKeys?: (string | undefined)[][];
+  refetchDelay?: number;
+  maxRetries?: number;
+  retryMultiplier?: number;
   onSuccess?: (result: VevoteTransactionResult) => void;
   invalidateCache?: boolean;
   onError?: (error: VevoteTransactionError) => void;
@@ -26,7 +30,11 @@ export type VevoteSendTransactionProps<ClausesParams> = {
  * Returns transaction ID and receipt directly from sendTransaction function.
  *
  * @param clauseBuilder - A function that builds an array of enhanced clauses based on the provided parameters.
- * @param refetchQueryKeys - An optional array of query keys to refetch after the transaction is confirmed.
+ * @param refetchQueryKeys - An optional array of query keys to refetch immediately after the transaction is confirmed.
+ * @param delayedRefetchKeys - An optional array of query keys to refetch with delay and retry logic. Useful for indexer-dependent data.
+ * @param refetchDelay - Initial delay in milliseconds before first delayed refetch attempt (default: 2000ms).
+ * @param maxRetries - Maximum number of retry attempts for delayed refetch (default: 3).
+ * @param retryMultiplier - Exponential backoff multiplier for delayed refetch (default: 2). Delays: 2s → 4s → 8s.
  * @param invalidateCache - A flag indicating whether to invalidate the cache and refetch queries after the transaction is confirmed.
  * @param onSuccess - An optional callback function to be called after the transaction is successfully confirmed.
  * @param onError - An optional callback function to be called if the transaction fails.
@@ -35,6 +43,10 @@ export type VevoteSendTransactionProps<ClausesParams> = {
 export const useVevoteSendTransaction = <ClausesParams>({
   clauseBuilder,
   refetchQueryKeys,
+  delayedRefetchKeys,
+  refetchDelay = 2000,
+  maxRetries = 3,
+  retryMultiplier = 2,
   invalidateCache = true,
   onSuccess,
   onError,
@@ -47,16 +59,49 @@ export const useVevoteSendTransaction = <ClausesParams>({
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const hasCallbackHandledRef = useRef(false);
 
-  const handleCacheInvalidation = useCallback(async () => {
-    if (invalidateCache && refetchQueryKeys) {
+  const handleImmediateRefetch = useCallback(async () => {
+    if (refetchQueryKeys) {
       await Promise.all(
         refetchQueryKeys.map(async queryKey => {
-          await queryClient.cancelQueries({ queryKey });
+          if (invalidateCache) await queryClient.cancelQueries({ queryKey });
           await queryClient.refetchQueries({ queryKey });
         }),
       );
     }
   }, [invalidateCache, queryClient, refetchQueryKeys]);
+
+  const handleDelayedRefetch = useCallback(async () => {
+    if (!delayedRefetchKeys || delayedRefetchKeys.length === 0) return;
+
+    const delayedRefetchWithRetry = async (queryKey: (string | undefined)[], retryCount = 0): Promise<void> => {
+      if (retryCount >= maxRetries) {
+        console.warn(`Max retries reached for query key: ${JSON.stringify(queryKey)}`);
+        return;
+      }
+
+      const currentDelay = refetchDelay * Math.pow(retryMultiplier, retryCount);
+
+      await new Promise(resolve => setTimeout(resolve, currentDelay));
+
+      try {
+        const currentData = queryClient.getQueryData(queryKey);
+        await queryClient.refetchQueries({ queryKey });
+        const newData = queryClient.getQueryData(queryKey);
+        const dataChanged = JSON.stringify(currentData) !== JSON.stringify(newData);
+
+        if (!dataChanged && retryCount < maxRetries - 1) {
+          await delayedRefetchWithRetry(queryKey, retryCount + 1);
+        }
+      } catch (error) {
+        console.error(`Error in delayed refetch for ${JSON.stringify(queryKey)}:`, error);
+        if (retryCount < maxRetries - 1) {
+          await delayedRefetchWithRetry(queryKey, retryCount + 1);
+        }
+      }
+    };
+
+    await Promise.all(delayedRefetchKeys.map(queryKey => delayedRefetchWithRetry(queryKey)));
+  }, [delayedRefetchKeys, refetchDelay, maxRetries, retryMultiplier, queryClient]);
 
   const cleanupRefs = useCallback(() => {
     if (timeoutRef.current) {
@@ -122,14 +167,23 @@ export const useVevoteSendTransaction = <ClausesParams>({
           receipt: txReceipt,
         };
 
-        handleCacheInvalidation()
+        handleImmediateRefetch()
           .then(() => {
+            handleDelayedRefetch().catch(delayedError => {
+              console.warn("Delayed refetch failed:", delayedError);
+            });
+
             onSuccess?.(result);
             resolveRef.current?.(result);
             cleanupRefs();
           })
           .catch(cacheError => {
-            console.warn("Cache invalidation failed:", cacheError);
+            console.warn("Immediate refetch failed:", cacheError);
+
+            handleDelayedRefetch().catch(delayedError => {
+              console.warn("Delayed refetch failed:", delayedError);
+            });
+
             onSuccess?.(result);
             resolveRef.current?.(result);
             cleanupRefs();
@@ -148,7 +202,7 @@ export const useVevoteSendTransaction = <ClausesParams>({
 
       cleanupRefs();
     }
-  }, [status, txReceipt, error, handleCacheInvalidation, onSuccess, onError, cleanupRefs]);
+  }, [status, txReceipt, error, handleImmediateRefetch, handleDelayedRefetch, onSuccess, onError, cleanupRefs]);
 
   useEffect(() => {
     return () => {

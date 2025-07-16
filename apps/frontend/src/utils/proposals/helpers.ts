@@ -1,5 +1,12 @@
-import { ProposalEvent, ProposalState } from "@/types/blockchain";
-import { BaseOption, ProposalCardType, ProposalStatus, SingleChoiceEnum, VotingEnum } from "@/types/proposal";
+import {
+  BaseOption,
+  ProposalCardType,
+  ProposalEvent,
+  ProposalState,
+  ProposalStatus,
+  SingleChoiceEnum,
+  VotingEnum,
+} from "@/types/proposal";
 import dayjs from "dayjs";
 import { ethers } from "ethers";
 import { v4 as uuidv4 } from "uuid";
@@ -12,7 +19,7 @@ import { thorClient } from "../thorClient";
 
 const AVERAGE_BLOCK_TIME = 10; // in seconds
 
-export type FromEventsToProposalsReturnType = ({ ipfsHash: string; reason?: string } & Omit<
+export type FromEventsToProposalsReturnType = ({ ipfsHash: string } & Omit<
   ProposalCardType,
   "status" | "description" | "title" | "votingQuestion" | "headerImage"
 >)[];
@@ -75,6 +82,7 @@ export const fromEventsToProposals = async (events: ProposalEvent[]): Promise<Fr
         votingLimit: event.maxSelection,
         ipfsHash: event.description,
         reason: event.reason,
+        executedProposalLink: event.executedProposalLink,
       };
 
       switch (votingType) {

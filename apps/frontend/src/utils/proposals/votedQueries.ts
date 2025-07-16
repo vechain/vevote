@@ -1,5 +1,5 @@
 import { IndexerRoutes } from "@/types/indexer";
-import { VotedChoices, VotedResult } from "@/types/votes";
+import { VotedResult } from "@/types/votes";
 import { getConfig } from "@repo/config";
 import { VeVote__factory } from "@repo/contracts";
 import axios from "axios";
@@ -39,10 +39,6 @@ export const getVotedChoices = async (thor: ThorClient, proposalId?: string, add
   if (!thor) {
     return { votedChoices: undefined };
   }
-  
-  if (!proposalId || !address) {
-    return { votedChoices: undefined };
-  }
 
   try {
     const eventAbi = thor.contracts.load(contractAddress, VeVote__factory.abi).getEventAbi("VoteCast");
@@ -51,7 +47,6 @@ export const getVotedChoices = async (thor: ThorClient, proposalId?: string, add
       voter: address,
       proposalId,
     });
-
 
     const filterCriteria = [
       {
@@ -68,7 +63,8 @@ export const getVotedChoices = async (thor: ThorClient, proposalId?: string, add
     const events = await getAllEventLogs({ thor, nodeUrl, filterCriteria });
 
     const votedEvents = events.map(event => {
-      const [voter, proposalId, choices, weight, reason, stargateNFTs, validator] = event.decodedData as DecodedVoteCastEvent;
+      const [voter, proposalId, choices, weight, reason, stargateNFTs, validator] =
+        event.decodedData as DecodedVoteCastEvent;
 
       const votedChoices = {
         proposalId: proposalId.toString(),
@@ -78,13 +74,15 @@ export const getVotedChoices = async (thor: ThorClient, proposalId?: string, add
         reason,
         stargateNFTs: stargateNFTs.map(nft => nft.toString()),
         validator,
+        date: new Date(event.meta.blockTimestamp * 1000),
+        transactionId: event.meta.txID,
       };
 
       return votedChoices;
     });
 
     return {
-      votedChoices: votedEvents[0] as VotedChoices,
+      votedChoices: votedEvents,
     };
   } catch (error) {
     console.error(error);

@@ -118,9 +118,17 @@ type RootTranslation = {
 	 */
 	submit: string
 	/**
+	 * S​u​b​m​i​t​ ​V​o​t​e
+	 */
+	submit_vote: string
+	/**
 	 * V​o​t​i​n​g​ ​P​o​w​e​r
 	 */
 	voting_power: string
+	/**
+	 * Y​o​u​r​ ​v​o​t​i​n​g​ ​p​o​w​e​r
+	 */
+	your_voting_power: string
 	/**
 	 * V​o​t​e​d
 	 */
@@ -226,6 +234,10 @@ type RootTranslation = {
 	 * C​o​n​n​e​c​t​ ​W​a​l​l​e​t
 	 */
 	connect_wallet: string
+	/**
+	 * C​o​n​n​e​c​t​ ​y​o​u​r​ ​w​a​l​l​e​t​ ​t​o​ ​v​o​t​e
+	 */
+	connect_wallet_to_vote: string
 	home: {
 		/**
 		 * H​o​m​e
@@ -312,6 +324,20 @@ type RootTranslation = {
 		 * @param {string} days
 		 */
 		end_after_max_duration: RequiredParams<'days'>
+		/**
+		 * F​a​i​l​e​d​ ​t​o​ ​l​o​a​d​ ​v​o​t​e​r​s​ ​d​a​t​a​.​ ​P​l​e​a​s​e​ ​t​r​y​ ​a​g​a​i​n​.
+		 */
+		failed_load_voters: string
+		descriptions_errors: {
+			/**
+			 * P​l​e​a​s​e​ ​r​e​p​l​a​c​e​ ​p​l​a​c​e​h​o​l​d​e​r​ ​t​e​x​t​ ​w​i​t​h​ ​y​o​u​r​ ​o​w​n​ ​c​o​n​t​e​n​t​ ​b​e​f​o​r​e​ ​s​u​b​m​i​t​t​i​n​g​ ​t​h​e​ ​p​r​o​p​o​s​a​l​.
+			 */
+			placeholders_not_replaced: string
+			/**
+			 * D​e​s​c​r​i​p​t​i​o​n​ ​c​a​n​n​o​t​ ​b​e​ ​e​m​p​t​y​.​ ​P​l​e​a​s​e​ ​p​r​o​v​i​d​e​ ​c​o​n​t​e​n​t​ ​f​o​r​ ​y​o​u​r​ ​p​r​o​p​o​s​a​l​.
+			 */
+			empty_description: string
+		}
 	}
 	voting_list: {
 		/**
@@ -427,7 +453,7 @@ type RootTranslation = {
 			 */
 			no_go_back: string
 			/**
-			 * Y​e​s​,​ ​D​e​l​e​t​e​ ​P​r​o​p​o​s​a​l
+			 * Y​e​s​,​ ​D​e​l​e​t​e
 			 */
 			yes_delete: string
 		}
@@ -448,9 +474,10 @@ type RootTranslation = {
 				 */
 				title: string
 				/**
-				 * A​ ​m​i​n​i​m​u​m​ ​o​f​ ​3​0​%​ ​p​a​r​t​i​c​i​p​a​t​i​o​n​ ​m​u​s​t​ ​b​e​ ​r​e​a​c​h​e​d​ ​t​o​ ​v​a​l​i​d​a​t​e​ ​t​h​e​ ​v​o​t​i​n​g​ ​o​f​ ​t​h​e​ ​p​r​o​p​o​s​a​l​ ​a​n​d​ ​g​e​t​ ​a​p​p​r​o​v​a​l​.
+				 * A​ ​m​i​n​i​m​u​m​ ​o​f​ ​{​q​u​o​r​u​m​}​%​ ​p​a​r​t​i​c​i​p​a​t​i​o​n​ ​m​u​s​t​ ​b​e​ ​r​e​a​c​h​e​d​ ​t​o​ ​v​a​l​i​d​a​t​e​ ​t​h​e​ ​v​o​t​i​n​g​ ​o​f​ ​t​h​e​ ​p​r​o​p​o​s​a​l​ ​a​n​d​ ​g​e​t​ ​a​p​p​r​o​v​a​l​.
+				 * @param {number} quorum
 				 */
-				description: string
+				description: RequiredParams<'quorum'>
 			}
 			approved: {
 				/**
@@ -458,9 +485,10 @@ type RootTranslation = {
 				 */
 				title: string
 				/**
-				 * T​h​e​ ​v​o​t​i​n​g​ ​p​a​r​t​i​c​i​p​a​t​i​o​n​ ​r​e​a​c​h​e​d​ ​t​h​e​ ​m​i​n​i​m​u​m​ ​r​e​q​u​i​r​e​d​ ​o​f​ ​3​0​%​ ​t​o​ ​g​e​t​ ​a​p​p​r​o​v​a​l​.
+				 * T​h​e​ ​v​o​t​i​n​g​ ​p​a​r​t​i​c​i​p​a​t​i​o​n​ ​r​e​a​c​h​e​d​ ​t​h​e​ ​m​i​n​i​m​u​m​ ​r​e​q​u​i​r​e​d​ ​o​f​ ​{​q​u​o​r​u​m​}​%​ ​t​o​ ​g​e​t​ ​a​p​p​r​o​v​a​l​.
+				 * @param {number} quorum
 				 */
-				description: string
+				description: RequiredParams<'quorum'>
 			}
 			executed: {
 				/**
@@ -478,9 +506,10 @@ type RootTranslation = {
 				 */
 				title: string
 				/**
-				 * T​h​e​ ​v​o​t​i​n​g​ ​p​a​r​t​i​c​i​p​a​t​i​o​n​ ​d​i​d​n​’​t​ ​r​e​a​c​h​e​d​ ​t​h​e​ ​m​i​n​i​m​u​m​ ​r​e​q​u​i​r​e​d​ ​o​f​ ​3​0​%​ ​t​o​ ​g​e​t​ ​a​p​p​r​o​v​a​l​.
+				 * T​h​e​ ​v​o​t​i​n​g​ ​p​a​r​t​i​c​i​p​a​t​i​o​n​ ​d​i​d​n​’​t​ ​r​e​a​c​h​e​d​ ​t​h​e​ ​m​i​n​i​m​u​m​ ​r​e​q​u​i​r​e​d​ ​o​f​ ​{​q​u​o​r​u​m​}​%​ ​t​o​ ​g​e​t​ ​a​p​p​r​o​v​a​l​.
+				 * @param {number} quorum
 				 */
-				description: string
+				description: RequiredParams<'quorum'>
 			}
 			rejected: {
 				/**
@@ -1053,9 +1082,17 @@ export type TranslationFunctions = {
 	 */
 	submit: () => LocalizedString
 	/**
+	 * Submit Vote
+	 */
+	submit_vote: () => LocalizedString
+	/**
 	 * Voting Power
 	 */
 	voting_power: () => LocalizedString
+	/**
+	 * Your voting power
+	 */
+	your_voting_power: () => LocalizedString
 	/**
 	 * Voted
 	 */
@@ -1157,6 +1194,10 @@ JPG, PNG or SVG of maximum of {size}MB.
 	 * Connect Wallet
 	 */
 	connect_wallet: () => LocalizedString
+	/**
+	 * Connect your wallet to vote
+	 */
+	connect_wallet_to_vote: () => LocalizedString
 	home: {
 		/**
 		 * Home
@@ -1242,6 +1283,20 @@ JPG, PNG or SVG of maximum of {size}MB.
 		 * The end date must be within {days} days of the start date
 		 */
 		end_after_max_duration: (arg: { days: string }) => LocalizedString
+		/**
+		 * Failed to load voters data. Please try again.
+		 */
+		failed_load_voters: () => LocalizedString
+		descriptions_errors: {
+			/**
+			 * Please replace placeholder text with your own content before submitting the proposal.
+			 */
+			placeholders_not_replaced: () => LocalizedString
+			/**
+			 * Description cannot be empty. Please provide content for your proposal.
+			 */
+			empty_description: () => LocalizedString
+		}
 	}
 	voting_list: {
 		/**
@@ -1356,7 +1411,7 @@ JPG, PNG or SVG of maximum of {size}MB.
 			 */
 			no_go_back: () => LocalizedString
 			/**
-			 * Yes, Delete Proposal
+			 * Yes, Delete
 			 */
 			yes_delete: () => LocalizedString
 		}
@@ -1377,9 +1432,9 @@ JPG, PNG or SVG of maximum of {size}MB.
 				 */
 				title: () => LocalizedString
 				/**
-				 * A minimum of 30% participation must be reached to validate the voting of the proposal and get approval.
+				 * A minimum of {quorum}% participation must be reached to validate the voting of the proposal and get approval.
 				 */
-				description: () => LocalizedString
+				description: (arg: { quorum: number }) => LocalizedString
 			}
 			approved: {
 				/**
@@ -1387,9 +1442,9 @@ JPG, PNG or SVG of maximum of {size}MB.
 				 */
 				title: () => LocalizedString
 				/**
-				 * The voting participation reached the minimum required of 30% to get approval.
+				 * The voting participation reached the minimum required of {quorum}% to get approval.
 				 */
-				description: () => LocalizedString
+				description: (arg: { quorum: number }) => LocalizedString
 			}
 			executed: {
 				/**
@@ -1407,9 +1462,9 @@ JPG, PNG or SVG of maximum of {size}MB.
 				 */
 				title: () => LocalizedString
 				/**
-				 * The voting participation didn’t reached the minimum required of 30% to get approval.
+				 * The voting participation didn’t reached the minimum required of {quorum}% to get approval.
 				 */
-				description: () => LocalizedString
+				description: (arg: { quorum: number }) => LocalizedString
 			}
 			rejected: {
 				/**

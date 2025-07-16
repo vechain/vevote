@@ -49,7 +49,7 @@ export const IconBadge = ({ variant, ...rest }: Omit<TagProps, "children">) => {
 
   return (
     <Tag variant={variant} {...rest}>
-      <TagLeftIcon as={IconElement} width={5} height={5} />
+      <TagLeftIcon as={IconElement} width={{ base: 3, md: 5 }} height={{ base: 3, md: 5 }} />
       {text}
     </Tag>
   );

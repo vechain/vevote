@@ -45,7 +45,7 @@ export const buttonTheme = defineStyleConfig({
       paddingY: "0.5rem",
       gap: "0.75rem",
       height: "2.5rem",
-      minW: "5.5rem",
+      minW: { base: 0, md: "5.5rem" },
       borderRadius: "0.75rem",
       fontSize: "0.875rem",
       lineHeight: "1.25rem",
@@ -132,7 +132,7 @@ export const buttonTheme = defineStyleConfig({
     },
     feedback: {
       backgroundColor: colors.green[50],
-      textColor: colors.green[700],
+      textColor: colors.green[300],
       border: "1px",
       borderColor: "transparent",
       _hover: {
