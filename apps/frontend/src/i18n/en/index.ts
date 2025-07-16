@@ -57,6 +57,8 @@ const en = {
   disconnect: "Disconnect",
   connect_wallet: "Connect Wallet",
   connect_wallet_to_vote: "Connect your wallet to vote",
+  comment: "Comment",
+  comment_placeholder: "Add a comment to your vote...",
   home: {
     title: "Home",
     go_to_proposals: "Go to proposals",
@@ -84,7 +86,8 @@ const en = {
     end_after_max_duration: "The end date must be within {days:string} days of the start date",
     failed_load_voters: "Failed to load voters data. Please try again.",
     descriptions_errors: {
-      placeholders_not_replaced: "Please replace placeholder text with your own content before submitting the proposal.",
+      placeholders_not_replaced:
+        "Please replace placeholder text with your own content before submitting the proposal.",
       empty_description: "Description cannot be empty. Please provide content for your proposal.",
     },
   },

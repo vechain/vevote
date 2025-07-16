@@ -238,6 +238,14 @@ type RootTranslation = {
 	 * C​o​n​n​e​c​t​ ​y​o​u​r​ ​w​a​l​l​e​t​ ​t​o​ ​v​o​t​e
 	 */
 	connect_wallet_to_vote: string
+	/**
+	 * C​o​m​m​e​n​t
+	 */
+	comment: string
+	/**
+	 * A​d​d​ ​a​ ​c​o​m​m​e​n​t​ ​t​o​ ​y​o​u​r​ ​v​o​t​e​.​.​.
+	 */
+	comment_placeholder: string
 	home: {
 		/**
 		 * H​o​m​e
@@ -1198,6 +1206,14 @@ JPG, PNG or SVG of maximum of {size}MB.
 	 * Connect your wallet to vote
 	 */
 	connect_wallet_to_vote: () => LocalizedString
+	/**
+	 * Comment
+	 */
+	comment: () => LocalizedString
+	/**
+	 * Add a comment to your vote...
+	 */
+	comment_placeholder: () => LocalizedString
 	home: {
 		/**
 		 * Home

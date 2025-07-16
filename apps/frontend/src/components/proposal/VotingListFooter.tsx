@@ -8,7 +8,7 @@ import { getVotingVariant } from "@/utils/voting";
 import { Button, ButtonProps, Flex, Icon, Link, Text, Textarea } from "@chakra-ui/react";
 import { getConfig } from "@repo/config";
 import { useWallet } from "@vechain/vechain-kit";
-import { Dispatch, MouseEventHandler, SetStateAction, useMemo } from "react";
+import { Dispatch, MouseEventHandler, SetStateAction, useCallback, useMemo } from "react";
 import { ConnectButton } from "../ui/ConnectButton";
 import { InfoBox, infoBoxVariants } from "../ui/InfoBox";
 import { VotedChip } from "../ui/VotedChip";
@@ -192,22 +192,30 @@ type InputCommentProps = {
 const InputComment = ({ comment, setComment, disabled }: InputCommentProps) => {
   const { LL } = useI18nContext();
 
+  const onChange = useCallback(
+    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+      if (comment && comment?.length >= MAX_COMMENT_SIZE) {
+        if (e.currentTarget.value.length >= MAX_COMMENT_SIZE) return;
+        setComment?.(e.currentTarget.value);
+      }
+      setComment?.(e.currentTarget.value);
+    },
+    [comment, setComment],
+  );
+
   return (
     <Flex gap={2} flexDirection={"column"} alignItems={"start"}>
       <Flex gap={2} alignItems={"center"}>
         <Icon as={MessageSquareIcon} boxSize={{ base: 4, md: 5 }} />
         <Text fontSize={{ base: 14, md: 16 }} fontWeight={600}>
-          Comment
+          {LL.comment()}
         </Text>
       </Flex>
 
-      <Textarea
-        value={comment}
-        onChange={e => setComment?.(e.currentTarget.value)}
-        placeholder="Add a comment to your vote..."
-        isDisabled={disabled}
-      />
-      <Text>{LL.filed_length({ current: comment?.length || 0, max: MAX_COMMENT_SIZE })}</Text>
+      <Textarea value={comment} onChange={onChange} placeholder={LL.comment_placeholder()} isDisabled={disabled} />
+      <Text fontSize={12} color={"gray.600"}>
+        {LL.filed_length({ current: comment?.length || 0, max: MAX_COMMENT_SIZE })}
+      </Text>
     </Flex>
   );
 };
