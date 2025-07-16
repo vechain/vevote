@@ -1,5 +1,5 @@
 import { getBlockFromDate } from "@/utils/proposals/helpers";
-import { getNodesName, getUserNodes, getUserRoles } from "@/utils/proposals/userQueries";
+import { getNodesName, getAMN, getUserNodes, getUserRoles } from "@/utils/proposals/userQueries";
 import { useQuery } from "@tanstack/react-query";
 import { useWallet } from "@vechain/vechain-kit";
 import dayjs from "dayjs";
@@ -10,7 +10,15 @@ const getNodes = async ({ address, startDate }: { address: string; startDate: Da
     const blockDate = dayjs(startDate).isAfter(today) ? today.toDate() : startDate;
     const blockN = await getBlockFromDate(blockDate);
     if (!blockN) return { nodes: [] };
-    return await getUserNodes({ address, blockN: blockN?.number.toString() });
+
+    const { data } = await getAMN(address);
+    const masterNode = data?.nodeMaster;
+
+    const r = await getUserNodes({ address, blockN: blockN?.number.toString() });
+    return {
+      nodes: r?.nodes || [],
+      masterNode,
+    };
   } catch (error) {
     console.error("Error fetching nodes:", error);
     return { nodes: [] };
@@ -28,6 +36,7 @@ export const useNodes = ({ startDate }: { startDate?: Date }) => {
 
   return {
     nodes: data?.nodes || [],
+    masterNode: data?.masterNode,
     isLoading,
     isError: Boolean(error),
   };

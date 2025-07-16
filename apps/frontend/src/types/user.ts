@@ -59,3 +59,8 @@ export const NodeStrengthLevels: NodeStrengthLevel[] = [
   NodeStrengthLevel.Dawn,
   NodeStrengthLevel.Validator,
 ];
+
+export type AmnResponse = {
+  nodeMaster: string;
+  endorser: string;
+};

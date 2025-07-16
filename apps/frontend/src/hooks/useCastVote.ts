@@ -23,7 +23,7 @@ export const useHasVoted = ({ proposalId }: { proposalId?: string }) => {
   return { hasVoted: data || false };
 };
 
-export const useCastVote = ({ proposalId }: { proposalId?: string }) => {
+export const useCastVote = ({ proposalId, masterNode }: { proposalId?: string; masterNode?: string }) => {
   const { account } = useWallet();
   const buildClauses = useCallback(
     ({ id, selectedOptions }: Pick<ProposalCardType, "id"> & { selectedOptions: (1 | 0)[] }) => {
@@ -32,7 +32,7 @@ export const useCastVote = ({ proposalId }: { proposalId?: string }) => {
       const numberChoices = parseInt(selectedOptions.reverse().join(""), 2);
 
       try {
-        const encodedData = [fromStringToUint256(id), numberChoices, ZERO_ADDRESS];
+        const encodedData = [fromStringToUint256(id), numberChoices, masterNode || ZERO_ADDRESS];
 
         const interfaceJson = contractInterface.getFunction("castVote")?.format("full");
         if (!interfaceJson) throw new Error(`Method propose not found`);
@@ -49,7 +49,7 @@ export const useCastVote = ({ proposalId }: { proposalId?: string }) => {
         return [];
       }
     },
-    [],
+    [masterNode],
   );
 
   return useVevoteSendTransaction({
