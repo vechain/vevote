@@ -1,4 +1,3 @@
-import { AmnResponse } from "@/types/user";
 import { getBlockFromDate } from "@/utils/proposals/helpers";
 import { getNodesName, getAMN, getUserNodes, getUserRoles } from "@/utils/proposals/userQueries";
 import { useQuery } from "@tanstack/react-query";
@@ -12,16 +11,13 @@ const getNodes = async ({ address, startDate }: { address: string; startDate: Da
     const blockN = await getBlockFromDate(blockDate);
     if (!blockN) return { nodes: [] };
 
-    let amn: AmnResponse | undefined = undefined;
-    if (address) {
-      const { data } = await getAMN(address);
-      if (data) amn = data;
-    }
+    const { data } = await getAMN(address);
+    const masterNode = data?.nodeMaster;
 
     const r = await getUserNodes({ address, blockN: blockN?.number.toString() });
     return {
       nodes: r?.nodes || [],
-      masterNode: amn?.nodeMaster,
+      masterNode,
     };
   } catch (error) {
     console.error("Error fetching nodes:", error);
