@@ -19,7 +19,7 @@ export const VotingSingleChoice = ({
   proposal,
   results,
 }: GenericVotingOptions<VotingEnum.SINGLE_CHOICE, SingleChoiceEnum[]>) => {
-  const { votedChoices, votingVariant, sendTransaction, isTransactionPending, comment, setComment } =
+  const { votedChoices, votingVariant, sendTransaction, isTransactionPending, comment, setComment, commentDisabled } =
     useVotingBase(proposal);
 
   const initialSelectedOption = useMemo(() => {
@@ -78,6 +78,7 @@ export const VotingSingleChoice = ({
         disabled={currentSelection === undefined}
         comment={comment}
         setComment={setComment}
+        commentDisabled={commentDisabled}
       />
     </Flex>
   );
@@ -87,7 +88,7 @@ export const VotingSingleOption = ({
   proposal,
   results,
 }: GenericVotingOptions<VotingEnum.SINGLE_OPTION, BaseOption[]>) => {
-  const { votedChoices, votingVariant, sendTransaction, isTransactionPending, comment, setComment } =
+  const { votedChoices, votingVariant, sendTransaction, isTransactionPending, comment, setComment, commentDisabled } =
     useVotingBase(proposal);
 
   const initialSelectedOption = useMemo(() => {
@@ -147,6 +148,7 @@ export const VotingSingleOption = ({
         disabled={currentSelection === undefined}
         comment={comment}
         setComment={setComment}
+        commentDisabled={commentDisabled}
       />
     </Flex>
   );
@@ -156,7 +158,7 @@ export const VotingMultipleOptions = ({
   proposal,
   results,
 }: GenericVotingOptions<VotingEnum.MULTIPLE_OPTIONS, BaseOption[]>) => {
-  const { votedChoices, votingVariant, sendTransaction, isTransactionPending, comment, setComment } =
+  const { votedChoices, votingVariant, sendTransaction, isTransactionPending, comment, setComment, commentDisabled } =
     useVotingBase(proposal);
 
   const initialSelectedOptions = useMemo(() => {
@@ -233,6 +235,7 @@ export const VotingMultipleOptions = ({
         disabled={currentSelection.length === 0}
         comment={comment}
         setComment={setComment}
+        commentDisabled={commentDisabled}
       />
     </Flex>
   );

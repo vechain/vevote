@@ -26,6 +26,7 @@ type VotingListFooterProps = {
   disabled?: boolean;
   comment?: string;
   setComment?: Dispatch<SetStateAction<string | undefined>>;
+  commentDisabled?: boolean;
 };
 
 export const VotingListFooter = ({
@@ -34,6 +35,7 @@ export const VotingListFooter = ({
   disabled = false,
   comment,
   setComment,
+  commentDisabled = false,
 }: VotingListFooterProps) => {
   const { proposal } = useProposal();
   const { connection } = useWallet();
@@ -59,7 +61,7 @@ export const VotingListFooter = ({
 
   return (
     <Flex flexDirection={"column"} gap={4} width={"100%"}>
-      <InputComment comment={comment} setComment={setComment} disabled={votingNotStarted || !isVoter} />
+      <InputComment comment={comment} setComment={setComment} disabled={commentDisabled} />
       <Flex
         gap={8}
         alignItems={"center"}
@@ -212,7 +214,16 @@ const InputComment = ({ comment, setComment, disabled }: InputCommentProps) => {
         </Text>
       </Flex>
 
-      <Textarea value={comment} onChange={onChange} placeholder={LL.comment_placeholder()} isDisabled={disabled} />
+      <Textarea
+        background={disabled ? "gray.100" : ""}
+        borderColor={disabled ? "gray.200" : ""}
+        color={disabled ? "gray.600" : ""}
+        fontSize={{ base: 14, md: 16 }}
+        value={comment}
+        onChange={onChange}
+        placeholder={LL.comment_placeholder()}
+        isDisabled={disabled}
+      />
       <Text fontSize={12} color={"gray.600"}>
         {LL.filed_length({ current: comment?.length || 0, max: MAX_COMMENT_SIZE })}
       </Text>

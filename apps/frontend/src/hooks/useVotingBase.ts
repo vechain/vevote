@@ -1,9 +1,10 @@
 import { ProposalStatus } from "@/types/proposal";
-import { useMemo, useCallback, useState } from "react";
+import { useMemo, useCallback, useState, useEffect } from "react";
 import { useCastVote, useVotedChoices } from "./useCastVote";
 import { VotingItemVariant } from "@/components/proposal/VotingItem";
 import { getVotingVariant } from "@/utils/voting";
 import { trackEvent, MixPanelEvent } from "@/utils/mixpanel/utilsMixpanel";
+import { useWallet } from "@vechain/vechain-kit";
 
 export const SHOW_RESULTS_STATUSES: ProposalStatus[] = [
   "approved",
@@ -14,15 +15,21 @@ export const SHOW_RESULTS_STATUSES: ProposalStatus[] = [
 ];
 
 export const useVotingBase = (proposal: { id: string; status: ProposalStatus }) => {
-  const [comment, setComment] = useState<string | undefined>("");
   const enabled = useMemo(() => SHOW_RESULTS_STATUSES.includes(proposal.status), [proposal.status]);
+  const { account } = useWallet();
 
   const { votedChoices } = useVotedChoices({
     proposalId: proposal.id,
     enabled,
   });
 
+  const [comment, setComment] = useState<string | undefined>(undefined);
+
   const votingVariant: VotingItemVariant = useMemo(() => getVotingVariant(proposal.status), [proposal.status]);
+
+  const commentDisabled = useMemo(() => {
+    return votingVariant === "upcoming" || (votingVariant === "voting" && Boolean(votedChoices?.reason));
+  }, [votingVariant, votedChoices?.reason]);
 
   const { sendTransaction: originalSendTransaction, isTransactionPending } = useCastVote({
     proposalId: proposal.id,
@@ -68,6 +75,23 @@ export const useVotingBase = (proposal: { id: string; status: ProposalStatus }) 
     [originalSendTransaction],
   );
 
+  useEffect(() => {
+    //TODO: This is a temporary fix to reset the comment when the wallet changes or disconnects.
+    // Reset comment when wallet changes or disconnects
+    setComment(undefined);
+  }, [account?.address]);
+
+  useEffect(() => {
+    // Only set comment if wallet is connected
+    if (account?.address) {
+      if (votedChoices?.reason) {
+        setComment(votedChoices.reason);
+      } else if (votedChoices && !votedChoices.reason) {
+        setComment(undefined);
+      }
+    }
+  }, [votedChoices]);
+
   return {
     votedChoices,
     votingVariant,
@@ -75,5 +99,6 @@ export const useVotingBase = (proposal: { id: string; status: ProposalStatus }) 
     isTransactionPending,
     comment,
     setComment,
+    commentDisabled,
   };
 };
