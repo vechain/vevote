@@ -1,27 +1,40 @@
-import { useI18nContext } from "@/i18n/i18n-react";
-import { InfoBox, infoBoxVariants } from "../ui/InfoBox";
-import { useFormatDate } from "@/hooks/useFormatDate";
-import { MouseEventHandler, useMemo } from "react";
-import { Button, ButtonProps, Flex, Icon, Link, Text } from "@chakra-ui/react";
-import { useWallet } from "@vechain/vechain-kit";
-import { VotingItemVariant } from "./VotingItem";
-import { useProposal } from "./ProposalProvider";
-import { getVotingVariant } from "@/utils/voting";
-import { VotingPowerModal } from "./VotingPowerModal";
-import { VotersModal } from "./VotersModal";
 import { useHasVoted } from "@/hooks/useCastVote";
-import { ArrowLinkIcon, ArrowRightIcon } from "@/icons";
+import { useFormatDate } from "@/hooks/useFormatDate";
 import { useNodes } from "@/hooks/useUserQueries";
-import { trackEvent, MixPanelEvent } from "@/utils/mixpanel/utilsMixpanel";
+import { useI18nContext } from "@/i18n/i18n-react";
+import { ArrowLinkIcon, ArrowRightIcon, MessageSquareIcon } from "@/icons";
+import { MixPanelEvent, trackEvent } from "@/utils/mixpanel/utilsMixpanel";
+import { getVotingVariant } from "@/utils/voting";
+import { Button, ButtonProps, Flex, Icon, Link, Text, Textarea } from "@chakra-ui/react";
 import { getConfig } from "@repo/config";
+import { useWallet } from "@vechain/vechain-kit";
+import { Dispatch, MouseEventHandler, SetStateAction, useMemo } from "react";
 import { ConnectButton } from "../ui/ConnectButton";
+import { InfoBox, infoBoxVariants } from "../ui/InfoBox";
 import { VotedChip } from "../ui/VotedChip";
+import { useProposal } from "./ProposalProvider";
+import { VotersModal } from "./VotersModal";
+import { VotingItemVariant } from "./VotingItem";
+import { VotingPowerModal } from "./VotingPowerModal";
 
+const MAX_COMMENT_SIZE = 80;
 const EXPLORER_URL = getConfig(import.meta.env.VITE_APP_ENV).network.explorerUrl;
 
-type VotingListFooterProps = { onSubmit: () => Promise<void>; isLoading?: boolean; disabled?: boolean };
+type VotingListFooterProps = {
+  onSubmit: () => Promise<void>;
+  isLoading?: boolean;
+  disabled?: boolean;
+  comment?: string;
+  setComment?: Dispatch<SetStateAction<string | undefined>>;
+};
 
-export const VotingListFooter = ({ onSubmit, isLoading, disabled = false }: VotingListFooterProps) => {
+export const VotingListFooter = ({
+  onSubmit,
+  isLoading,
+  disabled = false,
+  comment,
+  setComment,
+}: VotingListFooterProps) => {
   const { proposal } = useProposal();
   const { connection } = useWallet();
   const { LL } = useI18nContext();
@@ -45,20 +58,23 @@ export const VotingListFooter = ({ onSubmit, isLoading, disabled = false }: Voti
     );
 
   return (
-    <Flex
-      gap={8}
-      alignItems={"center"}
-      justifyContent={"space-between"}
-      width={"100%"}
-      flexDirection={{ base: "column", md: "row" }}>
-      <VotingFooterAction
-        onSubmit={onSubmit}
-        votingVariant={votingVariant}
-        isLoading={isLoading}
-        isVoter={isVoter}
-        disabled={disabled}
-      />
-      {!votingNotStarted && isVoter && <VotingPower />}
+    <Flex flexDirection={"column"} gap={4} width={"100%"}>
+      <InputComment comment={comment} setComment={setComment} disabled={votingNotStarted || !isVoter} />
+      <Flex
+        gap={8}
+        alignItems={"center"}
+        justifyContent={"space-between"}
+        width={"100%"}
+        flexDirection={{ base: "column", md: "row" }}>
+        <VotingFooterAction
+          onSubmit={onSubmit}
+          votingVariant={votingVariant}
+          isLoading={isLoading}
+          isVoter={isVoter}
+          disabled={disabled}
+        />
+        {!votingNotStarted && isVoter && <VotingPower />}
+      </Flex>
     </Flex>
   );
 };
@@ -163,6 +179,35 @@ const VotingPower = () => {
         {LL.your_voting_power()}
       </Text>
       <VotingPowerModal />
+    </Flex>
+  );
+};
+
+type InputCommentProps = {
+  comment?: string;
+  setComment?: Dispatch<SetStateAction<string | undefined>>;
+  disabled?: boolean;
+};
+
+const InputComment = ({ comment, setComment, disabled }: InputCommentProps) => {
+  const { LL } = useI18nContext();
+
+  return (
+    <Flex gap={2} flexDirection={"column"} alignItems={"start"}>
+      <Flex gap={2} alignItems={"center"}>
+        <Icon as={MessageSquareIcon} boxSize={{ base: 4, md: 5 }} />
+        <Text fontSize={{ base: 14, md: 16 }} fontWeight={600}>
+          Comment
+        </Text>
+      </Flex>
+
+      <Textarea
+        value={comment}
+        onChange={e => setComment?.(e.currentTarget.value)}
+        placeholder="Add a comment to your vote..."
+        isDisabled={disabled}
+      />
+      <Text>{LL.filed_length({ current: comment?.length || 0, max: MAX_COMMENT_SIZE })}</Text>
     </Flex>
   );
 };

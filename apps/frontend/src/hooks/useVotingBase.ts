@@ -1,5 +1,5 @@
 import { ProposalStatus } from "@/types/proposal";
-import { useMemo, useCallback } from "react";
+import { useMemo, useCallback, useState } from "react";
 import { useCastVote, useVotedChoices } from "./useCastVote";
 import { VotingItemVariant } from "@/components/proposal/VotingItem";
 import { getVotingVariant } from "@/utils/voting";
@@ -14,6 +14,7 @@ export const SHOW_RESULTS_STATUSES: ProposalStatus[] = [
 ];
 
 export const useVotingBase = (proposal: { id: string; status: ProposalStatus }) => {
+  const [comment, setComment] = useState<string | undefined>("");
   const enabled = useMemo(() => SHOW_RESULTS_STATUSES.includes(proposal.status), [proposal.status]);
 
   const { votedChoices } = useVotedChoices({
@@ -28,7 +29,7 @@ export const useVotingBase = (proposal: { id: string; status: ProposalStatus }) 
   });
 
   const sendTransaction = useCallback(
-    async (params: { id: string; selectedOptions: (1 | 0)[] }) => {
+    async (params: { id: string; selectedOptions: (1 | 0)[]; reason?: string }) => {
       const voteOption = params.selectedOptions
         .map((opt, index) => (opt === 1 ? index : null))
         .filter(i => i !== null)
@@ -38,6 +39,7 @@ export const useVotingBase = (proposal: { id: string; status: ProposalStatus }) 
         trackEvent(MixPanelEvent.PROPOSAL_VOTE, {
           proposalId: params.id,
           vote: voteOption,
+          reason: params.reason,
         });
 
         const result = await originalSendTransaction(params);
@@ -46,6 +48,7 @@ export const useVotingBase = (proposal: { id: string; status: ProposalStatus }) 
           proposalId: params.id,
           vote: voteOption,
           transactionId: result.txId,
+          reason: params.reason,
         });
 
         return result;
@@ -57,6 +60,7 @@ export const useVotingBase = (proposal: { id: string; status: ProposalStatus }) 
           vote: voteOption,
           error: txError.error?.message || txError.message || "Unknown error",
           transactionId: txId,
+          reason: params.reason,
         });
         throw error;
       }
@@ -69,5 +73,7 @@ export const useVotingBase = (proposal: { id: string; status: ProposalStatus }) 
     votingVariant,
     sendTransaction,
     isTransactionPending,
+    comment,
+    setComment,
   };
 };
