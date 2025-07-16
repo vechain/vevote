@@ -1,4 +1,4 @@
-import { ExtendedAMNResponse } from "@/types/user";
+import { AmnResponse } from "@/types/user";
 import { getBlockFromDate } from "@/utils/proposals/helpers";
 import { getNodesName, getAMN, getUserNodes, getUserRoles } from "@/utils/proposals/userQueries";
 import { useQuery } from "@tanstack/react-query";
@@ -9,22 +9,19 @@ const getNodes = async ({ address, startDate }: { address: string; startDate: Da
   try {
     const today = dayjs();
     const blockDate = dayjs(startDate).isAfter(today) ? today.toDate() : startDate;
-    let amn: ExtendedAMNResponse | undefined = undefined;
+    const blockN = await getBlockFromDate(blockDate);
+    if (!blockN) return { nodes: [] };
+
+    let amn: AmnResponse | undefined = undefined;
     if (address) {
       const { data } = await getAMN(address);
       if (data) amn = data;
     }
-    const blockN = await getBlockFromDate(blockDate);
-    if (!blockN) return { nodes: [] };
+
     const r = await getUserNodes({ address, blockN: blockN?.number.toString() });
     return {
       nodes: r?.nodes || [],
-      masterNode: {
-        address: amn?.nodeMaster || "",
-        endorser: amn?.endorser || "",
-        blockNumber: amn?.blockNumber || 0,
-        votingPower: amn?.votingPower || 0,
-      },
+      masterNode: amn?.nodeMaster,
     };
   } catch (error) {
     console.error("Error fetching nodes:", error);

@@ -62,10 +62,5 @@ export const NodeStrengthLevels: NodeStrengthLevel[] = [
 
 export type AmnResponse = {
   nodeMaster: string;
-  blockNumber: number;
   endorser: string;
-};
-
-export type ExtendedAMNResponse = AmnResponse & {
-  votingPower: number;
 };
