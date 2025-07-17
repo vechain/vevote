@@ -24,12 +24,12 @@ export const DEFAULT_DESCRIPTION_TEMPLATE = (accountAddress?: string) =>
   new Delta({
     ops: [
       // Proposal Summary
-      ...createSectionOps("## Proposal Summary", PROPOSAL_SUMMARY_PLACEHOLDER, true),
+      ...createSectionOps("Proposal Summary", PROPOSAL_SUMMARY_PLACEHOLDER, true),
 
       // Proposal Type
-      createHeaderOp("## Proposal type"),
+      createHeaderOp("Proposal type"),
       createPlainTextOp("\n"),
-      createHeaderOp("Specify the type of proposal:"),
+      createHeaderOp("Specify the type of proposal:", "normal"),
       createPlainTextOp("\n"),
       createItalicTextOp(PROPOSAL_TYPES_PLACEHOLDER.onChain),
       createPlainTextOp("\n"),
@@ -37,18 +37,18 @@ export const DEFAULT_DESCRIPTION_TEMPLATE = (accountAddress?: string) =>
       createPlainTextOp("\n\n"),
 
       // Main content sections
-      ...createSectionOps("## Motivation", MOTIVATION_PLACEHOLDER, true),
-      ...createSectionOps("## Details specification", DETAILS_SPECIFICATION_PLACEHOLDER, true),
-      ...createSectionOps("## Goals", GOALS_PLACEHOLDER, true),
-      ...createSectionOps("## Risk Analysis", RISK_ANALYSIS_PLACEHOLDER, true),
-      ...createSectionOps("## Conclusion", CONCLUSION_PLACEHOLDER, true),
-      ...createSectionOps("## References", REFERENCES_PLACEHOLDER, true),
+      ...createSectionOps("Motivation", MOTIVATION_PLACEHOLDER, true),
+      ...createSectionOps("Details specification", DETAILS_SPECIFICATION_PLACEHOLDER, true),
+      ...createSectionOps("Goals", GOALS_PLACEHOLDER, true),
+      ...createSectionOps("Risk Analysis", RISK_ANALYSIS_PLACEHOLDER, true),
+      ...createSectionOps("Conclusion", CONCLUSION_PLACEHOLDER, true),
+      ...createSectionOps("References", REFERENCES_PLACEHOLDER, true),
 
       // Separator
       createPlainTextOp("----\n\n"),
 
       // Author Information
-      createHeaderOp("## Author Information"),
+      createHeaderOp("Author Information"),
       createPlainTextOp("\nName: "),
       createItalicTextOp(YOUR_NAME_PLACEHOLDER),
       createBulletListOp("\n"),
@@ -56,10 +56,10 @@ export const DEFAULT_DESCRIPTION_TEMPLATE = (accountAddress?: string) =>
       createItalicTextOp(YOUR_CONTACT_INFO_PLACEHOLDER),
       createBulletListOp("\n"),
       createPlainTextOp("Vechain address: "),
-      createHeaderOp(accountAddress || "Not provided"),
+      createHeaderOp(accountAddress || "Not provided", "normal"),
       createBulletListOp("\n"),
       createPlainTextOp("\n"),
-      createItalicTextOp("**Date:**  "),
+      createItalicTextOp("Date:  "),
       createPlainTextOp("\n"),
       createItalicTextOp(TODAY),
       createPlainTextOp("\n"),

@@ -57,6 +57,10 @@ h6 {
   flex-wrap: wrap;
 }
 
+.ql-editor .ql-size-large {
+  font-size: 25px;
+}
+
 .ql-toolbar.ql-snow .ql-bold,
 .ql-toolbar.ql-snow .ql-italic,
 .ql-toolbar.ql-snow .ql-underline,
