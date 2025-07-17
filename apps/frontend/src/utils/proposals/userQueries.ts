@@ -2,7 +2,7 @@ import { getConfig } from "@repo/config";
 import { executeCall, executeMultipleClauses } from "../contract";
 import { VeVote__factory } from "@repo/contracts";
 import { NodeManagement__factory } from "@repo/contracts/typechain-types";
-import { ExtendedUserNode, NodeStrengthLevels, StargateNode, UserNode } from "@/types/user";
+import { ExtendedStargateNode, NodeStrengthLevels, StargateNode } from "@/types/user";
 
 const contractAddress = getConfig(import.meta.env.VITE_APP_ENV).vevoteContractAddress;
 const nodeManagementAddress = getConfig(import.meta.env.VITE_APP_ENV).nodeManagementContractAddress;
@@ -61,7 +61,7 @@ export const getUserNodes = async ({ address, blockN }: { address: string; block
     const nodesRes = await executeCall({
       contractAddress: nodeManagementAddress,
       contractInterface: nodeManagementInterface,
-      method: "getUserNodes",
+      method: "getUserStargateNFTsInfo",
       args: [address],
       callOptions: {
         revision: blockN,
@@ -70,16 +70,16 @@ export const getUserNodes = async ({ address, blockN }: { address: string; block
 
     if (!nodesRes.success) return { nodes: [] };
 
-    const userNodes = nodesRes.result.plain as UserNode[];
+    const userNodes = nodesRes.result.plain as StargateNode[];
 
     const votingPowerArgs = userNodes.map(node => ({
       method: "getNodeVoteWeight" as const,
-      args: [node.nodeId],
+      args: [node.tokenId],
     }));
 
     const multiplierArgs = userNodes.map(node => ({
       method: "levelIdMultiplier" as const,
-      args: [node.nodeLevel],
+      args: [node.levelId],
     }));
 
     const [nodesPower, nodesMultiplier] = await Promise.all([
@@ -98,10 +98,10 @@ export const getUserNodes = async ({ address, blockN }: { address: string; block
     const nodesPowerResults = nodesPower.map(r => (r.success ? (r.result.plain as bigint) : BigInt(0)));
     const nodesMultiplierResults = nodesMultiplier.map(r => (r.success ? (r.result.plain as bigint) : BigInt(0)));
 
-    const nodes: ExtendedUserNode[] = userNodes.map((node, index) => ({
+    const nodes: ExtendedStargateNode[] = userNodes.map((node, index) => ({
       ...node,
       multiplier: nodesMultiplierResults[index] || BigInt(0),
-      nodeName: NodeStrengthLevels[node.nodeLevel],
+      nodeName: NodeStrengthLevels[node.levelId],
       votingPower: nodesPowerResults[index] || BigInt(0),
     }));
 

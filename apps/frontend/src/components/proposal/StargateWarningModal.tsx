@@ -12,12 +12,11 @@ import { GenericInfoBox } from "../ui/GenericInfoBox";
 type StargateWarningModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  setHasAccepted: (value: boolean) => void;
 };
 
 export const stargateUrl = "https://app.stargate.vechain.org/";
 
-export const StargateWarningModal = ({ isOpen, onClose, setHasAccepted }: StargateWarningModalProps) => {
+export const StargateWarningModal = ({ isOpen, onClose }: StargateWarningModalProps) => {
   const { LL } = useI18nContext();
 
   const schema = z.object({
@@ -27,11 +26,11 @@ export const StargateWarningModal = ({ isOpen, onClose, setHasAccepted }: Starga
   });
 
   const onSubmit = useCallback(() => {
-    setHasAccepted(true);
     onClose();
-  }, [setHasAccepted, onClose]);
+  }, [onClose]);
 
   return (
+    // TODO: Refactor this modal
     <MessageModal
       isOpen={isOpen}
       onClose={onClose}

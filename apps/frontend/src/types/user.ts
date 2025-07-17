@@ -38,6 +38,12 @@ export type StargateNode = {
   vetAmountStaked: bigint;
 };
 
+export type ExtendedStargateNode = StargateNode & {
+  votingPower: bigint;
+  multiplier: bigint;
+  nodeName: NodeStrengthLevel;
+};
+
 export enum NodeStrengthLevel {
   None = "none",
   Strength = "strength",
