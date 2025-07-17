@@ -45,6 +45,7 @@ export const ImageUploadControlled = <T extends FieldValues>({
                 message,
               })
             }
+            isError={Boolean(error)}
             onSuccess={onSuccess}>
             <FileUploadChild value={value} />
           </FileUpload>

@@ -328,6 +328,16 @@ type RootTranslation = {
 		 * F​a​i​l​e​d​ ​t​o​ ​l​o​a​d​ ​v​o​t​e​r​s​ ​d​a​t​a​.​ ​P​l​e​a​s​e​ ​t​r​y​ ​a​g​a​i​n​.
 		 */
 		failed_load_voters: string
+		descriptions_errors: {
+			/**
+			 * P​l​e​a​s​e​ ​r​e​p​l​a​c​e​ ​p​l​a​c​e​h​o​l​d​e​r​ ​t​e​x​t​ ​w​i​t​h​ ​y​o​u​r​ ​o​w​n​ ​c​o​n​t​e​n​t​ ​b​e​f​o​r​e​ ​s​u​b​m​i​t​t​i​n​g​ ​t​h​e​ ​p​r​o​p​o​s​a​l​.
+			 */
+			placeholders_not_replaced: string
+			/**
+			 * D​e​s​c​r​i​p​t​i​o​n​ ​c​a​n​n​o​t​ ​b​e​ ​e​m​p​t​y​.​ ​P​l​e​a​s​e​ ​p​r​o​v​i​d​e​ ​c​o​n​t​e​n​t​ ​f​o​r​ ​y​o​u​r​ ​p​r​o​p​o​s​a​l​.
+			 */
+			empty_description: string
+		}
 	}
 	voting_list: {
 		/**
@@ -1303,6 +1313,16 @@ JPG, PNG or SVG of maximum of {size}MB.
 		 * Failed to load voters data. Please try again.
 		 */
 		failed_load_voters: () => LocalizedString
+		descriptions_errors: {
+			/**
+			 * Please replace placeholder text with your own content before submitting the proposal.
+			 */
+			placeholders_not_replaced: () => LocalizedString
+			/**
+			 * Description cannot be empty. Please provide content for your proposal.
+			 */
+			empty_description: () => LocalizedString
+		}
 	}
 	voting_list: {
 		/**

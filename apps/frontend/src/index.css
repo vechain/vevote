@@ -23,6 +23,13 @@ h6 {
   border-color: #e2e8f0;
 }
 
+:has(> .ql-toolbar.ql-snow)[data-error="true"] {
+  border-width: 2px;
+  border-style: solid;
+  border-radius: 8px;
+  border-color: #e53e3e;
+}
+
 .ql-container.ql-snow {
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
@@ -39,8 +46,15 @@ h6 {
   font-family: "Inter", sans-serif;
 }
 
-.ql-container.ql-snow .ql-formats {
-  display: block;
+.ql-picker-options {
+  box-sizing: border-box;
+  border-radius: 6px;
+}
+
+.ql-snow .ql-formats {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
 .ql-toolbar.ql-snow .ql-bold,
@@ -61,16 +75,40 @@ h6 {
 
 .ql-snow.ql-toolbar button:hover,
 .ql-snow.ql-toolbar button:focus,
-.ql-snow.ql-toolbar button.ql-active,
-.ql-snow.ql-toolbar .ql-picker-label:hover,
-.ql-snow.ql-toolbar .ql-picker-label.ql-active,
-.ql-snow.ql-toolbar .ql-picker-item:hover,
-.ql-snow.ql-toolbar .ql-picker-item.ql-selected {
+.ql-snow.ql-toolbar button.ql-active {
   color: #525860;
   background: #d2d5d9;
   border-radius: 6px;
   width: 32px;
   height: 32px;
+}
+
+.ql-snow.ql-toolbar .ql-picker-label {
+  color: #525860;
+  border-radius: 6px;
+}
+
+.ql-snow .ql-picker-options .ql-picker-item {
+  padding-left: 4px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+
+.ql-snow.ql-toolbar .ql-picker-label button:hover,
+.ql-snow.ql-toolbar .ql-picker-label button:focus,
+.ql-snow.ql-toolbar .ql-picker-label button.ql-active,
+.ql-snow.ql-toolbar .ql-picker-item:hover,
+.ql-snow.ql-toolbar .ql-picker-item.ql-selected {
+  color: #525860;
+  background: #d2d5d9;
+  border-radius: 6px;
+  width: auto;
+}
+
+.ql-snow.ql-toolbar .ql-picker-label:hover,
+.ql-snow.ql-toolbar .ql-picker-label.ql-active {
+  background: #d2d5d9;
+  color: #525860;
 }
 
 .ql-container.ql-snow.ql-disabled {

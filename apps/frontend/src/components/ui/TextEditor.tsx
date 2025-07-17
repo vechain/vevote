@@ -38,12 +38,22 @@ type EditorProps = {
   defaultValue?: Delta;
   onTextChange?: (props: { delta: Delta; oldContent: Delta; source: EmitterSource }) => void;
   onSelectionChange?: (props: { range: Range | null; oldRange: Range | null; source: EmitterSource }) => void;
+  isError?: boolean;
 };
 
-const toolbarOptions = ["bold", "italic", "underline", "strike", { list: "ordered" }, { list: "bullet" }, "link"];
+const toolbarOptions = [
+  { size: ["small", false, "large"] },
+  "bold",
+  "italic",
+  "underline",
+  "strike",
+  { list: "ordered" },
+  { list: "bullet" },
+  "link",
+];
 
 const TextEditor = forwardRef<Quill, EditorProps>(
-  ({ readOnly = false, defaultValue, onTextChange, onSelectionChange }, ref) => {
+  ({ readOnly = false, defaultValue, onTextChange, onSelectionChange, isError }, ref) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const quillInstance = useRef<Quill | null>(null);
 
@@ -106,7 +116,7 @@ const TextEditor = forwardRef<Quill, EditorProps>(
       quillInstance.current?.enable(!readOnly);
     }, [readOnly]);
 
-    return <Box ref={containerRef} />;
+    return <Box ref={containerRef} data-error={isError} />;
   },
 );
 

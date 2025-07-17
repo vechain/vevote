@@ -4,7 +4,7 @@ import { Routes } from "@/types/routes";
 import { Button, ModalFooter, Text, useDisclosure } from "@chakra-ui/react";
 import { useCallback, useMemo } from "react";
 import { useNavigate } from "react-router";
-import { useCreateProposal } from "./CreateProposalProvider";
+import { DEFAULT_PROPOSAL, useCreateProposal } from "./CreateProposalProvider";
 import { CreateProposalStep } from "@/types/proposal";
 import { CheckIcon, LogoutIcon } from "@/icons";
 
@@ -14,12 +14,13 @@ export const ExitModal = ({ isExitOpen, onExitClose }: { isExitOpen: boolean; on
 
   const navigate = useNavigate();
 
-  const { saveDraftProposal, step, draftProposal, setStep } = useCreateProposal();
+  const { saveDraftProposal, step, draftProposal, setStep, setProposalDetails } = useCreateProposal();
 
   const onExit = useCallback(() => {
     setStep(CreateProposalStep.VOTING_DETAILS);
+    setProposalDetails(DEFAULT_PROPOSAL);
     navigate(Routes.HOME);
-  }, [navigate, setStep]);
+  }, [navigate, setProposalDetails, setStep]);
 
   const onSave = useCallback(async () => {
     onExitClose();

@@ -1,8 +1,8 @@
 import { LL } from "@/i18n/i18n-ssr";
-import { ProposalDescription } from "@/pages/CreateProposal/CreateProposalProvider";
 import { SingleChoiceEnum, VotingEnum } from "@/types/proposal";
 import { zodFile, zodStartEndDates } from "@/utils/zod";
 import { z } from "zod";
+import { descriptionSchema } from "./descriptionSchema";
 
 export const TITLE_MAX_CHARS = 120;
 export const QUESTION_MAX_CHAR = 120;
@@ -11,7 +11,7 @@ export const proposalDetailsSchema = (delay: number, duration: number) =>
   z
     .object({
       title: z.string().min(1, { message: LL.field_errors.required() }).max(TITLE_MAX_CHARS),
-      description: z.array(z.custom<ProposalDescription>()).min(1, { message: LL.field_errors.required() }),
+      description: descriptionSchema,
       headerImage: zodFile,
     })
     .and(zodStartEndDates(delay, duration));

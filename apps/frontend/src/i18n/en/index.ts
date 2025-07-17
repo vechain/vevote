@@ -83,6 +83,10 @@ const en = {
     start_after_today: "The start date must be in the future",
     end_after_max_duration: "The end date must be within {days:string} days of the start date",
     failed_load_voters: "Failed to load voters data. Please try again.",
+    descriptions_errors: {
+      placeholders_not_replaced: "Please replace placeholder text with your own content before submitting the proposal.",
+      empty_description: "Description cannot be empty. Please provide content for your proposal.",
+    },
   },
   voting_list: {
     voting_options: "Voting options:",

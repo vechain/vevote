@@ -1,6 +1,7 @@
 import { useDraftProposal } from "@/hooks/useDraftProposal";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { CreateProposalStep, ProposalCardType, SingleChoiceEnum, VotingChoices, VotingEnum } from "@/types/proposal";
+import { DEFAULT_DESCRIPTION_TEMPLATE } from "@/utils/template/descriptionTemplate";
 import { ZodFile } from "@/utils/zod";
 import { useWallet } from "@vechain/vechain-kit";
 import { Op } from "quill";
@@ -42,7 +43,7 @@ export type ProposalDetails = {
 
 export const DEFAULT_PROPOSAL: ProposalDetails = {
   title: "",
-  description: [],
+  description: DEFAULT_DESCRIPTION_TEMPLATE().ops,
   votingQuestion: "",
   votingLimit: 1,
   votingType: VotingEnum.SINGLE_CHOICE,
@@ -81,7 +82,10 @@ export const CreateProposalProvider = ({ children }: PropsWithChildren) => {
     "draft-proposal",
     null,
   );
-  const [proposalDetails, setProposalDetails] = useState<ProposalDetails>(DEFAULT_PROPOSAL);
+  const [proposalDetails, setProposalDetails] = useState<ProposalDetails>({
+    ...DEFAULT_PROPOSAL,
+    description: DEFAULT_DESCRIPTION_TEMPLATE(account?.address).ops,
+  });
   const [step, setStep] = useState<CreateProposalStep>(CreateProposalStep.VOTING_DETAILS);
 
   const saveDraftProposal = useCallback(async () => {

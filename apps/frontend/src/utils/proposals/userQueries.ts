@@ -2,10 +2,13 @@ import { getConfig } from "@repo/config";
 import { executeCall, executeMultipleClauses } from "../contract";
 import { VeVote__factory } from "@repo/contracts";
 import { NodeManagement__factory } from "@repo/contracts/typechain-types";
-import { ExtendedStargateNode, NodeStrengthLevels, StargateNode } from "@/types/user";
+import { AmnResponse, ExtendedStargateNode, NodeStrengthLevels, StargateNode } from "@/types/user";
+import axios from "axios";
+import { IndexerRoutes } from "@/types/indexer";
 
 const contractAddress = getConfig(import.meta.env.VITE_APP_ENV).vevoteContractAddress;
 const nodeManagementAddress = getConfig(import.meta.env.VITE_APP_ENV).nodeManagementContractAddress;
+const indexerUrl = getConfig(import.meta.env.VITE_APP_ENV).indexerUrl;
 
 const contractInterface = VeVote__factory.createInterface();
 const nodeManagementInterface = NodeManagement__factory.createInterface();
@@ -127,6 +130,18 @@ export const getNodesName = async ({ nodeIds }: { nodeIds: string[] }) => {
   }));
 
   return nodeLevels;
+};
+
+export const getAMN = async (address?: string) => {
+  if (!address) return { data: undefined };
+  try {
+    const res = await axios.get<AmnResponse>(`${indexerUrl}${IndexerRoutes.MASTER_NODE}/${address}`);
+
+    return { data: res.data };
+  } catch (error) {
+    console.error(`Failed to fetch votes results: ${error}`);
+    return { data: undefined };
+  }
 };
 
 export const getAllUsersNodes = async (address: string) => {

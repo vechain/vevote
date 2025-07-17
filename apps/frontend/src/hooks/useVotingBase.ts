@@ -4,6 +4,7 @@ import { useCastVote, useVotedChoices } from "./useCastVote";
 import { VotingItemVariant } from "@/components/proposal/VotingItem";
 import { getVotingVariant } from "@/utils/voting";
 import { trackEvent, MixPanelEvent } from "@/utils/mixpanel/utilsMixpanel";
+import { useNodes } from "./useUserQueries";
 
 export const SHOW_RESULTS_STATUSES: ProposalStatus[] = [
   "approved",
@@ -13,7 +14,7 @@ export const SHOW_RESULTS_STATUSES: ProposalStatus[] = [
   "min-not-reached",
 ];
 
-export const useVotingBase = (proposal: { id: string; status: ProposalStatus }) => {
+export const useVotingBase = (proposal: { id: string; status: ProposalStatus; startDate?: Date }) => {
   const enabled = useMemo(() => SHOW_RESULTS_STATUSES.includes(proposal.status), [proposal.status]);
 
   const { votedChoices } = useVotedChoices({
@@ -23,8 +24,13 @@ export const useVotingBase = (proposal: { id: string; status: ProposalStatus }) 
 
   const votingVariant: VotingItemVariant = useMemo(() => getVotingVariant(proposal.status), [proposal.status]);
 
+  const { masterNode } = useNodes({
+    startDate: proposal.startDate,
+  });
+
   const { sendTransaction: originalSendTransaction, isTransactionPending } = useCastVote({
     proposalId: proposal.id,
+    masterNode,
   });
 
   const sendTransaction = useCallback(

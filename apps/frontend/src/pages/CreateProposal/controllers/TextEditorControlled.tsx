@@ -15,7 +15,7 @@ export const TextEditorControlled = <T extends FieldValues>({ name }: TextEditor
     <Controller
       name={name}
       control={control}
-      render={({ field: { onChange }, formState: { defaultValues } }) => (
+      render={({ field: { onChange }, formState: { defaultValues, errors } }) => (
         <TextEditor
           ref={quillRef}
           readOnly={false}
@@ -24,6 +24,7 @@ export const TextEditorControlled = <T extends FieldValues>({ name }: TextEditor
             const newContent = oldContent.compose(delta);
             onChange(newContent.ops);
           }}
+          isError={!!errors[name]?.message}
         />
       )}
     />

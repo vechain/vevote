@@ -24,6 +24,7 @@ export const CreateProposalNavigation = () => {
         return LL.proposal.create.voting_summary_desc();
     }
   }, [LL.proposal.create, step]);
+
   return (
     <PageContainer.Header
       paddingX={{ base: 6, md: 12, lg: 24 }}
