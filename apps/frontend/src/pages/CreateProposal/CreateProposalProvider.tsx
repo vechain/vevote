@@ -12,6 +12,7 @@ import {
   SetStateAction,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
 } from "react";
@@ -82,10 +83,7 @@ export const CreateProposalProvider = ({ children }: PropsWithChildren) => {
     "draft-proposal",
     null,
   );
-  const [proposalDetails, setProposalDetails] = useState<ProposalDetails>({
-    ...DEFAULT_PROPOSAL,
-    description: DEFAULT_DESCRIPTION_TEMPLATE(account?.address).ops,
-  });
+  const [proposalDetails, setProposalDetails] = useState<ProposalDetails>(DEFAULT_PROPOSAL);
   const [step, setStep] = useState<CreateProposalStep>(CreateProposalStep.VOTING_DETAILS);
 
   const saveDraftProposal = useCallback(async () => {
@@ -107,6 +105,15 @@ export const CreateProposalProvider = ({ children }: PropsWithChildren) => {
     }),
     [proposalDetails, step, saveDraftProposal, draftProposal, removeDraftProposal, openPreview, setOpenPreview],
   );
+
+  useEffect(() => {
+    if (account?.address) {
+      setProposalDetails(prev => ({
+        ...prev,
+        description: DEFAULT_DESCRIPTION_TEMPLATE(account.address).ops,
+      }));
+    }
+  }, [account?.address]);
 
   return <CreateProposalContext.Provider value={value}>{children}</CreateProposalContext.Provider>;
 };
