@@ -2,7 +2,7 @@ import { getConfig } from "@repo/config";
 import { executeCall, executeMultipleClauses } from "../contract";
 import { VeVote__factory } from "@repo/contracts";
 import { NodeManagement__factory } from "@repo/contracts/typechain-types";
-import { AmnResponse, ExtendedUserNode, NodeStrengthLevels, UserNode } from "@/types/user";
+import { AmnResponse, ExtendedStargateNode, NodeStrengthLevels, StargateNode } from "@/types/user";
 import axios from "axios";
 import { IndexerRoutes } from "@/types/indexer";
 
@@ -64,7 +64,7 @@ export const getUserNodes = async ({ address, blockN }: { address: string; block
     const nodesRes = await executeCall({
       contractAddress: nodeManagementAddress,
       contractInterface: nodeManagementInterface,
-      method: "getUserNodes",
+      method: "getUserStargateNFTsInfo",
       args: [address],
       callOptions: {
         revision: blockN,
@@ -73,16 +73,16 @@ export const getUserNodes = async ({ address, blockN }: { address: string; block
 
     if (!nodesRes.success) return { nodes: [] };
 
-    const userNodes = nodesRes.result.plain as UserNode[];
+    const userNodes = nodesRes.result.plain as StargateNode[];
 
     const votingPowerArgs = userNodes.map(node => ({
       method: "getNodeVoteWeight" as const,
-      args: [node.nodeId],
+      args: [node.tokenId],
     }));
 
     const multiplierArgs = userNodes.map(node => ({
       method: "levelIdMultiplier" as const,
-      args: [node.nodeLevel],
+      args: [node.levelId],
     }));
 
     const [nodesPower, nodesMultiplier] = await Promise.all([
@@ -101,10 +101,10 @@ export const getUserNodes = async ({ address, blockN }: { address: string; block
     const nodesPowerResults = nodesPower.map(r => (r.success ? (r.result.plain as bigint) : BigInt(0)));
     const nodesMultiplierResults = nodesMultiplier.map(r => (r.success ? (r.result.plain as bigint) : BigInt(0)));
 
-    const nodes: ExtendedUserNode[] = userNodes.map((node, index) => ({
+    const nodes: ExtendedStargateNode[] = userNodes.map((node, index) => ({
       ...node,
       multiplier: nodesMultiplierResults[index] || BigInt(0),
-      nodeName: NodeStrengthLevels[node.nodeLevel],
+      nodeName: NodeStrengthLevels[node.levelId],
       votingPower: nodesPowerResults[index] || BigInt(0),
     }));
 
@@ -142,4 +142,29 @@ export const getAMN = async (address?: string) => {
     console.error(`Failed to fetch votes results: ${error}`);
     return { data: undefined };
   }
+};
+
+export const getAllUsersNodes = async (address: string) => {
+  const [allNodesRes, stargateNodesRes] = await executeMultipleClauses({
+    contractAddress: nodeManagementAddress,
+    contractInterface: nodeManagementInterface,
+    methodsWithArgs: [
+      { method: "getNodeIds", args: [address] },
+      { method: "getUserStargateNFTsInfo", args: [address] },
+    ],
+  });
+
+  if (!allNodesRes.success || !stargateNodesRes.success) return { nodes: [] };
+
+  const AllNodes = (allNodesRes.result.plain as bigint[]).map(n => n.toString());
+  const stargateNodes = (stargateNodesRes.result.plain as StargateNode[]).map(n => n.tokenId.toString());
+
+  const nodes = AllNodes.map(nodeId => ({
+    nodeId,
+    isStargate: stargateNodes.includes(nodeId),
+  }));
+
+  return {
+    nodes,
+  };
 };
