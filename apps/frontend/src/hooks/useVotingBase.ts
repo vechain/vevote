@@ -82,21 +82,17 @@ export const useVotingBase = (proposal: { id: string; status: ProposalStatus; st
   );
 
   useEffect(() => {
-    //TODO: This is a temporary fix to reset the comment when the wallet changes or disconnects.
-    // Reset comment when wallet changes or disconnects
-    setComment(undefined);
-  }, [account?.address]);
+    console.log("EFFECT____________:", !account?.address || !votedChoices?.reason);
+    if (account?.address && votedChoices?.reason) {
+      setComment(votedChoices.reason);
+    } else if (!account?.address || !votedChoices?.reason) {
+      setComment(undefined);
+    }
+  }, [account?.address, votedChoices]);
 
   useEffect(() => {
-    // Only set comment if wallet is connected
-    if (account?.address) {
-      if (votedChoices?.reason) {
-        setComment(votedChoices.reason);
-      } else if (votedChoices && !votedChoices.reason) {
-        setComment(undefined);
-      }
-    }
-  }, [votedChoices]);
+    console.log("COMMENT", comment);
+  }, [comment]);
 
   return {
     votedChoices,

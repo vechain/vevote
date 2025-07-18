@@ -61,7 +61,8 @@ export const VotingListFooter = ({
 
   return (
     <Flex flexDirection={"column"} gap={4} width={"100%"}>
-      <InputComment comment={comment} setComment={setComment} disabled={commentDisabled} />
+      {connection.isConnected && <InputComment comment={comment} setComment={setComment} disabled={commentDisabled} />}
+
       <Flex
         gap={8}
         alignItems={"center"}
