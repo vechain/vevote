@@ -46,6 +46,7 @@ const en = {
   select_date: "Select date",
   select_time: "Select time",
   maximum: "Maximum",
+  minimum: "Minimum",
   number_option: "Option {index:number}",
   continue: "Continue",
   description: "Description",
@@ -84,7 +85,8 @@ const en = {
     end_after_max_duration: "The end date must be within {days:string} days of the start date",
     failed_load_voters: "Failed to load voters data. Please try again.",
     descriptions_errors: {
-      placeholders_not_replaced: "Please replace placeholder text with your own content before submitting the proposal.",
+      placeholders_not_replaced:
+        "Please replace placeholder text with your own content before submitting the proposal.",
       empty_description: "Description cannot be empty. Please provide content for your proposal.",
     },
   },
@@ -221,7 +223,7 @@ const en = {
         voting_question_subtitle: "This question should provide exact context to the voting options:",
         voting_question_placeholder: "Write the question...",
         voting_limit: "Voting limit",
-        voting_limit_subtitle: "Define the maximum amount of options allowed per voter:",
+        voting_limit_subtitle: "Define the minimum and maximum amount of options allowed per voter:",
         voting_options: "Voting options",
         voting_choice_subtitle: "The “single choice” voting type only allows the voter to select:",
         voting_options_subtitle: "Add between 2 and 30 options to vote:",

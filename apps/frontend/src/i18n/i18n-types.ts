@@ -194,6 +194,10 @@ type RootTranslation = {
 	 */
 	maximum: string
 	/**
+	 * M​i​n​i​m​u​m
+	 */
+	minimum: string
+	/**
 	 * O​p​t​i​o​n​ ​{​i​n​d​e​x​}
 	 * @param {number} index
 	 */
@@ -716,7 +720,7 @@ type RootTranslation = {
 				 */
 				voting_limit: string
 				/**
-				 * D​e​f​i​n​e​ ​t​h​e​ ​m​a​x​i​m​u​m​ ​a​m​o​u​n​t​ ​o​f​ ​o​p​t​i​o​n​s​ ​a​l​l​o​w​e​d​ ​p​e​r​ ​v​o​t​e​r​:
+				 * D​e​f​i​n​e​ ​t​h​e​ ​m​i​n​i​m​u​m​ ​a​n​d​ ​m​a​x​i​m​u​m​ ​a​m​o​u​n​t​ ​o​f​ ​o​p​t​i​o​n​s​ ​a​l​l​o​w​e​d​ ​p​e​r​ ​v​o​t​e​r​:
 				 */
 				voting_limit_subtitle: string
 				/**
@@ -1180,6 +1184,10 @@ JPG, PNG or SVG of maximum of {size}MB.
 	 * Maximum
 	 */
 	maximum: () => LocalizedString
+	/**
+	 * Minimum
+	 */
+	minimum: () => LocalizedString
 	/**
 	 * Option {index}
 	 */
@@ -1694,7 +1702,7 @@ JPG, PNG or SVG of maximum of {size}MB.
 				 */
 				voting_limit: () => LocalizedString
 				/**
-				 * Define the maximum amount of options allowed per voter:
+				 * Define the minimum and maximum amount of options allowed per voter:
 				 */
 				voting_limit_subtitle: () => LocalizedString
 				/**

@@ -16,7 +16,7 @@ import { CreateFormWrapper } from "./CreateFormWrapper";
 import { defaultSingleChoice, useCreateProposal } from "./CreateProposalProvider";
 import { InputMessage } from "@/components/ui/InputMessage";
 import { useFormContext } from "react-hook-form";
-import { InputLimitControlled } from "./controllers/InputLimitControlled";
+import { InputLimitControlled, InputMinControlled } from "./controllers/InputLimitControlled";
 import { VotingOptionsControlled } from "./VotingOptionsControlled";
 import { ArrowLeftIcon, ArrowRightIcon } from "@/icons";
 
@@ -149,19 +149,44 @@ const MultipleOptionFields = () => {
   const LLSetupForm = LL.proposal.create.setup_form;
   const {
     formState: { errors },
+    watch,
+    setValue,
   } = useFormContext<ProposalMultipleOptionSchema>();
+
+  const { votingOptions, votingMin, votingLimit } = watch();
+
+  const onDeleteEnd = useCallback(() => {
+    const optionsLength = votingOptions.length - 1;
+
+    console.log("onDeleteEnd called", { optionsLength, votingLimit, votingMin });
+
+    if (optionsLength < votingLimit) setValue("votingLimit", optionsLength);
+    if (optionsLength < votingMin) setValue("votingMin", optionsLength);
+  }, [votingOptions, votingLimit, votingMin, setValue]);
   return (
     <>
-      <FormControl isInvalid={Boolean(errors?.votingLimit)}>
+      <Flex flexDirection={"column"} alignItems={"start"} gap={2}>
         <Label label={LLSetupForm.voting_limit()} />
         <Label.Subtitle label={LLSetupForm.voting_limit_subtitle()} />
-        <Label fontSize={16} label={LL.maximum()} />
-        <InputLimitControlled />
-      </FormControl>
+        <Flex alignItems={"center"} gap={4}>
+          <FormControl isInvalid={Boolean(errors?.votingMin)}>
+            <Label fontSize={16} label={LL.minimum()} />
+            <InputMinControlled isMinDisable={votingMin <= 1} isMaxDisable={votingMin >= votingOptions.length} />
+          </FormControl>
+          <FormControl isInvalid={Boolean(errors?.votingLimit)}>
+            <Label fontSize={16} label={LL.maximum()} />
+            <InputLimitControlled
+              isMinDisable={votingLimit <= votingMin}
+              isMaxDisable={votingLimit >= votingOptions.length}
+            />
+          </FormControl>
+        </Flex>
+      </Flex>
+
       <FormControl>
         <Label label={LLSetupForm.voting_options()} />
         <Label.Subtitle label={LLSetupForm.voting_options_subtitle()} />
-        <VotingOptionsControlled />
+        <VotingOptionsControlled onDeleteEnd={onDeleteEnd} />
       </FormControl>
     </>
   );
