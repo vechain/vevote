@@ -158,8 +158,6 @@ const MultipleOptionFields = () => {
   const onDeleteEnd = useCallback(() => {
     const optionsLength = votingOptions.length - 1;
 
-    console.log("onDeleteEnd called", { optionsLength, votingLimit, votingMin });
-
     if (optionsLength < votingLimit) setValue("votingLimit", optionsLength);
     if (optionsLength < votingMin) setValue("votingMin", optionsLength);
   }, [votingOptions, votingLimit, votingMin, setValue]);

@@ -44,7 +44,7 @@ export const VotingTitle = () => {
         {LL.select_between()}
       </Text>
       <Text color="gray.700" textDecoration={"underline"}>
-        {1}
+        {proposal.votingMin ?? 1}
       </Text>
       <Text fontWeight={500} color="gray.500">
         {LL.and()}
