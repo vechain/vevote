@@ -47,7 +47,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: terraform
+        working-directory: terraform/vercel
 
     steps:
       - name: Checkout
