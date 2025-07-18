@@ -1,10 +1,11 @@
 import { useNodes } from "@/hooks/useUserQueries";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { ArrowLinkIcon, CircleInfoIcon } from "@/icons";
-import { Button, Flex, Icon, Text } from "@chakra-ui/react";
+import { Button, Flex, Icon, Link, Text } from "@chakra-ui/react";
+import { useMemo } from "react";
 import { useWallet } from "@vechain/vechain-kit";
-import { useCallback, useMemo } from "react";
 import { useProposal } from "./ProposalProvider";
+import { stargateUrl } from "./StargateWarningModal";
 
 export const BuyANode = () => {
   const { connection } = useWallet();
@@ -22,11 +23,6 @@ export const BuyANode = () => {
     if (connectedAndVoter) return LL.proposal.buy_another_node();
     return LL.proposal.buy_a_node();
   }, [LL.proposal, connectedAndVoter]);
-
-  //todo: implement buy a node
-  const onBuyNode = useCallback(() => {
-    console.log("Buy A Node");
-  }, []);
 
   return (
     <Flex
@@ -48,7 +44,9 @@ export const BuyANode = () => {
           {infoText}
         </Text>
         <Button
-          onClick={onBuyNode}
+          as={Link}
+          isExternal
+          href={stargateUrl}
           backgroundColor={connectedAndVoter ? "gray.200" : "primary.700"}
           variant={connectedAndVoter ? "secondary" : "primary"}
           size={{ base: "md", md: "lg" }}

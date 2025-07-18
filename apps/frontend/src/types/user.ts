@@ -30,6 +30,20 @@ export type ExtendedUserNode = UserNode & {
   nodeName: NodeStrengthLevel;
 };
 
+export type StargateNode = {
+  lastVthoClaimTimestamp: number;
+  levelId: number;
+  mintedAtBlock: bigint;
+  tokenId: bigint;
+  vetAmountStaked: bigint;
+};
+
+export type ExtendedStargateNode = StargateNode & {
+  votingPower: bigint;
+  multiplier: bigint;
+  nodeName: NodeStrengthLevel;
+};
+
 export enum NodeStrengthLevel {
   None = "none",
   Strength = "strength",
@@ -59,3 +73,8 @@ export const NodeStrengthLevels: NodeStrengthLevel[] = [
   NodeStrengthLevel.Dawn,
   NodeStrengthLevel.Validator,
 ];
+
+export type AmnResponse = {
+  nodeMaster: string;
+  endorser: string;
+};

@@ -4,6 +4,7 @@ import { useCastVote, useVotedChoices } from "./useCastVote";
 import { VotingItemVariant } from "@/components/proposal/VotingItem";
 import { getVotingVariant } from "@/utils/voting";
 import { trackEvent, MixPanelEvent } from "@/utils/mixpanel/utilsMixpanel";
+import { useNodes } from "./useUserQueries";
 import { useWallet } from "@vechain/vechain-kit";
 
 export const SHOW_RESULTS_STATUSES: ProposalStatus[] = [
@@ -14,7 +15,7 @@ export const SHOW_RESULTS_STATUSES: ProposalStatus[] = [
   "min-not-reached",
 ];
 
-export const useVotingBase = (proposal: { id: string; status: ProposalStatus }) => {
+export const useVotingBase = (proposal: { id: string; status: ProposalStatus; startDate?: Date }) => {
   const enabled = useMemo(() => SHOW_RESULTS_STATUSES.includes(proposal.status), [proposal.status]);
   const { account } = useWallet();
 
@@ -27,12 +28,17 @@ export const useVotingBase = (proposal: { id: string; status: ProposalStatus }) 
 
   const votingVariant: VotingItemVariant = useMemo(() => getVotingVariant(proposal.status), [proposal.status]);
 
+  const { masterNode } = useNodes({
+    startDate: proposal.startDate,
+  });
+
   const commentDisabled = useMemo(() => {
     return votingVariant === "upcoming" || (votingVariant === "voting" && Boolean(votedChoices?.reason));
   }, [votingVariant, votedChoices?.reason]);
 
   const { sendTransaction: originalSendTransaction, isTransactionPending } = useCastVote({
     proposalId: proposal.id,
+    masterNode,
   });
 
   const sendTransaction = useCallback(

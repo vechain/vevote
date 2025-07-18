@@ -307,6 +307,15 @@ const en = {
     transparent: "Transparent.",
     decentralized: "Decentralized.",
   },
+  stargate_warning: {
+    title: "Stargate Node Migration Required",
+    description: "You have 1 or more non-migrated nodes. Please migrate them as soon as possible to continue voting.",
+    migration_link: "https://app.stargate.vechain.org/",
+    ongoing_proposal_warning:
+      "If a proposal has already started, you will not be able to vote on it even after migration. Only future proposals will be available for voting.",
+    confirmation_instruction: "If you want to continue anyway, write this text: agree-with-this",
+    confirmation_error: "Please type exactly 'agree-with-this' to continue",
+  },
   footer: {
     all_right: "All Rights Reserved \n © Vechain Foundation San Marino S.r.l.",
     legal: {

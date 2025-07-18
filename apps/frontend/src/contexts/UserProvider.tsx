@@ -1,5 +1,9 @@
-import { useUserRoles } from "@/hooks/useUserQueries";
-import { createContext, useContext, useMemo } from "react";
+import { StargateWarningModal } from "@/components/proposal/StargateWarningModal";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
+import { useAllUserNodes, useUserRoles } from "@/hooks/useUserQueries";
+import { useDisclosure } from "@chakra-ui/react";
+import { useWallet } from "@vechain/vechain-kit";
+import { createContext, useContext, useEffect, useMemo } from "react";
 
 const DEFAULT_ROLES = {
   isAdmin: false,
@@ -24,13 +28,34 @@ export const UserContext = createContext<UserContextProps>({
 });
 
 export const UserProvider = (props: React.PropsWithChildren) => {
+  const { account } = useWallet();
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const { roles } = useUserRoles();
+  const { allNodes } = useAllUserNodes();
+
+  //TODO: remove storage after demo maybe, check with Victor
+  const [hasAccepted, setHasAccepted, removeHasAccepted] = useLocalStorage("stargate-warning-accepted", false);
 
   const ctxValue = useMemo(() => {
     return { ...(roles ?? DEFAULT_ROLES) };
   }, [roles]);
 
-  return <UserContext.Provider value={ctxValue}>{props.children}</UserContext.Provider>;
+  useEffect(() => {
+    if (allNodes?.some(node => !node.isStargate) && !hasAccepted) {
+      onOpen();
+    }
+  }, [allNodes, hasAccepted, onOpen]);
+
+  useEffect(() => {
+    if (!account?.address) removeHasAccepted();
+  }, [account, removeHasAccepted]);
+
+  return (
+    <UserContext.Provider value={ctxValue}>
+      {props.children}
+      <StargateWarningModal isOpen={isOpen} onClose={onClose} setHasAccepted={setHasAccepted} />
+    </UserContext.Provider>
+  );
 };
 
 export const useUser = () => {
