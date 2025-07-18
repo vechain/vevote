@@ -253,7 +253,7 @@ const en = {
           title: "Voting setup",
           question: "Question",
           type: "Type",
-          maximum: "Maximum - {limit:number} options",
+          limit: "Minimum {min:number} options - Maximum {limit:number} options",
           types: {
             SINGLE_CHOICE: "Single choice - Yes / No / Abstain",
             SINGLE_OPTION: "Single choice - Multiple voting options",

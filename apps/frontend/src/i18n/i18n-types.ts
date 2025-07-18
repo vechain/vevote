@@ -801,10 +801,11 @@ type RootTranslation = {
 					 */
 					type: string
 					/**
-					 * M​a​x​i​m​u​m​ ​-​ ​{​l​i​m​i​t​}​ ​o​p​t​i​o​n​s
+					 * M​i​n​i​m​u​m​ ​{​m​i​n​}​ ​o​p​t​i​o​n​s​ ​-​ ​M​a​x​i​m​u​m​ ​{​l​i​m​i​t​}​ ​o​p​t​i​o​n​s
 					 * @param {number} limit
+					 * @param {number} min
 					 */
-					maximum: RequiredParams<'limit'>
+					limit: RequiredParams<'limit' | 'min'>
 					types: {
 						/**
 						 * S​i​n​g​l​e​ ​c​h​o​i​c​e​ ​-​ ​Y​e​s​ ​/​ ​N​o​ ​/​ ​A​b​s​t​a​i​n
@@ -1783,9 +1784,9 @@ JPG, PNG or SVG of maximum of {size}MB.
 					 */
 					type: () => LocalizedString
 					/**
-					 * Maximum - {limit} options
+					 * Minimum {min} options - Maximum {limit} options
 					 */
-					maximum: (arg: { limit: number }) => LocalizedString
+					limit: (arg: { limit: number, min: number }) => LocalizedString
 					types: {
 						/**
 						 * Single choice - Yes / No / Abstain

@@ -80,6 +80,7 @@ export const fromEventsToProposals = async (events: ProposalEvent[]): Promise<Fr
         startDate,
         endDate,
         votingLimit: event.maxSelection,
+        votingMin: event.minSelection,
         ipfsHash: event.description,
         reason: event.reason,
         executedProposalLink: event.executedProposalLink,
