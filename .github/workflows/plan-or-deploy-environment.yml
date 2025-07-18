@@ -78,7 +78,7 @@ jobs:
 
       - name: Terraform Initialize
         id: init
-        run: terraform init -backend-config="config/${{ env.ENVIRONMENT }}/backend.config"
+        run: terraform init -backend-config="../config/${{ env.ENVIRONMENT }}/backend.config"
 
       - name: Terraform Workspace
         id: workspace
@@ -92,8 +92,8 @@ jobs:
         id: update-tag
         if: inputs.version && inputs.version != 'latest'
         run: |
-          sed -i "s/latest/${{ inputs.version }}/g" config/${{ env.ENVIRONMENT }}/common.yaml
-          cat config/${{ env.ENVIRONMENT }}/common.yaml
+          sed -i "s/latest/${{ inputs.version }}/g" ../config/${{ env.ENVIRONMENT }}/common.yaml
+          cat ../config/${{ env.ENVIRONMENT }}/common.yaml
         continue-on-error: false
 
       - name: Terraform Plan
