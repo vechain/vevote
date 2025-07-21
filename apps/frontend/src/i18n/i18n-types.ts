@@ -194,6 +194,10 @@ type RootTranslation = {
 	 */
 	maximum: string
 	/**
+	 * M​i​n​i​m​u​m
+	 */
+	minimum: string
+	/**
 	 * O​p​t​i​o​n​ ​{​i​n​d​e​x​}
 	 * @param {number} index
 	 */
@@ -716,7 +720,7 @@ type RootTranslation = {
 				 */
 				voting_limit: string
 				/**
-				 * D​e​f​i​n​e​ ​t​h​e​ ​m​a​x​i​m​u​m​ ​a​m​o​u​n​t​ ​o​f​ ​o​p​t​i​o​n​s​ ​a​l​l​o​w​e​d​ ​p​e​r​ ​v​o​t​e​r​:
+				 * D​e​f​i​n​e​ ​t​h​e​ ​m​i​n​i​m​u​m​ ​a​n​d​ ​m​a​x​i​m​u​m​ ​a​m​o​u​n​t​ ​o​f​ ​o​p​t​i​o​n​s​ ​a​l​l​o​w​e​d​ ​p​e​r​ ​v​o​t​e​r​:
 				 */
 				voting_limit_subtitle: string
 				/**
@@ -797,10 +801,11 @@ type RootTranslation = {
 					 */
 					type: string
 					/**
-					 * M​a​x​i​m​u​m​ ​-​ ​{​l​i​m​i​t​}​ ​o​p​t​i​o​n​s
+					 * M​i​n​i​m​u​m​ ​{​m​i​n​}​ ​o​p​t​i​o​n​s​ ​-​ ​M​a​x​i​m​u​m​ ​{​l​i​m​i​t​}​ ​o​p​t​i​o​n​s
 					 * @param {number} limit
+					 * @param {number} min
 					 */
-					maximum: RequiredParams<'limit'>
+					limit: RequiredParams<'limit' | 'min'>
 					types: {
 						/**
 						 * S​i​n​g​l​e​ ​c​h​o​i​c​e​ ​-​ ​Y​e​s​ ​/​ ​N​o​ ​/​ ​A​b​s​t​a​i​n
@@ -1180,6 +1185,10 @@ JPG, PNG or SVG of maximum of {size}MB.
 	 * Maximum
 	 */
 	maximum: () => LocalizedString
+	/**
+	 * Minimum
+	 */
+	minimum: () => LocalizedString
 	/**
 	 * Option {index}
 	 */
@@ -1694,7 +1703,7 @@ JPG, PNG or SVG of maximum of {size}MB.
 				 */
 				voting_limit: () => LocalizedString
 				/**
-				 * Define the maximum amount of options allowed per voter:
+				 * Define the minimum and maximum amount of options allowed per voter:
 				 */
 				voting_limit_subtitle: () => LocalizedString
 				/**
@@ -1775,9 +1784,9 @@ JPG, PNG or SVG of maximum of {size}MB.
 					 */
 					type: () => LocalizedString
 					/**
-					 * Maximum - {limit} options
+					 * Minimum {min} options - Maximum {limit} options
 					 */
-					maximum: (arg: { limit: number }) => LocalizedString
+					limit: (arg: { limit: number, min: number }) => LocalizedString
 					types: {
 						/**
 						 * Single choice - Yes / No / Abstain

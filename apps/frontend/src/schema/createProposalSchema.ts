@@ -45,6 +45,7 @@ export const proposalMultipleOptionSchema = z.object({
     .array(),
   votingType: z.literal(VotingEnum.MULTIPLE_OPTIONS),
   votingLimit: z.number(),
+  votingMin: z.number().min(1),
 });
 
 export const proposalSetupSchema = z.discriminatedUnion("votingType", [

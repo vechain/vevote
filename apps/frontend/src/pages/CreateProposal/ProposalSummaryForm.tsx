@@ -47,7 +47,8 @@ export const ProposalSummaryForm = () => {
           {proposalDetails.votingType === VotingEnum.MULTIPLE_OPTIONS && proposalDetails.votingLimit && (
             <SummaryCard.BaseItem
               label={LL.proposal.create.setup_form.voting_limit()}
-              value={LL.proposal.create.summary_form.voting_setup.maximum({
+              value={LL.proposal.create.summary_form.voting_setup.limit({
+                min: proposalDetails.votingMin || 1,
                 limit: proposalDetails.votingLimit,
               })}
             />
