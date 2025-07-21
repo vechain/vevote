@@ -84,7 +84,8 @@ const en = {
     end_after_max_duration: "The end date must be within {days:string} days of the start date",
     failed_load_voters: "Failed to load voters data. Please try again.",
     descriptions_errors: {
-      placeholders_not_replaced: "Please replace placeholder text with your own content before submitting the proposal.",
+      placeholders_not_replaced:
+        "Please replace placeholder text with your own content before submitting the proposal.",
       empty_description: "Description cannot be empty. Please provide content for your proposal.",
     },
   },
@@ -106,6 +107,10 @@ const en = {
     buy_another_node: "Buy another node to increase your voting power on future proposals.",
     buy_a_node:
       "Voting is only possible for Node holders. Buy a node to vote on future proposals or increase your voting power.",
+    vote_success: {
+      title: "Vote successful!",
+      description: "Your vote has been successfully submitted. Thank you for participating!",
+    },
     cancel_proposal: {
       title: "Cancel proposal",
       description:

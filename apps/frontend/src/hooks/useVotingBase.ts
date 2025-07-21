@@ -5,6 +5,7 @@ import { VotingItemVariant } from "@/components/proposal/VotingItem";
 import { getVotingVariant } from "@/utils/voting";
 import { trackEvent, MixPanelEvent } from "@/utils/mixpanel/utilsMixpanel";
 import { useNodes } from "./useUserQueries";
+import { useDisclosure } from "@chakra-ui/react";
 
 export const SHOW_RESULTS_STATUSES: ProposalStatus[] = [
   "approved",
@@ -15,6 +16,8 @@ export const SHOW_RESULTS_STATUSES: ProposalStatus[] = [
 ];
 
 export const useVotingBase = (proposal: { id: string; status: ProposalStatus; startDate?: Date }) => {
+  const { isOpen: isSuccessOpen, onClose: onSuccessClose, onOpen: onSuccessOpen } = useDisclosure();
+
   const enabled = useMemo(() => SHOW_RESULTS_STATUSES.includes(proposal.status), [proposal.status]);
 
   const { votedChoices } = useVotedChoices({
@@ -75,5 +78,8 @@ export const useVotingBase = (proposal: { id: string; status: ProposalStatus; st
     votingVariant,
     sendTransaction,
     isTransactionPending,
+    isSuccessOpen,
+    onSuccessClose,
+    onSuccessOpen,
   };
 };

@@ -6,6 +6,7 @@ import { VotingItem } from "./VotingItem";
 import { VotingListFooter } from "./VotingListFooter";
 import { VotingTitle } from "./VotingTitle";
 import { useVotingBase } from "@/hooks/useVotingBase";
+import { SuccessVotingModal } from "./SuccessVotingModal";
 
 type GenericVotingOptions<T, P> = {
   proposal: Omit<ProposalCardType, "votingType" | "votingOptions"> & {
@@ -19,7 +20,15 @@ export const VotingSingleChoice = ({
   proposal,
   results,
 }: GenericVotingOptions<VotingEnum.SINGLE_CHOICE, SingleChoiceEnum[]>) => {
-  const { votedChoices, votingVariant, sendTransaction, isTransactionPending } = useVotingBase(proposal);
+  const {
+    votedChoices,
+    votingVariant,
+    sendTransaction,
+    isTransactionPending,
+    isSuccessOpen,
+    onSuccessClose,
+    onSuccessOpen,
+  } = useVotingBase(proposal);
 
   const initialSelectedOption = useMemo(() => {
     if (!votedChoices?.choices) return undefined;
@@ -41,7 +50,10 @@ export const VotingSingleChoice = ({
 
     try {
       const result = await sendTransaction({ id: proposal.id, selectedOptions: options });
-      console.log("Vote successful! Transaction ID:", result.txId);
+      if (result.txId) {
+        onSuccessOpen();
+        console.log("Vote successful! Transaction ID:", result.txId);
+      }
     } catch (e) {
       const txError = e as { txId?: string; error?: { message?: string }; message?: string };
       console.error("Vote failed:", txError.error?.message || txError.message);
@@ -49,7 +61,7 @@ export const VotingSingleChoice = ({
         console.log("Failed transaction ID:", txError.txId);
       }
     }
-  }, [proposal.id, proposal.votingOptions, currentSelection, sendTransaction]);
+  }, [currentSelection, proposal.votingOptions, proposal.id, sendTransaction, onSuccessOpen]);
 
   return (
     <Flex gap={{ base: 6, md: 8 }} alignItems="start" flexDirection="column" width="100%">
@@ -73,6 +85,7 @@ export const VotingSingleChoice = ({
         isLoading={isTransactionPending}
         disabled={currentSelection === undefined}
       />
+      <SuccessVotingModal isOpen={isSuccessOpen} onClose={onSuccessClose} />
     </Flex>
   );
 };
@@ -81,7 +94,15 @@ export const VotingSingleOption = ({
   proposal,
   results,
 }: GenericVotingOptions<VotingEnum.SINGLE_OPTION, BaseOption[]>) => {
-  const { votedChoices, votingVariant, sendTransaction, isTransactionPending } = useVotingBase(proposal);
+  const {
+    votedChoices,
+    votingVariant,
+    sendTransaction,
+    isTransactionPending,
+    isSuccessOpen,
+    onSuccessClose,
+    onSuccessOpen,
+  } = useVotingBase(proposal);
 
   const initialSelectedOption = useMemo(() => {
     if (!votedChoices?.choices) return [];
@@ -104,7 +125,10 @@ export const VotingSingleOption = ({
 
     try {
       const result = await sendTransaction({ id: proposal.id, selectedOptions: options });
-      console.log("Vote successful! Transaction ID:", result.txId);
+      if (result.txId) {
+        onSuccessOpen();
+        console.log("Vote successful! Transaction ID:", result.txId);
+      }
     } catch (e) {
       const txError = e as { txId?: string; error?: { message?: string }; message?: string };
       console.error("Vote failed:", txError.error?.message || txError.message);
@@ -112,7 +136,7 @@ export const VotingSingleOption = ({
         console.log("Failed transaction ID:", txError.txId);
       }
     }
-  }, [proposal.id, proposal.votingOptions, currentSelection, sendTransaction]);
+  }, [currentSelection, proposal.votingOptions, proposal.id, sendTransaction, onSuccessOpen]);
 
   return (
     <Flex gap={8} alignItems="start" flexDirection="column" width="100%">
@@ -136,6 +160,7 @@ export const VotingSingleOption = ({
         isLoading={isTransactionPending}
         disabled={currentSelection === undefined}
       />
+      <SuccessVotingModal isOpen={isSuccessOpen} onClose={onSuccessClose} />
     </Flex>
   );
 };
@@ -144,7 +169,15 @@ export const VotingMultipleOptions = ({
   proposal,
   results,
 }: GenericVotingOptions<VotingEnum.MULTIPLE_OPTIONS, BaseOption[]>) => {
-  const { votedChoices, votingVariant, sendTransaction, isTransactionPending } = useVotingBase(proposal);
+  const {
+    votedChoices,
+    votingVariant,
+    sendTransaction,
+    isTransactionPending,
+    isSuccessOpen,
+    onSuccessClose,
+    onSuccessOpen,
+  } = useVotingBase(proposal);
 
   const initialSelectedOptions = useMemo(() => {
     if (!votedChoices?.choices) return [];
@@ -184,7 +217,10 @@ export const VotingMultipleOptions = ({
 
     try {
       const result = await sendTransaction({ id: proposal.id, selectedOptions: options });
-      console.log("Vote successful! Transaction ID:", result.txId);
+      if (result.txId) {
+        onSuccessOpen();
+        console.log("Vote successful! Transaction ID:", result.txId);
+      }
     } catch (e) {
       const txError = e as { txId?: string; error?: { message?: string }; message?: string };
       console.error("Vote failed:", txError.error?.message || txError.message);
@@ -192,7 +228,7 @@ export const VotingMultipleOptions = ({
         console.log("Failed transaction ID:", txError.txId);
       }
     }
-  }, [proposal.id, proposal.votingOptions, currentSelection, sendTransaction]);
+  }, [proposal.votingOptions, proposal.id, currentSelection, sendTransaction, onSuccessOpen]);
 
   return (
     <Flex gap={8} alignItems="start" flexDirection="column" width="100%">
@@ -212,6 +248,7 @@ export const VotingMultipleOptions = ({
         ))}
       </Flex>
       <VotingListFooter onSubmit={onSubmit} isLoading={isTransactionPending} disabled={currentSelection.length === 0} />
+      <SuccessVotingModal isOpen={isSuccessOpen} onClose={onSuccessClose} />
     </Flex>
   );
 };

@@ -399,6 +399,16 @@ type RootTranslation = {
 		 * V​o​t​i​n​g​ ​i​s​ ​o​n​l​y​ ​p​o​s​s​i​b​l​e​ ​f​o​r​ ​N​o​d​e​ ​h​o​l​d​e​r​s​.​ ​B​u​y​ ​a​ ​n​o​d​e​ ​t​o​ ​v​o​t​e​ ​o​n​ ​f​u​t​u​r​e​ ​p​r​o​p​o​s​a​l​s​ ​o​r​ ​i​n​c​r​e​a​s​e​ ​y​o​u​r​ ​v​o​t​i​n​g​ ​p​o​w​e​r​.
 		 */
 		buy_a_node: string
+		vote_success: {
+			/**
+			 * V​o​t​e​ ​s​u​c​c​e​s​s​f​u​l​!
+			 */
+			title: string
+			/**
+			 * Y​o​u​r​ ​v​o​t​e​ ​h​a​s​ ​b​e​e​n​ ​s​u​c​c​e​s​s​f​u​l​l​y​ ​s​u​b​m​i​t​t​e​d​.​ ​T​h​a​n​k​ ​y​o​u​ ​f​o​r​ ​p​a​r​t​i​c​i​p​a​t​i​n​g​!
+			 */
+			description: string
+		}
 		cancel_proposal: {
 			/**
 			 * C​a​n​c​e​l​ ​p​r​o​p​o​s​a​l
@@ -456,16 +466,6 @@ type RootTranslation = {
 			 * Y​e​s​,​ ​D​e​l​e​t​e
 			 */
 			yes_delete: string
-		}
-		draft_dialog: {
-			/**
-			 * D​r​a​f​t​ ​p​r​o​p​o​s​a​l
-			 */
-			title: string
-			/**
-			 * B​y​ ​c​o​n​t​i​n​u​i​n​g​,​ ​y​o​u​r​ ​o​l​d​ ​p​r​o​p​o​s​a​l​ ​l​i​n​k​e​d​ ​t​o​ ​t​h​e​ ​p​r​e​v​i​e​w​ ​a​c​c​o​u​n​t​ ​w​i​l​l​ ​b​e​ ​d​i​s​c​a​r​d​e​d​.​ ​A​r​e​ ​y​o​u​ ​s​u​r​e​ ​y​o​u​ ​w​a​n​t​ ​t​o​ ​p​r​o​c​e​e​d​?
-			 */
-			description: string
 		}
 		info_box: {
 			info: {
@@ -1383,6 +1383,16 @@ JPG, PNG or SVG of maximum of {size}MB.
 		 * Voting is only possible for Node holders. Buy a node to vote on future proposals or increase your voting power.
 		 */
 		buy_a_node: () => LocalizedString
+		vote_success: {
+			/**
+			 * Vote successful!
+			 */
+			title: () => LocalizedString
+			/**
+			 * Your vote has been successfully submitted. Thank you for participating!
+			 */
+			description: () => LocalizedString
+		}
 		cancel_proposal: {
 			/**
 			 * Cancel proposal
@@ -1440,16 +1450,6 @@ JPG, PNG or SVG of maximum of {size}MB.
 			 * Yes, Delete
 			 */
 			yes_delete: () => LocalizedString
-		}
-		draft_dialog: {
-			/**
-			 * Draft proposal
-			 */
-			title: () => LocalizedString
-			/**
-			 * By continuing, your old proposal linked to the preview account will be discarded. Are you sure you want to proceed?
-			 */
-			description: () => LocalizedString
 		}
 		info_box: {
 			info: {
