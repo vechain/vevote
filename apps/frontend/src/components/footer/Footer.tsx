@@ -1,5 +1,6 @@
 import { useUser } from "@/contexts/UserProvider";
 import { useI18nContext } from "@/i18n/i18n-react";
+import { LegalLinks } from "@/types/terms";
 import { Flex, Link, Text } from "@chakra-ui/react";
 import { useWallet } from "@vechain/vechain-kit";
 import { useMemo } from "react";
@@ -17,7 +18,6 @@ export const Footer = () => {
     [connection.isConnected, isWhitelisted, location.pathname],
   );
 
-  //TODO: Add the LEGAL links
   return (
     <Flex
       minHeight={"100px"}
@@ -38,9 +38,15 @@ export const Footer = () => {
         {LL.footer.all_right()}
       </Text>
       <Flex alignItems={"center"} whiteSpace={"nowrap"} gap={4} fontSize={{ base: "12px", md: "14px" }}>
-        <Link>{LL.footer.legal.terms_of_service()}</Link>
-        <Link>{LL.footer.legal.privacy_policy()}</Link>
-        <Link>{LL.footer.legal.cookies_policy()}</Link>
+        <Link isExternal href={LegalLinks.TERMS_OF_SERVICE}>
+          {LL.footer.legal.terms_of_service()}
+        </Link>
+        <Link isExternal href={LegalLinks.PRIVACY_POLICY}>
+          {LL.footer.legal.privacy_policy()}
+        </Link>
+        <Link isExternal href={LegalLinks.COOKIES_POLICY}>
+          {LL.footer.legal.cookies_policy()}
+        </Link>
       </Flex>
     </Flex>
   );
