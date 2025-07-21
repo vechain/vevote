@@ -35,25 +35,22 @@ export const VotingSingleChoice = ({
     [initialSelectedOption, selectedOption],
   );
 
-  const onSubmit = useCallback(
-    async (comment?: string) => {
-      if (!currentSelection) return;
+  const onSubmit = useCallback(async () => {
+    if (!currentSelection) return;
 
-      const options = proposal.votingOptions.map(option => (option === currentSelection ? 1 : 0));
+    const options = proposal.votingOptions.map(option => (option === currentSelection ? 1 : 0));
 
-      try {
-        const result = await sendTransaction({ id: proposal.id, selectedOptions: options, reason: comment });
-        console.log("Vote successful! Transaction ID:", result.txId);
-      } catch (e) {
-        const txError = e as { txId?: string; error?: { message?: string }; message?: string };
-        console.error("Vote failed:", txError.error?.message || txError.message);
-        if (txError.txId) {
-          console.log("Failed transaction ID:", txError.txId);
-        }
+    try {
+      const result = await sendTransaction({ id: proposal.id, selectedOptions: options, reason: comment });
+      console.log("Vote successful! Transaction ID:", result.txId);
+    } catch (e) {
+      const txError = e as { txId?: string; error?: { message?: string }; message?: string };
+      console.error("Vote failed:", txError.error?.message || txError.message);
+      if (txError.txId) {
+        console.log("Failed transaction ID:", txError.txId);
       }
-    },
-    [proposal.id, proposal.votingOptions, currentSelection, sendTransaction],
-  );
+    }
+  }, [currentSelection, proposal.votingOptions, proposal.id, sendTransaction, comment]);
 
   return (
     <Flex gap={{ base: 6, md: 8 }} alignItems="start" flexDirection="column" width="100%">
@@ -105,25 +102,22 @@ export const VotingSingleOption = ({
     [initialSelectedOption, selectedOption],
   );
 
-  const onSubmit = useCallback(
-    async (comment?: string) => {
-      if (currentSelection === undefined) return;
+  const onSubmit = useCallback(async () => {
+    if (currentSelection === undefined) return;
 
-      const options = proposal.votingOptions.map((_, i) => (i === currentSelection ? 1 : 0));
+    const options = proposal.votingOptions.map((_, i) => (i === currentSelection ? 1 : 0));
 
-      try {
-        const result = await sendTransaction({ id: proposal.id, selectedOptions: options, reason: comment });
-        console.log("Vote successful! Transaction ID:", result.txId);
-      } catch (e) {
-        const txError = e as { txId?: string; error?: { message?: string }; message?: string };
-        console.error("Vote failed:", txError.error?.message || txError.message);
-        if (txError.txId) {
-          console.log("Failed transaction ID:", txError.txId);
-        }
+    try {
+      const result = await sendTransaction({ id: proposal.id, selectedOptions: options, reason: comment });
+      console.log("Vote successful! Transaction ID:", result.txId);
+    } catch (e) {
+      const txError = e as { txId?: string; error?: { message?: string }; message?: string };
+      console.error("Vote failed:", txError.error?.message || txError.message);
+      if (txError.txId) {
+        console.log("Failed transaction ID:", txError.txId);
       }
-    },
-    [proposal.id, proposal.votingOptions, currentSelection, sendTransaction],
-  );
+    }
+  }, [currentSelection, proposal.votingOptions, proposal.id, sendTransaction, comment]);
 
   return (
     <Flex gap={8} alignItems="start" flexDirection="column" width="100%">
@@ -194,23 +188,20 @@ export const VotingMultipleOptions = ({
     [proposal.votingLimit, currentSelection],
   );
 
-  const onSubmit = useCallback(
-    async (comment?: string) => {
-      const options = proposal.votingOptions.map((_, i) => (currentSelection.includes(i) ? 1 : 0));
+  const onSubmit = useCallback(async () => {
+    const options = proposal.votingOptions.map((_, i) => (currentSelection.includes(i) ? 1 : 0));
 
-      try {
-        const result = await sendTransaction({ id: proposal.id, selectedOptions: options, reason: comment });
-        console.log("Vote successful! Transaction ID:", result.txId);
-      } catch (e) {
-        const txError = e as { txId?: string; error?: { message?: string }; message?: string };
-        console.error("Vote failed:", txError.error?.message || txError.message);
-        if (txError.txId) {
-          console.log("Failed transaction ID:", txError.txId);
-        }
+    try {
+      const result = await sendTransaction({ id: proposal.id, selectedOptions: options, reason: comment });
+      console.log("Vote successful! Transaction ID:", result.txId);
+    } catch (e) {
+      const txError = e as { txId?: string; error?: { message?: string }; message?: string };
+      console.error("Vote failed:", txError.error?.message || txError.message);
+      if (txError.txId) {
+        console.log("Failed transaction ID:", txError.txId);
       }
-    },
-    [proposal.id, proposal.votingOptions, currentSelection, sendTransaction],
-  );
+    }
+  }, [proposal.votingOptions, proposal.id, currentSelection, sendTransaction, comment]);
 
   return (
     <Flex gap={8} alignItems="start" flexDirection="column" width="100%">

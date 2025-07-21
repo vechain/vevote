@@ -220,7 +220,7 @@ const InputComment = ({ comment, setComment, disabled }: InputCommentProps) => {
         borderColor={disabled ? "gray.200" : ""}
         color={disabled ? "gray.600" : ""}
         fontSize={{ base: 14, md: 16 }}
-        value={comment}
+        defaultValue={comment}
         onChange={onChange}
         placeholder={LL.comment_placeholder()}
         isDisabled={disabled}

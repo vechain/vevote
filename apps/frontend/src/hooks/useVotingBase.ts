@@ -1,6 +1,6 @@
 import { ProposalStatus } from "@/types/proposal";
 import { useMemo, useCallback, useState, useEffect } from "react";
-import { useCastVote, useVotedChoices } from "./useCastVote";
+import { useCastVote, useHasVoted, useVotedChoices } from "./useCastVote";
 import { VotingItemVariant } from "@/components/proposal/VotingItem";
 import { getVotingVariant } from "@/utils/voting";
 import { trackEvent, MixPanelEvent } from "@/utils/mixpanel/utilsMixpanel";
@@ -24,6 +24,8 @@ export const useVotingBase = (proposal: { id: string; status: ProposalStatus; st
     enabled,
   });
 
+  const { hasVoted } = useHasVoted({ proposalId: proposal.id });
+
   const [comment, setComment] = useState<string | undefined>(undefined);
 
   const votingVariant: VotingItemVariant = useMemo(() => getVotingVariant(proposal.status), [proposal.status]);
@@ -33,8 +35,8 @@ export const useVotingBase = (proposal: { id: string; status: ProposalStatus; st
   });
 
   const commentDisabled = useMemo(() => {
-    return votingVariant === "upcoming" || (votingVariant === "voting" && Boolean(votedChoices?.reason));
-  }, [votingVariant, votedChoices?.reason]);
+    return votingVariant === "upcoming" || (votingVariant === "voting" && Boolean(votedChoices?.reason)) || hasVoted;
+  }, [votingVariant, votedChoices?.reason, hasVoted]);
 
   const { sendTransaction: originalSendTransaction, isTransactionPending } = useCastVote({
     proposalId: proposal.id,
@@ -82,17 +84,14 @@ export const useVotingBase = (proposal: { id: string; status: ProposalStatus; st
   );
 
   useEffect(() => {
-    console.log("EFFECT____________:", !account?.address || !votedChoices?.reason);
     if (account?.address && votedChoices?.reason) {
       setComment(votedChoices.reason);
     } else if (!account?.address || !votedChoices?.reason) {
       setComment(undefined);
     }
-  }, [account?.address, votedChoices]);
+  }, [account?.address, votedChoices?.reason]);
 
-  useEffect(() => {
-    console.log("COMMENT", comment);
-  }, [comment]);
+  useEffect(() => console.log("COMMENT", comment), [comment]);
 
   return {
     votedChoices,
