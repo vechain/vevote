@@ -53,7 +53,7 @@ const Providers = ({ children }: PropsWithChildren) => {
             delegateAllTransactions: true,
           }}
           loginMethods={[
-            { method: "vechain", gridColumn: 4 },
+            // { method: "vechain", gridColumn: 4 },
             { method: "dappkit", gridColumn: 4 },
           ]}
           dappKit={{
@@ -70,9 +70,7 @@ const Providers = ({ children }: PropsWithChildren) => {
           <MixPanelProvider>
             <ThemeProvider>
               <UserProvider>
-                <CreateProposalProvider>
-                  {children}
-                </CreateProposalProvider>
+                <CreateProposalProvider>{children}</CreateProposalProvider>
               </UserProvider>
             </ThemeProvider>
           </MixPanelProvider>
