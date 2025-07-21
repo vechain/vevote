@@ -1,5 +1,5 @@
 import { useDraftProposal } from "@/hooks/useDraftProposal";
-import { useLocalStorage } from "@/hooks/useLocalStorage";
+import { usePerAddressDraftStorage } from "@/hooks/usePerAddressDraftStorage";
 import { CreateProposalStep, ProposalCardType, SingleChoiceEnum, VotingChoices, VotingEnum } from "@/types/proposal";
 import { DEFAULT_DESCRIPTION_TEMPLATE } from "@/utils/template/descriptionTemplate";
 import { ZodFile } from "@/utils/zod";
@@ -79,10 +79,7 @@ export const CreateProposalProvider = ({ children }: PropsWithChildren) => {
   const { account } = useWallet();
   const { fromProposalToDraft } = useDraftProposal();
   const [openPreview, setOpenPreview] = useState(false);
-  const [draftProposal, setDraftProposal, removeDraftProposal] = useLocalStorage<ProposalCardType | null>(
-    "draft-proposal",
-    null,
-  );
+  const [draftProposal, setDraftProposal, removeDraftProposal] = usePerAddressDraftStorage(account?.address);
   const [proposalDetails, setProposalDetails] = useState<ProposalDetails>(DEFAULT_PROPOSAL);
   const [step, setStep] = useState<CreateProposalStep>(CreateProposalStep.VOTING_DETAILS);
 

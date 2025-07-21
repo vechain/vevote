@@ -17,7 +17,6 @@ import "./index.css";
 import { CreateProposalProvider } from "./pages/CreateProposal/CreateProposalProvider.tsx";
 import { persister, queryClient } from "./utils/queryClient.ts";
 import { UserProvider } from "./contexts/UserProvider.tsx";
-import { DraftProposalProvider } from "./contexts/DraftProposalProvider.tsx";
 import { MixPanelProvider } from "./contexts/MixPanelProvider.tsx";
 
 loadLocale("en");
@@ -72,7 +71,7 @@ const Providers = ({ children }: PropsWithChildren) => {
             <ThemeProvider>
               <UserProvider>
                 <CreateProposalProvider>
-                  <DraftProposalProvider>{children}</DraftProposalProvider>
+                  {children}
                 </CreateProposalProvider>
               </UserProvider>
             </ThemeProvider>

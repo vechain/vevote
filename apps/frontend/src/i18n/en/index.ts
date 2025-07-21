@@ -128,11 +128,6 @@ const en = {
       no_go_back: "No, go back",
       yes_delete: "Yes, Delete",
     },
-    draft_dialog: {
-      title: "Draft proposal",
-      description:
-        "By continuing, your old proposal linked to the preview account will be discarded. Are you sure you want to proceed?",
-    },
     info_box: {
       info: {
         title: "Minimum participation",

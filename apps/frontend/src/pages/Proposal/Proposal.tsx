@@ -21,15 +21,17 @@ import { ProposalCardType } from "@/types/proposal";
 import { sanitizeImageUrl } from "@/utils/proposals/helpers";
 import { Box, Flex, Icon, Image, Text } from "@chakra-ui/react";
 import { useWallet } from "@vechain/vechain-kit";
-import { useMemo } from "react";
-import { useParams } from "react-router";
+import { useEffect, useMemo } from "react";
+import { useNavigate, useParams } from "react-router";
 import { useCreateProposal } from "../CreateProposal/CreateProposalProvider";
+import { Routes } from "@/types/routes";
 
 export const Proposal = () => {
   const { LL } = useI18nContext();
   const { draftProposal } = useCreateProposal();
   const { account } = useWallet();
   const params = useParams();
+  const navigate = useNavigate();
 
   const proposalId = useMemo(() => {
     if (params.proposalId !== "draft") return params.proposalId;
@@ -42,6 +44,10 @@ export const Proposal = () => {
     if (params.proposalId === "draft") return draftProposal || undefined;
     return proposalData;
   }, [draftProposal, params.proposalId, proposalData]);
+
+  useEffect(() => {
+    if (params.proposalId === "draft" && !account?.address) navigate(Routes.HOME);
+  }, [account?.address, navigate, params.proposalId]);
 
   return (
     <>
