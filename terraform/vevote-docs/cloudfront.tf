@@ -12,7 +12,7 @@ module "s3_static_cloudfront" {
   default_root_object = null
   query_string       = false
   create_new_bucket      = false
-  existing_bucket_name   = "prod-vevote-legal-documents-bucket"
+  existing_bucket_name   = module.s3_legal_terms.id
 
   ordered_cache_behavior = {
     "cookies" = {
