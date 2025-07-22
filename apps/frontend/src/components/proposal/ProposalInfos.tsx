@@ -45,7 +45,7 @@ export const ProposalInfos = () => {
           {proposal.title}
         </Heading>
       </Flex>
-      <Flex flexDirection={"column"} gap={4} alignItems={"start"}>
+      <Flex flexDirection={"column"} gap={4} alignItems={"start"} width={"full"}>
         <Heading fontSize={{ base: 16, md: 20 }} fontWeight={600} color="primary.700">
           {LL.description()}
         </Heading>

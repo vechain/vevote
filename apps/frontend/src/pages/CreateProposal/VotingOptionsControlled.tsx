@@ -8,7 +8,7 @@ import { useCallback, useMemo } from "react";
 import { FieldErrors, useFieldArray, useFormContext } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
 
-export const VotingOptionsControlled = () => {
+export const VotingOptionsControlled = ({ onDeleteEnd }: { onDeleteEnd?: () => void }) => {
   const { LL } = useI18nContext();
   const { control } = useFormContext();
 
@@ -44,7 +44,15 @@ export const VotingOptionsControlled = () => {
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <SortableContext items={options.map(value => value.id)} strategy={verticalListSortingStrategy}>
           {options.map((value, index) => (
-            <SortableVotingOption key={value.id} id={value.id} index={index} onDelete={() => remove(index)} />
+            <SortableVotingOption
+              key={value.id}
+              id={value.id}
+              index={index}
+              onDelete={() => {
+                remove(index);
+                onDeleteEnd?.();
+              }}
+            />
           ))}
         </SortableContext>
       </DndContext>

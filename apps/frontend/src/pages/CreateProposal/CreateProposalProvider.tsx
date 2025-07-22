@@ -39,6 +39,7 @@ export type ProposalDetails = {
   startDate?: Date;
   endDate?: Date;
   votingLimit?: number;
+  votingMin?: number;
   votingQuestion: string;
 } & VotingChoices;
 
@@ -47,6 +48,7 @@ export const DEFAULT_PROPOSAL: ProposalDetails = {
   description: DEFAULT_DESCRIPTION_TEMPLATE().ops,
   votingQuestion: "",
   votingLimit: 1,
+  votingMin: 1,
   votingType: VotingEnum.SINGLE_CHOICE,
   votingOptions: defaultSingleChoice,
 };

@@ -18,6 +18,7 @@ export const useBuildCreateProposal = () => {
       votingOptions,
       votingType,
       votingLimit,
+      votingMin,
       startBlock,
       durationBlock,
     }: Omit<ProposalDetails, "description" | "startDate" | "voteDuration"> & {
@@ -33,7 +34,14 @@ export const useBuildCreateProposal = () => {
             ? votingOptions.map(c => ethers.encodeBytes32String(c as string))
             : votingOptions.map(c => ethers.encodeBytes32String((c as BaseOption).value));
 
-        const encodedData = [description, startBlock, durationBlock - startBlock, encodedChoices, votingLimit || 1, 1];
+        const encodedData = [
+          description,
+          startBlock,
+          durationBlock - startBlock,
+          encodedChoices,
+          votingLimit || 1,
+          votingMin || 1,
+        ];
 
         const interfaceJson = contractInterface.getFunction("propose")?.format("full");
         if (!interfaceJson) throw new Error(`Method propose not found`);

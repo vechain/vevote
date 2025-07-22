@@ -69,8 +69,16 @@ export const getProposalsEvents = async (
         const eventSignature = event.topics[0];
 
         if (eventSignature === proposalCreatedAbi.signatureHash) {
-          const [proposalIdEvent, proposer, description, startBlock, voteDuration, choices, maxSelection] =
-            event.decodedData as [bigint, string, string, number, number, string[], number];
+          const [
+            proposalIdEvent,
+            proposer,
+            description,
+            startBlock,
+            voteDuration,
+            choices,
+            maxSelection,
+            minSelection,
+          ] = event.decodedData as [bigint, string, string, number, number, string[], number, number];
 
           return {
             proposalId: proposalIdEvent.toString(),
@@ -80,7 +88,7 @@ export const getProposalsEvents = async (
             voteDuration: voteDuration.toString(),
             choices,
             maxSelection: Number(maxSelection),
-            minSelection: 1,
+            minSelection: Number(minSelection),
           };
         }
 

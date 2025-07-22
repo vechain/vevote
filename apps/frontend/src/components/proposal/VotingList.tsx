@@ -25,6 +25,9 @@ export const VotingSingleChoice = ({
     votingVariant,
     sendTransaction,
     isTransactionPending,
+    comment,
+    setComment,
+    commentDisabled,
     isSuccessOpen,
     onSuccessClose,
     onSuccessOpen,
@@ -49,7 +52,7 @@ export const VotingSingleChoice = ({
     const options = proposal.votingOptions.map(option => (option === currentSelection ? 1 : 0));
 
     try {
-      const result = await sendTransaction({ id: proposal.id, selectedOptions: options });
+      const result = await sendTransaction({ id: proposal.id, selectedOptions: options, reason: comment });
       if (result.txId) {
         onSuccessOpen();
         console.log("Vote successful! Transaction ID:", result.txId);
@@ -61,7 +64,7 @@ export const VotingSingleChoice = ({
         console.log("Failed transaction ID:", txError.txId);
       }
     }
-  }, [currentSelection, proposal.votingOptions, proposal.id, sendTransaction, onSuccessOpen]);
+  }, [currentSelection, proposal.votingOptions, proposal.id, sendTransaction, comment, onSuccessOpen]);
 
   return (
     <Flex gap={{ base: 6, md: 8 }} alignItems="start" flexDirection="column" width="100%">
@@ -84,6 +87,9 @@ export const VotingSingleChoice = ({
         onSubmit={onSubmit}
         isLoading={isTransactionPending}
         disabled={currentSelection === undefined}
+        comment={comment}
+        setComment={setComment}
+        commentDisabled={commentDisabled}
       />
       <SuccessVotingModal isOpen={isSuccessOpen} onClose={onSuccessClose} />
     </Flex>
@@ -99,6 +105,9 @@ export const VotingSingleOption = ({
     votingVariant,
     sendTransaction,
     isTransactionPending,
+    comment,
+    setComment,
+    commentDisabled,
     isSuccessOpen,
     onSuccessClose,
     onSuccessOpen,
@@ -124,7 +133,7 @@ export const VotingSingleOption = ({
     const options = proposal.votingOptions.map((_, i) => (i === currentSelection ? 1 : 0));
 
     try {
-      const result = await sendTransaction({ id: proposal.id, selectedOptions: options });
+      const result = await sendTransaction({ id: proposal.id, selectedOptions: options, reason: comment });
       if (result.txId) {
         onSuccessOpen();
         console.log("Vote successful! Transaction ID:", result.txId);
@@ -136,7 +145,7 @@ export const VotingSingleOption = ({
         console.log("Failed transaction ID:", txError.txId);
       }
     }
-  }, [currentSelection, proposal.votingOptions, proposal.id, sendTransaction, onSuccessOpen]);
+  }, [currentSelection, proposal.votingOptions, proposal.id, sendTransaction, comment, onSuccessOpen]);
 
   return (
     <Flex gap={8} alignItems="start" flexDirection="column" width="100%">
@@ -159,6 +168,9 @@ export const VotingSingleOption = ({
         onSubmit={onSubmit}
         isLoading={isTransactionPending}
         disabled={currentSelection === undefined}
+        comment={comment}
+        setComment={setComment}
+        commentDisabled={commentDisabled}
       />
       <SuccessVotingModal isOpen={isSuccessOpen} onClose={onSuccessClose} />
     </Flex>
@@ -174,6 +186,9 @@ export const VotingMultipleOptions = ({
     votingVariant,
     sendTransaction,
     isTransactionPending,
+    comment,
+    setComment,
+    commentDisabled,
     isSuccessOpen,
     onSuccessClose,
     onSuccessOpen,
@@ -216,7 +231,7 @@ export const VotingMultipleOptions = ({
     const options = proposal.votingOptions.map((_, i) => (currentSelection.includes(i) ? 1 : 0));
 
     try {
-      const result = await sendTransaction({ id: proposal.id, selectedOptions: options });
+      const result = await sendTransaction({ id: proposal.id, selectedOptions: options, reason: comment });
       if (result.txId) {
         onSuccessOpen();
         console.log("Vote successful! Transaction ID:", result.txId);
@@ -228,7 +243,7 @@ export const VotingMultipleOptions = ({
         console.log("Failed transaction ID:", txError.txId);
       }
     }
-  }, [proposal.votingOptions, proposal.id, currentSelection, sendTransaction, onSuccessOpen]);
+  }, [proposal.votingOptions, proposal.id, currentSelection, sendTransaction, comment, onSuccessOpen]);
 
   return (
     <Flex gap={8} alignItems="start" flexDirection="column" width="100%">
@@ -247,7 +262,14 @@ export const VotingMultipleOptions = ({
           />
         ))}
       </Flex>
-      <VotingListFooter onSubmit={onSubmit} isLoading={isTransactionPending} disabled={currentSelection.length === 0} />
+      <VotingListFooter
+        onSubmit={onSubmit}
+        isLoading={isTransactionPending}
+        disabled={currentSelection.length === 0}
+        comment={comment}
+        setComment={setComment}
+        commentDisabled={commentDisabled}
+      />
       <SuccessVotingModal isOpen={isSuccessOpen} onClose={onSuccessClose} />
     </Flex>
   );

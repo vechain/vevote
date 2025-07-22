@@ -26,16 +26,24 @@ export const useHasVoted = ({ proposalId }: { proposalId?: string }) => {
 export const useCastVote = ({ proposalId, masterNode }: { proposalId?: string; masterNode?: string }) => {
   const { account } = useWallet();
   const buildClauses = useCallback(
-    ({ id, selectedOptions }: Pick<ProposalCardType, "id"> & { selectedOptions: (1 | 0)[] }) => {
+    ({
+      id,
+      selectedOptions,
+      reason,
+    }: Pick<ProposalCardType, "id"> & { selectedOptions: (1 | 0)[]; reason?: string }) => {
       const clauses: EnhancedClause[] = [];
 
       const numberChoices = parseInt(selectedOptions.reverse().join(""), 2);
 
       try {
-        const encodedData = [fromStringToUint256(id), numberChoices, masterNode || ZERO_ADDRESS];
+        const functionName = reason && reason.trim() ? "castVoteWithReason" : "castVote";
+        const encodedData =
+          reason && reason.trim()
+            ? [fromStringToUint256(id), numberChoices, reason, masterNode || ZERO_ADDRESS]
+            : [fromStringToUint256(id), numberChoices, masterNode || ZERO_ADDRESS];
 
-        const interfaceJson = contractInterface.getFunction("castVote")?.format("full");
-        if (!interfaceJson) throw new Error(`Method propose not found`);
+        const interfaceJson = contractInterface.getFunction(functionName)?.format("full");
+        if (!interfaceJson) throw new Error(`Method ${functionName} not found`);
 
         const functionAbi = new ABIFunction(interfaceJson);
 
