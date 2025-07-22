@@ -1,4 +1,4 @@
-import { ChangeEvent, useState, useRef } from "react";
+import { ChangeEvent, useState, useRef, useMemo } from "react";
 import {
   Box,
   Input,
@@ -41,7 +41,7 @@ export const CustomDatePicker = ({ value, onChange, isDisabled, ...inputProps }:
     return selectedDate || dayjs();
   });
 
-  const displayValue = selectedDate ? selectedDate.format("DD/MM/YYYY") : "";
+  const displayValue = useMemo(() => (selectedDate ? selectedDate.format("DD/MM/YYYY") : ""), [selectedDate]);
 
   const MONTHS = [
     LL.datepicker.months.january(),
@@ -98,16 +98,14 @@ export const CustomDatePicker = ({ value, onChange, isDisabled, ...inputProps }:
     const startOfMonth = viewDate.startOf("month");
     const endOfMonth = viewDate.endOf("month");
     const daysInMonth = endOfMonth.date();
-    const startWeekday = startOfMonth.day() === 0 ? 7 : startOfMonth.day(); // Make Sunday = 7
+    const startWeekday = startOfMonth.day() === 0 ? 7 : startOfMonth.day();
 
     const days = [];
 
-    // Add empty cells for days before month starts
     for (let i = 1; i < startWeekday; i++) {
       days.push(null);
     }
 
-    // Add days of the month
     for (let day = 1; day <= daysInMonth; day++) {
       days.push(startOfMonth.date(day));
     }
@@ -147,7 +145,6 @@ export const CustomDatePicker = ({ value, onChange, isDisabled, ...inputProps }:
           borderRadius="12px">
           <PopoverBody p={5}>
             <VStack spacing={3}>
-              {/* Header con mese/anno e frecce */}
               <HStack justify="space-between" width="100%" align="center">
                 <IconButton
                   aria-label={LL.datepicker.previous_month()}
@@ -174,7 +171,6 @@ export const CustomDatePicker = ({ value, onChange, isDisabled, ...inputProps }:
                 />
               </HStack>
 
-              {/* Giorni della settimana */}
               <Grid templateColumns="repeat(7, 1fr)" gap={1} width="100%">
                 {WEEKDAYS.map(weekday => (
                   <GridItem key={weekday}>
@@ -185,7 +181,6 @@ export const CustomDatePicker = ({ value, onChange, isDisabled, ...inputProps }:
                 ))}
               </Grid>
 
-              {/* Griglia dei giorni */}
               <Grid templateColumns="repeat(7, 1fr)" gap={1} width="100%">
                 {days.map((day, index) => (
                   <GridItem key={index}>
@@ -217,7 +212,6 @@ export const CustomDatePicker = ({ value, onChange, isDisabled, ...inputProps }:
                 ))}
               </Grid>
 
-              {/* Today Button */}
               <Button
                 variant="secondary"
                 size="sm"

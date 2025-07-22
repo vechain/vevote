@@ -354,7 +354,7 @@ type RootTranslation = {
 		 */
 		select_time: string
 		/**
-		 * S​e​l​e​c​t​ ​t​i​m​e​ ​(​2​4​h​ ​f​o​r​m​a​t​ ​-​ ​U​T​C​)
+		 * S​e​l​e​c​t​ ​t​i​m​e​ ​(​U​T​C​)
 		 */
 		select_time_24h: string
 		/**
@@ -1473,7 +1473,7 @@ JPG, PNG or SVG of maximum of {size}MB.
 		 */
 		select_time: () => LocalizedString
 		/**
-		 * Select time (24h format - UTC)
+		 * Select time (UTC)
 		 */
 		select_time_24h: () => LocalizedString
 		/**

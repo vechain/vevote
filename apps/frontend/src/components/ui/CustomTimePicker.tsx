@@ -41,7 +41,7 @@ export const CustomTimePicker = ({ value, onChange, isDisabled, ...inputProps }:
   const [selectedHour, setSelectedHour] = useState<string | null>(null);
   const [selectedMinute, setSelectedMinute] = useState<string | null>(null);
 
-  const displayValue = selectedTime ? selectedTime.format("HH:mm") + " UTC" : "";
+  const displayValue = useMemo(() => (selectedTime ? selectedTime.format("HH:mm") + " UTC" : ""), [selectedTime]);
 
   const hours = useMemo(() => {
     const hoursArray = [];
@@ -54,7 +54,6 @@ export const CustomTimePicker = ({ value, onChange, isDisabled, ...inputProps }:
   const minutes = useMemo(() => {
     const minutesArray = [];
     for (let i = 0; i < 60; i += 15) {
-      // 15 minute intervals
       minutesArray.push(i.toString().padStart(2, "0"));
     }
     return minutesArray;
@@ -175,7 +174,6 @@ export const CustomTimePicker = ({ value, onChange, isDisabled, ...inputProps }:
                   </Box>
                 </VStack>
 
-                {/* Minuti */}
                 <VStack spacing={2} flex={1}>
                   <Text fontSize="xs" fontWeight="600" color="gray.600">
                     {LL.timepicker.minutes()}
@@ -214,7 +212,6 @@ export const CustomTimePicker = ({ value, onChange, isDisabled, ...inputProps }:
                 </VStack>
               </HStack>
 
-              {/* Preview dell'ora selezionata */}
               <Box
                 p={3}
                 bg="primary.50"
@@ -228,11 +225,6 @@ export const CustomTimePicker = ({ value, onChange, isDisabled, ...inputProps }:
                     ? `${selectedHour}:${selectedMinute} UTC`
                     : displayValue || "--:-- UTC"}
                 </Text>
-                {(!selectedHour || !selectedMinute) && (
-                  <Text fontSize="2xs" color="gray.500" mt={1}>
-                    Select both hours and minutes
-                  </Text>
-                )}
               </Box>
             </VStack>
           </PopoverBody>

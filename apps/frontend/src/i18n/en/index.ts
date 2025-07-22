@@ -62,21 +62,21 @@ const en = {
   comment_placeholder: "Add a comment to your vote...",
   datepicker: {
     select_date: "Select date",
-    previous_month: "Previous month", 
+    previous_month: "Previous month",
     next_month: "Next month",
     today: "Today",
     weekdays: {
       mon: "Mon",
-      tue: "Tue", 
+      tue: "Tue",
       wed: "Wed",
       thu: "Thu",
       fri: "Fri",
       sat: "Sat",
-      sun: "Sun"
+      sun: "Sun",
     },
     months: {
       january: "January",
-      february: "February", 
+      february: "February",
       march: "March",
       april: "April",
       may: "May",
@@ -86,15 +86,15 @@ const en = {
       september: "September",
       october: "October",
       november: "November",
-      december: "December"
-    }
+      december: "December",
+    },
   },
   timepicker: {
     select_time: "Select time",
-    select_time_24h: "Select time (24h format - UTC)",
+    select_time_24h: "Select time (UTC)",
     hours: "Hours",
     minutes: "Minutes",
-    utc_notice: "All times are in UTC"
+    utc_notice: "All times are in UTC",
   },
   home: {
     title: "Home",
