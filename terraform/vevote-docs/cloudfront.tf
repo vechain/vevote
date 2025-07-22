@@ -7,7 +7,7 @@ module "s3_static_cloudfront" {
   origin_id     = "vevote-1755724031.ap-east-1.elb.amazonaws.com"
   bucket_prefix = local.env.project
   block_public  = false
-  referer       = "random"
+  referer       = ""
   compress      = false
   default_root_object = null
   query_string       = false
@@ -65,7 +65,7 @@ module "s3_static_cloudfront" {
   "vevote-1755724031.ap-east-1.elb.amazonaws.com" = {
     domain_name = "vevote-1755724031.ap-east-1.elb.amazonaws.com"
     origin_id   = "vevote-1755724031.ap-east-1.elb.amazonaws.com"
-    referer     = "random"
+    referer     = ""
     custom_origin_config = {
       http_port                = 80
       https_port               = 443
@@ -80,7 +80,7 @@ module "s3_static_cloudfront" {
   "prod-vevote-legal-documents-bucket.s3-website-eu-west-1.amazonaws.com" = {
     domain_name = "prod-vevote-legal-documents-bucket.s3-website-eu-west-1.amazonaws.com"
     origin_id   = "prod-vevote-legal-documents-bucket.s3-website-eu-west-1.amazonaws.com"
-    referer     = "random"
+    referer     = ""
     custom_origin_config = {
       http_port                = 80
       https_port               = 443
