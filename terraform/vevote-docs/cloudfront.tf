@@ -19,7 +19,7 @@ module "s3_static_cloudfront" {
       path_pattern           = "/cookies"
       allowed_methods        = ["GET", "HEAD"]
       cached_methods         = ["GET", "HEAD"]
-      target_origin_id       = "prod-vevote-legal-documents-bucket.s3-website-eu-west-1.amazonaws.com"
+      target_origin_id       = "${module.s3_legal_terms.id}.s3-website-eu-west-1.amazonaws.com"
       viewer_protocol_policy = "redirect-to-https"
       max_ttl                = 0
       compress              = true
@@ -30,7 +30,7 @@ module "s3_static_cloudfront" {
       path_pattern           = "/privacy"
       allowed_methods        = ["GET", "HEAD"]
       cached_methods         = ["GET", "HEAD"]
-      target_origin_id       = "prod-vevote-legal-documents-bucket.s3-website-eu-west-1.amazonaws.com"
+      target_origin_id       = "${module.s3_legal_terms.id}.s3-website-eu-west-1.amazonaws.com"
       viewer_protocol_policy = "redirect-to-https"
       max_ttl                = 0
       compress              = true
@@ -41,7 +41,7 @@ module "s3_static_cloudfront" {
       path_pattern           = "/terms"
       allowed_methods        = ["GET", "HEAD"]
       cached_methods         = ["GET", "HEAD"]
-      target_origin_id       = "prod-vevote-legal-documents-bucket.s3-website-eu-west-1.amazonaws.com"
+      target_origin_id       = "${module.s3_legal_terms.id}.s3-website-eu-west-1.amazonaws.com"
       viewer_protocol_policy = "redirect-to-https"
       max_ttl                = 0
       compress              = true
@@ -63,6 +63,7 @@ module "s3_static_cloudfront" {
 
  origin = {
   "vevote-1755724031.ap-east-1.elb.amazonaws.com" = {
+    // ELB located in Hong Kong
     domain_name = "vevote-1755724031.ap-east-1.elb.amazonaws.com"
     origin_id   = "vevote-1755724031.ap-east-1.elb.amazonaws.com"
     referer     = ""
@@ -77,9 +78,9 @@ module "s3_static_cloudfront" {
     connection_attempts = 3
     connection_timeout  = 10
   }
-  "prod-vevote-legal-documents-bucket.s3-website-eu-west-1.amazonaws.com" = {
-    domain_name = "prod-vevote-legal-documents-bucket.s3-website-eu-west-1.amazonaws.com"
-    origin_id   = "prod-vevote-legal-documents-bucket.s3-website-eu-west-1.amazonaws.com"
+  "${module.s3_legal_terms.id}.s3-website-eu-west-1.amazonaws.com" = {
+    domain_name = "${module.s3_legal_terms.id}.s3-website-eu-west-1.amazonaws.com"
+    origin_id   = "${module.s3_legal_terms.id}.s3-website-eu-west-1.amazonaws.com"
     referer     = ""
     custom_origin_config = {
       http_port                = 80
