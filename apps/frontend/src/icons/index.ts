@@ -47,6 +47,7 @@ import { MinusCircle } from "./MinusCircle";
 import { AlertTriangle } from "./AlertTriangle";
 import { Logout } from "./Logout";
 import { Node } from "./Node";
+import { MessageSquare } from "./MessageSquare";
 
 export {
   Vote as VoteIcon,
@@ -86,6 +87,7 @@ export {
   ListChecks as ListChecksIcon,
   ListNumber as ListNumberIcon,
   Link as LinkIcon,
+  MessageSquare as MessageSquareIcon,
   Upload as UploadIcon,
   Drag as DragIcon,
   Plus as PlusIcon,

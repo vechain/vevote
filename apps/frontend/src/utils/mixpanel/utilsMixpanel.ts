@@ -33,16 +33,16 @@ export type MixPanelProperties = {
   [MixPanelEvent.PROPOSAL_PUBLISHED]: { proposalId: string; transactionId: string };
   [MixPanelEvent.PROPOSAL_PUBLISH_FAILED]: { proposalId: string; error: string; transactionId?: string };
 
-  [MixPanelEvent.PROPOSAL_VOTE]: { proposalId: string; vote: string };
-  [MixPanelEvent.PROPOSAL_VOTE_SUCCESS]: { proposalId: string; vote: string; transactionId: string };
-  [MixPanelEvent.PROPOSAL_VOTE_FAILED]: { proposalId: string; vote: string; error: string; transactionId?: string };
+  [MixPanelEvent.PROPOSAL_VOTE]: { proposalId: string; vote: string; reason?: string };
+  [MixPanelEvent.PROPOSAL_VOTE_SUCCESS]: { proposalId: string; vote: string; transactionId: string; reason?: string };
+  [MixPanelEvent.PROPOSAL_VOTE_FAILED]: { proposalId: string; vote: string; error: string; transactionId?: string; reason?: string };
 
   [MixPanelEvent.PROPOSAL_CANCEL]: { proposalId: string };
   [MixPanelEvent.PROPOSAL_CANCEL_SUCCESS]: { proposalId: string; transactionId: string };
   [MixPanelEvent.PROPOSAL_CANCEL_FAILED]: { proposalId: string; error: string; transactionId?: string };
 
   [MixPanelEvent.CTA_CREATE_PROPOSAL_CLICKED]: { page: string };
-  [MixPanelEvent.CTA_VOTE_CLICKED]: { proposalId: string; voteOption: string };
+  [MixPanelEvent.CTA_VOTE_CLICKED]: { proposalId: string; voteOption: string; reason?: string };
   [MixPanelEvent.CTA_PUBLISH_CLICKED]: { proposalId: string };
   [MixPanelEvent.CTA_CANCEL_CLICKED]: { proposalId: string };
   [MixPanelEvent.CTA_EDIT_CLICKED]: { proposalId: string };

@@ -58,6 +58,8 @@ const en = {
   disconnect: "Disconnect",
   connect_wallet: "Connect Wallet",
   connect_wallet_to_vote: "Connect your wallet to vote",
+  comment: "Comment",
+  comment_placeholder: "Add a comment to your vote...",
   home: {
     title: "Home",
     go_to_proposals: "Go to proposals",

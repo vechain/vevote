@@ -1,10 +1,11 @@
 import { ProposalStatus } from "@/types/proposal";
-import { useMemo, useCallback } from "react";
-import { useCastVote, useVotedChoices } from "./useCastVote";
+import { useMemo, useCallback, useState, useEffect } from "react";
+import { useCastVote, useHasVoted, useVotedChoices } from "./useCastVote";
 import { VotingItemVariant } from "@/components/proposal/VotingItem";
 import { getVotingVariant } from "@/utils/voting";
 import { trackEvent, MixPanelEvent } from "@/utils/mixpanel/utilsMixpanel";
 import { useNodes } from "./useUserQueries";
+import { useWallet } from "@vechain/vechain-kit";
 
 export const SHOW_RESULTS_STATUSES: ProposalStatus[] = [
   "approved",
@@ -16,11 +17,16 @@ export const SHOW_RESULTS_STATUSES: ProposalStatus[] = [
 
 export const useVotingBase = (proposal: { id: string; status: ProposalStatus; startDate?: Date }) => {
   const enabled = useMemo(() => SHOW_RESULTS_STATUSES.includes(proposal.status), [proposal.status]);
+  const { account } = useWallet();
 
   const { votedChoices } = useVotedChoices({
     proposalId: proposal.id,
     enabled,
   });
+
+  const { hasVoted } = useHasVoted({ proposalId: proposal.id });
+
+  const [comment, setComment] = useState<string | undefined>(undefined);
 
   const votingVariant: VotingItemVariant = useMemo(() => getVotingVariant(proposal.status), [proposal.status]);
 
@@ -28,13 +34,17 @@ export const useVotingBase = (proposal: { id: string; status: ProposalStatus; st
     startDate: proposal.startDate,
   });
 
+  const commentDisabled = useMemo(() => {
+    return votingVariant === "upcoming" || (votingVariant === "voting" && Boolean(votedChoices?.reason)) || hasVoted;
+  }, [votingVariant, votedChoices?.reason, hasVoted]);
+
   const { sendTransaction: originalSendTransaction, isTransactionPending } = useCastVote({
     proposalId: proposal.id,
     masterNode,
   });
 
   const sendTransaction = useCallback(
-    async (params: { id: string; selectedOptions: (1 | 0)[] }) => {
+    async (params: { id: string; selectedOptions: (1 | 0)[]; reason?: string }) => {
       const voteOption = params.selectedOptions
         .map((opt, index) => (opt === 1 ? index : null))
         .filter(i => i !== null)
@@ -44,6 +54,7 @@ export const useVotingBase = (proposal: { id: string; status: ProposalStatus; st
         trackEvent(MixPanelEvent.PROPOSAL_VOTE, {
           proposalId: params.id,
           vote: voteOption,
+          reason: params.reason,
         });
 
         const result = await originalSendTransaction(params);
@@ -52,6 +63,7 @@ export const useVotingBase = (proposal: { id: string; status: ProposalStatus; st
           proposalId: params.id,
           vote: voteOption,
           transactionId: result.txId,
+          reason: params.reason,
         });
 
         return result;
@@ -63,6 +75,7 @@ export const useVotingBase = (proposal: { id: string; status: ProposalStatus; st
           vote: voteOption,
           error: txError.error?.message || txError.message || "Unknown error",
           transactionId: txId,
+          reason: params.reason,
         });
         throw error;
       }
@@ -70,10 +83,23 @@ export const useVotingBase = (proposal: { id: string; status: ProposalStatus; st
     [originalSendTransaction],
   );
 
+  useEffect(() => {
+    if (account?.address && votedChoices?.reason) {
+      setComment(votedChoices.reason);
+    } else if (!account?.address || !votedChoices?.reason) {
+      setComment(undefined);
+    }
+  }, [account?.address, votedChoices?.reason]);
+
+  useEffect(() => console.log("COMMENT", comment), [comment]);
+
   return {
     votedChoices,
     votingVariant,
     sendTransaction,
     isTransactionPending,
+    comment,
+    setComment,
+    commentDisabled,
   };
 };

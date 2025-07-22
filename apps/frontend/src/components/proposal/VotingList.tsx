@@ -19,7 +19,8 @@ export const VotingSingleChoice = ({
   proposal,
   results,
 }: GenericVotingOptions<VotingEnum.SINGLE_CHOICE, SingleChoiceEnum[]>) => {
-  const { votedChoices, votingVariant, sendTransaction, isTransactionPending } = useVotingBase(proposal);
+  const { votedChoices, votingVariant, sendTransaction, isTransactionPending, comment, setComment, commentDisabled } =
+    useVotingBase(proposal);
 
   const initialSelectedOption = useMemo(() => {
     if (!votedChoices?.choices) return undefined;
@@ -40,7 +41,7 @@ export const VotingSingleChoice = ({
     const options = proposal.votingOptions.map(option => (option === currentSelection ? 1 : 0));
 
     try {
-      const result = await sendTransaction({ id: proposal.id, selectedOptions: options });
+      const result = await sendTransaction({ id: proposal.id, selectedOptions: options, reason: comment });
       console.log("Vote successful! Transaction ID:", result.txId);
     } catch (e) {
       const txError = e as { txId?: string; error?: { message?: string }; message?: string };
@@ -49,7 +50,7 @@ export const VotingSingleChoice = ({
         console.log("Failed transaction ID:", txError.txId);
       }
     }
-  }, [proposal.id, proposal.votingOptions, currentSelection, sendTransaction]);
+  }, [currentSelection, proposal.votingOptions, proposal.id, sendTransaction, comment]);
 
   return (
     <Flex gap={{ base: 6, md: 8 }} alignItems="start" flexDirection="column" width="100%">
@@ -72,6 +73,9 @@ export const VotingSingleChoice = ({
         onSubmit={onSubmit}
         isLoading={isTransactionPending}
         disabled={currentSelection === undefined}
+        comment={comment}
+        setComment={setComment}
+        commentDisabled={commentDisabled}
       />
     </Flex>
   );
@@ -81,7 +85,8 @@ export const VotingSingleOption = ({
   proposal,
   results,
 }: GenericVotingOptions<VotingEnum.SINGLE_OPTION, BaseOption[]>) => {
-  const { votedChoices, votingVariant, sendTransaction, isTransactionPending } = useVotingBase(proposal);
+  const { votedChoices, votingVariant, sendTransaction, isTransactionPending, comment, setComment, commentDisabled } =
+    useVotingBase(proposal);
 
   const initialSelectedOption = useMemo(() => {
     if (!votedChoices?.choices) return [];
@@ -103,7 +108,7 @@ export const VotingSingleOption = ({
     const options = proposal.votingOptions.map((_, i) => (i === currentSelection ? 1 : 0));
 
     try {
-      const result = await sendTransaction({ id: proposal.id, selectedOptions: options });
+      const result = await sendTransaction({ id: proposal.id, selectedOptions: options, reason: comment });
       console.log("Vote successful! Transaction ID:", result.txId);
     } catch (e) {
       const txError = e as { txId?: string; error?: { message?: string }; message?: string };
@@ -112,7 +117,7 @@ export const VotingSingleOption = ({
         console.log("Failed transaction ID:", txError.txId);
       }
     }
-  }, [proposal.id, proposal.votingOptions, currentSelection, sendTransaction]);
+  }, [currentSelection, proposal.votingOptions, proposal.id, sendTransaction, comment]);
 
   return (
     <Flex gap={8} alignItems="start" flexDirection="column" width="100%">
@@ -135,6 +140,9 @@ export const VotingSingleOption = ({
         onSubmit={onSubmit}
         isLoading={isTransactionPending}
         disabled={currentSelection === undefined}
+        comment={comment}
+        setComment={setComment}
+        commentDisabled={commentDisabled}
       />
     </Flex>
   );
@@ -144,7 +152,8 @@ export const VotingMultipleOptions = ({
   proposal,
   results,
 }: GenericVotingOptions<VotingEnum.MULTIPLE_OPTIONS, BaseOption[]>) => {
-  const { votedChoices, votingVariant, sendTransaction, isTransactionPending } = useVotingBase(proposal);
+  const { votedChoices, votingVariant, sendTransaction, isTransactionPending, comment, setComment, commentDisabled } =
+    useVotingBase(proposal);
 
   const initialSelectedOptions = useMemo(() => {
     if (!votedChoices?.choices) return [];
@@ -183,7 +192,7 @@ export const VotingMultipleOptions = ({
     const options = proposal.votingOptions.map((_, i) => (currentSelection.includes(i) ? 1 : 0));
 
     try {
-      const result = await sendTransaction({ id: proposal.id, selectedOptions: options });
+      const result = await sendTransaction({ id: proposal.id, selectedOptions: options, reason: comment });
       console.log("Vote successful! Transaction ID:", result.txId);
     } catch (e) {
       const txError = e as { txId?: string; error?: { message?: string }; message?: string };
@@ -192,7 +201,7 @@ export const VotingMultipleOptions = ({
         console.log("Failed transaction ID:", txError.txId);
       }
     }
-  }, [proposal.id, proposal.votingOptions, currentSelection, sendTransaction]);
+  }, [proposal.votingOptions, proposal.id, currentSelection, sendTransaction, comment]);
 
   return (
     <Flex gap={8} alignItems="start" flexDirection="column" width="100%">
@@ -211,7 +220,14 @@ export const VotingMultipleOptions = ({
           />
         ))}
       </Flex>
-      <VotingListFooter onSubmit={onSubmit} isLoading={isTransactionPending} disabled={currentSelection.length === 0} />
+      <VotingListFooter
+        onSubmit={onSubmit}
+        isLoading={isTransactionPending}
+        disabled={currentSelection.length === 0}
+        comment={comment}
+        setComment={setComment}
+        commentDisabled={commentDisabled}
+      />
     </Flex>
   );
 };
