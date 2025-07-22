@@ -250,6 +250,126 @@ type RootTranslation = {
 	 * A​d​d​ ​a​ ​c​o​m​m​e​n​t​ ​t​o​ ​y​o​u​r​ ​v​o​t​e​.​.​.
 	 */
 	comment_placeholder: string
+	datepicker: {
+		/**
+		 * S​e​l​e​c​t​ ​d​a​t​e
+		 */
+		select_date: string
+		/**
+		 * P​r​e​v​i​o​u​s​ ​m​o​n​t​h
+		 */
+		previous_month: string
+		/**
+		 * N​e​x​t​ ​m​o​n​t​h
+		 */
+		next_month: string
+		/**
+		 * T​o​d​a​y
+		 */
+		today: string
+		weekdays: {
+			/**
+			 * M​o​n
+			 */
+			mon: string
+			/**
+			 * T​u​e
+			 */
+			tue: string
+			/**
+			 * W​e​d
+			 */
+			wed: string
+			/**
+			 * T​h​u
+			 */
+			thu: string
+			/**
+			 * F​r​i
+			 */
+			fri: string
+			/**
+			 * S​a​t
+			 */
+			sat: string
+			/**
+			 * S​u​n
+			 */
+			sun: string
+		}
+		months: {
+			/**
+			 * J​a​n​u​a​r​y
+			 */
+			january: string
+			/**
+			 * F​e​b​r​u​a​r​y
+			 */
+			february: string
+			/**
+			 * M​a​r​c​h
+			 */
+			march: string
+			/**
+			 * A​p​r​i​l
+			 */
+			april: string
+			/**
+			 * M​a​y
+			 */
+			may: string
+			/**
+			 * J​u​n​e
+			 */
+			june: string
+			/**
+			 * J​u​l​y
+			 */
+			july: string
+			/**
+			 * A​u​g​u​s​t
+			 */
+			august: string
+			/**
+			 * S​e​p​t​e​m​b​e​r
+			 */
+			september: string
+			/**
+			 * O​c​t​o​b​e​r
+			 */
+			october: string
+			/**
+			 * N​o​v​e​m​b​e​r
+			 */
+			november: string
+			/**
+			 * D​e​c​e​m​b​e​r
+			 */
+			december: string
+		}
+	}
+	timepicker: {
+		/**
+		 * S​e​l​e​c​t​ ​t​i​m​e
+		 */
+		select_time: string
+		/**
+		 * S​e​l​e​c​t​ ​t​i​m​e​ ​(​2​4​h​ ​f​o​r​m​a​t​ ​-​ ​U​T​C​)
+		 */
+		select_time_24h: string
+		/**
+		 * H​o​u​r​s
+		 */
+		hours: string
+		/**
+		 * M​i​n​u​t​e​s
+		 */
+		minutes: string
+		/**
+		 * A​l​l​ ​t​i​m​e​s​ ​a​r​e​ ​i​n​ ​U​T​C
+		 */
+		utc_notice: string
+	}
 	home: {
 		/**
 		 * H​o​m​e
@@ -1249,6 +1369,126 @@ JPG, PNG or SVG of maximum of {size}MB.
 	 * Add a comment to your vote...
 	 */
 	comment_placeholder: () => LocalizedString
+	datepicker: {
+		/**
+		 * Select date
+		 */
+		select_date: () => LocalizedString
+		/**
+		 * Previous month
+		 */
+		previous_month: () => LocalizedString
+		/**
+		 * Next month
+		 */
+		next_month: () => LocalizedString
+		/**
+		 * Today
+		 */
+		today: () => LocalizedString
+		weekdays: {
+			/**
+			 * Mon
+			 */
+			mon: () => LocalizedString
+			/**
+			 * Tue
+			 */
+			tue: () => LocalizedString
+			/**
+			 * Wed
+			 */
+			wed: () => LocalizedString
+			/**
+			 * Thu
+			 */
+			thu: () => LocalizedString
+			/**
+			 * Fri
+			 */
+			fri: () => LocalizedString
+			/**
+			 * Sat
+			 */
+			sat: () => LocalizedString
+			/**
+			 * Sun
+			 */
+			sun: () => LocalizedString
+		}
+		months: {
+			/**
+			 * January
+			 */
+			january: () => LocalizedString
+			/**
+			 * February
+			 */
+			february: () => LocalizedString
+			/**
+			 * March
+			 */
+			march: () => LocalizedString
+			/**
+			 * April
+			 */
+			april: () => LocalizedString
+			/**
+			 * May
+			 */
+			may: () => LocalizedString
+			/**
+			 * June
+			 */
+			june: () => LocalizedString
+			/**
+			 * July
+			 */
+			july: () => LocalizedString
+			/**
+			 * August
+			 */
+			august: () => LocalizedString
+			/**
+			 * September
+			 */
+			september: () => LocalizedString
+			/**
+			 * October
+			 */
+			october: () => LocalizedString
+			/**
+			 * November
+			 */
+			november: () => LocalizedString
+			/**
+			 * December
+			 */
+			december: () => LocalizedString
+		}
+	}
+	timepicker: {
+		/**
+		 * Select time
+		 */
+		select_time: () => LocalizedString
+		/**
+		 * Select time (24h format - UTC)
+		 */
+		select_time_24h: () => LocalizedString
+		/**
+		 * Hours
+		 */
+		hours: () => LocalizedString
+		/**
+		 * Minutes
+		 */
+		minutes: () => LocalizedString
+		/**
+		 * All times are in UTC
+		 */
+		utc_notice: () => LocalizedString
+	}
 	home: {
 		/**
 		 * Home

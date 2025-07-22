@@ -60,6 +60,42 @@ const en = {
   connect_wallet_to_vote: "Connect your wallet to vote",
   comment: "Comment",
   comment_placeholder: "Add a comment to your vote...",
+  datepicker: {
+    select_date: "Select date",
+    previous_month: "Previous month", 
+    next_month: "Next month",
+    today: "Today",
+    weekdays: {
+      mon: "Mon",
+      tue: "Tue", 
+      wed: "Wed",
+      thu: "Thu",
+      fri: "Fri",
+      sat: "Sat",
+      sun: "Sun"
+    },
+    months: {
+      january: "January",
+      february: "February", 
+      march: "March",
+      april: "April",
+      may: "May",
+      june: "June",
+      july: "July",
+      august: "August",
+      september: "September",
+      october: "October",
+      november: "November",
+      december: "December"
+    }
+  },
+  timepicker: {
+    select_time: "Select time",
+    select_time_24h: "Select time (24h format - UTC)",
+    hours: "Hours",
+    minutes: "Minutes",
+    utc_notice: "All times are in UTC"
+  },
   home: {
     title: "Home",
     go_to_proposals: "Go to proposals",
