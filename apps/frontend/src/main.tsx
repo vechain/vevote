@@ -17,7 +17,6 @@ import "./index.css";
 import { CreateProposalProvider } from "./pages/CreateProposal/CreateProposalProvider.tsx";
 import { persister, queryClient } from "./utils/queryClient.ts";
 import { UserProvider } from "./contexts/UserProvider.tsx";
-import { DraftProposalProvider } from "./contexts/DraftProposalProvider.tsx";
 import { MixPanelProvider } from "./contexts/MixPanelProvider.tsx";
 
 loadLocale("en");
@@ -54,7 +53,7 @@ const Providers = ({ children }: PropsWithChildren) => {
             delegateAllTransactions: true,
           }}
           loginMethods={[
-            { method: "vechain", gridColumn: 4 },
+            // { method: "vechain", gridColumn: 4 },
             { method: "dappkit", gridColumn: 4 },
           ]}
           dappKit={{
@@ -71,9 +70,7 @@ const Providers = ({ children }: PropsWithChildren) => {
           <MixPanelProvider>
             <ThemeProvider>
               <UserProvider>
-                <CreateProposalProvider>
-                  <DraftProposalProvider>{children}</DraftProposalProvider>
-                </CreateProposalProvider>
+                <CreateProposalProvider>{children}</CreateProposalProvider>
               </UserProvider>
             </ThemeProvider>
           </MixPanelProvider>
