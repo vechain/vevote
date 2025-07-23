@@ -57,7 +57,6 @@ contract VeVoteStorage is Initializable {
     $.minVotingDelay = initializationData.initialMinVotingDelay;
     $.minVotingDuration = initializationData.initialMinVotingDuration;
     $.maxVotingDuration = initializationData.initialMaxVotingDuration;
-    $.maxChoices = initializationData.initialMaxChoices;
 
     // Initialize vote normalization base (min stake)
     require(initializationData.initialMinStakedAmount > 0, "VeVote: min stake must be > 0");
