@@ -8,6 +8,5 @@ export type ContractsConfig = {
   INITIAL_MIN_VOTING_DELAY: number;
   INITIAL_MAX_VOTING_DURATION: number;
   INITIAL_MIN_VOTING_DURATION: number;
-  INITIAL_MAX_CHOICES: number;
   MIN_VET_STAKE: bigint;
 };

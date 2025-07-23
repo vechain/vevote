@@ -10,7 +10,6 @@ export function createTestnetStagingConfig() {
     INITIAL_MIN_VOTING_DELAY: 6, // 1 minute
     INITIAL_MAX_VOTING_DURATION: 360, // 1 hour
     INITIAL_MIN_VOTING_DURATION: 6, // 1 minute
-    INITIAL_MAX_CHOICES: 32, // TODO: Update this value
     MIN_VET_STAKE: 10000000000000000000000n, // Dawn
   });
 }
