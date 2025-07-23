@@ -233,15 +233,7 @@ const en = {
         voting_types: {
           single_choice: {
             title: "Single choice",
-            subtitle: "Yes / No / Abstain",
-          },
-          single_option: {
-            title: "Single choice",
-            subtitle: "Voter can select 1 of multiple options",
-          },
-          multi_options: {
-            title: "Multiple choice",
-            subtitle: "Voter can select 1 or more options",
+            subtitle: "Against / For / Abstain",
           },
         },
       },
