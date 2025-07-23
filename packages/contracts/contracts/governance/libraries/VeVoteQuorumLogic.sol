@@ -14,6 +14,7 @@ pragma solidity 0.8.20;
 import { VeVoteStorageTypes } from "./VeVoteStorageTypes.sol";
 import { VeVoteProposalLogic } from "./VeVoteProposalLogic.sol";
 import { VeVoteClockLogic } from "./VeVoteClockLogic.sol";
+import { VeVoteVoteLogic } from "./VeVoteVoteLogic.sol";
 import { VeVoteConstants } from "./VeVoteConstants.sol";
 import { VeVoteConfigurator } from "./VeVoteConfigurator.sol";
 import { DataTypes } from "../../external/StargateNFT/libraries/DataTypes.sol";
@@ -134,7 +135,7 @@ library VeVoteQuorumLogic {
     VeVoteStorageTypes.VeVoteStorage storage self,
     uint256 proposalId
   ) internal view returns (bool) {
-    return _quorum(self, VeVoteProposalLogic.proposalSnapshot(self, proposalId)) <= self.totalVotes[proposalId];
+    return _quorum(self, VeVoteProposalLogic.proposalSnapshot(self, proposalId)) <= VeVoteVoteLogic.totalVotes(self, proposalId);
   }
 
   /**
