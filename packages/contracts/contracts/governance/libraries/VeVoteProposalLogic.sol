@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: MIT
 
-//  8b           d8       8b           d8                            
-//  `8b         d8'       `8b         d8'           ,d               
-//   `8b       d8'         `8b       d8'            88               
-//    `8b     d8' ,adPPYba, `8b     d8' ,adPPYba, MM88MMM ,adPPYba,  
-//     `8b   d8' a8P   _d88  `8b   d8' a8"     "8a  88   a8P_____88  
-//      `8b d8'  8PP  "PP""   `8b d8'  8b       d8  88   8PP"""""""  
-//       `888'   "8b,   ,aa    `888'   "8a,   ,a8"  88,  "8b,   ,aa  
-//        `8'     `"Ybbd8"'     `8'     `"YbbdP"'   "Y888 `"Ybbd8"'  
+//  8b           d8       8b           d8
+//  `8b         d8'       `8b         d8'           ,d
+//   `8b       d8'         `8b       d8'            88
+//    `8b     d8' ,adPPYba, `8b     d8' ,adPPYba, MM88MMM ,adPPYba,
+//     `8b   d8' a8P   _d88  `8b   d8' a8"     "8a  88   a8P_____88
+//      `8b d8'  8PP  "PP""   `8b d8'  8b       d8  88   8PP"""""""
+//       `888'   "8b,   ,aa    `888'   "8a,   ,a8"  88,  "8b,   ,aa
+//        `8'     `"Ybbd8"'     `8'     `"YbbdP"'   "Y888 `"Ybbd8"'
 
 pragma solidity 0.8.20;
 
@@ -97,12 +97,7 @@ library VeVoteProposalLogic {
     // Validate the proposal parameters.
     address proposer = msg.sender;
 
-    uint256 proposalId = hashProposal(
-      proposer,
-      startBlock,
-      voteDuration,
-      keccak256(bytes(description))
-    );
+    uint256 proposalId = hashProposal(proposer, startBlock, voteDuration, keccak256(bytes(description)));
 
     validateProposeParams(self, description, startBlock, voteDuration, proposalId);
 
@@ -111,17 +106,11 @@ library VeVoteProposalLogic {
     proposal.proposer = proposer;
     proposal.voteStart = startBlock;
     proposal.voteDuration = voteDuration;
-    
+
     // Save the proposal in the contract storage
     self.proposals[proposalId] = proposal;
 
-    emit VeVoteProposalCreated(
-      proposalId,
-      proposer,
-      description,
-      startBlock,
-      voteDuration
-    );
+    emit VeVoteProposalCreated(proposalId, proposer, description, startBlock, voteDuration);
 
     return proposalId;
   }
@@ -179,7 +168,11 @@ library VeVoteProposalLogic {
    * @param self The storage reference for the VeVoteStorage.
    * @param proposalId The ID of the proposal to execute.
    */
-  function execute(VeVoteStorageTypes.VeVoteStorage storage self, uint256 proposalId, string memory comment) external returns (uint256) {
+  function execute(
+    VeVoteStorageTypes.VeVoteStorage storage self,
+    uint256 proposalId,
+    string memory comment
+  ) external returns (uint256) {
     // Validate that proposal is in a succeeded state
     VeVoteStateLogic.validateStateBitmap(
       self,
@@ -212,10 +205,7 @@ library VeVoteProposalLogic {
     uint48 voteDuration,
     bytes32 descriptionHash
   ) internal pure returns (uint256) {
-    return
-      uint256(
-        keccak256(abi.encode(proposer, startBlock, voteDuration, descriptionHash))
-      );
+    return uint256(keccak256(abi.encode(proposer, startBlock, voteDuration, descriptionHash)));
   }
 
   /**

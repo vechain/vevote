@@ -131,13 +131,7 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
     uint48 voteDuration,
     bytes32 descriptionHash
   ) external pure returns (uint256) {
-    return
-      VeVoteProposalLogic.hashProposal(
-        proposer,
-        startBlock,
-        voteDuration,
-        descriptionHash
-      );
+    return VeVoteProposalLogic.hashProposal(proposer, startBlock, voteDuration, descriptionHash);
   }
 
   /**

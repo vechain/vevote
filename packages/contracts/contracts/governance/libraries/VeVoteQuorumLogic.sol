@@ -135,7 +135,9 @@ library VeVoteQuorumLogic {
     VeVoteStorageTypes.VeVoteStorage storage self,
     uint256 proposalId
   ) internal view returns (bool) {
-    return _quorum(self, VeVoteProposalLogic.proposalSnapshot(self, proposalId)) <= VeVoteVoteLogic.totalVotes(self, proposalId);
+    return
+      _quorum(self, VeVoteProposalLogic.proposalSnapshot(self, proposalId)) <=
+      VeVoteVoteLogic.totalVotes(self, proposalId);
   }
 
   /**
@@ -144,10 +146,7 @@ library VeVoteQuorumLogic {
    * @param timepoint The block number to retrieve quorum requirements for.
    * @return quorum at the given timepoint.
    */
-  function _quorum(
-    VeVoteStorageTypes.VeVoteStorage storage self,
-    uint48 timepoint
-  ) internal view returns (uint256) {
+  function _quorum(VeVoteStorageTypes.VeVoteStorage storage self, uint48 timepoint) internal view returns (uint256) {
     uint208[] memory circulatingSupplies = self.stargateNFT.getLevelsCirculatingSuppliesAtBlock(timepoint);
     DataTypes.Level[] memory stargateLevels = self.stargateNFT.getLevels();
 
@@ -156,7 +155,7 @@ library VeVoteQuorumLogic {
     uint256 validatorWeight = self.levelIdMultiplier[0];
     uint256 totalScaledWeight = VeVoteConstants.TOTAL_AUTHORITY_MASTER_NODES * validatorStake * validatorWeight;
 
-    // Cache number of levels 
+    // Cache number of levels
     uint256 levelCount = circulatingSupplies.length;
     for (uint8 i; i < levelCount; i++) {
       uint256 supply = circulatingSupplies[i];
