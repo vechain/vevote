@@ -54,11 +54,11 @@ const AddressCell = ({ value }: { value: string }) => {
 
 const votedOptionCellVariants = (choice: string) => {
   const style = {
-    yes: defineStyle({
+    for: defineStyle({
       background: "green.100",
       color: "green.700",
     }),
-    no: defineStyle({
+    against: defineStyle({
       background: "red.100",
       color: "red.700",
     }),
@@ -69,10 +69,10 @@ const votedOptionCellVariants = (choice: string) => {
   };
 
   switch (choice) {
-    case SingleChoiceEnum.YES:
-      return style.yes;
-    case SingleChoiceEnum.NO:
-      return style.no;
+    case SingleChoiceEnum.FOR:
+      return style.for;
+    case SingleChoiceEnum.AGAINST:
+      return style.against;
     default:
       return style.default;
   }

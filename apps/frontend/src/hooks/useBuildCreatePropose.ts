@@ -1,5 +1,4 @@
 import { ProposalDetails } from "@/pages/CreateProposal/CreateProposalProvider";
-import { BaseOption, VotingEnum } from "@/types/proposal";
 import { useVevoteSendTransaction } from "@/utils/hooks/useVevoteSendTransaction";
 import { getConfig } from "@repo/config";
 import { VeVote__factory } from "@repo/contracts";
@@ -16,7 +15,6 @@ export const useBuildCreateProposal = () => {
     ({
       description,
       votingOptions,
-      votingType,
       votingLimit,
       votingMin,
       startBlock,
@@ -29,10 +27,7 @@ export const useBuildCreateProposal = () => {
       const clauses: EnhancedClause[] = [];
 
       try {
-        const encodedChoices =
-          votingType === VotingEnum.SINGLE_CHOICE
-            ? votingOptions.map(c => ethers.encodeBytes32String(c as string))
-            : votingOptions.map(c => ethers.encodeBytes32String((c as BaseOption).value));
+        const encodedChoices = votingOptions.map(c => ethers.encodeBytes32String(c as string));
 
         const encodedData = [
           description,

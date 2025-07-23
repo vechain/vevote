@@ -1,9 +1,7 @@
-import { defaultMultiOptionsChoice, defaultSingleChoice } from "@/pages/CreateProposal/CreateProposalProvider";
-import { ProposalCardType, VotingEnum } from "@/types/proposal";
+import { defaultSingleChoice } from "@/pages/CreateProposal/CreateProposalProvider";
+import { ProposalCardType } from "@/types/proposal";
 import dayjs from "dayjs";
 import { Delta } from "quill";
-
-const mockMultiOptions = defaultMultiOptionsChoice.map((v, i) => ({ ...v, value: `option${i + 1}` }));
 
 const mockDesc = new Delta([
   {
@@ -45,7 +43,6 @@ export const mockProposals: ProposalCardType[] = [
     startDate: dayjs().subtract(1, "day").toDate(),
     endDate: dayjs().add(5, "day").toDate(),
     votingQuestion: "Do you agree with the voting proposal Galactica launch & Governance upgrade?",
-    votingType: VotingEnum.SINGLE_CHOICE,
     votingOptions: defaultSingleChoice,
   },
   {
@@ -65,8 +62,7 @@ export const mockProposals: ProposalCardType[] = [
     startDate: dayjs().subtract(2, "day").toDate(),
     endDate: dayjs().add(3, "day").toDate(),
     votingQuestion: "Do you agree with the voting proposal Galactica launch & Governance upgrade?",
-    votingType: VotingEnum.SINGLE_OPTION,
-    votingOptions: mockMultiOptions,
+    votingOptions: defaultSingleChoice,
   },
   {
     id: "3",
@@ -85,8 +81,7 @@ export const mockProposals: ProposalCardType[] = [
     startDate: dayjs().subtract(3, "day").toDate(),
     endDate: dayjs().add(1, "day").toDate(),
     votingQuestion: "Do you agree with the voting proposal Galactica launch & Governance upgrade?",
-    votingType: VotingEnum.MULTIPLE_OPTIONS,
-    votingOptions: mockMultiOptions,
+    votingOptions: defaultSingleChoice,
   },
   {
     id: "4",
@@ -105,7 +100,6 @@ export const mockProposals: ProposalCardType[] = [
     startDate: dayjs().subtract(4, "day").toDate(),
     endDate: dayjs().subtract(3, "day").toDate(),
     votingQuestion: "Do you agree with the voting proposal Galactica launch & Governance upgrade?",
-    votingType: VotingEnum.SINGLE_CHOICE,
     votingOptions: defaultSingleChoice,
   },
   {
@@ -125,7 +119,6 @@ export const mockProposals: ProposalCardType[] = [
     startDate: dayjs().subtract(4, "day").toDate(),
     endDate: dayjs().subtract(3, "day").toDate(),
     votingQuestion: "Do you agree with the voting proposal Galactica launch & Governance upgrade?",
-    votingType: VotingEnum.SINGLE_CHOICE,
     votingOptions: defaultSingleChoice,
   },
   {
@@ -145,7 +138,6 @@ export const mockProposals: ProposalCardType[] = [
     endDate: dayjs().subtract(3, "day").toDate(),
     startDate: dayjs().subtract(3, "day").toDate(),
     votingQuestion: "Do you agree with the voting proposal Galactica launch & Governance upgrade?",
-    votingType: VotingEnum.SINGLE_CHOICE,
     votingOptions: defaultSingleChoice,
   },
   {
@@ -165,8 +157,7 @@ export const mockProposals: ProposalCardType[] = [
     startDate: dayjs().add(1, "day").toDate(),
     endDate: dayjs().add(2, "day").toDate(),
     votingQuestion: "Do you agree with the voting proposal Galactica launch & Governance upgrade?",
-    votingType: VotingEnum.MULTIPLE_OPTIONS,
-    votingOptions: mockMultiOptions,
+    votingOptions: defaultSingleChoice,
   },
   {
     id: "8",
@@ -185,7 +176,6 @@ export const mockProposals: ProposalCardType[] = [
     endDate: dayjs().subtract(3, "day").toDate(),
     startDate: dayjs().subtract(3, "day").toDate(),
     votingQuestion: "Do you agree with the voting proposal Galactica launch & Governance upgrade?",
-    votingType: VotingEnum.SINGLE_CHOICE,
     votingOptions: defaultSingleChoice,
   },
   {
@@ -205,7 +195,6 @@ export const mockProposals: ProposalCardType[] = [
     startDate: dayjs().subtract(4, "day").toDate(),
     endDate: dayjs().subtract(3, "day").toDate(),
     votingQuestion: "Do you agree with the voting proposal Galactica launch & Governance upgrade?",
-    votingType: VotingEnum.SINGLE_CHOICE,
     votingOptions: defaultSingleChoice,
   },
 ];

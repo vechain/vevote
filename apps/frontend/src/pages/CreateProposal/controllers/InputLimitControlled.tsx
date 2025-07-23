@@ -1,5 +1,4 @@
 import { InputIncrement } from "@/components/ui/InputIncrement";
-import { ProposalMultipleOptionSchema } from "@/schema/createProposalSchema";
 import { Controller, useFormContext } from "react-hook-form";
 
 export const MIN_CHOICE_ALLOWED = 1;
@@ -10,7 +9,7 @@ type InputLimitProps = {
 };
 
 export const InputLimitControlled = (props: InputLimitProps) => {
-  const { control, watch } = useFormContext<ProposalMultipleOptionSchema>();
+  const { control, watch } = useFormContext();
 
   const { votingMin } = watch();
   return (
@@ -34,7 +33,7 @@ export const InputLimitControlled = (props: InputLimitProps) => {
 };
 
 export const InputMinControlled = (props: InputLimitProps) => {
-  const { control } = useFormContext<ProposalMultipleOptionSchema>();
+  const { control } = useFormContext();
   return (
     <Controller
       name="votingMin"

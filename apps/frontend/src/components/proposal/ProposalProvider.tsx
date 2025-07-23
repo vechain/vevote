@@ -1,5 +1,5 @@
 import { defaultSingleChoice } from "@/pages/CreateProposal/CreateProposalProvider";
-import { ProposalCardType, VotingEnum } from "@/types/proposal";
+import { ProposalCardType } from "@/types/proposal";
 import { Delta } from "quill";
 import { createContext, PropsWithChildren, useContext, useMemo } from "react";
 
@@ -21,7 +21,6 @@ export const ProposalContext = createContext<{ proposal: ProposalCardType }>({
     startDate: new Date(),
     endDate: new Date(),
     votingQuestion: "",
-    votingType: VotingEnum.SINGLE_CHOICE,
     votingOptions: defaultSingleChoice,
   },
 });

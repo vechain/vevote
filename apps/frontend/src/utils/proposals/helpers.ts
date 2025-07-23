@@ -1,17 +1,6 @@
-import {
-  BaseOption,
-  ProposalCardType,
-  ProposalEvent,
-  ProposalState,
-  ProposalStatus,
-  SingleChoiceEnum,
-  VotingEnum,
-} from "@/types/proposal";
+import { ProposalCardType, ProposalEvent, ProposalState, ProposalStatus, SingleChoiceEnum } from "@/types/proposal";
 import dayjs from "dayjs";
 import { ethers } from "ethers";
-import { v4 as uuidv4 } from "uuid";
-import { isArraysEqual } from "../array";
-import { defaultSingleChoice } from "@/pages/CreateProposal/CreateProposalProvider";
 import { Delta } from "quill";
 import { IpfsDetails } from "@/types/ipfs";
 import { HexUInt } from "@vechain/sdk-core";
@@ -53,27 +42,14 @@ export const getStatusParProposalMethod = (proposalIds?: string[]) => {
 export const fromEventsToProposals = async (events: ProposalEvent[]): Promise<FromEventsToProposalsReturnType> => {
   return await Promise.all(
     events.map(async event => {
-      const isSingleOption = Number(event.maxSelection) === 1;
-      const decodedChoices = event.choices.map(c => ethers.decodeBytes32String(c));
-
-      const votingType = isArraysEqual(decodedChoices, defaultSingleChoice)
-        ? VotingEnum.SINGLE_CHOICE
-        : isSingleOption
-          ? VotingEnum.SINGLE_OPTION
-          : VotingEnum.MULTIPLE_OPTIONS;
-
-      const parsedChoices = decodedChoices as SingleChoiceEnum[];
-      const parsedChoicesWithId = decodedChoices.map(c => ({
-        id: uuidv4(),
-        value: c,
-      })) as BaseOption[];
+      const decodedChoices = event.choices.map(c => ethers.decodeBytes32String(c)) as SingleChoiceEnum[];
 
       const [startDate, endDate] = await Promise.all([
         getDateFromBlock(Number(event.startTime)),
         getDateFromBlock(Number(event.startTime) + Number(event.voteDuration)),
       ]);
 
-      const base = {
+      return {
         id: event.proposalId,
         proposer: event.proposer,
         createdAt: startDate,
@@ -84,15 +60,8 @@ export const fromEventsToProposals = async (events: ProposalEvent[]): Promise<Fr
         ipfsHash: event.description,
         reason: event.reason,
         executedProposalLink: event.executedProposalLink,
+        votingOptions: decodedChoices,
       };
-
-      switch (votingType) {
-        case VotingEnum.SINGLE_CHOICE:
-          return { votingType, votingOptions: parsedChoices, ...base };
-        case VotingEnum.SINGLE_OPTION:
-        case VotingEnum.MULTIPLE_OPTIONS:
-          return { votingType, votingOptions: parsedChoicesWithId, ...base };
-      }
     }),
   );
 };

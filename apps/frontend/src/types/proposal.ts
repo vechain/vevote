@@ -8,37 +8,13 @@ export enum CreateProposalStep {
 
 export enum VotingEnum {
   SINGLE_CHOICE = "SINGLE_CHOICE",
-  SINGLE_OPTION = "SINGLE_OPTION",
-  MULTIPLE_OPTIONS = "MULTIPLE_OPTIONS",
 }
 
 export enum SingleChoiceEnum {
-  YES = "Yes",
-  NO = "No",
+  FOR = "For",
+  AGAINST = "Against",
   ABSTAIN = "Abstain",
 }
-
-export type SingleChoiceOptions = {
-  votingType: VotingEnum.SINGLE_CHOICE;
-  votingOptions: SingleChoiceEnum[];
-};
-
-export type BaseOption = {
-  id: string;
-  value: string;
-};
-
-export type CustomChoiceOptions =
-  | {
-      votingType: VotingEnum.SINGLE_OPTION;
-      votingOptions: BaseOption[];
-    }
-  | {
-      votingType: VotingEnum.MULTIPLE_OPTIONS;
-      votingOptions: BaseOption[];
-    };
-
-export type VotingChoices = SingleChoiceOptions | CustomChoiceOptions;
 
 export type ProposalStatus =
   | "draft"

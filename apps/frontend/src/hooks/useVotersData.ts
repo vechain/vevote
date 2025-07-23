@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from "react";
-import { BaseOption, SingleChoiceEnum, VotingEnum } from "@/types/proposal";
+import { SingleChoiceEnum } from "@/types/proposal";
 import { NodeStrengthLevel } from "@/types/user";
 import { VoteItem } from "@/components/proposal/VotersTable";
 import { useVotesInfo } from "@/hooks/useCastVote";
@@ -15,15 +15,13 @@ export type VotersFilters = {
 
 export const useVotersData = ({
   proposalId,
-  votingType,
   votingOptions,
   filters,
   page = 1,
   pageSize = 10,
 }: {
   proposalId: string;
-  votingType: VotingEnum;
-  votingOptions: SingleChoiceEnum[] | BaseOption[];
+  votingOptions: SingleChoiceEnum[];
   filters: VotersFilters;
   page?: number;
   pageSize?: number;
@@ -51,16 +49,13 @@ export const useVotersData = ({
       return choices
         .map((choice, index) => {
           if (Number(choice) === 1) {
-            if (votingType === VotingEnum.MULTIPLE_OPTIONS) {
-              return (votingOptions as BaseOption[])[index]?.value;
-            }
             return (votingOptions as SingleChoiceEnum[])[index];
           }
           return undefined;
         })
-        .filter(Boolean) as (SingleChoiceEnum | BaseOption["value"])[];
+        .filter(Boolean) as SingleChoiceEnum[];
     },
-    [votingOptions, votingType],
+    [votingOptions],
   );
 
   const votes = useMemo(() => {

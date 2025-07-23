@@ -1,5 +1,5 @@
 import { ProposalDetails } from "@/pages/CreateProposal/CreateProposalProvider";
-import { BaseOption, ProposalCardType, ProposalEvent, VotingEnum } from "@/types/proposal";
+import { ProposalCardType, ProposalEvent } from "@/types/proposal";
 import { getConfig } from "@repo/config";
 import { VeVote__factory } from "@repo/contracts";
 import { getAllEventLogs, ThorClient } from "@vechain/vechain-kit";
@@ -189,7 +189,6 @@ export const getProposalsWithState = async (proposalsData?: Omit<ProposalCardTyp
 export const getHashProposal = async ({
   description,
   votingOptions,
-  votingType,
   durationBlock,
   startBlock,
   votingLimit,
@@ -200,10 +199,7 @@ export const getHashProposal = async ({
   startBlock: number;
   durationBlock: number;
 }) => {
-  const encodedChoices =
-    votingType === VotingEnum.SINGLE_CHOICE
-      ? votingOptions.map(c => ethers.encodeBytes32String(c as string))
-      : votingOptions.map(c => ethers.encodeBytes32String((c as BaseOption).value));
+  const encodedChoices = votingOptions.map(c => ethers.encodeBytes32String(c as string));
 
   const args = [
     proposer,
