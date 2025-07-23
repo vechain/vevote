@@ -1,6 +1,6 @@
 import { useUser } from "@/contexts/UserProvider";
 import { useShowNavbar } from "@/hooks/useShowNavbar";
-import { Box, BoxProps, Flex, FlexProps, Image } from "@chakra-ui/react";
+import { Box, BoxProps, defineStyle, Flex, FlexProps, Image } from "@chakra-ui/react";
 import { PropsWithChildren, useMemo } from "react";
 import { ConnectButton } from "../ui/ConnectButton";
 
@@ -38,22 +38,28 @@ const NavbarInnerContainer = ({ children, ...restProps }: FlexProps) => {
   );
 };
 
+const bgHeaderStyle = defineStyle({
+  bgImage: { base: "/images/banner-bg-mobile.png", md: "/images/banner-bg.png" },
+  bgSize: "cover",
+  bgPosition: "top",
+  bgRepeat: "no-repeat",
+});
+
 export const Navbar = () => {
   const { showBackground } = useShowNavbar();
 
   return (
-    <NavbarContainer>
+    <NavbarContainer {...bgHeaderStyle}>
       <NavbarInnerContainer
         backdropFilter="auto"
-        backdropBlur={!showBackground ? "md" : "none"}
-        bgColor={!showBackground ? "rgba(38, 20, 112, 0.65)" : "transparent"}
+        bgColor={"transparent"}
         paddingX={{ base: 2, md: 6 }}
         paddingY={{ base: 2, md: 4 }}>
         <Image
-          src="/svgs/vevote_logo.svg"
+          src="/svgs/vote_logo.svg"
           alt="VeVote Logo"
           width={"auto"}
-          height={{ base: "16px", md: showBackground ? "32px" : "24px" }}
+          height={{ base: "16px", md: "24px" }}
           objectFit={"cover"}
           transition={"all 0.3s"}
         />
