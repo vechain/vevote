@@ -1,10 +1,10 @@
 import { FileUploadChild } from "@/components/ui/FileUploadChild";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { ZodFile } from "@/utils/zod";
-import { Flex, Grid, GridItem, Heading, Icon, Text } from "@chakra-ui/react";
+import { Flex, Heading, Icon, Text } from "@chakra-ui/react";
 import { PropsWithChildren, useMemo } from "react";
 import dayjs from "dayjs";
-import { BaseOption, VotingChoices, VotingEnum } from "@/types/proposal";
+import { VotingChoices } from "@/types/proposal";
 import { getTimeZone } from "@/utils/timezone";
 import { ArrowDownIcon, ArrowRightIcon, CalendarIcon, ClockIcon } from "@/icons";
 
@@ -138,12 +138,10 @@ const ShowDetailsDateItemChild = ({ date, label }: { date?: Date; label: string 
 
 type OptionsItemProps = {
   label: string;
-  votingType: VotingEnum;
   votingOptions: VotingChoices["votingOptions"];
 };
 
-const OptionsItem = ({ votingOptions, votingType, label }: OptionsItemProps) => {
-  const { LL } = useI18nContext();
+const OptionsItem = ({ votingOptions, label }: OptionsItemProps) => {
   return (
     <Flex gap={{ base: 3, md: 0 }} flexDirection={{ base: "column", md: "row" }} width={"full"}>
       <Text
@@ -155,7 +153,7 @@ const OptionsItem = ({ votingOptions, votingType, label }: OptionsItemProps) => 
         {label}
       </Text>
 
-      {votingType === VotingEnum.SINGLE_CHOICE && (
+      {(
         <Text
           width={{ base: "full", md: "75%" }}
           fontSize={{ base: 14, md: 16 }}
@@ -165,34 +163,6 @@ const OptionsItem = ({ votingOptions, votingType, label }: OptionsItemProps) => 
           whiteSpace={"nowrap"}>
           {votingOptions.join(" / ")}
         </Text>
-      )}
-      {(votingType === VotingEnum.MULTIPLE_OPTIONS || votingType === VotingEnum.SINGLE_OPTION) && (
-        <Grid templateColumns={"repeat(3, 1fr)"} width={{ base: "full", md: "75%" }} gap={2}>
-          {(votingOptions as BaseOption[]).map((value, id) => {
-            return (
-              <GridItem
-                colSpan={1}
-                display={"flex"}
-                key={value.id}
-                flexDirection={"column"}
-                alignItems={"start"}
-                overflow={"hidden"}
-                textOverflow={"ellipsis"}>
-                <Text color={"gray.500"} fontSize={14}>
-                  {LL.number_option({ index: id + 1 })}
-                </Text>
-                <Text
-                  width={"100%"}
-                  overflow={"hidden"}
-                  textOverflow={"ellipsis"}
-                  fontSize={{ base: 14, md: 16 }}
-                  color={"gray.600"}>
-                  {value.value}
-                </Text>
-              </GridItem>
-            );
-          })}
-        </Grid>
       )}
     </Flex>
   );

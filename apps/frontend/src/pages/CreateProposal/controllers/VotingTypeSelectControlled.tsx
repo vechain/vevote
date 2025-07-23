@@ -4,7 +4,7 @@ import { VotingEnum } from "@/types/proposal";
 import { Button, Flex, Radio, Text } from "@chakra-ui/react";
 import { useMemo } from "react";
 import { Controller, useFormContext } from "react-hook-form";
-import { defaultMultiOptionsChoice, defaultSingleChoice } from "../CreateProposalProvider";
+import { defaultSingleChoice } from "../CreateProposalProvider";
 
 export const VotingTypeSelectControlled = () => {
   const { LL } = useI18nContext();
@@ -18,17 +18,7 @@ export const VotingTypeSelectControlled = () => {
         title: LLVotingTypes.single_choice.title(),
         subtitle: LLVotingTypes.single_choice.subtitle(),
         kind: VotingEnum.SINGLE_CHOICE,
-      },
-      {
-        title: LLVotingTypes.single_option.title(),
-        subtitle: LLVotingTypes.single_option.subtitle(),
-        kind: VotingEnum.SINGLE_OPTION,
-      },
-      {
-        title: LLVotingTypes.multi_options.title(),
-        subtitle: LLVotingTypes.multi_options.subtitle(),
-        kind: VotingEnum.MULTIPLE_OPTIONS,
-      },
+      }
     ],
     [LLVotingTypes],
   );
@@ -46,8 +36,7 @@ export const VotingTypeSelectControlled = () => {
                   selected={value}
                   onClick={() => {
                     onChange(t.kind);
-                    if (t.kind === VotingEnum.SINGLE_CHOICE) setValue("votingOptions", defaultSingleChoice);
-                    if (t.kind !== VotingEnum.SINGLE_CHOICE) setValue("votingOptions", defaultMultiOptionsChoice);
+                    setValue("votingOptions", defaultSingleChoice);
                   }}
                   key={i}
                   {...t}

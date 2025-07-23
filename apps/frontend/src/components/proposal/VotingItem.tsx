@@ -115,12 +115,12 @@ export const VotingItem = ({ isSelected, kind, label, variant, onClick, choiceIn
   );
 };
 
-const VotingItemHeader = ({ label, showMostVoted, kind, variant, isSelected, isVoter }: VotingItemHeaderProps) => {
+const VotingItemHeader = ({ label, showMostVoted, variant, isSelected, isVoter }: VotingItemHeaderProps) => {
   const { LL } = useI18nContext();
   const showCheckRadio = useMemo(
     () =>
-      (kind === VotingEnum.SINGLE_OPTION || kind === VotingEnum.SINGLE_CHOICE) && isVoter && variant !== "result-lost",
-    [kind, isVoter, variant],
+      isVoter && variant !== "result-lost",
+    [isVoter, variant],
   );
   return (
     <Flex gap={2} alignItems={"center"} justifyContent={"space-between"} width={"100%"} flex={1}>

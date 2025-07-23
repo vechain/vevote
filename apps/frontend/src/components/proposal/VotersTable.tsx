@@ -69,10 +69,10 @@ const votedOptionCellVariants = (choice: string) => {
   };
 
   switch (choice) {
-    case SingleChoiceEnum.YES:
-      return style.yes;
-    case SingleChoiceEnum.NO:
+    case SingleChoiceEnum.AGAINST:
       return style.no;
+    case SingleChoiceEnum.FOR:
+      return style.yes;
     default:
       return style.default;
   }

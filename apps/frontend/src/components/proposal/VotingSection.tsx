@@ -1,29 +1,20 @@
 import { useVotesResults } from "@/hooks/useCastVote";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { VoteIcon } from "@/icons";
-import { VotingEnum } from "@/types/proposal";
 import { Flex, Heading, Icon, Text } from "@chakra-ui/react";
 import { PropsWithChildren } from "react";
 import { useProposal } from "./ProposalProvider";
 import { SectionLimiter } from "./SectionLimiter";
-import { VotingMultipleOptions, VotingSingleChoice, VotingSingleOption } from "./VotingList";
+import { VotingSingleChoice } from "./VotingList";
 
 export const VotingSection = () => {
   const { proposal } = useProposal();
-  const { results } = useVotesResults({ proposalId: proposal.id, size: proposal.votingOptions.length });
+  const { results } = useVotesResults({ proposalId: proposal.id, size: 3 });
   return (
     <VotingSectionContainer>
       <VotingSectionHeader />
       <VotingSectionContent>
-        {proposal.votingType === VotingEnum.SINGLE_CHOICE && (
           <VotingSingleChoice proposal={proposal} results={results} />
-        )}
-        {proposal.votingType === VotingEnum.SINGLE_OPTION && (
-          <VotingSingleOption proposal={proposal} results={results} />
-        )}
-        {proposal.votingType === VotingEnum.MULTIPLE_OPTIONS && (
-          <VotingMultipleOptions proposal={proposal} results={results} />
-        )}
       </VotingSectionContent>
     </VotingSectionContainer>
   );

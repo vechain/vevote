@@ -23,7 +23,7 @@ export const useVotersData = ({
 }: {
   proposalId: string;
   votingType: VotingEnum;
-  votingOptions: SingleChoiceEnum[] | BaseOption[];
+  votingOptions: SingleChoiceEnum[];
   filters: VotersFilters;
   page?: number;
   pageSize?: number;
@@ -51,9 +51,6 @@ export const useVotersData = ({
       return choices
         .map((choice, index) => {
           if (Number(choice) === 1) {
-            if (votingType === VotingEnum.MULTIPLE_OPTIONS) {
-              return (votingOptions as BaseOption[])[index]?.value;
-            }
             return (votingOptions as SingleChoiceEnum[])[index];
           }
           return undefined;

@@ -35,29 +35,13 @@ export const ProposalSummaryForm = () => {
 
         <SummaryCard title={LL.proposal.create.summary_form.voting_setup.title()}>
           <SummaryCard.BaseItem
-            label={LL.proposal.create.summary_form.voting_setup.type()}
-            value={LL.proposal.create.summary_form.voting_setup.types[proposalDetails.votingType]()}
-          />
-          <SummaryCard.BaseItem
             label={LL.proposal.create.summary_form.voting_setup.question()}
             value={proposalDetails.votingQuestion}
             lineClamp={3}
           />
-
-          {proposalDetails.votingType === VotingEnum.MULTIPLE_OPTIONS && proposalDetails.votingLimit && (
-            <SummaryCard.BaseItem
-              label={LL.proposal.create.setup_form.voting_limit()}
-              value={LL.proposal.create.summary_form.voting_setup.limit({
-                min: proposalDetails.votingMin || 1,
-                limit: proposalDetails.votingLimit,
-              })}
-            />
-          )}
-
-          <SummaryCard.OptionsItem
-            label={LL.proposal.create.setup_form.voting_options()}
-            votingType={proposalDetails.votingType}
-            votingOptions={proposalDetails.votingOptions}
+          <SummaryCard.BaseItem
+            label={LL.proposal.create.summary_form.voting_setup.type()}
+            value={LL.proposal.create.summary_form.voting_setup.types[VotingEnum.SINGLE_CHOICE]()}
           />
         </SummaryCard>
 

@@ -24,37 +24,9 @@ export const proposalSingleChoiceSchema = z.object({
   votingOptions: z.array(z.nativeEnum(SingleChoiceEnum)),
 });
 
-export const proposalSingleOptionSchema = z.object({
-  votingQuestion: z.string().min(1, { message: LL.field_errors.required() }).max(QUESTION_MAX_CHAR),
-  votingOptions: z
-    .object({
-      id: z.string(),
-      value: z.string().min(1, { message: "" }),
-    })
-    .array(),
-  votingType: z.literal(VotingEnum.SINGLE_OPTION),
-});
-
-export const proposalMultipleOptionSchema = z.object({
-  votingQuestion: z.string().min(1, { message: LL.field_errors.required() }).max(QUESTION_MAX_CHAR),
-  votingOptions: z
-    .object({
-      id: z.string(),
-      value: z.string().min(1, { message: "" }),
-    })
-    .array(),
-  votingType: z.literal(VotingEnum.MULTIPLE_OPTIONS),
-  votingLimit: z.number(),
-  votingMin: z.number().min(1),
-});
-
 export const proposalSetupSchema = z.discriminatedUnion("votingType", [
-  proposalSingleChoiceSchema,
-  proposalSingleOptionSchema,
-  proposalMultipleOptionSchema,
+  proposalSingleChoiceSchema
 ]);
 export type ProposalSingleChoiceSchema = z.infer<typeof proposalSingleChoiceSchema>;
-export type ProposalSingleOptionSchema = z.infer<typeof proposalSingleOptionSchema>;
-export type ProposalMultipleOptionSchema = z.infer<typeof proposalMultipleOptionSchema>;
 
 export type ProposalSetupSchema = z.infer<typeof proposalSetupSchema>;

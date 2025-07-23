@@ -1,9 +1,7 @@
-import { defaultMultiOptionsChoice, defaultSingleChoice } from "@/pages/CreateProposal/CreateProposalProvider";
+import { defaultSingleChoice } from "@/components/proposal/ProposalProvider";
 import { ProposalCardType, VotingEnum } from "@/types/proposal";
 import dayjs from "dayjs";
 import { Delta } from "quill";
-
-const mockMultiOptions = defaultMultiOptionsChoice.map((v, i) => ({ ...v, value: `option${i + 1}` }));
 
 const mockDesc = new Delta([
   {
@@ -30,7 +28,6 @@ const mockDesc = new Delta([
 export const mockProposals: ProposalCardType[] = [
   {
     id: "1",
-    votingLimit: 1,
     proposer: "0x1234567890abcdef1234567890abcdef12345678",
     createdAt: new Date("2025-01-01T00:00:00"),
     headerImage: {
@@ -49,48 +46,7 @@ export const mockProposals: ProposalCardType[] = [
     votingOptions: defaultSingleChoice,
   },
   {
-    id: "2",
-    votingLimit: 1,
-    proposer: "0x1234567890abcdef1234567890abcdef12345678",
-    createdAt: new Date("2025-01-01T00:00:00"),
-    headerImage: {
-      type: "image/png",
-      name: "mock image",
-      size: 1,
-      url: "/images/proposal_example.png",
-    },
-    status: "voting",
-    description: mockDesc.ops,
-    title: "All-Stakeholder Voting Proposal: Galactica Launch & Governance Upgrade",
-    startDate: dayjs().subtract(2, "day").toDate(),
-    endDate: dayjs().add(3, "day").toDate(),
-    votingQuestion: "Do you agree with the voting proposal Galactica launch & Governance upgrade?",
-    votingType: VotingEnum.SINGLE_OPTION,
-    votingOptions: mockMultiOptions,
-  },
-  {
-    id: "3",
-    votingLimit: 3,
-    proposer: "0x1234567890abcdef1234567890abcdef12345678",
-    createdAt: new Date("2025-01-01T00:00:00"),
-    headerImage: {
-      type: "image/png",
-      name: "mock image",
-      size: 1,
-      url: "/images/proposal_example.png",
-    },
-    status: "voting",
-    description: mockDesc.ops,
-    title: "All-Stakeholder Voting Proposal: Galactica Launch & Governance Upgrade",
-    startDate: dayjs().subtract(3, "day").toDate(),
-    endDate: dayjs().add(1, "day").toDate(),
-    votingQuestion: "Do you agree with the voting proposal Galactica launch & Governance upgrade?",
-    votingType: VotingEnum.MULTIPLE_OPTIONS,
-    votingOptions: mockMultiOptions,
-  },
-  {
     id: "4",
-    votingLimit: 1,
     proposer: "0x1234567890abcdef1234567890abcdef12345678",
     createdAt: new Date("2025-01-01T00:00:00"),
     headerImage: {
@@ -110,7 +66,6 @@ export const mockProposals: ProposalCardType[] = [
   },
   {
     id: "5",
-    votingLimit: 1,
     proposer: "0x1234567890abcdef1234567890abcdef12345678",
     createdAt: new Date("2025-01-01T00:00:00"),
     headerImage: {
@@ -130,7 +85,6 @@ export const mockProposals: ProposalCardType[] = [
   },
   {
     id: "6",
-    votingLimit: 1,
     proposer: "0x1234567890abcdef1234567890abcdef12345678",
     createdAt: new Date("2025-01-01T00:00:00"),
     headerImage: {
@@ -149,28 +103,7 @@ export const mockProposals: ProposalCardType[] = [
     votingOptions: defaultSingleChoice,
   },
   {
-    id: "7",
-    votingLimit: 1,
-    proposer: "0x1234567890abcdef1234567890abcdef12345678",
-    createdAt: new Date("2025-01-01T00:00:00"),
-    headerImage: {
-      type: "image/png",
-      name: "mock image",
-      size: 1,
-      url: "/images/proposal_example.png",
-    },
-    status: "upcoming",
-    description: mockDesc.ops,
-    title: "All-Stakeholder Voting Proposal: Galactica Launch & Governance Upgrade",
-    startDate: dayjs().add(1, "day").toDate(),
-    endDate: dayjs().add(2, "day").toDate(),
-    votingQuestion: "Do you agree with the voting proposal Galactica launch & Governance upgrade?",
-    votingType: VotingEnum.MULTIPLE_OPTIONS,
-    votingOptions: mockMultiOptions,
-  },
-  {
     id: "8",
-    votingLimit: 1,
     proposer: "0x1234567890abcdef1234567890abcdef12345678",
     createdAt: new Date("2025-01-01T00:00:00"),
     headerImage: {
@@ -190,7 +123,6 @@ export const mockProposals: ProposalCardType[] = [
   },
   {
     id: "9",
-    votingLimit: 1,
     proposer: "0x1234567890abcdef1234567890abcdef12345678",
     createdAt: new Date("2025-01-01T00:00:00"),
     headerImage: {

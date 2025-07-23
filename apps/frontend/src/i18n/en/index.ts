@@ -253,12 +253,10 @@ const en = {
         voting_setup: {
           title: "Voting setup",
           question: "Question",
-          type: "Type",
+          type: "Vote Options",
           limit: "Minimum {min:number} options - Maximum {limit:number} options",
           types: {
-            SINGLE_CHOICE: "Single choice - Yes / No / Abstain",
-            SINGLE_OPTION: "Single choice - Multiple voting options",
-            MULTIPLE_OPTIONS: "Multiple choice - Multiple voting options",
+            SINGLE_CHOICE: "Against / For / Abstain",
           },
         },
         publish_proposal: "Publish Proposal",
