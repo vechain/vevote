@@ -301,12 +301,10 @@ const en = {
     },
   },
   header: {
-    official: "Official",
-    blockchain: "VeChainThor Blockchain",
-    voting_platform: "voting platform",
-    immutable: "Immutable.",
-    transparent: "Transparent.",
-    decentralized: "Decentralized.",
+    title: "VeChainThor Voting Platform",
+    description: "Vote to shape the future of VeChainThor",
+    how_to_vote: "How to Vote",
+    how_to_get_voting_power: "How to get Voting Power",
   },
   stargate_warning: {
     title: "Stargate Node Migration Required",

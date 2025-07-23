@@ -8,8 +8,7 @@ const NavbarContainer = ({ children, ...restProps }: BoxProps) => {
   return (
     <Box
       transition={"all 0.3s"}
-      paddingX={{ base: 2, md: 20 }}
-      paddingY={2}
+      paddingX={{ base: 6, md: 20 }}
       position={"fixed"}
       top={0}
       left={0}
@@ -43,23 +42,19 @@ const bgHeaderStyle = defineStyle({
   bgSize: "cover",
   bgPosition: "top",
   bgRepeat: "no-repeat",
+  bgAttachment: "fixed",
+  borderBottom: "1px solid rgba(255, 255, 255, 0.2)",
 });
 
 export const Navbar = () => {
-  const { showBackground } = useShowNavbar();
-
   return (
     <NavbarContainer {...bgHeaderStyle}>
-      <NavbarInnerContainer
-        backdropFilter="auto"
-        bgColor={"transparent"}
-        paddingX={{ base: 2, md: 6 }}
-        paddingY={{ base: 2, md: 4 }}>
+      <NavbarInnerContainer paddingY={{ base: 2, md: 4 }}>
         <Image
           src="/svgs/vote_logo.svg"
           alt="VeVote Logo"
           width={"auto"}
-          height={{ base: "16px", md: "24px" }}
+          height={{ base: "24px", md: "60px" }}
           objectFit={"cover"}
           transition={"all 0.3s"}
         />

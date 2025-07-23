@@ -942,29 +942,21 @@ type RootTranslation = {
 	}
 	header: {
 		/**
-		 * O​f​f​i​c​i​a​l
+		 * V​e​C​h​a​i​n​T​h​o​r​ ​V​o​t​i​n​g​ ​P​l​a​t​f​o​r​m
 		 */
-		official: string
+		title: string
 		/**
-		 * V​e​C​h​a​i​n​T​h​o​r​ ​B​l​o​c​k​c​h​a​i​n
+		 * V​o​t​e​ ​t​o​ ​s​h​a​p​e​ ​t​h​e​ ​f​u​t​u​r​e​ ​o​f​ ​V​e​C​h​a​i​n​T​h​o​r
 		 */
-		blockchain: string
+		description: string
 		/**
-		 * v​o​t​i​n​g​ ​p​l​a​t​f​o​r​m
+		 * H​o​w​ ​t​o​ ​V​o​t​e
 		 */
-		voting_platform: string
+		how_to_vote: string
 		/**
-		 * I​m​m​u​t​a​b​l​e​.
+		 * H​o​w​ ​t​o​ ​g​e​t​ ​V​o​t​i​n​g​ ​P​o​w​e​r
 		 */
-		immutable: string
-		/**
-		 * T​r​a​n​s​p​a​r​e​n​t​.
-		 */
-		transparent: string
-		/**
-		 * D​e​c​e​n​t​r​a​l​i​z​e​d​.
-		 */
-		decentralized: string
+		how_to_get_voting_power: string
 	}
 	stargate_warning: {
 		/**
@@ -1929,29 +1921,21 @@ JPG, PNG or SVG of maximum of {size}MB.
 	}
 	header: {
 		/**
-		 * Official
+		 * VeChainThor Voting Platform
 		 */
-		official: () => LocalizedString
+		title: () => LocalizedString
 		/**
-		 * VeChainThor Blockchain
+		 * Vote to shape the future of VeChainThor
 		 */
-		blockchain: () => LocalizedString
+		description: () => LocalizedString
 		/**
-		 * voting platform
+		 * How to Vote
 		 */
-		voting_platform: () => LocalizedString
+		how_to_vote: () => LocalizedString
 		/**
-		 * Immutable.
+		 * How to get Voting Power
 		 */
-		immutable: () => LocalizedString
-		/**
-		 * Transparent.
-		 */
-		transparent: () => LocalizedString
-		/**
-		 * Decentralized.
-		 */
-		decentralized: () => LocalizedString
+		how_to_get_voting_power: () => LocalizedString
 	}
 	stargate_warning: {
 		/**
