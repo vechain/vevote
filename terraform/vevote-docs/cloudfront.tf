@@ -1,5 +1,5 @@
 module "s3_static_cloudfront" {
-  source        = "git@github.com:vechain/terraform_infrastructure_modules.git//s3-static-cloudfront-hosting?ref=d6221a6dd80eff03ea1b520efac559a800222792"
+  source        = "git@github.com:vechain/terraform_infrastructure_modules.git//s3-static-cloudfront-hosting?ref=feature/update_module"
   env           = local.env.environment
   project       = local.env.project
   domain_name   = local.env.domain_name
