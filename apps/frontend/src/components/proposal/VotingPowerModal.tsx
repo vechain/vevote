@@ -1,30 +1,22 @@
-import { Button, Flex, Icon, Link, ModalBody, ModalHeader, Text, useDisclosure } from "@chakra-ui/react";
-import { ModalSkeleton, ModalTitle } from "../ui/ModalSkeleton";
-import { CopyLink } from "../ui/CopyLink";
-import { useWallet } from "@vechain/vechain-kit";
-import { formatAddress } from "@/utils/address";
-import { useMemo } from "react";
+import { useAllUserNodes, useIsDelegator, useNodes } from "@/hooks/useUserQueries";
 import { useI18nContext } from "@/i18n/i18n-react";
-import { useFormatDate } from "@/hooks/useFormatDate";
-import { ArrowLinkIcon, VotingPowerIcon } from "@/icons";
-import { NodeItem } from "@/types/user";
-import { getConfig } from "@repo/config";
-import { useNodes } from "@/hooks/useUserQueries";
-import { useProposal } from "./ProposalProvider";
-import { useGetDatesBlocks } from "@/hooks/useGetDatesBlocks";
-
-const VECHAIN_EXPLORER_URL = getConfig(import.meta.env.VITE_APP_ENV).network.explorerUrl;
+import { VotingPowerIcon } from "@/icons";
+import { formatAddress } from "@/utils/address";
+import { Button, Flex, Icon, Link, ModalBody, ModalHeader, Text, useDisclosure } from "@chakra-ui/react";
+import { useWallet } from "@vechain/vechain-kit";
+import { useMemo } from "react";
+import { CopyLink } from "../ui/CopyLink";
+import { ModalSkeleton, ModalTitle } from "../ui/ModalSkeleton";
+import { VotingPowerModalTable } from "./VotingPowerModalTable";
+import { VotingPowerDelegatedWarning, VotingPowerLegacyNodeWarning } from "./VotingPowerWarnings";
+import { stargateUrl } from "@/utils/stargate";
 
 export const VotingPowerModal = () => {
   const { LL } = useI18nContext();
   const { isOpen, onClose, onOpen } = useDisclosure();
-  const { formattedProposalDate } = useFormatDate();
-  const { proposal } = useProposal();
-  const { nodes } = useNodes({ startDate: proposal.startDate });
-
-  const { startBlock, startBlockId } = useGetDatesBlocks({
-    startDate: proposal.startDate,
-  });
+  const { nodes } = useNodes();
+  const { allNodes } = useAllUserNodes();
+  const { isDelegator } = useIsDelegator();
 
   const nodesList = useMemo(
     () =>
@@ -36,31 +28,16 @@ export const VotingPowerModal = () => {
     [LL.node_names, nodes],
   );
 
-  const totalVotingPower = useMemo(() => {
-    return nodesList.reduce((acc, node) => acc + node.votingPower, 0);
-  }, [nodesList]);
+  const totalVotingPower = useMemo(() => nodesList.reduce((acc, node) => acc + node.votingPower, 0), [nodesList]);
 
-  const block = useMemo(
-    () => ({
-      id: startBlockId,
-      number: startBlock || 0,
-    }),
-    [startBlock, startBlockId],
-  );
-
-  const snapshot = useMemo(
-    () => formattedProposalDate(proposal.startDate) || "",
-    [formattedProposalDate, proposal.startDate],
-  );
+  const hasLegacyNodes = useMemo(() => {
+    return allNodes.some(node => !node.isStargate);
+  }, [allNodes]);
 
   return (
     <>
-      <Button
-        onClick={onOpen}
-        variant={"secondary"}
-        leftIcon={<Icon as={VotingPowerIcon} boxSize={5} />}
-        size={{ base: "md", md: "lg" }}>
-        {totalVotingPower}
+      <Button onClick={onOpen} leftIcon={<Icon as={VotingPowerIcon} boxSize={5} />} size={{ base: "md", md: "lg" }}>
+        {totalVotingPower || LL.proposal.voting_power.get_voting_power()}
       </Button>
       <ModalSkeleton isOpen={isOpen} onClose={onClose}>
         <ModalHeader>
@@ -69,37 +46,12 @@ export const VotingPowerModal = () => {
         <ModalBody>
           <Flex flexDirection={"column"} gap={8}>
             <VotingWallet />
-
-            <Flex flexDirection={"column"} gap={3}>
-              <Flex padding={6} borderRadius={12} background={"gray.50"} flexDirection={"column"} gap={2}>
-                <NodesHeader />
-                <NodesList nodesList={nodesList} />
-                <NodesFooter totalVotingPower={totalVotingPower} />
-              </Flex>
-              <Flex
-                fontSize={{ base: 12, md: 14 }}
-                padding={4}
-                borderRadius={12}
-                background={"primary.100"}
-                flexDirection={"column"}
-                gap={3}>
-                <Text color={"gray.600"}>{LL.proposal.voting_power.calculation({ snapshot })}</Text>
-                <Text color={"gray.600"} fontWeight={500} display={"flex"} gap={2} alignItems={"center"}>
-                  {LL.block()}
-                  <Link
-                    display={"flex"}
-                    gap={2}
-                    alignItems={"center"}
-                    color={"primary.500"}
-                    fontWeight={500}
-                    isExternal
-                    href={`${VECHAIN_EXPLORER_URL}/blocks/${block.id}`}>
-                    {block.number}
-                    <Icon as={ArrowLinkIcon} boxSize={4} />
-                  </Link>
-                </Text>
-              </Flex>
-            </Flex>
+            {hasLegacyNodes && <VotingPowerLegacyNodeWarning />}
+            {isDelegator && <VotingPowerDelegatedWarning />}
+            {totalVotingPower > 0 && (
+              <VotingPowerModalTable nodesList={nodesList} totalVotingPower={totalVotingPower} />
+            )}
+            <VotingFooter />
           </Flex>
         </ModalBody>
       </ModalSkeleton>
@@ -121,54 +73,14 @@ const VotingWallet = () => {
   );
 };
 
-const NodesHeader = () => {
+const VotingFooter = () => {
   const { LL } = useI18nContext();
-  return (
-    <Flex
-      alignItems={"center"}
-      justifyContent={"space-between"}
-      fontSize={{ base: 12, md: 14 }}
-      fontWeight={600}
-      color={"gray.500"}>
-      <Text>{LL.node()}</Text>
-      <Text>{LL.proposal.voting_power.title()}</Text>
-    </Flex>
-  );
-};
 
-const NodesList = ({ nodesList }: { nodesList: NodeItem[] }) => {
   return (
-    <Flex flexDirection={"column"} borderBottomWidth={1} borderColor={"gray.200"}>
-      {nodesList.map(({ multiplier, nodeName, votingPower }, index) => (
-        <Flex
-          key={index}
-          alignItems={"center"}
-          color={"gray.600"}
-          paddingY={1.5}
-          gap={8}
-          fontSize={{ base: 14, md: 16 }}>
-          <Text minWidth={"30px"}>{`${multiplier}x`}</Text>
-          <Text flex={1}>{nodeName}</Text>
-          <Text>{votingPower}</Text>
-        </Flex>
-      ))}
-    </Flex>
-  );
-};
-
-const NodesFooter = ({ totalVotingPower }: { totalVotingPower: number }) => {
-  const { LL } = useI18nContext();
-  return (
-    <Flex
-      paddingY={1.5}
-      color={"gray.600"}
-      gap={8}
-      fontWeight={600}
-      alignItems={"center"}
-      justifyContent={"space-between"}
-      fontSize={{ base: 14, md: 16 }}>
-      <Text>{LL.proposal.voting_power.total_voting_power()}</Text>
-      <Text>{totalVotingPower}</Text>
-    </Flex>
+    <>
+      <Button as={Link} isExternal href={stargateUrl} rightIcon={<Icon as={VotingPowerIcon} />}>
+        {LL.proposal.voting_power.get_more_voting_power()}
+      </Button>
+    </>
   );
 };

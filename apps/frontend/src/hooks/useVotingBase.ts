@@ -30,9 +30,7 @@ export const useVotingBase = (proposal: { id: string; status: ProposalStatus; st
 
   const votingVariant: VotingItemVariant = useMemo(() => getVotingVariant(proposal.status), [proposal.status]);
 
-  const { masterNode } = useNodes({
-    startDate: proposal.startDate,
-  });
+  const { masterNode } = useNodes();
 
   const commentDisabled = useMemo(() => {
     return votingVariant === "upcoming" || (votingVariant === "voting" && Boolean(votedChoices?.reason)) || hasVoted;

@@ -166,9 +166,18 @@ const en = {
       },
     },
     voting_power: {
+      get_more_voting_power: "Get more voting power",
+      get_voting_power: "Get Voting Power",
       title: "Voting Power",
       calculation: "Your voting power was calculated at the time of the snapshot {snapshot:string}.",
       total_voting_power: "Total voting power",
+      warnings: {
+        legacy_node: "You have legacy nodes that haven’t been migrated yet.  Migrate to get more voting power.",
+        delegated: {
+          title: "Your voting power is delegated",
+          description: "Your voting power is delegated to another node",
+        },
+      },
     },
     voters_table: {
       filters: {

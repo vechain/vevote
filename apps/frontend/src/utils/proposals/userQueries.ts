@@ -59,21 +59,20 @@ export const getUserRoles = async ({ address }: { address?: string }) => {
   };
 };
 
-export const getUserNodes = async ({ address, blockN }: { address: string; blockN: string }) => {
+export const getUserNodes = async ({ address }: { address: string }) => {
   try {
     const nodesRes = await executeCall({
       contractAddress: nodeManagementAddress,
       contractInterface: nodeManagementInterface,
       method: "getUserStargateNFTsInfo",
       args: [address],
-      callOptions: {
-        revision: blockN,
-      },
     });
 
     if (!nodesRes.success) return { nodes: [] };
 
     const userNodes = nodesRes.result.plain as StargateNode[];
+
+    console.log("USER NODES", userNodes);
 
     const votingPowerArgs = userNodes.map(node => ({
       method: "getNodeVoteWeight" as const,
@@ -97,6 +96,9 @@ export const getUserNodes = async ({ address, blockN }: { address: string; block
         methodsWithArgs: multiplierArgs,
       }),
     ]);
+
+    console.log("MULTIPLIER___", nodesMultiplier);
+    console.log("POWER____", nodesPower);
 
     const nodesPowerResults = nodesPower.map(r => (r.success ? (r.result.plain as bigint) : BigInt(0)));
     const nodesMultiplierResults = nodesMultiplier.map(r => (r.success ? (r.result.plain as bigint) : BigInt(0)));
@@ -167,4 +169,20 @@ export const getAllUsersNodes = async (address: string) => {
   return {
     nodes,
   };
+};
+
+export const isNodeDelegator = async (address: string) => {
+  try {
+    const res = await executeCall({
+      contractAddress: nodeManagementAddress,
+      contractInterface: nodeManagementInterface,
+      method: "isNodeDelegator",
+      args: [address],
+    });
+
+    return res.success ? (res.result.plain as boolean) : false;
+  } catch (error) {
+    console.error("Error checking if user is a node delegator:", error);
+    return false;
+  }
 };

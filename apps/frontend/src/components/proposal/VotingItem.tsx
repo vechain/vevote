@@ -58,7 +58,7 @@ export const VotingItem = ({ isSelected, kind, label, variant, onClick, choiceIn
   const { connection } = useWallet();
   const { proposal } = useProposal();
   const { hasVoted } = useHasVoted({ proposalId: proposal.id });
-  const { nodes } = useNodes({ startDate: proposal?.startDate });
+  const { nodes } = useNodes();
 
   const isVoter = useMemo(() => nodes.length > 0, [nodes.length]);
   const isMostVoted = useMemo(() => calculateMostVoted(results, choiceIndex), [results, choiceIndex]);

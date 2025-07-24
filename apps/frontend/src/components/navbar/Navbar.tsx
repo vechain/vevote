@@ -3,6 +3,8 @@ import { useShowNavbar } from "@/hooks/useShowNavbar";
 import { Box, BoxProps, defineStyle, Flex, FlexProps, Image } from "@chakra-ui/react";
 import { PropsWithChildren, useMemo } from "react";
 import { ConnectButton } from "../ui/ConnectButton";
+import { VotingPowerModal } from "../proposal/VotingPowerModal";
+import { useWallet } from "@vechain/vechain-kit";
 
 const NavbarContainer = ({ children, ...restProps }: BoxProps) => {
   return (
@@ -21,6 +23,7 @@ const NavbarContainer = ({ children, ...restProps }: BoxProps) => {
 };
 
 const NavbarInnerContainer = ({ children, ...restProps }: FlexProps) => {
+  const { connection } = useWallet();
   return (
     <Flex
       transition={"all 0.3s"}
@@ -32,7 +35,10 @@ const NavbarInnerContainer = ({ children, ...restProps }: FlexProps) => {
       gap={6}
       {...restProps}>
       {children}
-      <ConnectButton bg={"primary.700"} />
+      <Flex alignItems={"center"} gap={{ base: 3, md: 6 }}>
+        {connection.isConnected && <VotingPowerModal />}
+        <ConnectButton bg={"primary.700"} />
+      </Flex>
     </Flex>
   );
 };

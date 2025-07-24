@@ -4,15 +4,13 @@ import { ArrowLinkIcon, CircleInfoIcon } from "@/icons";
 import { Button, Flex, Icon, Link, Text } from "@chakra-ui/react";
 import { useMemo } from "react";
 import { useWallet } from "@vechain/vechain-kit";
-import { useProposal } from "./ProposalProvider";
-import { stargateUrl } from "./StargateWarningModal";
+import { stargateUrl } from "@/utils/stargate";
 
 export const BuyANode = () => {
   const { connection } = useWallet();
   const { LL } = useI18nContext();
-  const { proposal } = useProposal();
 
-  const { nodes } = useNodes({ startDate: proposal?.startDate });
+  const { nodes } = useNodes();
   const isVoter = useMemo(() => nodes.length > 0, [nodes.length]);
 
   const connectedAndVoter = useMemo(() => {

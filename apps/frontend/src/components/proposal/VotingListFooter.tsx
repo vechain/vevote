@@ -42,7 +42,7 @@ export const VotingListFooter = ({
   const { LL } = useI18nContext();
   const { formattedProposalDate } = useFormatDate();
   const votingVariant: VotingItemVariant = useMemo(() => getVotingVariant(proposal.status), [proposal.status]);
-  const { nodes } = useNodes({ startDate: proposal?.startDate });
+  const { nodes } = useNodes();
   const isVoter = useMemo(() => nodes.length > 0, [nodes.length]);
 
   const votingNotStarted = useMemo(

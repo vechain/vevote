@@ -546,6 +546,14 @@ type RootTranslation = {
 		}
 		voting_power: {
 			/**
+			 * G​e​t​ ​m​o​r​e​ ​v​o​t​i​n​g​ ​p​o​w​e​r
+			 */
+			get_more_voting_power: string
+			/**
+			 * G​e​t​ ​V​o​t​i​n​g​ ​P​o​w​e​r
+			 */
+			get_voting_power: string
+			/**
 			 * V​o​t​i​n​g​ ​P​o​w​e​r
 			 */
 			title: string
@@ -558,6 +566,22 @@ type RootTranslation = {
 			 * T​o​t​a​l​ ​v​o​t​i​n​g​ ​p​o​w​e​r
 			 */
 			total_voting_power: string
+			warnings: {
+				/**
+				 * Y​o​u​ ​h​a​v​e​ ​l​e​g​a​c​y​ ​n​o​d​e​s​ ​t​h​a​t​ ​h​a​v​e​n​’​t​ ​b​e​e​n​ ​m​i​g​r​a​t​e​d​ ​y​e​t​.​ ​ ​M​i​g​r​a​t​e​ ​t​o​ ​g​e​t​ ​m​o​r​e​ ​v​o​t​i​n​g​ ​p​o​w​e​r​.
+				 */
+				legacy_node: string
+				delegated: {
+					/**
+					 * Y​o​u​r​ ​v​o​t​i​n​g​ ​p​o​w​e​r​ ​i​s​ ​d​e​l​e​g​a​t​e​d
+					 */
+					title: string
+					/**
+					 * Y​o​u​r​ ​v​o​t​i​n​g​ ​p​o​w​e​r​ ​i​s​ ​d​e​l​e​g​a​t​e​d​ ​t​o​ ​a​n​o​t​h​e​r​ ​n​o​d​e
+					 */
+					description: string
+				}
+			}
 		}
 		voters_table: {
 			filters: {
@@ -1532,6 +1556,14 @@ JPG, PNG or SVG of maximum of {size}MB.
 		}
 		voting_power: {
 			/**
+			 * Get more voting power
+			 */
+			get_more_voting_power: () => LocalizedString
+			/**
+			 * Get Voting Power
+			 */
+			get_voting_power: () => LocalizedString
+			/**
 			 * Voting Power
 			 */
 			title: () => LocalizedString
@@ -1543,6 +1575,22 @@ JPG, PNG or SVG of maximum of {size}MB.
 			 * Total voting power
 			 */
 			total_voting_power: () => LocalizedString
+			warnings: {
+				/**
+				 * You have legacy nodes that haven’t been migrated yet.  Migrate to get more voting power.
+				 */
+				legacy_node: () => LocalizedString
+				delegated: {
+					/**
+					 * Your voting power is delegated
+					 */
+					title: () => LocalizedString
+					/**
+					 * Your voting power is delegated to another node
+					 */
+					description: () => LocalizedString
+				}
+			}
 		}
 		voters_table: {
 			filters: {
