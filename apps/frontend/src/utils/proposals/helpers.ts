@@ -1,6 +1,5 @@
 import { ProposalCardType, ProposalEvent, ProposalState, ProposalStatus, SingleChoiceEnum } from "@/types/proposal";
 import dayjs from "dayjs";
-import { ethers } from "ethers";
 import { Delta } from "quill";
 import { IpfsDetails } from "@/types/ipfs";
 import { HexUInt } from "@vechain/sdk-core";
@@ -39,11 +38,35 @@ export const getStatusParProposalMethod = (proposalIds?: string[]) => {
   }));
 };
 
+export const getIndexFromSingleChoice = (choice: SingleChoiceEnum): 0 | 1 | 2 => {
+  switch (choice) {
+    case SingleChoiceEnum.AGAINST:
+      return 0;
+    case SingleChoiceEnum.FOR:
+      return 1;
+    case SingleChoiceEnum.ABSTAIN:
+      return 2;
+    default:
+      throw new Error(`Invalid choice: ${choice}`);
+  }
+};
+
+export const getSingleChoiceFromIndex = (index: 0 | 1 | 2): SingleChoiceEnum => {
+  switch (index) {
+    case 0:
+      return SingleChoiceEnum.AGAINST;
+    case 1:
+      return SingleChoiceEnum.FOR;
+    case 2:
+      return SingleChoiceEnum.ABSTAIN;
+    default:
+      throw new Error(`Invalid index: ${index}`);
+  }
+};
+
 export const fromEventsToProposals = async (events: ProposalEvent[]): Promise<FromEventsToProposalsReturnType> => {
   return await Promise.all(
     events.map(async event => {
-      const decodedChoices = event.choices.map(c => ethers.decodeBytes32String(c)) as SingleChoiceEnum[];
-
       const [startDate, endDate] = await Promise.all([
         getDateFromBlock(Number(event.startTime)),
         getDateFromBlock(Number(event.startTime) + Number(event.voteDuration)),
@@ -55,12 +78,9 @@ export const fromEventsToProposals = async (events: ProposalEvent[]): Promise<Fr
         createdAt: startDate,
         startDate,
         endDate,
-        votingLimit: event.maxSelection,
-        votingMin: event.minSelection,
         ipfsHash: event.description,
         reason: event.reason,
         executedProposalLink: event.executedProposalLink,
-        votingOptions: decodedChoices,
       };
     }),
   );

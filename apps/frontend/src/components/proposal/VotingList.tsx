@@ -7,6 +7,8 @@ import { VotingListFooter } from "./VotingListFooter";
 import { VotingTitle } from "./VotingTitle";
 import { useVotingBase } from "@/hooks/useVotingBase";
 import { SuccessVotingModal } from "./SuccessVotingModal";
+import { defaultSingleChoice } from "@/pages/CreateProposal/CreateProposalProvider";
+import { getIndexFromSingleChoice, getSingleChoiceFromIndex } from "@/utils/proposals/helpers";
 
 type VotingSingleChoiceProps = {
   proposal: ProposalCardType;
@@ -28,13 +30,12 @@ export const VotingSingleChoice = ({ proposal, results }: VotingSingleChoiceProp
   } = useVotingBase(proposal);
 
   const initialSelectedOption = useMemo(() => {
-    if (!votedChoices?.choices) return undefined;
-
-    const selectedIndex = votedChoices.choices.findIndex(choice => Number(choice) === 1);
-    return selectedIndex >= 0 ? proposal.votingOptions[selectedIndex] : undefined;
-  }, [proposal.votingOptions, votedChoices?.choices]);
+    if (!votedChoices?.choice) return undefined;
+    return getSingleChoiceFromIndex(votedChoices.choice);
+  }, [votedChoices?.choice]);
 
   const [selectedOption, setSelectedOption] = useState<SingleChoiceEnum | undefined>(undefined);
+
   const currentSelection = useMemo(
     () => initialSelectedOption || selectedOption,
     [initialSelectedOption, selectedOption],
@@ -43,10 +44,12 @@ export const VotingSingleChoice = ({ proposal, results }: VotingSingleChoiceProp
   const onSubmit = useCallback(async () => {
     if (!currentSelection) return;
 
-    const options = proposal.votingOptions.map(option => (option === currentSelection ? 1 : 0));
-
     try {
-      const result = await sendTransaction({ id: proposal.id, selectedOptions: options, reason: comment });
+      const result = await sendTransaction({
+        id: proposal.id,
+        selectedOption: getIndexFromSingleChoice(currentSelection),
+        reason: comment,
+      });
       if (result.txId) {
         onSuccessOpen();
         console.log("Vote successful! Transaction ID:", result.txId);
@@ -58,13 +61,13 @@ export const VotingSingleChoice = ({ proposal, results }: VotingSingleChoiceProp
         console.log("Failed transaction ID:", txError.txId);
       }
     }
-  }, [currentSelection, proposal.votingOptions, proposal.id, sendTransaction, comment, onSuccessOpen]);
+  }, [currentSelection, proposal.id, sendTransaction, comment, onSuccessOpen]);
 
   return (
     <Flex gap={{ base: 6, md: 8 }} alignItems="start" flexDirection="column" width="100%">
       <VotingTitle />
       <Flex gap={2} alignItems="start" flexDirection="column" width="100%">
-        {proposal.votingOptions.map((option, index) => (
+        {defaultSingleChoice.map((option, index) => (
           <VotingItem
             key={index}
             label={option}

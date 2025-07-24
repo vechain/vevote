@@ -4,7 +4,6 @@ import { getConfig } from "@repo/config";
 import { VeVote__factory } from "@repo/contracts";
 import { ABIFunction, Address, Clause } from "@vechain/sdk-core";
 import { EnhancedClause } from "@vechain/vechain-kit";
-import { ethers } from "ethers";
 import { useCallback } from "react";
 
 const contractAddress = getConfig(import.meta.env.VITE_APP_ENV).vevoteContractAddress;
@@ -14,9 +13,6 @@ export const useBuildCreateProposal = () => {
   const buildClauses = useCallback(
     ({
       description,
-      votingOptions,
-      votingLimit,
-      votingMin,
       startBlock,
       durationBlock,
     }: Omit<ProposalDetails, "description" | "startDate" | "voteDuration"> & {
@@ -27,16 +23,7 @@ export const useBuildCreateProposal = () => {
       const clauses: EnhancedClause[] = [];
 
       try {
-        const encodedChoices = votingOptions.map(c => ethers.encodeBytes32String(c as string));
-
-        const encodedData = [
-          description,
-          startBlock,
-          durationBlock - startBlock,
-          encodedChoices,
-          votingLimit || 1,
-          votingMin || 1,
-        ];
+        const encodedData = [description, startBlock, durationBlock - startBlock];
 
         const interfaceJson = contractInterface.getFunction("propose")?.format("full");
         if (!interfaceJson) throw new Error(`Method propose not found`);

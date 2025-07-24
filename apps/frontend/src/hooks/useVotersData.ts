@@ -1,10 +1,10 @@
-import { useCallback, useMemo } from "react";
-import { SingleChoiceEnum } from "@/types/proposal";
-import { NodeStrengthLevel } from "@/types/user";
 import { VoteItem } from "@/components/proposal/VotersTable";
+import { Sort } from "@/components/ui/SortDropdown";
 import { useVotesInfo } from "@/hooks/useCastVote";
 import { useVotersNodes } from "@/hooks/useUserQueries";
-import { Sort } from "@/components/ui/SortDropdown";
+import { NodeStrengthLevel } from "@/types/user";
+import { getSingleChoiceFromIndex } from "@/utils/proposals/helpers";
+import { useMemo } from "react";
 
 export type VotersFilters = {
   selectedOption: string;
@@ -15,13 +15,11 @@ export type VotersFilters = {
 
 export const useVotersData = ({
   proposalId,
-  votingOptions,
   filters,
   page = 1,
   pageSize = 10,
 }: {
   proposalId: string;
-  votingOptions: SingleChoiceEnum[];
   filters: VotersFilters;
   page?: number;
   pageSize?: number;
@@ -44,56 +42,24 @@ export const useVotersData = ({
     return map;
   }, [nodes]);
 
-  const getVotingChoicesFromBinary = useCallback(
-    (choices: string[]) => {
-      return choices
-        .map((choice, index) => {
-          if (Number(choice) === 1) {
-            return (votingOptions as SingleChoiceEnum[])[index];
-          }
-          return undefined;
-        })
-        .filter(Boolean) as SingleChoiceEnum[];
-    },
-    [votingOptions],
-  );
-
   const votes = useMemo(() => {
     if (!votedInfo) return [];
 
-    return votedInfo.reduce((acc: VoteItem[], vote) => {
-      const votingChoices = getVotingChoicesFromBinary(vote.choices) || [];
+    return votedInfo.map(vote => {
       const nodeNames = vote.stargateNFTs.map(id => nodeMap.get(id) || id);
       const votingPower = Number(vote.weight) / 100;
 
-      if (votingChoices.length === 0) {
-        acc.push({
-          date: vote.date,
-          address: vote.voter,
-          node: nodeNames[0] || "",
-          nodeId: vote.stargateNFTs[0] || "",
-          votingPower,
-          votedOption: "",
-          transactionId: vote.transactionId,
-        });
-        return acc;
-      }
-
-      return votingChoices.reduce((choiceAcc, choice, choiceIndex) => {
-        const nodeIndex = choiceIndex < nodeNames.length ? choiceIndex : 0;
-        choiceAcc.push({
-          date: vote.date,
-          address: vote.voter,
-          node: nodeNames[nodeIndex] || "",
-          nodeId: vote.stargateNFTs[nodeIndex] || "",
-          votingPower,
-          votedOption: choice,
-          transactionId: vote.transactionId,
-        });
-        return choiceAcc;
-      }, acc);
-    }, []);
-  }, [votedInfo, nodeMap, getVotingChoicesFromBinary]);
+      return {
+        date: vote.date,
+        address: vote.voter,
+        node: nodeNames[0] || "",
+        nodeId: vote.stargateNFTs[0] || "",
+        votingPower,
+        votedOption: getSingleChoiceFromIndex(vote.choice),
+        transactionId: vote.transactionId,
+      };
+    });
+  }, [votedInfo, nodeMap]);
 
   const filterOptions = useMemo(() => {
     const optionsSet = new Set<string>();

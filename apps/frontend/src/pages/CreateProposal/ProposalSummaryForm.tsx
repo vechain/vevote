@@ -2,7 +2,7 @@ import { useI18nContext } from "@/i18n/i18n-react";
 import { CreateProposalStep } from "@/types/proposal";
 import { Button, Flex, Icon } from "@chakra-ui/react";
 import { CreateFormWrapper } from "./CreateFormWrapper";
-import { useCreateProposal } from "./CreateProposalProvider";
+import { defaultSingleChoice, useCreateProposal } from "./CreateProposalProvider";
 import { PublishButton } from "./PublishButton";
 import { SummaryCard } from "./SummaryCard";
 import { ArrowLeftIcon, EyeIcon } from "@/icons";
@@ -42,7 +42,7 @@ export const ProposalSummaryForm = () => {
 
           <SummaryCard.OptionsItem
             label={LL.proposal.create.setup_form.voting_options()}
-            votingOptions={proposalDetails.votingOptions}
+            votingOptions={defaultSingleChoice}
           />
         </SummaryCard>
 

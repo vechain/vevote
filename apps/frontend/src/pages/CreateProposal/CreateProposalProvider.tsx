@@ -27,19 +27,13 @@ export type ProposalDetails = {
   headerImage?: ZodFile;
   startDate?: Date;
   endDate?: Date;
-  votingLimit?: number;
-  votingMin?: number;
   votingQuestion: string;
-  votingOptions: SingleChoiceEnum[];
 };
 
 export const DEFAULT_PROPOSAL: ProposalDetails = {
   title: "",
   description: DEFAULT_DESCRIPTION_TEMPLATE().ops,
   votingQuestion: "",
-  votingLimit: 1,
-  votingMin: 1,
-  votingOptions: defaultSingleChoice,
 };
 
 export type CreateProposalContextType = {

@@ -6,13 +6,9 @@ export enum CreateProposalStep {
   VOTING_SUMMARY,
 }
 
-export enum VotingEnum {
-  SINGLE_CHOICE = "SINGLE_CHOICE",
-}
-
 export enum SingleChoiceEnum {
-  FOR = "For",
   AGAINST = "Against",
+  FOR = "For",
   ABSTAIN = "Abstain",
 }
 
@@ -41,9 +37,6 @@ export type ProposalEvent = {
   description: string;
   startTime: string;
   voteDuration: string;
-  choices: string[];
-  maxSelection: number;
-  minSelection: number;
   canceller?: string;
   reason?: string;
   executedProposalLink?: string;

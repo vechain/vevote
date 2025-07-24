@@ -188,10 +188,8 @@ export const getProposalsWithState = async (proposalsData?: Omit<ProposalCardTyp
 
 export const getHashProposal = async ({
   description,
-  votingOptions,
   durationBlock,
   startBlock,
-  votingLimit,
   proposer,
 }: Omit<ProposalDetails, "description" | "startTime" | "endTime"> & {
   description: string;
@@ -199,17 +197,7 @@ export const getHashProposal = async ({
   startBlock: number;
   durationBlock: number;
 }) => {
-  const encodedChoices = votingOptions.map(c => ethers.encodeBytes32String(c as string));
-
-  const args = [
-    proposer,
-    startBlock,
-    durationBlock - startBlock,
-    encodedChoices,
-    ethers.keccak256(ethers.toUtf8Bytes(description)),
-    votingLimit || 1,
-    1,
-  ];
+  const args = [proposer, startBlock, durationBlock - startBlock, ethers.keccak256(ethers.toUtf8Bytes(description))];
 
   return await executeCall({
     contractAddress,

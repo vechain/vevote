@@ -7,6 +7,7 @@ import { trackEvent, MixPanelEvent } from "@/utils/mixpanel/utilsMixpanel";
 import { useNodes } from "./useUserQueries";
 import { useDisclosure } from "@chakra-ui/react";
 import { useWallet } from "@vechain/vechain-kit";
+import { defaultSingleChoice } from "@/pages/CreateProposal/CreateProposalProvider";
 
 export const SHOW_RESULTS_STATUSES: ProposalStatus[] = [
   "approved",
@@ -47,16 +48,11 @@ export const useVotingBase = (proposal: { id: string; status: ProposalStatus; st
   });
 
   const sendTransaction = useCallback(
-    async (params: { id: string; selectedOptions: (1 | 0)[]; reason?: string }) => {
-      const voteOption = params.selectedOptions
-        .map((opt, index) => (opt === 1 ? index : null))
-        .filter(i => i !== null)
-        .join(",");
-
+    async (params: { id: string; selectedOption: 0 | 1 | 2; reason?: string }) => {
       try {
         trackEvent(MixPanelEvent.PROPOSAL_VOTE, {
           proposalId: params.id,
-          vote: voteOption,
+          vote: defaultSingleChoice[params.selectedOption],
           reason: params.reason,
         });
 
@@ -64,7 +60,7 @@ export const useVotingBase = (proposal: { id: string; status: ProposalStatus; st
 
         trackEvent(MixPanelEvent.PROPOSAL_VOTE_SUCCESS, {
           proposalId: params.id,
-          vote: voteOption,
+          vote: defaultSingleChoice[params.selectedOption],
           transactionId: result.txId,
           reason: params.reason,
         });
@@ -75,7 +71,7 @@ export const useVotingBase = (proposal: { id: string; status: ProposalStatus; st
         const txId = txError.txId || "unknown";
         trackEvent(MixPanelEvent.PROPOSAL_VOTE_FAILED, {
           proposalId: params.id,
-          vote: voteOption,
+          vote: defaultSingleChoice[params.selectedOption],
           error: txError.error?.message || txError.message || "Unknown error",
           transactionId: txId,
           reason: params.reason,

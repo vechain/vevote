@@ -6,10 +6,11 @@ import { PropsWithChildren } from "react";
 import { useProposal } from "./ProposalProvider";
 import { SectionLimiter } from "./SectionLimiter";
 import { VotingSingleChoice } from "./VotingList";
+import { defaultSingleChoice } from "@/pages/CreateProposal/CreateProposalProvider";
 
 export const VotingSection = () => {
   const { proposal } = useProposal();
-  const { results } = useVotesResults({ proposalId: proposal.id, size: proposal.votingOptions.length });
+  const { results } = useVotesResults({ proposalId: proposal.id, size: defaultSingleChoice.length });
   return (
     <VotingSectionContainer>
       <VotingSectionHeader />
