@@ -5,6 +5,7 @@ import { VotingItemVariant } from "@/components/proposal/VotingItem";
 import { getVotingVariant } from "@/utils/voting";
 import { trackEvent, MixPanelEvent } from "@/utils/mixpanel/utilsMixpanel";
 import { useNodes } from "./useUserQueries";
+import { useDisclosure } from "@chakra-ui/react";
 import { useWallet } from "@vechain/vechain-kit";
 
 export const SHOW_RESULTS_STATUSES: ProposalStatus[] = [
@@ -16,6 +17,8 @@ export const SHOW_RESULTS_STATUSES: ProposalStatus[] = [
 ];
 
 export const useVotingBase = (proposal: { id: string; status: ProposalStatus; startDate?: Date }) => {
+  const { isOpen: isSuccessOpen, onClose: onSuccessClose, onOpen: onSuccessOpen } = useDisclosure();
+
   const enabled = useMemo(() => SHOW_RESULTS_STATUSES.includes(proposal.status), [proposal.status]);
   const { account } = useWallet();
 
@@ -96,6 +99,9 @@ export const useVotingBase = (proposal: { id: string; status: ProposalStatus; st
     votingVariant,
     sendTransaction,
     isTransactionPending,
+    isSuccessOpen,
+    onSuccessClose,
+    onSuccessOpen,
     comment,
     setComment,
     commentDisabled,

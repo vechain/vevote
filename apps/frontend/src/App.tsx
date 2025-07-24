@@ -4,6 +4,7 @@ import { Proposal } from "./pages/Proposal/Proposal";
 import { Proposals } from "./pages/Proposals";
 import { CreateProposal } from "./pages/CreateProposal/CreateProposal";
 import { Footer } from "./components/footer/Footer";
+import { ScrollToTop } from "./components/ui/ScrollToTop";
 
 const excludedRoutes = ["/create-proposal"];
 
@@ -12,6 +13,7 @@ function Layout() {
 
   return (
     <Box h="full" bgColor="#f7f7f7">
+      <ScrollToTop />
       <VStack minH="100vh" align="stretch">
         <Box flex="1">
           <Outlet />

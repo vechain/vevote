@@ -110,6 +110,10 @@ const en = {
     buy_another_node: "Buy another node to increase your voting power on future proposals.",
     buy_a_node:
       "Voting is only possible for Node holders. Buy a node to vote on future proposals or increase your voting power.",
+    vote_success: {
+      title: "Vote successful!",
+      description: "Your vote has been successfully submitted. Thank you for participating!",
+    },
     cancel_proposal: {
       title: "Cancel proposal",
       description:
@@ -131,11 +135,6 @@ const en = {
       confirmation: "Are you sure you want to delete it?",
       no_go_back: "No, go back",
       yes_delete: "Yes, Delete",
-    },
-    draft_dialog: {
-      title: "Draft proposal",
-      description:
-        "By continuing, your old proposal linked to the preview account will be discarded. Are you sure you want to proceed?",
     },
     info_box: {
       info: {

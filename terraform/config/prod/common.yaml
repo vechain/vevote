@@ -2,6 +2,11 @@ project: vevote
 project_alias: ve
 tag: latest
 vercel_team_id: team_gWCnY5uRnzsZIb5SvnCXAIjH
+domain_name: vevote.vechain.org
+public_zone_name: vevote.vechain.org
+origin_id: vevote.vechain.org
+environment: prod
+region: eu-west-1
 
 all_environments:
   mnemonic: denial kitchen pet squirrel other broom bar gas better priority spoil cross

@@ -2,6 +2,7 @@ import { ProposalsHeader } from "@/components/navbar/Header";
 import { PageContainer } from "@/components/PageContainer";
 import { CreateProposalButton } from "@/components/proposal/CreateProposalButton";
 import { Pagination } from "@/components/ui/Pagination";
+import { ProposalsListSkeleton } from "@/components/ui/ProposalsListSkeleton";
 import { SearchInput } from "@/components/ui/SearchInput";
 import { Sort, SortDropdown } from "@/components/ui/SortDropdown";
 import { useUser } from "@/contexts/UserProvider";
@@ -119,10 +120,14 @@ const ProposalsPanel = ({ proposals, loading }: { proposals: ProposalCardType[];
   const [limit, setLimit] = useState<number>(ITEMS_PER_PAGE);
   const filteredProposals = useMemo(() => proposals.filter((_p, i) => i < limit), [proposals, limit]);
 
+  if (loading) {
+    return <ProposalsListSkeleton count={ITEMS_PER_PAGE} />;
+  }
+
   return (
     <>
       <BasePanel>
-        {!loading && filteredProposals.length > 0 ? (
+        {filteredProposals.length > 0 ? (
           filteredProposals.map((p, i) => <ProposalCard key={i} {...p} />)
         ) : (
           <EmptyPanel />
