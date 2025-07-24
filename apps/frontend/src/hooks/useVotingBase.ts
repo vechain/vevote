@@ -90,8 +90,6 @@ export const useVotingBase = (proposal: { id: string; status: ProposalStatus; st
     }
   }, [account?.address, votedChoices?.reason]);
 
-  useEffect(() => console.log("COMMENT", comment), [comment]);
-
   return {
     votedChoices,
     votingVariant,
