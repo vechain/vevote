@@ -250,6 +250,14 @@ type RootTranslation = {
 	 * A​d​d​ ​a​ ​c​o​m​m​e​n​t​ ​t​o​ ​y​o​u​r​ ​v​o​t​e​.​.​.
 	 */
 	comment_placeholder: string
+	/**
+	 * M​i​g​r​a​t​e
+	 */
+	migrate: string
+	/**
+	 * S​t​a​r​G​a​t​e
+	 */
+	stargate: string
 	home: {
 		/**
 		 * H​o​m​e
@@ -1010,11 +1018,18 @@ type RootTranslation = {
 	}
 	footer: {
 		/**
-		 * A​l​l​ ​R​i​g​h​t​s​ ​R​e​s​e​r​v​e​d​ ​
-	​ ​©​ ​V​e​c​h​a​i​n​ ​F​o​u​n​d​a​t​i​o​n​ ​S​a​n​ ​M​a​r​i​n​o​ ​S​.​r​.​l​.
+		 * v​1​.​0​.​0
+		 */
+		version: string
+		/**
+		 * A​l​l​ ​R​i​g​h​t​s​ ​R​e​s​e​r​v​e​d​ ​©​ ​V​e​c​h​a​i​n​ ​F​o​u​n​d​a​t​i​o​n​ ​S​a​n​ ​M​a​r​i​n​o​ ​S​.​r​.​l​.
 		 */
 		all_right: string
 		legal: {
+			/**
+			 * L​e​g​a​l
+			 */
+			title: string
 			/**
 			 * T​e​r​m​s​ ​o​f​ ​S​e​r​v​i​c​e
 			 */
@@ -1027,6 +1042,20 @@ type RootTranslation = {
 			 * C​o​o​k​i​e​s​ ​P​o​l​i​c​y
 			 */
 			cookies_policy: string
+		}
+		resources: {
+			/**
+			 * R​e​s​o​u​r​c​e​s
+			 */
+			title: string
+			/**
+			 * D​o​c​u​m​e​n​t​a​t​i​o​n
+			 */
+			docs: string
+			/**
+			 * S​t​a​r​g​a​t​e
+			 */
+			stargate: string
 		}
 	}
 }
@@ -1265,6 +1294,14 @@ JPG, PNG or SVG of maximum of {size}MB.
 	 * Add a comment to your vote...
 	 */
 	comment_placeholder: () => LocalizedString
+	/**
+	 * Migrate
+	 */
+	migrate: () => LocalizedString
+	/**
+	 * StarGate
+	 */
+	stargate: () => LocalizedString
 	home: {
 		/**
 		 * Home
@@ -2013,11 +2050,18 @@ JPG, PNG or SVG of maximum of {size}MB.
 	}
 	footer: {
 		/**
-		 * All Rights Reserved 
-	 © Vechain Foundation San Marino S.r.l.
+		 * v1.0.0
+		 */
+		version: () => LocalizedString
+		/**
+		 * All Rights Reserved © Vechain Foundation San Marino S.r.l.
 		 */
 		all_right: () => LocalizedString
 		legal: {
+			/**
+			 * Legal
+			 */
+			title: () => LocalizedString
 			/**
 			 * Terms of Service
 			 */
@@ -2030,6 +2074,20 @@ JPG, PNG or SVG of maximum of {size}MB.
 			 * Cookies Policy
 			 */
 			cookies_policy: () => LocalizedString
+		}
+		resources: {
+			/**
+			 * Resources
+			 */
+			title: () => LocalizedString
+			/**
+			 * Documentation
+			 */
+			docs: () => LocalizedString
+			/**
+			 * Stargate
+			 */
+			stargate: () => LocalizedString
 		}
 	}
 }

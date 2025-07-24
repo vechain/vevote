@@ -51,7 +51,14 @@ export const VotingPowerModal = () => {
             {totalVotingPower > 0 && (
               <VotingPowerModalTable nodesList={nodesList} totalVotingPower={totalVotingPower} />
             )}
-            <VotingFooter />
+            <Button
+              as={Link}
+              isExternal
+              href={stargateUrl}
+              rightIcon={<Icon as={VotingPowerIcon} />}
+              size={{ base: "md", md: "lg" }}>
+              {LL.proposal.voting_power.get_more_voting_power()}
+            </Button>
           </Flex>
         </ModalBody>
       </ModalSkeleton>
@@ -70,17 +77,5 @@ const VotingWallet = () => {
         {formatAddress(account?.address || "")}
       </CopyLink>
     </Text>
-  );
-};
-
-const VotingFooter = () => {
-  const { LL } = useI18nContext();
-
-  return (
-    <>
-      <Button as={Link} isExternal href={stargateUrl} rightIcon={<Icon as={VotingPowerIcon} />}>
-        {LL.proposal.voting_power.get_more_voting_power()}
-      </Button>
-    </>
   );
 };

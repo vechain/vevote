@@ -60,6 +60,8 @@ const en = {
   connect_wallet_to_vote: "Connect your wallet to vote",
   comment: "Comment",
   comment_placeholder: "Add a comment to your vote...",
+  migrate: "Migrate",
+  stargate: "StarGate",
   home: {
     title: "Home",
     go_to_proposals: "Go to proposals",
@@ -324,11 +326,18 @@ const en = {
     confirmation_error: "Please type exactly 'agree-with-this' to continue",
   },
   footer: {
-    all_right: "All Rights Reserved \n © Vechain Foundation San Marino S.r.l.",
+    version: "v1.0.0",
+    all_right: "All Rights Reserved © Vechain Foundation San Marino S.r.l.",
     legal: {
+      title: "Legal",
       terms_of_service: "Terms of Service",
       privacy_policy: "Privacy Policy",
       cookies_policy: "Cookies Policy",
+    },
+    resources: {
+      title: "Resources",
+      docs: "Documentation",
+      stargate: "Stargate",
     },
   },
 } satisfies BaseTranslation;

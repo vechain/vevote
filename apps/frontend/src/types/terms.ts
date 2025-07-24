@@ -3,3 +3,8 @@ export enum LegalLinks {
   PRIVACY_POLICY = "https://vevote.vechain.org/privacy",
   COOKIES_POLICY = "https://vevote.vechain.org/cookies",
 }
+
+export enum ResourcesLinks {
+  DOCS = "https://docs.vechain.org",
+  STARGATE = "https://app.stargate.vechain.org/",
+}

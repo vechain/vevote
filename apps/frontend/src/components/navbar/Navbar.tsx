@@ -1,10 +1,11 @@
 import { useUser } from "@/contexts/UserProvider";
 import { useShowNavbar } from "@/hooks/useShowNavbar";
-import { Box, BoxProps, defineStyle, Flex, FlexProps, Image } from "@chakra-ui/react";
+import { Box, BoxProps, defineStyle, Flex, FlexProps } from "@chakra-ui/react";
 import { PropsWithChildren, useMemo } from "react";
 import { ConnectButton } from "../ui/ConnectButton";
 import { VotingPowerModal } from "../proposal/VotingPowerModal";
 import { useWallet } from "@vechain/vechain-kit";
+import { VoteLogo } from "../ui/VoteLogo";
 
 const NavbarContainer = ({ children, ...restProps }: BoxProps) => {
   return (
@@ -56,14 +57,7 @@ export const Navbar = () => {
   return (
     <NavbarContainer {...bgHeaderStyle}>
       <NavbarInnerContainer paddingY={{ base: 2, md: 4 }}>
-        <Image
-          src="/svgs/vote_logo.svg"
-          alt="VeVote Logo"
-          width={"auto"}
-          height={{ base: "24px", md: "60px" }}
-          objectFit={"cover"}
-          transition={"all 0.3s"}
-        />
+        <VoteLogo height={{ base: "24px", md: "60px" }} />
       </NavbarInnerContainer>
     </NavbarContainer>
   );
