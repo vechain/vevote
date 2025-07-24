@@ -1,5 +1,4 @@
 import { LL } from "@/i18n/i18n-ssr";
-import { SingleChoiceEnum } from "@/types/proposal";
 import { zodFile, zodStartEndDates } from "@/utils/zod";
 import { z } from "zod";
 import { descriptionSchema } from "./descriptionSchema";
@@ -20,7 +19,6 @@ export type ProposalDetailsSchema = z.infer<ReturnType<typeof proposalDetailsSch
 
 export const proposalSingleChoiceSchema = z.object({
   votingQuestion: z.string().min(1, { message: LL.field_errors.required() }).max(QUESTION_MAX_CHAR),
-  votingOptions: z.array(z.nativeEnum(SingleChoiceEnum)),
 });
 
 export const proposalSetupSchema = proposalSingleChoiceSchema;

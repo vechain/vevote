@@ -21,9 +21,6 @@ export const VotingSingleChoice = ({ proposal, results }: VotingSingleChoiceProp
     votingVariant,
     sendTransaction,
     isTransactionPending,
-    comment,
-    setComment,
-    commentDisabled,
     isSuccessOpen,
     onSuccessClose,
     onSuccessOpen,
@@ -48,7 +45,6 @@ export const VotingSingleChoice = ({ proposal, results }: VotingSingleChoiceProp
       const result = await sendTransaction({
         id: proposal.id,
         selectedOption: getIndexFromSingleChoice(currentSelection),
-        reason: comment,
       });
       if (result.txId) {
         onSuccessOpen();
@@ -61,7 +57,7 @@ export const VotingSingleChoice = ({ proposal, results }: VotingSingleChoiceProp
         console.log("Failed transaction ID:", txError.txId);
       }
     }
-  }, [currentSelection, proposal.id, sendTransaction, comment, onSuccessOpen]);
+  }, [currentSelection, proposal.id, sendTransaction, onSuccessOpen]);
 
   return (
     <Flex gap={{ base: 6, md: 8 }} alignItems="start" flexDirection="column" width="100%">
@@ -83,9 +79,6 @@ export const VotingSingleChoice = ({ proposal, results }: VotingSingleChoiceProp
         onSubmit={onSubmit}
         isLoading={isTransactionPending}
         disabled={currentSelection === undefined}
-        comment={comment}
-        setComment={setComment}
-        commentDisabled={commentDisabled}
       />
       <SuccessVotingModal isOpen={isSuccessOpen} onClose={onSuccessClose} />
     </Flex>
