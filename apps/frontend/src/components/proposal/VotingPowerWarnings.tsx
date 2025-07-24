@@ -2,8 +2,8 @@ import { Button, Flex, Icon, Link, Text } from "@chakra-ui/react";
 import { GenericInfoBox } from "../ui/GenericInfoBox";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { ArrowLinkIcon } from "@/icons";
-import { stargateUrl } from "@/utils/stargate";
 import { PropsWithChildren } from "react";
+import { ResourcesLinks } from "@/types/terms";
 
 export const VotingPowerLegacyNodeWarning = () => {
   const { LL } = useI18nContext();
@@ -17,7 +17,7 @@ export const VotingPowerLegacyNodeWarning = () => {
         <Text color={"orange.700"} fontSize={12} fontWeight={500}>
           {LL.proposal.voting_power.warnings.legacy_node()}
         </Text>
-        <WarningButton href={stargateUrl}>{LL.migrate()}</WarningButton>
+        <WarningButton href={ResourcesLinks.STARGATE}>{LL.migrate()}</WarningButton>
       </Flex>
     </GenericInfoBox>
   );
@@ -35,7 +35,7 @@ export const VotingPowerDelegatedWarning = () => {
         <Text color={"orange.700"} fontSize={12} fontWeight={500}>
           {LL.proposal.voting_power.warnings.delegated.title()}
         </Text>
-        <WarningButton href={stargateUrl}>{LL.stargate()}</WarningButton>
+        <WarningButton href={ResourcesLinks.STARGATE}>{LL.stargate()}</WarningButton>
       </Flex>
     </GenericInfoBox>
   );

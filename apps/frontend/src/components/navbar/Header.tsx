@@ -3,6 +3,7 @@ import { Box, Flex, Heading, Icon, Image, Link, Text } from "@chakra-ui/react";
 import { Navbar } from "./Navbar";
 import { ArrowLinkIcon } from "@/icons";
 import { stargateButtonStyle } from "@/theme/stargate";
+import { VeVoteLinks } from "@/types/terms";
 
 export const ProposalsHeader = () => {
   return (
@@ -49,10 +50,10 @@ export const Banner = () => {
             </Text>
           </Flex>
           <Flex gap={{ base: 4, md: 6 }} flexDirection={{ base: "column", lg: "row" }} alignItems={"center"}>
-            <Link {...stargateButtonStyle}>
+            <Link {...stargateButtonStyle} href={VeVoteLinks.HOW_TO_VOTE} isExternal>
               {LL.header.how_to_vote()} <Icon as={ArrowLinkIcon} />
             </Link>
-            <Link {...stargateButtonStyle}>
+            <Link {...stargateButtonStyle} href={VeVoteLinks.HOW_GET_VOTING_POWER} isExternal>
               {LL.header.how_to_get_voting_power()}
               <Icon as={ArrowLinkIcon} />
             </Link>

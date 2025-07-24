@@ -9,7 +9,7 @@ import { CopyLink } from "../ui/CopyLink";
 import { ModalSkeleton, ModalTitle } from "../ui/ModalSkeleton";
 import { VotingPowerModalTable } from "./VotingPowerModalTable";
 import { VotingPowerDelegatedWarning, VotingPowerLegacyNodeWarning } from "./VotingPowerWarnings";
-import { stargateUrl } from "@/utils/stargate";
+import { ResourcesLinks } from "@/types/terms";
 
 export const VotingPowerModal = () => {
   const { LL } = useI18nContext();
@@ -54,7 +54,7 @@ export const VotingPowerModal = () => {
             <Button
               as={Link}
               isExternal
-              href={stargateUrl}
+              href={ResourcesLinks.STARGATE}
               rightIcon={<Icon as={VotingPowerIcon} />}
               size={{ base: "md", md: "lg" }}>
               {LL.proposal.voting_power.get_more_voting_power()}

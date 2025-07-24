@@ -72,8 +72,6 @@ export const getUserNodes = async ({ address }: { address: string }) => {
 
     const userNodes = nodesRes.result.plain as StargateNode[];
 
-    console.log("USER NODES", userNodes);
-
     const votingPowerArgs = userNodes.map(node => ({
       method: "getNodeVoteWeight" as const,
       args: [node.tokenId],
@@ -96,9 +94,6 @@ export const getUserNodes = async ({ address }: { address: string }) => {
         methodsWithArgs: multiplierArgs,
       }),
     ]);
-
-    console.log("MULTIPLIER___", nodesMultiplier);
-    console.log("POWER____", nodesPower);
 
     const nodesPowerResults = nodesPower.map(r => (r.success ? (r.result.plain as bigint) : BigInt(0)));
     const nodesMultiplierResults = nodesMultiplier.map(r => (r.success ? (r.result.plain as bigint) : BigInt(0)));

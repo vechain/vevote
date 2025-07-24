@@ -4,7 +4,7 @@ import { ArrowLinkIcon, CircleInfoIcon } from "@/icons";
 import { Button, Flex, Icon, Link, Text } from "@chakra-ui/react";
 import { useMemo } from "react";
 import { useWallet } from "@vechain/vechain-kit";
-import { stargateUrl } from "@/utils/stargate";
+import { ResourcesLinks } from "@/types/terms";
 
 export const BuyANode = () => {
   const { connection } = useWallet();
@@ -44,7 +44,7 @@ export const BuyANode = () => {
         <Button
           as={Link}
           isExternal
-          href={stargateUrl}
+          href={ResourcesLinks.STARGATE}
           backgroundColor={connectedAndVoter ? "gray.200" : "primary.700"}
           variant={connectedAndVoter ? "secondary" : "primary"}
           size={{ base: "md", md: "lg" }}

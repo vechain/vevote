@@ -5,6 +5,11 @@ export enum LegalLinks {
 }
 
 export enum ResourcesLinks {
-  DOCS = "https://docs.vechain.org",
+  DOCS = "https://docs.stargate.vechain.org/",
   STARGATE = "https://app.stargate.vechain.org/",
+}
+
+export enum VeVoteLinks {
+  HOW_TO_VOTE = "https://docs.vevote.org/",
+  HOW_GET_VOTING_POWER = "https://docs.vevote.org/voting-power",
 }

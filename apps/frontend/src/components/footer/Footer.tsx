@@ -37,9 +37,9 @@ export const Footer = () => {
         alignItems={"center"}>
         <Flex direction={"column"} gap={{ base: 2, md: 3 }} alignItems={"center"}>
           <VoteLogo height={{ base: "24px", md: "32px" }} />
-          <Heading fontSize={"12px"} fontWeight={400} color={"gray.300"}>
+          <Text fontSize={"12px"} fontWeight={400} color={"gray.300"} fontFamily={"Rubik"}>
             {LL.footer.version()}
-          </Heading>
+          </Text>
         </Flex>
         <DocLinks />
       </Flex>
@@ -88,7 +88,12 @@ const DocLinks = () => {
 
 const FooterLabel = ({ children }: PropsWithChildren) => {
   return (
-    <Heading fontSize={{ base: "14px", md: "18px" }} color={"white"} fontWeight={600} textTransform={"uppercase"}>
+    <Heading
+      as="h3"
+      fontSize={{ base: "14px", md: "18px" }}
+      color={"white"}
+      fontWeight={600}
+      textTransform={"uppercase"}>
       {children}
     </Heading>
   );
