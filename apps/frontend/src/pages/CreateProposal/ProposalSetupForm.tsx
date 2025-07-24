@@ -1,19 +1,13 @@
 import { FormSkeleton } from "@/components/ui/FormSkeleton";
 import { Label } from "@/components/ui/Label";
 import { useI18nContext } from "@/i18n/i18n-react";
-import {
-  ProposalSetupSchema,
-  proposalSetupSchema,
-  ProposalSingleChoiceSchema,
-  QUESTION_MAX_CHAR,
-} from "@/schema/createProposalSchema";
+import { ProposalSetupSchema, proposalSetupSchema, QUESTION_MAX_CHAR } from "@/schema/createProposalSchema";
 import { CreateProposalStep } from "@/types/proposal";
 import { Box, Button, Flex, FormControl, Icon, Input, Text } from "@chakra-ui/react";
 import { useCallback, useMemo } from "react";
 import { CreateFormWrapper } from "./CreateFormWrapper";
 import { defaultSingleChoice, useCreateProposal } from "./CreateProposalProvider";
 import { InputMessage } from "@/components/ui/InputMessage";
-import { useFormContext } from "react-hook-form";
 import { ArrowLeftIcon, ArrowRightIcon } from "@/icons";
 
 export const ProposalSetupForm = () => {
@@ -92,12 +86,9 @@ export const ProposalSetupForm = () => {
 const SingleChoiceFields = () => {
   const { LL } = useI18nContext();
   const LLSetupForm = LL.proposal.create.setup_form;
-  const {
-    formState: { errors },
-  } = useFormContext<ProposalSingleChoiceSchema>();
   return (
     <>
-      <FormControl isInvalid={Boolean(errors?.votingOptions)}>
+      <FormControl>
         <Label label={LLSetupForm.voting_options()} />
         <Label.Subtitle label={LLSetupForm.voting_choice_subtitle()} />
         <Flex flexDirection={"column"} gap={2}>
