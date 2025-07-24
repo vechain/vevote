@@ -129,21 +129,9 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
     address proposer,
     uint48 startBlock,
     uint48 voteDuration,
-    bytes32[] memory choices,
-    bytes32 descriptionHash,
-    uint8 maxSelection,
-    uint8 minSelection
+    bytes32 descriptionHash
   ) external pure returns (uint256) {
-    return
-      VeVoteProposalLogic.hashProposal(
-        proposer,
-        startBlock,
-        voteDuration,
-        choices,
-        descriptionHash,
-        maxSelection,
-        minSelection
-      );
+    return VeVoteProposalLogic.hashProposal(proposer, startBlock, voteDuration, descriptionHash);
   }
 
   /**
@@ -173,27 +161,11 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
   /**
    * @inheritdoc IVeVote
    */
-  function proposalChoices(uint256 proposalId) external view returns (bytes32[] memory) {
-    VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
-    return VeVoteProposalLogic.proposalChoices($, proposalId);
-  }
-
-  /**
-   * @inheritdoc IVeVote
-   */
-  function proposalSelectionRange(uint256 proposalId) external view returns (uint8, uint8) {
-    VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
-    return VeVoteProposalLogic.proposalSelectionRange($, proposalId);
-  }
-
-  /**
-   * @inheritdoc IVeVote
-   */
   function getProposalVotes(
     uint256 proposalId
-  ) external view returns (VeVoteTypes.ProposalVoteResult[] memory results) {
+  ) external view returns (uint256 againstVotes, uint256 forVotes, uint256 abstainVotes) {
     VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
-    return VeVoteVoteLogic.getProposalVotes($, proposalId);
+    return VeVoteVoteLogic.proposalVotes($, proposalId);
   }
 
   /**
@@ -322,14 +294,6 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
   /**
    * @inheritdoc IVeVote
    */
-  function getMaxChoices() external view returns (uint8) {
-    VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
-    return VeVoteConfigurator.getMaxChoices($);
-  }
-
-  /**
-   * @inheritdoc IVeVote
-   */
   function getMinStakedAmount() external view returns (uint256) {
     VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
     return VeVoteConfigurator.getMinStakedAmount($);
@@ -404,13 +368,10 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
   function propose(
     string calldata description,
     uint48 startBlock,
-    uint48 voteDuration,
-    bytes32[] calldata choices,
-    uint8 maxSelection,
-    uint8 minSelection
+    uint48 voteDuration
   ) external onlyRole(WHITELISTED_ROLE) returns (uint256) {
     VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
-    return VeVoteProposalLogic.propose($, description, startBlock, voteDuration, choices, maxSelection, minSelection);
+    return VeVoteProposalLogic.propose($, description, startBlock, voteDuration);
   }
 
   /**
@@ -465,9 +426,9 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
   /**
    * @inheritdoc IVeVote
    */
-  function castVote(uint256 proposalId, uint32 choices, address masterAddress) external {
+  function castVote(uint256 proposalId, uint8 support, address masterAddress) external {
     VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
-    VeVoteVoteLogic.castVote($, proposalId, choices, "", masterAddress);
+    VeVoteVoteLogic.castVote($, proposalId, support, "", masterAddress);
   }
 
   /**
@@ -475,12 +436,12 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
    */
   function castVoteWithReason(
     uint256 proposalId,
-    uint32 choices,
+    uint8 support,
     string calldata reason,
     address masterAddress
   ) external {
     VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
-    VeVoteVoteLogic.castVote($, proposalId, choices, reason, masterAddress);
+    VeVoteVoteLogic.castVote($, proposalId, support, reason, masterAddress);
   }
 
   /**
@@ -505,14 +466,6 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
   function setMaxVotingDuration(uint48 newMaxVotingDuration) external onlyRole(SETTINGS_MANAGER_ROLE) {
     VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
     VeVoteConfigurator.setMaxVotingDuration($, newMaxVotingDuration);
-  }
-
-  /**
-   * @inheritdoc IVeVote
-   */
-  function setMaxChoices(uint8 newMaxChoices) external onlyRole(SETTINGS_MANAGER_ROLE) {
-    VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
-    VeVoteConfigurator.setMaxChoices($, newMaxChoices);
   }
 
   /**

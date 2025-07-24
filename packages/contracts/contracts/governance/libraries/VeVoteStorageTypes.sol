@@ -44,12 +44,8 @@ library VeVoteStorageTypes {
     // ------------------------------- Voting Storage -------------------------------
     /// @notice Voting weight multiplier for different stargate NFTs levelIds
     mapping(uint8 => uint256) levelIdMultiplier;
-    /// @notice Vote tally for each proposal choice
-    mapping(uint256 => mapping(uint8 => uint256)) voteTally;
-    /// @notice Stores the votes for each proposal (bitmask representation)
-    mapping(uint256 => mapping(address => uint32)) votes;
-    /// @notice Stores the total votes for each proposal
-    mapping(uint256 => uint256) totalVotes;
+    /// @notice Stores vote tallies and per-address voting status for each proposal.
+    mapping(uint256 proposalId => VeVoteTypes.ProposalVote) proposalVotes;
     /// @notice Tracks historical minimum staked VET required for normalization
     Checkpoints.Trace208 minStakedVetHistory;
     /// @notice Stores nodes that have voted on a given proposal

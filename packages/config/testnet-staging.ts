@@ -2,7 +2,7 @@ import { AppConfig } from ".";
 const config: AppConfig = {
   environment: "testnet-staging",
   basePath: "https://governance.vebetterdao.org",
-  vevoteContractAddress: "0x90a3c072cf8493ccdd9b86b1c9b5d18f86fdf3e0",
+  vevoteContractAddress: "0x3f5e298caea8843e88d5e1c4f34c7c79387b9ec6",
   vechainNodesContractAddress: "0x2c9d4c30c0f098ca893efe613a71fa0ef2558757",
   stargateNFTContractAddress: "0xa08a499fe59267caacb2162cdacf832f99ad50e7",
   nodeManagementContractAddress: "0xbad9a873c13874855369f128f59eeb220463e477",

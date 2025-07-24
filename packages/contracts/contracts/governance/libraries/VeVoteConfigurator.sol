@@ -43,11 +43,6 @@ library VeVoteConfigurator {
   error InvalidMaxVotingDuration();
 
   /**
-   * @dev Thrown when the maximum number of choices is set to an invalid value (zero).
-   */
-  error InvalidMaxChoices();
-
-  /**
    * @dev Thrown when an invalid address (zero address) is provided.
    */
   error InvalidAddress();
@@ -85,13 +80,6 @@ library VeVoteConfigurator {
    * @param newMaxVotingDuration The new maximum voting duration.
    */
   event MaxVotingDurationSet(uint48 oldMaxVotingDuration, uint48 newMaxVotingDuration);
-
-  /**
-   * @notice Emitted when the maximum number of choices is updated.
-   * @param oldMaxChoices The previous maximum number of choices.
-   * @param newMaxChoices The new maximum number of choices.
-   */
-  event MaxChoicesSet(uint8 oldMaxChoices, uint8 newMaxChoices);
 
   /**
    * @notice Emitted when the node management contract address is updated.
@@ -170,20 +158,6 @@ library VeVoteConfigurator {
     uint48 oldMaxVotingDuration = self.maxVotingDuration;
     self.maxVotingDuration = newMaxVotingDuration;
     emit MaxVotingDurationSet(oldMaxVotingDuration, newMaxVotingDuration);
-  }
-
-  /**
-   * @notice Sets the maximum number of choices for voting.
-   * @dev Ensures the new value is greater than zero before updating.
-   * @param self The storage reference for VeVote.
-   * @param newMaxChoices The new maximum number of choices allowed.
-   */
-  function setMaxChoices(VeVoteStorageTypes.VeVoteStorage storage self, uint8 newMaxChoices) external {
-    if (newMaxChoices == 0 || newMaxChoices > 32) revert InvalidMaxChoices();
-
-    uint8 oldMaxChoices = self.maxChoices;
-    self.maxChoices = newMaxChoices;
-    emit MaxChoicesSet(oldMaxChoices, newMaxChoices);
   }
 
   /**
@@ -290,15 +264,6 @@ library VeVoteConfigurator {
    */
   function getMaxVotingDuration(VeVoteStorageTypes.VeVoteStorage storage self) internal view returns (uint48) {
     return self.maxVotingDuration;
-  }
-
-  /**
-   * @notice Returns the maximum number of voting choices.
-   * @param self The storage reference for VeVote.
-   * @return The current maximum number of choices.
-   */
-  function getMaxChoices(VeVoteStorageTypes.VeVoteStorage storage self) internal view returns (uint8) {
-    return self.maxChoices;
   }
 
   /**
