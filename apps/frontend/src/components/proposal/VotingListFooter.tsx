@@ -15,7 +15,6 @@ import { VotedChip } from "../ui/VotedChip";
 import { useProposal } from "./ProposalProvider";
 import { VotersModal } from "./VotersModal";
 import { VotingItemVariant } from "./VotingItem";
-import { VotingPowerModal } from "./VotingPowerModal";
 
 const EXPLORER_URL = getConfig(import.meta.env.VITE_APP_ENV).network.explorerUrl;
 
@@ -37,17 +36,11 @@ export const VotingListFooter = ({
   // commentDisabled = false,
 }: VotingListFooterProps) => {
   const { proposal } = useProposal();
-  const { connection } = useWallet();
   const { LL } = useI18nContext();
   const { formattedProposalDate } = useFormatDate();
   const votingVariant: VotingItemVariant = useMemo(() => getVotingVariant(proposal.status), [proposal.status]);
   const { nodes } = useNodes();
   const isVoter = useMemo(() => nodes.length > 0, [nodes.length]);
-
-  const votingNotStarted = useMemo(
-    () => proposal.status === "upcoming" || (proposal.status === "voting" && !connection.isConnected),
-    [proposal.status, connection.isConnected],
-  );
 
   if (votingVariant === "upcoming")
     return (
@@ -75,7 +68,6 @@ export const VotingListFooter = ({
           isVoter={isVoter}
           disabled={disabled}
         />
-        {!votingNotStarted && isVoter && <VotingPower />}
       </Flex>
     </Flex>
   );
@@ -165,23 +157,6 @@ const VotedChipButton = () => {
         {LL.proposal.see_your_vote()}
         <Icon as={ArrowLinkIcon} width={4} height={4} />
       </Link>
-    </Flex>
-  );
-};
-
-const VotingPower = () => {
-  const { LL } = useI18nContext();
-  return (
-    <Flex
-      order={{ base: 1, md: 2 }}
-      alignItems={"center"}
-      gap={3}
-      justifyContent={{ base: "space-between", md: "center" }}
-      width={{ base: "100%", md: "auto" }}>
-      <Text fontSize={12} fontWeight={600} color={"gray.500"}>
-        {LL.your_voting_power()}
-      </Text>
-      <VotingPowerModal />
     </Flex>
   );
 };
