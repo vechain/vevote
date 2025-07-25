@@ -10,6 +10,6 @@ export enum ResourcesLinks {
 }
 
 export enum VeVoteLinks {
-  HOW_TO_VOTE = "https://docs.vevote.org/",
+  HOW_TO_VOTE = "https://vechain-foundation-san-marino.gitbook.io/vevote",
   HOW_GET_VOTING_POWER = "https://docs.vevote.org/voting-power",
 }
