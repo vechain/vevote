@@ -26,6 +26,8 @@ export const VotingSingleChoice = ({ proposal, results }: VotingSingleChoiceProp
     onSuccessOpen,
   } = useVotingBase(proposal);
 
+  const [transactionId, setTransactionId] = useState<string | undefined>(undefined);
+
   const initialSelectedOption = useMemo(() => {
     if (!votedChoices?.choice) return undefined;
     return getSingleChoiceFromIndex(votedChoices.choice);
@@ -47,6 +49,7 @@ export const VotingSingleChoice = ({ proposal, results }: VotingSingleChoiceProp
         selectedOption: getIndexFromSingleChoice(currentSelection),
       });
       if (result.txId) {
+        setTransactionId(result.txId);
         onSuccessOpen();
         console.log("Vote successful! Transaction ID:", result.txId);
       }
@@ -80,7 +83,7 @@ export const VotingSingleChoice = ({ proposal, results }: VotingSingleChoiceProp
         isLoading={isTransactionPending}
         disabled={currentSelection === undefined}
       />
-      <SuccessVotingModal isOpen={isSuccessOpen} onClose={onSuccessClose} />
+      <SuccessVotingModal isOpen={isSuccessOpen} onClose={onSuccessClose} transactionId={transactionId} />
     </Flex>
   );
 };

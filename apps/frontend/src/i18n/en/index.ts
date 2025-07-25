@@ -96,7 +96,7 @@ const en = {
   },
   voting_list: {
     voting_options: "Voting options:",
-    option_to_vote: "option to vote:",
+    option_to_vote: "Select an option to vote:",
   },
   proposal: {
     title: "Proposal",
@@ -114,8 +114,8 @@ const en = {
     buy_a_node:
       "Voting is only possible for Node holders. Buy a node to vote on future proposals or increase your voting power.",
     vote_success: {
-      title: "Vote successful!",
-      description: "Your vote has been successfully submitted. Thank you for participating!",
+      title: "Vote submitted!",
+      description: "Your vote was submitted successfully.",
     },
     cancel_proposal: {
       title: "Cancel proposal",

@@ -33,8 +33,16 @@ const NodesHeader = () => {
 };
 
 const NodesList = ({ nodesList }: { nodesList: NodeItem[] }) => {
+  const shouldScroll = nodesList.length > 8;
+  
   return (
-    <Flex flexDirection={"column"} borderBottomWidth={1} borderColor={"gray.200"}>
+    <Flex 
+      flexDirection={"column"} 
+      borderBottomWidth={1} 
+      borderColor={"gray.200"}
+      maxHeight={shouldScroll ? "288px" : "none"}
+      overflowY={shouldScroll ? "auto" : "visible"}
+    >
       {nodesList.map(({ multiplier, nodeName, votingPower }, index) => (
         <Flex
           key={index}

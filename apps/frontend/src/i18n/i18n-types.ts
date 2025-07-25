@@ -365,7 +365,7 @@ type RootTranslation = {
 		 */
 		voting_options: string
 		/**
-		 * o​p​t​i​o​n​ ​t​o​ ​v​o​t​e​:
+		 * S​e​l​e​c​t​ ​a​n​ ​o​p​t​i​o​n​ ​t​o​ ​v​o​t​e​:
 		 */
 		option_to_vote: string
 	}
@@ -425,11 +425,11 @@ type RootTranslation = {
 		buy_a_node: string
 		vote_success: {
 			/**
-			 * V​o​t​e​ ​s​u​c​c​e​s​s​f​u​l​!
+			 * V​o​t​e​ ​s​u​b​m​i​t​t​e​d​!
 			 */
 			title: string
 			/**
-			 * Y​o​u​r​ ​v​o​t​e​ ​h​a​s​ ​b​e​e​n​ ​s​u​c​c​e​s​s​f​u​l​l​y​ ​s​u​b​m​i​t​t​e​d​.​ ​T​h​a​n​k​ ​y​o​u​ ​f​o​r​ ​p​a​r​t​i​c​i​p​a​t​i​n​g​!
+			 * Y​o​u​r​ ​v​o​t​e​ ​w​a​s​ ​s​u​b​m​i​t​t​e​d​ ​s​u​c​c​e​s​s​f​u​l​l​y​.
 			 */
 			description: string
 		}
@@ -1376,7 +1376,7 @@ JPG, PNG or SVG of maximum of {size}MB.
 		 */
 		voting_options: () => LocalizedString
 		/**
-		 * option to vote:
+		 * Select an option to vote:
 		 */
 		option_to_vote: () => LocalizedString
 	}
@@ -1435,11 +1435,11 @@ JPG, PNG or SVG of maximum of {size}MB.
 		buy_a_node: () => LocalizedString
 		vote_success: {
 			/**
-			 * Vote successful!
+			 * Vote submitted!
 			 */
 			title: () => LocalizedString
 			/**
-			 * Your vote has been successfully submitted. Thank you for participating!
+			 * Your vote was submitted successfully.
 			 */
 			description: () => LocalizedString
 		}
