@@ -59,16 +59,13 @@ export const getUserRoles = async ({ address }: { address?: string }) => {
   };
 };
 
-export const getUserNodes = async ({ address, blockN }: { address: string; blockN: string }) => {
+export const getUserNodes = async ({ address }: { address: string }) => {
   try {
     const nodesRes = await executeCall({
       contractAddress: nodeManagementAddress,
       contractInterface: nodeManagementInterface,
       method: "getUserStargateNFTsInfo",
       args: [address],
-      callOptions: {
-        revision: blockN,
-      },
     });
 
     if (!nodesRes.success) return { nodes: [] };
@@ -167,4 +164,20 @@ export const getAllUsersNodes = async (address: string) => {
   return {
     nodes,
   };
+};
+
+export const isNodeDelegator = async (address: string) => {
+  try {
+    const res = await executeCall({
+      contractAddress: nodeManagementAddress,
+      contractInterface: nodeManagementInterface,
+      method: "isNodeDelegator",
+      args: [address],
+    });
+
+    return res.success ? (res.result.plain as boolean) : false;
+  } catch (error) {
+    console.error("Error checking if user is a node delegator:", error);
+    return false;
+  }
 };

@@ -3,3 +3,13 @@ export enum LegalLinks {
   PRIVACY_POLICY = "https://vevote.vechain.org/privacy",
   COOKIES_POLICY = "https://vevote.vechain.org/cookies",
 }
+
+export enum ResourcesLinks {
+  DOCS = "https://docs.stargate.vechain.org/",
+  STARGATE = "https://app.stargate.vechain.org/",
+}
+
+export enum VeVoteLinks {
+  HOW_TO_VOTE = "https://vechain-foundation-san-marino.gitbook.io/vevote",
+  HOW_GET_VOTING_POWER = "https://docs.vevote.org/voting-power",
+}

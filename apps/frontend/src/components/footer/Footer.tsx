@@ -1,10 +1,11 @@
 import { useUser } from "@/contexts/UserProvider";
 import { useI18nContext } from "@/i18n/i18n-react";
-import { LegalLinks } from "@/types/terms";
-import { Flex, Link, Text } from "@chakra-ui/react";
+import { LegalLinks, ResourcesLinks } from "@/types/terms";
+import { Flex, Heading, Link, Text } from "@chakra-ui/react";
 import { useWallet } from "@vechain/vechain-kit";
-import { useMemo } from "react";
+import { PropsWithChildren, useMemo } from "react";
 import { useLocation } from "react-router-dom";
+import { VoteLogo } from "../ui/VoteLogo";
 
 export const Footer = () => {
   const { LL } = useI18nContext();
@@ -20,34 +21,93 @@ export const Footer = () => {
 
   return (
     <Flex
-      minHeight={"100px"}
-      paddingX={10}
-      paddingY={4}
-      alignItems="center"
-      justifyContent={"space-between"}
-      bgColor="primary.700"
-      color={"white"}
-      flexDirection={{ base: "column", md: "row" }}
+      w={"100%"}
+      direction={"column"}
+      gap={6}
+      alignItems={"center"}
+      paddingX={{ base: 6, md: 44 }}
+      paddingY={{ base: 10, md: 20 }}
+      bgColor={"gray.800"}
       marginBottom={{ base: canCreateProposal ? "100px" : 0, md: 0 }}>
-      <Text
-        whiteSpace={"pre-line"}
-        fontFamily={"Rubik"}
-        fontSize={{ base: "12px", md: "14px" }}
-        textAlign={{ base: "center", md: "left" }}
-        fontWeight={500}>
-        {LL.footer.all_right()}
-      </Text>
-      <Flex alignItems={"center"} whiteSpace={"nowrap"} gap={4} fontSize={{ base: "12px", md: "14px" }}>
-        <Link isExternal href={LegalLinks.TERMS_OF_SERVICE}>
-          {LL.footer.legal.terms_of_service()}
-        </Link>
-        <Link isExternal href={LegalLinks.PRIVACY_POLICY}>
-          {LL.footer.legal.privacy_policy()}
-        </Link>
-        <Link isExternal href={LegalLinks.COOKIES_POLICY}>
-          {LL.footer.legal.cookies_policy()}
-        </Link>
+      <Flex
+        width={"100%"}
+        flexDirection={{ base: "column", md: "row" }}
+        gap={10}
+        justifyContent={"space-between"}
+        alignItems={"center"}>
+        <Flex direction={"column"} gap={{ base: 2, md: 3 }} alignItems={"center"}>
+          <VoteLogo height={{ base: "24px", md: "32px" }} />
+          <Text fontSize={"12px"} fontWeight={400} color={"gray.300"} fontFamily={"Rubik"}>
+            {LL.footer.version()}
+          </Text>
+        </Flex>
+        <DocLinks />
+      </Flex>
+      <AllRight />
+    </Flex>
+  );
+};
+
+const AllRight = () => {
+  const { LL } = useI18nContext();
+  return (
+    <Text
+      color={"gray.300"}
+      fontFamily={"Rubik"}
+      fontSize={"12px"}
+      fontWeight={400}
+      textAlign={"center"}
+      transform={"translateY(10px)"}>
+      {LL.footer.all_right()}
+    </Text>
+  );
+};
+
+const DocLinks = () => {
+  const { LL } = useI18nContext();
+  return (
+    <Flex gap={{ base: 12, md: 10 }} alignItems={"start"} alignSelf={{ base: "start", md: "center" }}>
+      <Flex flexDirection={"column"} alignItems={"start"} gap={4}>
+        <FooterLabel>{LL.footer.legal.title()}</FooterLabel>
+        <Flex flexDirection={"column"} alignItems={"start"} gap={3}>
+          <FooterLink href={LegalLinks.PRIVACY_POLICY}>{LL.footer.legal.privacy_policy()}</FooterLink>
+          <FooterLink href={LegalLinks.TERMS_OF_SERVICE}>{LL.footer.legal.terms_of_service()}</FooterLink>
+          <FooterLink href={LegalLinks.COOKIES_POLICY}>{LL.footer.legal.cookies_policy()}</FooterLink>
+        </Flex>
+      </Flex>
+      <Flex flexDirection={"column"} alignItems={"start"} gap={4}>
+        <FooterLabel>{LL.footer.resources.title()}</FooterLabel>
+        <Flex flexDirection={"column"} alignItems={"start"} gap={3}>
+          <FooterLink href={ResourcesLinks.DOCS}>{LL.footer.resources.docs()}</FooterLink>
+          <FooterLink href={ResourcesLinks.STARGATE}>{LL.footer.resources.stargate()}</FooterLink>
+        </Flex>
       </Flex>
     </Flex>
+  );
+};
+
+const FooterLabel = ({ children }: PropsWithChildren) => {
+  return (
+    <Heading
+      as="h3"
+      fontSize={{ base: "14px", md: "18px" }}
+      color={"white"}
+      fontWeight={600}
+      textTransform={"uppercase"}>
+      {children}
+    </Heading>
+  );
+};
+
+const FooterLink = ({ href, children }: PropsWithChildren<{ href: string }>) => {
+  return (
+    <Link
+      href={href}
+      isExternal
+      fontSize={{ base: "12px", md: "14px" }}
+      color={"gray.300"}
+      _hover={{ textDecoration: "none" }}>
+      {children}
+    </Link>
   );
 };

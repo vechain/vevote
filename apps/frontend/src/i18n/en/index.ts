@@ -60,6 +60,8 @@ const en = {
   connect_wallet_to_vote: "Connect your wallet to vote",
   comment: "Comment",
   comment_placeholder: "Add a comment to your vote...",
+  migrate: "Migrate",
+  stargate: "StarGate",
   home: {
     title: "Home",
     go_to_proposals: "Go to proposals",
@@ -100,6 +102,7 @@ const en = {
     title: "Proposal",
     proposed_by: "Proposed by",
     voting_calendar: "Voting calendar",
+    confirm_in_your_wallet: "Confirm in your wallet...",
     who_can_vote: "Who can vote",
     vechain_foundation: "VeChain Foundation",
     node_holders: "Node holders with voting power will be able to vote on this proposal.",
@@ -165,9 +168,18 @@ const en = {
       },
     },
     voting_power: {
+      get_more_voting_power: "Get more voting power",
+      get_voting_power: "Get Voting Power",
       title: "Voting Power",
       calculation: "Your voting power was calculated at the time of the snapshot {snapshot:string}.",
       total_voting_power: "Total voting power",
+      warnings: {
+        legacy_node: "You have legacy nodes that haven’t been migrated yet.  Migrate to get more voting power.",
+        delegated: {
+          title: "Your voting power is delegated",
+          description: "Your voting power is delegated to another node",
+        },
+      },
     },
     voters_table: {
       filters: {
@@ -284,12 +296,10 @@ const en = {
     },
   },
   header: {
-    official: "Official",
-    blockchain: "VeChainThor Blockchain",
-    voting_platform: "voting platform",
-    immutable: "Immutable.",
-    transparent: "Transparent.",
-    decentralized: "Decentralized.",
+    title: "VeChainThor Voting Platform",
+    description: "Vote to shape the future of VeChainThor",
+    how_to_vote: "How to Vote",
+    how_to_get_voting_power: "How to get Voting Power",
   },
   stargate_warning: {
     title: "Stargate Node Migration Required",
@@ -301,11 +311,18 @@ const en = {
     confirmation_error: "Please type exactly 'agree-with-this' to continue",
   },
   footer: {
-    all_right: "All Rights Reserved \n © Vechain Foundation San Marino S.r.l.",
+    version: "v1.0.0",
+    all_right: "All Rights Reserved © Vechain Foundation San Marino S.r.l.",
     legal: {
+      title: "Legal",
       terms_of_service: "Terms of Service",
       privacy_policy: "Privacy Policy",
       cookies_policy: "Cookies Policy",
+    },
+    resources: {
+      title: "Resources",
+      docs: "Documentation",
+      stargate: "Stargate",
     },
   },
 } satisfies BaseTranslation;

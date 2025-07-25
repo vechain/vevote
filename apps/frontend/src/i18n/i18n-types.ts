@@ -250,6 +250,14 @@ type RootTranslation = {
 	 * A​d​d​ ​a​ ​c​o​m​m​e​n​t​ ​t​o​ ​y​o​u​r​ ​v​o​t​e​.​.​.
 	 */
 	comment_placeholder: string
+	/**
+	 * M​i​g​r​a​t​e
+	 */
+	migrate: string
+	/**
+	 * S​t​a​r​G​a​t​e
+	 */
+	stargate: string
 	home: {
 		/**
 		 * H​o​m​e
@@ -374,6 +382,10 @@ type RootTranslation = {
 		 * V​o​t​i​n​g​ ​c​a​l​e​n​d​a​r
 		 */
 		voting_calendar: string
+		/**
+		 * C​o​n​f​i​r​m​ ​i​n​ ​y​o​u​r​ ​w​a​l​l​e​t​.​.​.
+		 */
+		confirm_in_your_wallet: string
 		/**
 		 * W​h​o​ ​c​a​n​ ​v​o​t​e
 		 */
@@ -546,6 +558,14 @@ type RootTranslation = {
 		}
 		voting_power: {
 			/**
+			 * G​e​t​ ​m​o​r​e​ ​v​o​t​i​n​g​ ​p​o​w​e​r
+			 */
+			get_more_voting_power: string
+			/**
+			 * G​e​t​ ​V​o​t​i​n​g​ ​P​o​w​e​r
+			 */
+			get_voting_power: string
+			/**
 			 * V​o​t​i​n​g​ ​P​o​w​e​r
 			 */
 			title: string
@@ -558,6 +578,22 @@ type RootTranslation = {
 			 * T​o​t​a​l​ ​v​o​t​i​n​g​ ​p​o​w​e​r
 			 */
 			total_voting_power: string
+			warnings: {
+				/**
+				 * Y​o​u​ ​h​a​v​e​ ​l​e​g​a​c​y​ ​n​o​d​e​s​ ​t​h​a​t​ ​h​a​v​e​n​’​t​ ​b​e​e​n​ ​m​i​g​r​a​t​e​d​ ​y​e​t​.​ ​ ​M​i​g​r​a​t​e​ ​t​o​ ​g​e​t​ ​m​o​r​e​ ​v​o​t​i​n​g​ ​p​o​w​e​r​.
+				 */
+				legacy_node: string
+				delegated: {
+					/**
+					 * Y​o​u​r​ ​v​o​t​i​n​g​ ​p​o​w​e​r​ ​i​s​ ​d​e​l​e​g​a​t​e​d
+					 */
+					title: string
+					/**
+					 * Y​o​u​r​ ​v​o​t​i​n​g​ ​p​o​w​e​r​ ​i​s​ ​d​e​l​e​g​a​t​e​d​ ​t​o​ ​a​n​o​t​h​e​r​ ​n​o​d​e
+					 */
+					description: string
+				}
+			}
 		}
 		voters_table: {
 			filters: {
@@ -902,29 +938,21 @@ type RootTranslation = {
 	}
 	header: {
 		/**
-		 * O​f​f​i​c​i​a​l
+		 * V​e​C​h​a​i​n​T​h​o​r​ ​V​o​t​i​n​g​ ​P​l​a​t​f​o​r​m
 		 */
-		official: string
+		title: string
 		/**
-		 * V​e​C​h​a​i​n​T​h​o​r​ ​B​l​o​c​k​c​h​a​i​n
+		 * V​o​t​e​ ​t​o​ ​s​h​a​p​e​ ​t​h​e​ ​f​u​t​u​r​e​ ​o​f​ ​V​e​C​h​a​i​n​T​h​o​r
 		 */
-		blockchain: string
+		description: string
 		/**
-		 * v​o​t​i​n​g​ ​p​l​a​t​f​o​r​m
+		 * H​o​w​ ​t​o​ ​V​o​t​e
 		 */
-		voting_platform: string
+		how_to_vote: string
 		/**
-		 * I​m​m​u​t​a​b​l​e​.
+		 * H​o​w​ ​t​o​ ​g​e​t​ ​V​o​t​i​n​g​ ​P​o​w​e​r
 		 */
-		immutable: string
-		/**
-		 * T​r​a​n​s​p​a​r​e​n​t​.
-		 */
-		transparent: string
-		/**
-		 * D​e​c​e​n​t​r​a​l​i​z​e​d​.
-		 */
-		decentralized: string
+		how_to_get_voting_power: string
 	}
 	stargate_warning: {
 		/**
@@ -954,11 +982,18 @@ type RootTranslation = {
 	}
 	footer: {
 		/**
-		 * A​l​l​ ​R​i​g​h​t​s​ ​R​e​s​e​r​v​e​d​ ​
-	​ ​©​ ​V​e​c​h​a​i​n​ ​F​o​u​n​d​a​t​i​o​n​ ​S​a​n​ ​M​a​r​i​n​o​ ​S​.​r​.​l​.
+		 * v​1​.​0​.​0
+		 */
+		version: string
+		/**
+		 * A​l​l​ ​R​i​g​h​t​s​ ​R​e​s​e​r​v​e​d​ ​©​ ​V​e​c​h​a​i​n​ ​F​o​u​n​d​a​t​i​o​n​ ​S​a​n​ ​M​a​r​i​n​o​ ​S​.​r​.​l​.
 		 */
 		all_right: string
 		legal: {
+			/**
+			 * L​e​g​a​l
+			 */
+			title: string
 			/**
 			 * T​e​r​m​s​ ​o​f​ ​S​e​r​v​i​c​e
 			 */
@@ -971,6 +1006,20 @@ type RootTranslation = {
 			 * C​o​o​k​i​e​s​ ​P​o​l​i​c​y
 			 */
 			cookies_policy: string
+		}
+		resources: {
+			/**
+			 * R​e​s​o​u​r​c​e​s
+			 */
+			title: string
+			/**
+			 * D​o​c​u​m​e​n​t​a​t​i​o​n
+			 */
+			docs: string
+			/**
+			 * S​t​a​r​g​a​t​e
+			 */
+			stargate: string
 		}
 	}
 }
@@ -1209,6 +1258,14 @@ JPG, PNG or SVG of maximum of {size}MB.
 	 * Add a comment to your vote...
 	 */
 	comment_placeholder: () => LocalizedString
+	/**
+	 * Migrate
+	 */
+	migrate: () => LocalizedString
+	/**
+	 * StarGate
+	 */
+	stargate: () => LocalizedString
 	home: {
 		/**
 		 * Home
@@ -1332,6 +1389,10 @@ JPG, PNG or SVG of maximum of {size}MB.
 		 * Voting calendar
 		 */
 		voting_calendar: () => LocalizedString
+		/**
+		 * Confirm in your wallet...
+		 */
+		confirm_in_your_wallet: () => LocalizedString
 		/**
 		 * Who can vote
 		 */
@@ -1500,6 +1561,14 @@ JPG, PNG or SVG of maximum of {size}MB.
 		}
 		voting_power: {
 			/**
+			 * Get more voting power
+			 */
+			get_more_voting_power: () => LocalizedString
+			/**
+			 * Get Voting Power
+			 */
+			get_voting_power: () => LocalizedString
+			/**
 			 * Voting Power
 			 */
 			title: () => LocalizedString
@@ -1511,6 +1580,22 @@ JPG, PNG or SVG of maximum of {size}MB.
 			 * Total voting power
 			 */
 			total_voting_power: () => LocalizedString
+			warnings: {
+				/**
+				 * You have legacy nodes that haven’t been migrated yet.  Migrate to get more voting power.
+				 */
+				legacy_node: () => LocalizedString
+				delegated: {
+					/**
+					 * Your voting power is delegated
+					 */
+					title: () => LocalizedString
+					/**
+					 * Your voting power is delegated to another node
+					 */
+					description: () => LocalizedString
+				}
+			}
 		}
 		voters_table: {
 			filters: {
@@ -1849,29 +1934,21 @@ JPG, PNG or SVG of maximum of {size}MB.
 	}
 	header: {
 		/**
-		 * Official
+		 * VeChainThor Voting Platform
 		 */
-		official: () => LocalizedString
+		title: () => LocalizedString
 		/**
-		 * VeChainThor Blockchain
+		 * Vote to shape the future of VeChainThor
 		 */
-		blockchain: () => LocalizedString
+		description: () => LocalizedString
 		/**
-		 * voting platform
+		 * How to Vote
 		 */
-		voting_platform: () => LocalizedString
+		how_to_vote: () => LocalizedString
 		/**
-		 * Immutable.
+		 * How to get Voting Power
 		 */
-		immutable: () => LocalizedString
-		/**
-		 * Transparent.
-		 */
-		transparent: () => LocalizedString
-		/**
-		 * Decentralized.
-		 */
-		decentralized: () => LocalizedString
+		how_to_get_voting_power: () => LocalizedString
 	}
 	stargate_warning: {
 		/**
@@ -1901,11 +1978,18 @@ JPG, PNG or SVG of maximum of {size}MB.
 	}
 	footer: {
 		/**
-		 * All Rights Reserved 
-	 © Vechain Foundation San Marino S.r.l.
+		 * v1.0.0
+		 */
+		version: () => LocalizedString
+		/**
+		 * All Rights Reserved © Vechain Foundation San Marino S.r.l.
 		 */
 		all_right: () => LocalizedString
 		legal: {
+			/**
+			 * Legal
+			 */
+			title: () => LocalizedString
 			/**
 			 * Terms of Service
 			 */
@@ -1918,6 +2002,20 @@ JPG, PNG or SVG of maximum of {size}MB.
 			 * Cookies Policy
 			 */
 			cookies_policy: () => LocalizedString
+		}
+		resources: {
+			/**
+			 * Resources
+			 */
+			title: () => LocalizedString
+			/**
+			 * Documentation
+			 */
+			docs: () => LocalizedString
+			/**
+			 * Stargate
+			 */
+			stargate: () => LocalizedString
 		}
 	}
 }

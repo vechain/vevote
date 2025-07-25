@@ -1,15 +1,17 @@
 import { useUser } from "@/contexts/UserProvider";
 import { useShowNavbar } from "@/hooks/useShowNavbar";
-import { Box, BoxProps, Flex, FlexProps, Image } from "@chakra-ui/react";
+import { Box, BoxProps, defineStyle, Flex, FlexProps } from "@chakra-ui/react";
 import { PropsWithChildren, useMemo } from "react";
 import { ConnectButton } from "../ui/ConnectButton";
+import { VotingPowerModal } from "../proposal/VotingPowerModal";
+import { useWallet } from "@vechain/vechain-kit";
+import { VoteLogo } from "../ui/VoteLogo";
 
 const NavbarContainer = ({ children, ...restProps }: BoxProps) => {
   return (
     <Box
       transition={"all 0.3s"}
-      paddingX={{ base: 2, md: 20 }}
-      paddingY={2}
+      paddingX={{ base: 6, md: 20 }}
       position={"fixed"}
       top={0}
       left={0}
@@ -22,6 +24,7 @@ const NavbarContainer = ({ children, ...restProps }: BoxProps) => {
 };
 
 const NavbarInnerContainer = ({ children, ...restProps }: FlexProps) => {
+  const { connection } = useWallet();
   return (
     <Flex
       transition={"all 0.3s"}
@@ -33,30 +36,28 @@ const NavbarInnerContainer = ({ children, ...restProps }: FlexProps) => {
       gap={6}
       {...restProps}>
       {children}
-      <ConnectButton bg={"primary.700"} />
+      <Flex alignItems={"center"} gap={{ base: 3, md: 6 }}>
+        {connection.isConnected && <VotingPowerModal />}
+        <ConnectButton bg={"primary.700"} />
+      </Flex>
     </Flex>
   );
 };
 
-export const Navbar = () => {
-  const { showBackground } = useShowNavbar();
+const bgHeaderStyle = defineStyle({
+  bgImage: { base: "/images/banner-bg-mobile.png", md: "/images/banner-bg.png" },
+  bgSize: "cover",
+  bgPosition: "top",
+  bgRepeat: "no-repeat",
+  bgAttachment: "fixed",
+  borderBottom: "1px solid rgba(255, 255, 255, 0.2)",
+});
 
+export const Navbar = () => {
   return (
-    <NavbarContainer>
-      <NavbarInnerContainer
-        backdropFilter="auto"
-        backdropBlur={!showBackground ? "md" : "none"}
-        bgColor={!showBackground ? "rgba(38, 20, 112, 0.65)" : "transparent"}
-        paddingX={{ base: 2, md: 6 }}
-        paddingY={{ base: 2, md: 4 }}>
-        <Image
-          src="/svgs/vevote_logo.svg"
-          alt="VeVote Logo"
-          width={"auto"}
-          height={{ base: "16px", md: showBackground ? "32px" : "24px" }}
-          objectFit={"cover"}
-          transition={"all 0.3s"}
-        />
+    <NavbarContainer {...bgHeaderStyle}>
+      <NavbarInnerContainer paddingY={{ base: 2, md: 4 }}>
+        <VoteLogo height={{ base: "24px", md: "60px" }} />
       </NavbarInnerContainer>
     </NavbarContainer>
   );
