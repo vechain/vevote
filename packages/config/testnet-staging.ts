@@ -41,7 +41,7 @@ const config: AppConfig = {
   },
   ipfsPinningService: "https://api.gateway-proxy.vechain.org/api/v1/pinning/pinFileToIPFS",
   ipfsFetchingService: "https://api.gateway-proxy.vechain.org/ipfs",
-  indexerUrl: "https://indexer.testnet.vechain.org/api/v1",
+  indexerUrl: "https://prod-blue-test-api-veworld-alb-710759435.eu-west-1.elb.amazonaws.com/api/v1",
   WCProjectId: "542d5caba6ac73d527683a5b84b636fb",
   mixPanelToken: "bbf0da6a4dcd75432a35e01af6a75d8a",
 };
