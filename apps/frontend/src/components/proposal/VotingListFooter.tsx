@@ -136,6 +136,7 @@ const VotingSubmit = ({ onClick, ...rest }: ButtonProps) => {
       w={{ base: "full", md: "auto" }}
       rightIcon={<Icon as={ArrowRightIcon} />}
       onClick={handleClick}
+      loadingText={LL.proposal.confirm_in_your_wallet()}
       {...rest}>
       {LL.submit_vote()}
     </Button>

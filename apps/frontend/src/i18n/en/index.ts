@@ -102,6 +102,7 @@ const en = {
     title: "Proposal",
     proposed_by: "Proposed by",
     voting_calendar: "Voting calendar",
+    confirm_in_your_wallet: "Confirm in your wallet...",
     who_can_vote: "Who can vote",
     vechain_foundation: "VeChain Foundation",
     node_holders: "Node holders with voting power will be able to vote on this proposal.",

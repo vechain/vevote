@@ -383,6 +383,10 @@ type RootTranslation = {
 		 */
 		voting_calendar: string
 		/**
+		 * C​o​n​f​i​r​m​ ​i​n​ ​y​o​u​r​ ​w​a​l​l​e​t​.​.​.
+		 */
+		confirm_in_your_wallet: string
+		/**
 		 * W​h​o​ ​c​a​n​ ​v​o​t​e
 		 */
 		who_can_vote: string
@@ -1385,6 +1389,10 @@ JPG, PNG or SVG of maximum of {size}MB.
 		 * Voting calendar
 		 */
 		voting_calendar: () => LocalizedString
+		/**
+		 * Confirm in your wallet...
+		 */
+		confirm_in_your_wallet: () => LocalizedString
 		/**
 		 * Who can vote
 		 */
