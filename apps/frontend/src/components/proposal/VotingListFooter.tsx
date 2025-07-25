@@ -2,13 +2,13 @@ import { useHasVoted } from "@/hooks/useCastVote";
 import { useFormatDate } from "@/hooks/useFormatDate";
 import { useNodes } from "@/hooks/useUserQueries";
 import { useI18nContext } from "@/i18n/i18n-react";
-import { ArrowLinkIcon, ArrowRightIcon, MessageSquareIcon } from "@/icons";
+import { ArrowLinkIcon, ArrowRightIcon } from "@/icons";
 import { MixPanelEvent, trackEvent } from "@/utils/mixpanel/utilsMixpanel";
 import { getVotingVariant } from "@/utils/voting";
-import { Button, ButtonProps, Flex, Icon, Link, Text, Textarea } from "@chakra-ui/react";
+import { Button, ButtonProps, Flex, Icon, Link, Text } from "@chakra-ui/react";
 import { getConfig } from "@repo/config";
 import { useWallet } from "@vechain/vechain-kit";
-import { Dispatch, MouseEventHandler, SetStateAction, useCallback, useMemo } from "react";
+import { Dispatch, MouseEventHandler, SetStateAction, useMemo } from "react";
 import { ConnectButton } from "../ui/ConnectButton";
 import { InfoBox, infoBoxVariants } from "../ui/InfoBox";
 import { VotedChip } from "../ui/VotedChip";
@@ -17,7 +17,6 @@ import { VotersModal } from "./VotersModal";
 import { VotingItemVariant } from "./VotingItem";
 import { VotingPowerModal } from "./VotingPowerModal";
 
-const MAX_COMMENT_SIZE = 80;
 const EXPLORER_URL = getConfig(import.meta.env.VITE_APP_ENV).network.explorerUrl;
 
 type VotingListFooterProps = {
@@ -33,9 +32,9 @@ export const VotingListFooter = ({
   onSubmit,
   isLoading,
   disabled = false,
-  comment,
-  setComment,
-  commentDisabled = false,
+  // comment,
+  // setComment,
+  // commentDisabled = false,
 }: VotingListFooterProps) => {
   const { proposal } = useProposal();
   const { connection } = useWallet();
@@ -61,7 +60,7 @@ export const VotingListFooter = ({
 
   return (
     <Flex flexDirection={"column"} gap={4} width={"100%"}>
-      {connection.isConnected && <InputComment comment={comment} setComment={setComment} disabled={commentDisabled} />}
+      {/* {connection.isConnected && <InputComment comment={comment} setComment={setComment} disabled={commentDisabled} />} */}
 
       <Flex
         gap={8}
@@ -182,52 +181,6 @@ const VotingPower = () => {
         {LL.your_voting_power()}
       </Text>
       <VotingPowerModal />
-    </Flex>
-  );
-};
-
-type InputCommentProps = {
-  comment?: string;
-  setComment?: Dispatch<SetStateAction<string | undefined>>;
-  disabled?: boolean;
-};
-
-const InputComment = ({ comment, setComment, disabled }: InputCommentProps) => {
-  const { LL } = useI18nContext();
-
-  const onChange = useCallback(
-    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-      if (comment && comment?.length >= MAX_COMMENT_SIZE) {
-        if (e.currentTarget.value.length >= MAX_COMMENT_SIZE) return;
-        setComment?.(e.currentTarget.value);
-      }
-      setComment?.(e.currentTarget.value);
-    },
-    [comment, setComment],
-  );
-
-  return (
-    <Flex gap={2} flexDirection={"column"} alignItems={"start"}>
-      <Flex gap={2} alignItems={"center"}>
-        <Icon as={MessageSquareIcon} boxSize={{ base: 4, md: 5 }} />
-        <Text fontSize={{ base: 14, md: 16 }} fontWeight={600}>
-          {LL.comment()}
-        </Text>
-      </Flex>
-
-      <Textarea
-        background={disabled ? "gray.100" : ""}
-        borderColor={disabled ? "gray.200" : ""}
-        color={disabled ? "gray.600" : ""}
-        fontSize={{ base: 14, md: 16 }}
-        defaultValue={comment}
-        onChange={onChange}
-        placeholder={LL.comment_placeholder()}
-        isDisabled={disabled}
-      />
-      <Text fontSize={12} color={"gray.600"}>
-        {LL.filed_length({ current: comment?.length || 0, max: MAX_COMMENT_SIZE })}
-      </Text>
     </Flex>
   );
 };

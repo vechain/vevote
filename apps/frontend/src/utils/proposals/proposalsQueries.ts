@@ -1,5 +1,5 @@
 import { ProposalDetails } from "@/pages/CreateProposal/CreateProposalProvider";
-import { BaseOption, ProposalCardType, ProposalEvent, VotingEnum } from "@/types/proposal";
+import { ProposalCardType, ProposalEvent } from "@/types/proposal";
 import { getConfig } from "@repo/config";
 import { VeVote__factory } from "@repo/contracts";
 import { getAllEventLogs, ThorClient } from "@vechain/vechain-kit";
@@ -188,11 +188,8 @@ export const getProposalsWithState = async (proposalsData?: Omit<ProposalCardTyp
 
 export const getHashProposal = async ({
   description,
-  votingOptions,
-  votingType,
   durationBlock,
   startBlock,
-  votingLimit,
   proposer,
 }: Omit<ProposalDetails, "description" | "startTime" | "endTime"> & {
   description: string;
@@ -200,20 +197,7 @@ export const getHashProposal = async ({
   startBlock: number;
   durationBlock: number;
 }) => {
-  const encodedChoices =
-    votingType === VotingEnum.SINGLE_CHOICE
-      ? votingOptions.map(c => ethers.encodeBytes32String(c as string))
-      : votingOptions.map(c => ethers.encodeBytes32String((c as BaseOption).value));
-
-  const args = [
-    proposer,
-    startBlock,
-    durationBlock - startBlock,
-    encodedChoices,
-    ethers.keccak256(ethers.toUtf8Bytes(description)),
-    votingLimit || 1,
-    1,
-  ];
+  const args = [proposer, startBlock, durationBlock - startBlock, ethers.keccak256(ethers.toUtf8Bytes(description))];
 
   return await executeCall({
     contractAddress,
