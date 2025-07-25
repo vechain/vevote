@@ -2,7 +2,7 @@ import { useI18nContext } from "@/i18n/i18n-react";
 import { useProposal } from "./ProposalProvider";
 import { useWallet } from "@vechain/vechain-kit";
 import { useMemo } from "react";
-import { Flex, Text } from "@chakra-ui/react";
+import { Text } from "@chakra-ui/react";
 
 export const VotingTitle = () => {
   const { proposal } = useProposal();
@@ -23,16 +23,8 @@ export const VotingTitle = () => {
   }
 
   return (
-    <Flex gap={1} fontSize={{ base: 14, md: 16 }}>
-      <Text fontWeight={500} color="gray.500">
-        {LL.select()}
-      </Text>
-      <Text color="gray.700" textDecoration={"underline"}>
-        {LL.one()}
-      </Text>
-      <Text fontWeight={500} color="gray.500">
-        {LL.voting_list.option_to_vote()}
-      </Text>
-    </Flex>
+    <Text fontWeight={500} color="gray.500">
+      {LL.voting_list.option_to_vote()}
+    </Text>
   );
 };

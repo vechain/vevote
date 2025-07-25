@@ -1,6 +1,6 @@
 import { useUser } from "@/contexts/UserProvider";
 import { useI18nContext } from "@/i18n/i18n-react";
-import { LegalLinks, ResourcesLinks } from "@/types/terms";
+import { LegalLinks, ResourcesLinks, VeVoteLinks } from "@/types/terms";
 import { Flex, Heading, Link, Text } from "@chakra-ui/react";
 import { useWallet } from "@vechain/vechain-kit";
 import { PropsWithChildren, useMemo } from "react";
@@ -78,8 +78,9 @@ const DocLinks = () => {
       <Flex flexDirection={"column"} alignItems={"start"} gap={4}>
         <FooterLabel>{LL.footer.resources.title()}</FooterLabel>
         <Flex flexDirection={"column"} alignItems={"start"} gap={3}>
-          <FooterLink href={ResourcesLinks.DOCS}>{LL.footer.resources.docs()}</FooterLink>
+          <FooterLink href={VeVoteLinks.VEVOTE_DOCS}>{LL.footer.resources.docs()}</FooterLink>
           <FooterLink href={ResourcesLinks.STARGATE}>{LL.footer.resources.stargate()}</FooterLink>
+          <FooterLink href={VeVoteLinks.SUPPORT}>{LL.footer.resources.support()}</FooterLink>
         </Flex>
       </Flex>
     </Flex>

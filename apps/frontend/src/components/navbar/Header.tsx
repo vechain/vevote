@@ -50,10 +50,10 @@ export const Banner = () => {
             </Text>
           </Flex>
           <Flex gap={{ base: 4, md: 6 }} flexDirection={{ base: "column", lg: "row" }} alignItems={"center"}>
-            <Link {...stargateButtonStyle} href={VeVoteLinks.HOW_TO_VOTE} isExternal>
+            <Link {...stargateButtonStyle} href={VeVoteLinks.VEVOTE_DOCS} isExternal>
               {LL.header.how_to_vote()} <Icon as={ArrowLinkIcon} />
             </Link>
-            <Link {...stargateButtonStyle} href={ResourcesLinks.DOCS} isExternal>
+            <Link {...stargateButtonStyle} href={ResourcesLinks.STARGATE} isExternal>
               {LL.header.how_to_get_voting_power()}
               <Icon as={ArrowLinkIcon} />
             </Link>

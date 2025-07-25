@@ -9,7 +9,7 @@ export const QUESTION_MAX_CHAR = 120;
 export const proposalDetailsSchema = (delay: number, duration: number) =>
   z
     .object({
-      title: z.string().min(1, { message: LL.field_errors.required() }).max(TITLE_MAX_CHARS),
+      title: z.string().trim().min(1, { message: LL.field_errors.required() }).max(TITLE_MAX_CHARS),
       description: descriptionSchema,
       headerImage: zodFile,
     })
@@ -18,7 +18,7 @@ export const proposalDetailsSchema = (delay: number, duration: number) =>
 export type ProposalDetailsSchema = z.infer<ReturnType<typeof proposalDetailsSchema>>;
 
 export const proposalSingleChoiceSchema = z.object({
-  votingQuestion: z.string().min(1, { message: LL.field_errors.required() }).max(QUESTION_MAX_CHAR),
+  votingQuestion: z.string().trim().min(1, { message: LL.field_errors.required() }).max(QUESTION_MAX_CHAR),
 });
 
 export const proposalSetupSchema = proposalSingleChoiceSchema;

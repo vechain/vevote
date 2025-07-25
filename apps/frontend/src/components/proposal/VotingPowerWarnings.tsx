@@ -41,6 +41,17 @@ export const VotingPowerDelegatedWarning = () => {
   );
 };
 
+export const VotingPowerZeroWarning = () => {
+  const { LL } = useI18nContext();
+  return (
+    <GenericInfoBox variant="warning">
+      <Text color={"orange.700"} fontSize={12} fontWeight={500}>
+        {LL.proposal.voting_power.warnings.zero_voting_power()}
+      </Text>
+    </GenericInfoBox>
+  );
+};
+
 const WarningButton = ({ href, children }: PropsWithChildren<{ href: string }>) => {
   return (
     <Button

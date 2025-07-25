@@ -8,8 +8,15 @@ import { useMemo } from "react";
 import { CopyLink } from "../ui/CopyLink";
 import { ModalSkeleton, ModalTitle } from "../ui/ModalSkeleton";
 import { VotingPowerModalTable } from "./VotingPowerModalTable";
-import { VotingPowerDelegatedWarning, VotingPowerLegacyNodeWarning } from "./VotingPowerWarnings";
+import {
+  VotingPowerDelegatedWarning,
+  VotingPowerLegacyNodeWarning,
+  VotingPowerZeroWarning,
+} from "./VotingPowerWarnings";
 import { ResourcesLinks } from "@/types/terms";
+import { getConfig } from "@repo/config";
+
+const EXPLORER_URL = getConfig(import.meta.env.VITE_APP_ENV).network.explorerUrl;
 
 export const VotingPowerModal = () => {
   const { LL } = useI18nContext();
@@ -48,8 +55,10 @@ export const VotingPowerModal = () => {
             <VotingWallet />
             {hasLegacyNodes && <VotingPowerLegacyNodeWarning />}
             {isDelegator && <VotingPowerDelegatedWarning />}
-            {totalVotingPower > 0 && (
+            {totalVotingPower > 0 ? (
               <VotingPowerModalTable nodesList={nodesList} totalVotingPower={totalVotingPower} />
+            ) : (
+              <VotingPowerZeroWarning />
             )}
             <Button
               as={Link}
@@ -73,7 +82,12 @@ const VotingWallet = () => {
   return (
     <Text display={"inline-flex"} alignItems={"center"} gap={2} color={"gray.600"}>
       {`${LL.wallet()}:`}
-      <CopyLink isExternal textToCopy={account?.address} color={"primary.700"} fontWeight={500}>
+      <CopyLink
+        href={`${EXPLORER_URL}/accounts/${account?.address}`}
+        isExternal
+        textToCopy={account?.address}
+        color={"primary.700"}
+        fontWeight={500}>
         {formatAddress(account?.address || "")}
       </CopyLink>
     </Text>

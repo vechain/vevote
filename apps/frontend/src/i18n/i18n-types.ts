@@ -365,7 +365,7 @@ type RootTranslation = {
 		 */
 		voting_options: string
 		/**
-		 * o​p​t​i​o​n​ ​t​o​ ​v​o​t​e​:
+		 * S​e​l​e​c​t​ ​a​n​ ​o​p​t​i​o​n​ ​t​o​ ​v​o​t​e​:
 		 */
 		option_to_vote: string
 	}
@@ -425,11 +425,11 @@ type RootTranslation = {
 		buy_a_node: string
 		vote_success: {
 			/**
-			 * V​o​t​e​ ​s​u​c​c​e​s​s​f​u​l​!
+			 * V​o​t​e​ ​s​u​b​m​i​t​t​e​d​!
 			 */
 			title: string
 			/**
-			 * Y​o​u​r​ ​v​o​t​e​ ​h​a​s​ ​b​e​e​n​ ​s​u​c​c​e​s​s​f​u​l​l​y​ ​s​u​b​m​i​t​t​e​d​.​ ​T​h​a​n​k​ ​y​o​u​ ​f​o​r​ ​p​a​r​t​i​c​i​p​a​t​i​n​g​!
+			 * Y​o​u​r​ ​v​o​t​e​ ​w​a​s​ ​s​u​b​m​i​t​t​e​d​ ​s​u​c​c​e​s​s​f​u​l​l​y​.
 			 */
 			description: string
 		}
@@ -558,7 +558,7 @@ type RootTranslation = {
 		}
 		voting_power: {
 			/**
-			 * G​e​t​ ​m​o​r​e​ ​v​o​t​i​n​g​ ​p​o​w​e​r
+			 * G​e​t​ ​m​o​r​e​ ​V​o​t​i​n​g​ ​P​o​w​e​r
 			 */
 			get_more_voting_power: string
 			/**
@@ -570,26 +570,30 @@ type RootTranslation = {
 			 */
 			title: string
 			/**
-			 * Y​o​u​r​ ​v​o​t​i​n​g​ ​p​o​w​e​r​ ​w​a​s​ ​c​a​l​c​u​l​a​t​e​d​ ​a​t​ ​t​h​e​ ​t​i​m​e​ ​o​f​ ​t​h​e​ ​s​n​a​p​s​h​o​t​ ​{​s​n​a​p​s​h​o​t​}​.
+			 * Y​o​u​r​ ​V​o​t​i​n​g​ ​P​o​w​e​r​ ​w​a​s​ ​c​a​l​c​u​l​a​t​e​d​ ​a​t​ ​t​h​e​ ​t​i​m​e​ ​o​f​ ​t​h​e​ ​s​n​a​p​s​h​o​t​ ​{​s​n​a​p​s​h​o​t​}​.
 			 * @param {string} snapshot
 			 */
 			calculation: RequiredParams<'snapshot'>
 			/**
-			 * T​o​t​a​l​ ​v​o​t​i​n​g​ ​p​o​w​e​r
+			 * T​o​t​a​l​ ​V​o​t​i​n​g​ ​P​o​w​e​r
 			 */
 			total_voting_power: string
 			warnings: {
 				/**
-				 * Y​o​u​ ​h​a​v​e​ ​l​e​g​a​c​y​ ​n​o​d​e​s​ ​t​h​a​t​ ​h​a​v​e​n​’​t​ ​b​e​e​n​ ​m​i​g​r​a​t​e​d​ ​y​e​t​.​ ​ ​M​i​g​r​a​t​e​ ​t​o​ ​g​e​t​ ​m​o​r​e​ ​v​o​t​i​n​g​ ​p​o​w​e​r​.
+				 * T​h​e​ ​c​o​n​n​e​c​t​e​d​ ​w​a​l​l​e​t​ ​h​a​s​ ​n​o​ ​V​o​t​i​n​g​ ​P​o​w​e​r
+				 */
+				zero_voting_power: string
+				/**
+				 * Y​o​u​ ​h​a​v​e​ ​l​e​g​a​c​y​ ​n​o​d​e​s​ ​t​h​a​t​ ​h​a​v​e​n​’​t​ ​b​e​e​n​ ​m​i​g​r​a​t​e​d​ ​y​e​t​.​ ​ ​M​i​g​r​a​t​e​ ​t​o​ ​g​e​t​ ​m​o​r​e​ ​V​o​t​i​n​g​ ​P​o​w​e​r​.
 				 */
 				legacy_node: string
 				delegated: {
 					/**
-					 * Y​o​u​r​ ​v​o​t​i​n​g​ ​p​o​w​e​r​ ​i​s​ ​d​e​l​e​g​a​t​e​d
+					 * Y​o​u​r​ ​V​o​t​i​n​g​ ​P​o​w​e​r​ ​i​s​ ​d​e​l​e​g​a​t​e​d
 					 */
 					title: string
 					/**
-					 * Y​o​u​r​ ​v​o​t​i​n​g​ ​p​o​w​e​r​ ​i​s​ ​d​e​l​e​g​a​t​e​d​ ​t​o​ ​a​n​o​t​h​e​r​ ​n​o​d​e
+					 * Y​o​u​r​ ​V​o​t​i​n​g​ ​P​o​w​e​r​ ​i​s​ ​d​e​l​e​g​a​t​e​d​ ​t​o​ ​a​n​o​t​h​e​r​ ​n​o​d​e
 					 */
 					description: string
 				}
@@ -1017,9 +1021,13 @@ type RootTranslation = {
 			 */
 			docs: string
 			/**
-			 * S​t​a​r​g​a​t​e
+			 * S​t​a​r​G​a​t​e
 			 */
 			stargate: string
+			/**
+			 * S​u​p​p​o​r​t
+			 */
+			support: string
 		}
 	}
 }
@@ -1372,7 +1380,7 @@ JPG, PNG or SVG of maximum of {size}MB.
 		 */
 		voting_options: () => LocalizedString
 		/**
-		 * option to vote:
+		 * Select an option to vote:
 		 */
 		option_to_vote: () => LocalizedString
 	}
@@ -1431,11 +1439,11 @@ JPG, PNG or SVG of maximum of {size}MB.
 		buy_a_node: () => LocalizedString
 		vote_success: {
 			/**
-			 * Vote successful!
+			 * Vote submitted!
 			 */
 			title: () => LocalizedString
 			/**
-			 * Your vote has been successfully submitted. Thank you for participating!
+			 * Your vote was submitted successfully.
 			 */
 			description: () => LocalizedString
 		}
@@ -1561,7 +1569,7 @@ JPG, PNG or SVG of maximum of {size}MB.
 		}
 		voting_power: {
 			/**
-			 * Get more voting power
+			 * Get more Voting Power
 			 */
 			get_more_voting_power: () => LocalizedString
 			/**
@@ -1573,25 +1581,29 @@ JPG, PNG or SVG of maximum of {size}MB.
 			 */
 			title: () => LocalizedString
 			/**
-			 * Your voting power was calculated at the time of the snapshot {snapshot}.
+			 * Your Voting Power was calculated at the time of the snapshot {snapshot}.
 			 */
 			calculation: (arg: { snapshot: string }) => LocalizedString
 			/**
-			 * Total voting power
+			 * Total Voting Power
 			 */
 			total_voting_power: () => LocalizedString
 			warnings: {
 				/**
-				 * You have legacy nodes that haven’t been migrated yet.  Migrate to get more voting power.
+				 * The connected wallet has no Voting Power
+				 */
+				zero_voting_power: () => LocalizedString
+				/**
+				 * You have legacy nodes that haven’t been migrated yet.  Migrate to get more Voting Power.
 				 */
 				legacy_node: () => LocalizedString
 				delegated: {
 					/**
-					 * Your voting power is delegated
+					 * Your Voting Power is delegated
 					 */
 					title: () => LocalizedString
 					/**
-					 * Your voting power is delegated to another node
+					 * Your Voting Power is delegated to another node
 					 */
 					description: () => LocalizedString
 				}
@@ -2013,9 +2025,13 @@ JPG, PNG or SVG of maximum of {size}MB.
 			 */
 			docs: () => LocalizedString
 			/**
-			 * Stargate
+			 * StarGate
 			 */
 			stargate: () => LocalizedString
+			/**
+			 * Support
+			 */
+			support: () => LocalizedString
 		}
 	}
 }

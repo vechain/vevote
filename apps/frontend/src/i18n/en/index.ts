@@ -96,7 +96,7 @@ const en = {
   },
   voting_list: {
     voting_options: "Voting options:",
-    option_to_vote: "option to vote:",
+    option_to_vote: "Select an option to vote:",
   },
   proposal: {
     title: "Proposal",
@@ -114,8 +114,8 @@ const en = {
     buy_a_node:
       "Voting is only possible for Node holders. Buy a node to vote on future proposals or increase your voting power.",
     vote_success: {
-      title: "Vote successful!",
-      description: "Your vote has been successfully submitted. Thank you for participating!",
+      title: "Vote submitted!",
+      description: "Your vote was submitted successfully.",
     },
     cancel_proposal: {
       title: "Cancel proposal",
@@ -168,16 +168,18 @@ const en = {
       },
     },
     voting_power: {
-      get_more_voting_power: "Get more voting power",
+      get_more_voting_power: "Get more Voting Power",
       get_voting_power: "Get Voting Power",
       title: "Voting Power",
-      calculation: "Your voting power was calculated at the time of the snapshot {snapshot:string}.",
-      total_voting_power: "Total voting power",
+
+      calculation: "Your Voting Power was calculated at the time of the snapshot {snapshot:string}.",
+      total_voting_power: "Total Voting Power",
       warnings: {
-        legacy_node: "You have legacy nodes that haven’t been migrated yet.  Migrate to get more voting power.",
+        zero_voting_power: "The connected wallet has no Voting Power",
+        legacy_node: "You have legacy nodes that haven’t been migrated yet.  Migrate to get more Voting Power.",
         delegated: {
-          title: "Your voting power is delegated",
-          description: "Your voting power is delegated to another node",
+          title: "Your Voting Power is delegated",
+          description: "Your Voting Power is delegated to another node",
         },
       },
     },
@@ -322,7 +324,8 @@ const en = {
     resources: {
       title: "Resources",
       docs: "Documentation",
-      stargate: "Stargate",
+      stargate: "StarGate",
+      support: "Support",
     },
   },
 } satisfies BaseTranslation;
