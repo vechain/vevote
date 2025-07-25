@@ -27,8 +27,6 @@ export const VotersModal = () => {
 
   const { votes, pagination, filterOptions, nodeOptions, isLoading, error } = useVotersData({
     proposalId: proposal.id,
-    votingType: proposal.votingType,
-    votingOptions: proposal.votingOptions,
     filters: {
       selectedOption,
       node,

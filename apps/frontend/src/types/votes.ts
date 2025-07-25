@@ -21,7 +21,10 @@ export type Pagination = {
 export type VotedResult = {
   data: VotedBaseData &
     {
-      choice: number;
+      blockNumber: number;
+      blockTimestamp: number;
+      proposalId: string;
+      support: "ABSTAIN" | "AGAINST" | "FOR";
       totalWeight: number;
       totalVoters: number;
     }[];

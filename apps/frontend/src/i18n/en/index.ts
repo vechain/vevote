@@ -241,20 +241,6 @@ const en = {
         voting_options_subtitle: "Add between 2 and 30 options to vote:",
         add_new_option: "Add new option",
         voting_option_placeholder: "Write the voting option...",
-        voting_types: {
-          single_choice: {
-            title: "Single choice",
-            subtitle: "Yes / No / Abstain",
-          },
-          single_option: {
-            title: "Single choice",
-            subtitle: "Voter can select 1 of multiple options",
-          },
-          multi_options: {
-            title: "Multiple choice",
-            subtitle: "Voter can select 1 or more options",
-          },
-        },
       },
       summary_form: {
         main_details: {
@@ -267,9 +253,7 @@ const en = {
           type: "Type",
           limit: "Minimum {min:number} options - Maximum {limit:number} options",
           types: {
-            SINGLE_CHOICE: "Single choice - Yes / No / Abstain",
-            SINGLE_OPTION: "Single choice - Multiple voting options",
-            MULTIPLE_OPTIONS: "Multiple choice - Multiple voting options",
+            SINGLE_CHOICE: "Single choice - For / Against / Abstain",
           },
         },
         publish_proposal: "Publish Proposal",

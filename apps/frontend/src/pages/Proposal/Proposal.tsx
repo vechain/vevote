@@ -131,7 +131,6 @@ const ProposalNavbarActions = ({ proposal }: { proposal: ProposalCardType | unde
     <Flex alignItems={"center"} gap={2} marginLeft={"auto"}>
       {canEditDraft && <DeleteEditProposal />}
       {canCancel && <CancelProposal proposalId={proposal?.id} />}
-
       {isExecutor && proposal?.status === "approved" && <ExecuteModal proposalId={proposal?.id} />}
 
       {["voting"].includes(proposal?.status || "") && hasVoted && <VotedChip />}
