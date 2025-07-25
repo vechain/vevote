@@ -1,6 +1,6 @@
 import { useUser } from "@/contexts/UserProvider";
 import { useShowNavbar } from "@/hooks/useShowNavbar";
-import { Box, BoxProps, defineStyle, Flex, FlexProps } from "@chakra-ui/react";
+import { Box, BoxProps, defineStyle, Flex, FlexProps, Link } from "@chakra-ui/react";
 import { PropsWithChildren, useMemo } from "react";
 import { ConnectButton } from "../ui/ConnectButton";
 import { VotingPowerModal } from "../proposal/VotingPowerModal";
@@ -57,7 +57,9 @@ export const Navbar = () => {
   return (
     <NavbarContainer {...bgHeaderStyle}>
       <NavbarInnerContainer paddingY={{ base: 2, md: 4 }}>
-        <VoteLogo height={{ base: "24px", md: "60px" }} />
+        <Link href="/" display="flex" alignItems="center">
+          <VoteLogo height={{ base: "24px", md: "60px" }} />
+        </Link>
       </NavbarInnerContainer>
     </NavbarContainer>
   );

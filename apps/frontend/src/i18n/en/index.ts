@@ -168,16 +168,18 @@ const en = {
       },
     },
     voting_power: {
-      get_more_voting_power: "Get more voting power",
+      get_more_voting_power: "Get more Voting Power",
       get_voting_power: "Get Voting Power",
       title: "Voting Power",
-      calculation: "Your voting power was calculated at the time of the snapshot {snapshot:string}.",
-      total_voting_power: "Total voting power",
+
+      calculation: "Your Voting Power was calculated at the time of the snapshot {snapshot:string}.",
+      total_voting_power: "Total Voting Power",
       warnings: {
-        legacy_node: "You have legacy nodes that haven’t been migrated yet.  Migrate to get more voting power.",
+        zero_voting_power: "The connected wallet has no Voting Power",
+        legacy_node: "You have legacy nodes that haven’t been migrated yet.  Migrate to get more Voting Power.",
         delegated: {
-          title: "Your voting power is delegated",
-          description: "Your voting power is delegated to another node",
+          title: "Your Voting Power is delegated",
+          description: "Your Voting Power is delegated to another node",
         },
       },
     },
@@ -322,7 +324,7 @@ const en = {
     resources: {
       title: "Resources",
       docs: "Documentation",
-      stargate: "Stargate",
+      stargate: "StarGate",
     },
   },
 } satisfies BaseTranslation;

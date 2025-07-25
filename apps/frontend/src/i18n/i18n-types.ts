@@ -558,7 +558,7 @@ type RootTranslation = {
 		}
 		voting_power: {
 			/**
-			 * G​e​t​ ​m​o​r​e​ ​v​o​t​i​n​g​ ​p​o​w​e​r
+			 * G​e​t​ ​m​o​r​e​ ​V​o​t​i​n​g​ ​P​o​w​e​r
 			 */
 			get_more_voting_power: string
 			/**
@@ -570,26 +570,30 @@ type RootTranslation = {
 			 */
 			title: string
 			/**
-			 * Y​o​u​r​ ​v​o​t​i​n​g​ ​p​o​w​e​r​ ​w​a​s​ ​c​a​l​c​u​l​a​t​e​d​ ​a​t​ ​t​h​e​ ​t​i​m​e​ ​o​f​ ​t​h​e​ ​s​n​a​p​s​h​o​t​ ​{​s​n​a​p​s​h​o​t​}​.
+			 * Y​o​u​r​ ​V​o​t​i​n​g​ ​P​o​w​e​r​ ​w​a​s​ ​c​a​l​c​u​l​a​t​e​d​ ​a​t​ ​t​h​e​ ​t​i​m​e​ ​o​f​ ​t​h​e​ ​s​n​a​p​s​h​o​t​ ​{​s​n​a​p​s​h​o​t​}​.
 			 * @param {string} snapshot
 			 */
 			calculation: RequiredParams<'snapshot'>
 			/**
-			 * T​o​t​a​l​ ​v​o​t​i​n​g​ ​p​o​w​e​r
+			 * T​o​t​a​l​ ​V​o​t​i​n​g​ ​P​o​w​e​r
 			 */
 			total_voting_power: string
 			warnings: {
 				/**
-				 * Y​o​u​ ​h​a​v​e​ ​l​e​g​a​c​y​ ​n​o​d​e​s​ ​t​h​a​t​ ​h​a​v​e​n​’​t​ ​b​e​e​n​ ​m​i​g​r​a​t​e​d​ ​y​e​t​.​ ​ ​M​i​g​r​a​t​e​ ​t​o​ ​g​e​t​ ​m​o​r​e​ ​v​o​t​i​n​g​ ​p​o​w​e​r​.
+				 * T​h​e​ ​c​o​n​n​e​c​t​e​d​ ​w​a​l​l​e​t​ ​h​a​s​ ​n​o​ ​V​o​t​i​n​g​ ​P​o​w​e​r
+				 */
+				zero_voting_power: string
+				/**
+				 * Y​o​u​ ​h​a​v​e​ ​l​e​g​a​c​y​ ​n​o​d​e​s​ ​t​h​a​t​ ​h​a​v​e​n​’​t​ ​b​e​e​n​ ​m​i​g​r​a​t​e​d​ ​y​e​t​.​ ​ ​M​i​g​r​a​t​e​ ​t​o​ ​g​e​t​ ​m​o​r​e​ ​V​o​t​i​n​g​ ​P​o​w​e​r​.
 				 */
 				legacy_node: string
 				delegated: {
 					/**
-					 * Y​o​u​r​ ​v​o​t​i​n​g​ ​p​o​w​e​r​ ​i​s​ ​d​e​l​e​g​a​t​e​d
+					 * Y​o​u​r​ ​V​o​t​i​n​g​ ​P​o​w​e​r​ ​i​s​ ​d​e​l​e​g​a​t​e​d
 					 */
 					title: string
 					/**
-					 * Y​o​u​r​ ​v​o​t​i​n​g​ ​p​o​w​e​r​ ​i​s​ ​d​e​l​e​g​a​t​e​d​ ​t​o​ ​a​n​o​t​h​e​r​ ​n​o​d​e
+					 * Y​o​u​r​ ​V​o​t​i​n​g​ ​P​o​w​e​r​ ​i​s​ ​d​e​l​e​g​a​t​e​d​ ​t​o​ ​a​n​o​t​h​e​r​ ​n​o​d​e
 					 */
 					description: string
 				}
@@ -1017,7 +1021,7 @@ type RootTranslation = {
 			 */
 			docs: string
 			/**
-			 * S​t​a​r​g​a​t​e
+			 * S​t​a​r​G​a​t​e
 			 */
 			stargate: string
 		}
@@ -1561,7 +1565,7 @@ JPG, PNG or SVG of maximum of {size}MB.
 		}
 		voting_power: {
 			/**
-			 * Get more voting power
+			 * Get more Voting Power
 			 */
 			get_more_voting_power: () => LocalizedString
 			/**
@@ -1573,25 +1577,29 @@ JPG, PNG or SVG of maximum of {size}MB.
 			 */
 			title: () => LocalizedString
 			/**
-			 * Your voting power was calculated at the time of the snapshot {snapshot}.
+			 * Your Voting Power was calculated at the time of the snapshot {snapshot}.
 			 */
 			calculation: (arg: { snapshot: string }) => LocalizedString
 			/**
-			 * Total voting power
+			 * Total Voting Power
 			 */
 			total_voting_power: () => LocalizedString
 			warnings: {
 				/**
-				 * You have legacy nodes that haven’t been migrated yet.  Migrate to get more voting power.
+				 * The connected wallet has no Voting Power
+				 */
+				zero_voting_power: () => LocalizedString
+				/**
+				 * You have legacy nodes that haven’t been migrated yet.  Migrate to get more Voting Power.
 				 */
 				legacy_node: () => LocalizedString
 				delegated: {
 					/**
-					 * Your voting power is delegated
+					 * Your Voting Power is delegated
 					 */
 					title: () => LocalizedString
 					/**
-					 * Your voting power is delegated to another node
+					 * Your Voting Power is delegated to another node
 					 */
 					description: () => LocalizedString
 				}
@@ -2013,7 +2021,7 @@ JPG, PNG or SVG of maximum of {size}MB.
 			 */
 			docs: () => LocalizedString
 			/**
-			 * Stargate
+			 * StarGate
 			 */
 			stargate: () => LocalizedString
 		}
