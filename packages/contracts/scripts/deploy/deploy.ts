@@ -200,7 +200,6 @@ export async function deployAll(config: ContractsConfig) {
         initialMinVotingDelay: config.INITIAL_MIN_VOTING_DELAY,
         initialMaxVotingDuration: config.INITIAL_MAX_VOTING_DURATION,
         initialMinVotingDuration: config.INITIAL_MIN_VOTING_DURATION,
-        initialMaxChoices: config.INITIAL_MAX_CHOICES,
         nodeManagement: nodeManagementAddress,
         stargateNFT: stargateSCAddress,
         authorityContract: config.AUTHORITY_CONTRACT_ADDRESS,

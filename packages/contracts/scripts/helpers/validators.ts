@@ -8,5 +8,5 @@ export const createValidator = async (
   validator: HardhatEthersSigner,
 ) => {
   const mockIdentity = ethers.encodeBytes32String("vechain-validator");
-  await authorityContract.setValidator(validator.address, true, endorser.address, mockIdentity, true);
+  await authorityContract.add(validator.address, endorser.address, mockIdentity);
 };

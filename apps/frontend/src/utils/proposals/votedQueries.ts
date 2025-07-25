@@ -11,7 +11,7 @@ const contractAddress = getConfig(import.meta.env.VITE_APP_ENV).vevoteContractAd
 const contractInterface = VeVote__factory.createInterface();
 const nodeUrl = getConfig(import.meta.env.VITE_APP_ENV).nodeUrl;
 
-type DecodedVoteCastEvent = [string, bigint, bigint, bigint, string, bigint[], string];
+type DecodedVoteCastEvent = [string, bigint, 0 | 1 | 2, bigint, string, bigint[], string];
 
 export const getHasVoted = async (proposalId?: string, address?: string) => {
   if (!proposalId || !address) return false;
@@ -63,13 +63,13 @@ export const getVotedChoices = async (thor: ThorClient, proposalId?: string, add
     const events = await getAllEventLogs({ thor, nodeUrl, filterCriteria });
 
     const votedEvents = events.map(event => {
-      const [voter, proposalId, choices, weight, reason, stargateNFTs, validator] =
+      const [voter, proposalId, choice, weight, reason, stargateNFTs, validator] =
         event.decodedData as DecodedVoteCastEvent;
 
       const votedChoices = {
         proposalId: proposalId.toString(),
         voter,
-        choices: Number(choices).toString(2).split("").reverse(),
+        choice,
         weight: weight.toString(),
         reason,
         stargateNFTs: stargateNFTs.map(nft => nft.toString()),

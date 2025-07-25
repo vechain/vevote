@@ -8,9 +8,8 @@ export function createTestnetStagingConfig() {
     AUTHORITY_CONTRACT_ADDRESS: "0x0000000000000000000000417574686f72697479", // The contract address of the builtin Authority contract on mainnet
     QUORUM_PERCENTAGE: 20,
     INITIAL_MIN_VOTING_DELAY: 6, // 1 minute
-    INITIAL_MAX_VOTING_DURATION: 360, // 1 hour
+    INITIAL_MAX_VOTING_DURATION: 60480, // 1 hour
     INITIAL_MIN_VOTING_DURATION: 6, // 1 minute
-    INITIAL_MAX_CHOICES: 32, // TODO: Update this value
     MIN_VET_STAKE: 10000000000000000000000n, // Dawn
   });
 }

@@ -751,38 +751,6 @@ type RootTranslation = {
 				 * W​r​i​t​e​ ​t​h​e​ ​v​o​t​i​n​g​ ​o​p​t​i​o​n​.​.​.
 				 */
 				voting_option_placeholder: string
-				voting_types: {
-					single_choice: {
-						/**
-						 * S​i​n​g​l​e​ ​c​h​o​i​c​e
-						 */
-						title: string
-						/**
-						 * Y​e​s​ ​/​ ​N​o​ ​/​ ​A​b​s​t​a​i​n
-						 */
-						subtitle: string
-					}
-					single_option: {
-						/**
-						 * S​i​n​g​l​e​ ​c​h​o​i​c​e
-						 */
-						title: string
-						/**
-						 * V​o​t​e​r​ ​c​a​n​ ​s​e​l​e​c​t​ ​1​ ​o​f​ ​m​u​l​t​i​p​l​e​ ​o​p​t​i​o​n​s
-						 */
-						subtitle: string
-					}
-					multi_options: {
-						/**
-						 * M​u​l​t​i​p​l​e​ ​c​h​o​i​c​e
-						 */
-						title: string
-						/**
-						 * V​o​t​e​r​ ​c​a​n​ ​s​e​l​e​c​t​ ​1​ ​o​r​ ​m​o​r​e​ ​o​p​t​i​o​n​s
-						 */
-						subtitle: string
-					}
-				}
 			}
 			summary_form: {
 				main_details: {
@@ -816,17 +784,9 @@ type RootTranslation = {
 					limit: RequiredParams<'limit' | 'min'>
 					types: {
 						/**
-						 * S​i​n​g​l​e​ ​c​h​o​i​c​e​ ​-​ ​Y​e​s​ ​/​ ​N​o​ ​/​ ​A​b​s​t​a​i​n
+						 * S​i​n​g​l​e​ ​c​h​o​i​c​e​ ​-​ ​F​o​r​ ​/​ ​A​g​a​i​n​s​t​ ​/​ ​A​b​s​t​a​i​n
 						 */
 						SINGLE_CHOICE: string
-						/**
-						 * S​i​n​g​l​e​ ​c​h​o​i​c​e​ ​-​ ​M​u​l​t​i​p​l​e​ ​v​o​t​i​n​g​ ​o​p​t​i​o​n​s
-						 */
-						SINGLE_OPTION: string
-						/**
-						 * M​u​l​t​i​p​l​e​ ​c​h​o​i​c​e​ ​-​ ​M​u​l​t​i​p​l​e​ ​v​o​t​i​n​g​ ​o​p​t​i​o​n​s
-						 */
-						MULTIPLE_OPTIONS: string
 					}
 				}
 				/**
@@ -1742,38 +1702,6 @@ JPG, PNG or SVG of maximum of {size}MB.
 				 * Write the voting option...
 				 */
 				voting_option_placeholder: () => LocalizedString
-				voting_types: {
-					single_choice: {
-						/**
-						 * Single choice
-						 */
-						title: () => LocalizedString
-						/**
-						 * Yes / No / Abstain
-						 */
-						subtitle: () => LocalizedString
-					}
-					single_option: {
-						/**
-						 * Single choice
-						 */
-						title: () => LocalizedString
-						/**
-						 * Voter can select 1 of multiple options
-						 */
-						subtitle: () => LocalizedString
-					}
-					multi_options: {
-						/**
-						 * Multiple choice
-						 */
-						title: () => LocalizedString
-						/**
-						 * Voter can select 1 or more options
-						 */
-						subtitle: () => LocalizedString
-					}
-				}
 			}
 			summary_form: {
 				main_details: {
@@ -1805,17 +1733,9 @@ JPG, PNG or SVG of maximum of {size}MB.
 					limit: (arg: { limit: number, min: number }) => LocalizedString
 					types: {
 						/**
-						 * Single choice - Yes / No / Abstain
+						 * Single choice - For / Against / Abstain
 						 */
 						SINGLE_CHOICE: () => LocalizedString
-						/**
-						 * Single choice - Multiple voting options
-						 */
-						SINGLE_OPTION: () => LocalizedString
-						/**
-						 * Multiple choice - Multiple voting options
-						 */
-						MULTIPLE_OPTIONS: () => LocalizedString
 					}
 				}
 				/**
