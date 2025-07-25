@@ -12,4 +12,5 @@ export enum ResourcesLinks {
 
 export enum VeVoteLinks {
   VEVOTE_DOCS = "https://vechain-foundation-san-marino.gitbook.io/vevote",
+  SUPPORT = "https://vevote.vechain.org/support", //TODO: update once support credentials are available
 }

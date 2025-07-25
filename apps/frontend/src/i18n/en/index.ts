@@ -325,6 +325,7 @@ const en = {
       title: "Resources",
       docs: "Documentation",
       stargate: "StarGate",
+      support: "Support",
     },
   },
 } satisfies BaseTranslation;

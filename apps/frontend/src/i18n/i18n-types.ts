@@ -1024,6 +1024,10 @@ type RootTranslation = {
 			 * S​t​a​r​G​a​t​e
 			 */
 			stargate: string
+			/**
+			 * S​u​p​p​o​r​t
+			 */
+			support: string
 		}
 	}
 }
@@ -2024,6 +2028,10 @@ JPG, PNG or SVG of maximum of {size}MB.
 			 * StarGate
 			 */
 			stargate: () => LocalizedString
+			/**
+			 * Support
+			 */
+			support: () => LocalizedString
 		}
 	}
 }

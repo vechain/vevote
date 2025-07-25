@@ -80,6 +80,7 @@ const DocLinks = () => {
         <Flex flexDirection={"column"} alignItems={"start"} gap={3}>
           <FooterLink href={VeVoteLinks.VEVOTE_DOCS}>{LL.footer.resources.docs()}</FooterLink>
           <FooterLink href={ResourcesLinks.STARGATE}>{LL.footer.resources.stargate()}</FooterLink>
+          <FooterLink href={VeVoteLinks.SUPPORT}>{LL.footer.resources.support()}</FooterLink>
         </Flex>
       </Flex>
     </Flex>
