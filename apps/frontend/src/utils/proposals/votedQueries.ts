@@ -35,30 +35,33 @@ export const getHasVoted = async (proposalId?: string, address?: string) => {
   }
 };
 
-export const getVotedChoices = async (thor: ThorClient, proposalId?: string, address?: string) => {
+export const getVoteResults = async (
+  thor: ThorClient,
+  { address, proposalIds }: { proposalIds?: string[]; address?: string },
+) => {
   if (!thor) {
-    return { votedChoices: undefined };
+    return { votes: undefined };
   }
 
   try {
     const eventAbi = thor.contracts.load(contractAddress, VeVote__factory.abi).getEventAbi("VoteCast");
 
-    const topics = eventAbi.encodeFilterTopicsNoNull({
-      voter: address,
-      proposalId,
-    });
+    const topicsArray = proposalIds?.map(p =>
+      eventAbi.encodeFilterTopicsNoNull({
+        voter: address,
+        proposalId: p,
+      }),
+    );
 
-    const filterCriteria = [
-      {
+    const filterCriteria =
+      topicsArray?.map(topics => ({
         criteria: {
           address: contractAddress,
           topic0: eventAbi.signatureHash,
-          topic1: topics[1] ?? undefined,
-          topic2: topics[2] ?? undefined,
+          topic1: topics?.[1],
         },
         eventAbi,
-      },
-    ];
+      })) || [];
 
     const events = await getAllEventLogs({ thor, nodeUrl, filterCriteria });
 
@@ -66,7 +69,7 @@ export const getVotedChoices = async (thor: ThorClient, proposalId?: string, add
       const [voter, proposalId, choice, weight, reason, stargateNFTs, validator] =
         event.decodedData as DecodedVoteCastEvent;
 
-      const votedChoices = {
+      const votes = {
         proposalId: proposalId.toString(),
         voter,
         choice,
@@ -78,11 +81,11 @@ export const getVotedChoices = async (thor: ThorClient, proposalId?: string, add
         transactionId: event.meta.txID,
       };
 
-      return votedChoices;
+      return votes;
     });
 
     return {
-      votedChoices: votedEvents,
+      votes: votedEvents,
     };
   } catch (error) {
     console.error(error);
@@ -90,7 +93,7 @@ export const getVotedChoices = async (thor: ThorClient, proposalId?: string, add
   }
 };
 
-export const getVotesResults = async (proposalId?: string, size?: number, page?: number) => {
+export const getVotesResultsPerProposal = async (proposalId?: string, size?: number, page?: number) => {
   if (!proposalId) return { results: undefined };
 
   try {

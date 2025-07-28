@@ -1,22 +1,25 @@
-import { useVotesResults } from "@/hooks/useCastVote";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { AbstainIcon, DisLikeIcon, LikeIcon } from "@/icons";
+import { VotesCastResult } from "@/types/votes";
 import { Flex, FlexProps, Icon, Text } from "@chakra-ui/react";
 import { useCallback, useMemo } from "react";
 
-export const ProposalCardVotesResults = ({ proposalId }: { proposalId: string }) => {
-  const { results } = useVotesResults({ proposalId });
+export const ProposalCardVotesResults = ({ results }: { proposalId: string; results: VotesCastResult[] }) => {
+  const totalPerVotes = useMemo(() => {
+    return results.reduce((sum, result) => sum + (Number(result.weight) ?? 0), 0);
+  }, [results]);
 
   const proposalVotes = useMemo(() => {
     return (
-      results?.data.reduce(
+      results?.reduce(
         (acc, vote) => {
-          if (vote.support === "FOR") {
-            acc.for += vote.totalWeight;
-          } else if (vote.support === "AGAINST") {
-            acc.against += vote.totalWeight;
-          } else if (vote.support === "ABSTAIN") {
-            acc.abstain += vote.totalWeight;
+          const weight = Number(vote.weight);
+          if (vote.choice === 1) {
+            acc.for += weight;
+          } else if (vote.choice === 0) {
+            acc.against += weight;
+          } else if (vote.choice === 2) {
+            acc.abstain += weight;
           }
           return acc;
         },
@@ -27,10 +30,19 @@ export const ProposalCardVotesResults = ({ proposalId }: { proposalId: string })
         },
       ) || { for: 0, against: 0, abstain: 0 }
     );
-  }, [results?.data]);
+  }, [results]);
+
+  const proposalVotesPercentage = useMemo(() => {
+    return {
+      for: Number(((proposalVotes.for / totalPerVotes) * 100 || 0).toFixed()),
+      against: Number(((proposalVotes.against / totalPerVotes) * 100 || 0).toFixed()),
+      abstain: Number(((proposalVotes.abstain / totalPerVotes) * 100 || 0).toFixed()),
+    };
+  }, [proposalVotes, totalPerVotes]);
 
   const isMostVOted = useCallback(
     (voteCount: number) => {
+      if (voteCount === 0) return false;
       const highestVoteCount = Math.max(proposalVotes.for, proposalVotes.against, proposalVotes.abstain);
       return voteCount === highestVoteCount;
     },
@@ -39,9 +51,17 @@ export const ProposalCardVotesResults = ({ proposalId }: { proposalId: string })
 
   return (
     <Flex alignItems={"center"} gap={4}>
-      <VoteBadge isMostVoted={isMostVOted(proposalVotes.for)} icon={LikeIcon} votes={proposalVotes.for} />
-      <VoteBadge isMostVoted={isMostVOted(proposalVotes.abstain)} icon={AbstainIcon} votes={proposalVotes.abstain} />
-      <VoteBadge isMostVoted={isMostVOted(proposalVotes.against)} icon={DisLikeIcon} votes={proposalVotes.against} />
+      <VoteBadge isMostVoted={isMostVOted(proposalVotes.for)} icon={LikeIcon} votes={proposalVotesPercentage.for} />
+      <VoteBadge
+        isMostVoted={isMostVOted(proposalVotes.abstain)}
+        icon={AbstainIcon}
+        votes={proposalVotesPercentage.abstain}
+      />
+      <VoteBadge
+        isMostVoted={isMostVOted(proposalVotes.against)}
+        icon={DisLikeIcon}
+        votes={proposalVotesPercentage.against}
+      />
     </Flex>
   );
 };

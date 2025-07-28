@@ -22,6 +22,10 @@ type RootTranslation = {
 	 */
 	by: string
 	/**
+	 * N​o​t​ ​p​u​b​l​i​s​h​e​d
+	 */
+	not_published: string
+	/**
 	 * H​o​m​e​p​a​g​e
 	 */
 	homepage: string
@@ -1045,6 +1049,10 @@ export type TranslationFunctions = {
 	 * by
 	 */
 	by: () => LocalizedString
+	/**
+	 * Not published
+	 */
+	not_published: () => LocalizedString
 	/**
 	 * Homepage
 	 */

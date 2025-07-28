@@ -9,7 +9,7 @@ export const useFormatDate = () => {
     const hours = dateJs.diff(dayjs(), "hours") % 24;
     const minutes = dateJs.diff(dayjs(), "minutes") % 60;
 
-    const daysString = days > 1 ? `${days} days` : days > 0 ? `${days} day` : undefined;
+    const daysString = days > 0 ? `${days}d` : undefined;
     const hoursString = hours > 0 ? `${hours}h` : undefined;
     const minutesString = minutes > 0 ? `${minutes}min` : undefined;
 
@@ -30,10 +30,16 @@ export const useFormatDate = () => {
     return dayjs(date).format("DD/MM/YYYY - HH[h]:mm[m]");
   }, []);
 
-  const formattedProposalCardDate = useCallback((date?: Date) => {
-    if (!date) return;
-    return dayjs(date).format("D[d |] HH[h |] mm[m]");
-  }, []);
+  const formattedProposalCardDate = useCallback(
+    (date?: Date) => {
+      if (!date) return;
+      const { days, hours, minutes } = leftVotingDate(date) || {};
+      if (!days) return `${hours} | ${minutes}`;
+      if (!days && !hours) return `${minutes}`;
+      return `${days} | ${hours} | ${minutes}`;
+    },
+    [leftVotingDate],
+  );
   return {
     leftVotingDate,
     formattedDate,

@@ -1,7 +1,7 @@
 import { ProposalCardType } from "@/types/proposal";
 import { useVevoteSendTransaction } from "@/utils/hooks/useVevoteSendTransaction";
 import { fromStringToUint256 } from "@/utils/proposals/helpers";
-import { getHasVoted, getVotedChoices, getVotesResults } from "@/utils/proposals/votedQueries";
+import { getHasVoted, getVoteResults, getVotesResultsPerProposal } from "@/utils/proposals/votedQueries";
 import { getConfig } from "@repo/config";
 import { VeVote__factory } from "@repo/contracts";
 import { useQuery } from "@tanstack/react-query";
@@ -64,28 +64,28 @@ export const useCastVote = ({ proposalId, masterNode }: { proposalId?: string; m
   });
 };
 
-export const useVotedChoices = ({ proposalId, enabled }: { proposalId?: string; enabled?: boolean }) => {
+export const useVoteResults = ({ proposalIds, enabled }: { proposalIds?: string[]; enabled?: boolean }) => {
   const { account } = useWallet();
   const thor = useThor();
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ["votedChoices", proposalId, account?.address],
-    queryFn: async () => await getVotedChoices(thor, proposalId, account?.address),
-    enabled: enabled && !!thor && !!proposalId && !!account?.address,
+    queryKey: ["votedChoices", proposalIds, account?.address],
+    queryFn: async () => await getVoteResults(thor, { proposalIds, address: account?.address }),
+    enabled: enabled && !!thor && !!account?.address,
   });
 
   return {
-    votedChoices: data?.votedChoices?.[0],
+    votes: data?.votes,
     isLoading,
     error,
   };
 };
 
-export const useVotesResults = ({ proposalId, size }: { proposalId?: string; size?: number }) => {
+export const useVoteResultsPerProposal = ({ proposalId, size }: { proposalId?: string; size?: number }) => {
   const { data, isLoading, error } = useQuery({
     queryKey: ["votesResults", proposalId],
-    queryFn: async () => await getVotesResults(proposalId, size),
-    refetchInterval: 10000,
+    queryFn: async () => await getVotesResultsPerProposal(proposalId, size),
+    // refetchInterval: 10000, // Uncomment if you want to refetch results periodically
   });
 
   return {
@@ -95,17 +95,17 @@ export const useVotesResults = ({ proposalId, size }: { proposalId?: string; siz
   };
 };
 
-export const useVotesInfo = ({ proposalId }: { proposalId: string }) => {
+export const useVotesInfo = ({ proposalIds }: { proposalIds: string[] }) => {
   const thor = useThor();
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ["votedChoices", proposalId],
-    queryFn: async () => await getVotedChoices(thor, proposalId),
-    enabled: !!thor && !!proposalId,
+    queryKey: ["votedChoices", proposalIds],
+    queryFn: async () => await getVoteResults(thor, { proposalIds }),
+    enabled: !!thor,
   });
 
   return {
-    votedInfo: data?.votedChoices,
+    votedInfo: data?.votes,
     isLoading,
     error,
   };

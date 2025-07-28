@@ -3,6 +3,7 @@ import type { BaseTranslation } from "../i18n-types.js";
 const en = {
   left: "Left",
   by: "by",
+  not_published: "Not published",
   homepage: "Homepage",
   back: "Back",
   start: "Start",

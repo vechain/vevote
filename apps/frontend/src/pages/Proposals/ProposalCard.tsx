@@ -11,7 +11,7 @@ import { Flex, Text } from "@chakra-ui/react";
 import { useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 
-export const ProposalCard = ({ status, title, endDate, startDate, id, proposer }: ProposalCardType) => {
+export const ProposalCard = ({ status, title, endDate, startDate, id, proposer, results }: ProposalCardType) => {
   const navigate = useNavigate();
 
   const onClick = useCallback(() => {
@@ -48,7 +48,7 @@ export const ProposalCard = ({ status, title, endDate, startDate, id, proposer }
       alignItems={"start"}
       flexDirection={"column"}>
       <TopBar title={title} proposer={proposer} />
-      <BottomBar status={status} endDate={endDate} startDate={startDate} id={id} />
+      <BottomBar status={status} endDate={endDate} startDate={startDate} id={id} results={results} />
     </Flex>
   );
 };
@@ -88,7 +88,9 @@ const BottomBar = ({
   endDate,
   status,
   id,
-}: Pick<ProposalCardType, "endDate" | "startDate" | "status" | "id">) => {
+  results,
+}: Pick<ProposalCardType, "endDate" | "startDate" | "status" | "id" | "results">) => {
+  const { LL } = useI18nContext();
   const variant = useMemo(() => {
     switch (status) {
       case "min-not-reached":
@@ -101,6 +103,10 @@ const BottomBar = ({
   const showDate = useMemo(() => {
     return status === "upcoming" || status === "voting";
   }, [status]);
+
+  const showResults = useMemo(() => {
+    return ["voting", "approved", "executed", "rejected"].includes(variant);
+  }, [variant]);
   return (
     <Flex
       width={"100%"}
@@ -110,9 +116,14 @@ const BottomBar = ({
       gap={4}>
       <Flex gap={4} alignItems={"center"} width={"fit-content"}>
         <IconBadge variant={variant} />
+        {status === "draft" && (
+          <Text color={"gray.500"} fontSize={{ base: "12px", md: "14px" }}>
+            {LL.not_published()}
+          </Text>
+        )}
         {showDate && <DateItem startDate={startDate} endDate={endDate} status={status} />}
       </Flex>
-      <ProposalCardVotesResults proposalId={id} />
+      {showResults && <ProposalCardVotesResults proposalId={id} results={results || []} />}
     </Flex>
   );
 };

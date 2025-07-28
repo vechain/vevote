@@ -1,4 +1,5 @@
 import { ProposalDetails } from "@/pages/CreateProposal/CreateProposalProvider";
+import { VotesCastResult } from "./votes";
 
 export enum CreateProposalStep {
   VOTING_DETAILS,
@@ -28,6 +29,7 @@ export type ProposalCardType = ProposalDetails & {
   proposer: string;
   createdAt: Date;
   reason?: string;
+  results?: VotesCastResult[];
   executedProposalLink?: string;
 };
 

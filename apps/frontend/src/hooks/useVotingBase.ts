@@ -1,6 +1,6 @@
 import { ProposalStatus } from "@/types/proposal";
 import { useMemo, useCallback, useState, useEffect } from "react";
-import { useCastVote, useHasVoted, useVotedChoices } from "./useCastVote";
+import { useCastVote, useHasVoted, useVoteResults } from "./useCastVote";
 import { VotingItemVariant } from "@/components/proposal/VotingItem";
 import { getVotingVariant } from "@/utils/voting";
 import { trackEvent, MixPanelEvent } from "@/utils/mixpanel/utilsMixpanel";
@@ -23,10 +23,12 @@ export const useVotingBase = (proposal: { id: string; status: ProposalStatus; st
   const enabled = useMemo(() => SHOW_RESULTS_STATUSES.includes(proposal.status), [proposal.status]);
   const { account } = useWallet();
 
-  const { votedChoices } = useVotedChoices({
-    proposalId: proposal.id,
+  const { votes } = useVoteResults({
+    proposalIds: [proposal.id],
     enabled,
   });
+
+  const singleVote = useMemo(() => votes?.[0], [votes]);
 
   const { hasVoted } = useHasVoted({ proposalId: proposal.id });
 
@@ -37,8 +39,8 @@ export const useVotingBase = (proposal: { id: string; status: ProposalStatus; st
   const { masterNode } = useNodes();
 
   const commentDisabled = useMemo(() => {
-    return votingVariant === "upcoming" || (votingVariant === "voting" && Boolean(votedChoices?.reason)) || hasVoted;
-  }, [votingVariant, votedChoices?.reason, hasVoted]);
+    return votingVariant === "upcoming" || (votingVariant === "voting" && Boolean(singleVote?.reason)) || hasVoted;
+  }, [votingVariant, singleVote?.reason, hasVoted]);
 
   const { sendTransaction: originalSendTransaction, isTransactionPending } = useCastVote({
     proposalId: proposal.id,
@@ -81,15 +83,15 @@ export const useVotingBase = (proposal: { id: string; status: ProposalStatus; st
   );
 
   useEffect(() => {
-    if (account?.address && votedChoices?.reason) {
-      setComment(votedChoices.reason);
-    } else if (!account?.address || !votedChoices?.reason) {
+    if (account?.address && singleVote?.reason) {
+      setComment(singleVote.reason);
+    } else if (!account?.address || !singleVote?.reason) {
       setComment(undefined);
     }
-  }, [account?.address, votedChoices?.reason]);
+  }, [account?.address, singleVote?.reason]);
 
   return {
-    votedChoices,
+    votes: singleVote,
     votingVariant,
     sendTransaction,
     isTransactionPending,
