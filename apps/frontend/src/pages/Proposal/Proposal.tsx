@@ -1,19 +1,16 @@
-import { ProposalNavbar } from "@/components/navbar/Navbar";
 import { PageContainer } from "@/components/PageContainer";
-import { CancelProposal } from "@/components/proposal/CancelProposal";
-import { DeleteEditProposal } from "@/components/proposal/DeleteEditProposal";
-import { ExecuteModal } from "@/components/proposal/ExecuteModal";
+// import { CancelProposal } from "@/components/proposal/CancelProposal";
+// import { DeleteEditProposal } from "@/components/proposal/DeleteEditProposal";
+// import { ExecuteModal } from "@/components/proposal/ExecuteModal";
 import { ProposalProvider } from "@/components/proposal/ProposalProvider";
-import { BackButton } from "@/components/ui/BackButton";
 import { SingleProposalSkeleton } from "@/components/ui/SingleProposalSkeleton";
-import { VotedChip } from "@/components/ui/VotedChip";
-import { useUser } from "@/contexts/UserProvider";
-import { useHasVoted } from "@/hooks/useCastVote";
+// import { VotedChip } from "@/components/ui/VotedChip";
+// import { useUser } from "@/contexts/UserProvider";
+// import { useHasVoted } from "@/hooks/useCastVote";
 import { useProposalEvents } from "@/hooks/useProposalEvent";
 import { useI18nContext } from "@/i18n/i18n-react";
-import { ArrowRightIcon } from "@/icons";
-import { ProposalCardType } from "@/types/proposal";
-import { Box, Flex, Icon, Text, useBreakpointValue } from "@chakra-ui/react";
+// import { ProposalCardType } from "@/types/proposal";
+import { Box, Flex, Text, useBreakpointValue } from "@chakra-ui/react";
 import { useWallet } from "@vechain/vechain-kit";
 import { useEffect, useMemo } from "react";
 import { useNavigate, useParams } from "react-router";
@@ -24,6 +21,7 @@ import { NewTimelineCard } from "./components/NewTimelineCard";
 import { NewBuyNodeCta } from "./components/NewBuyNodeCta";
 import { NewProposalHeader } from "./components/NewProposalHeader";
 import { NewDescriptionSection } from "./components/NewDescriptionSection";
+import { ProposalNavbar } from "./components/ProposalNavbar";
 
 export const Proposal = () => {
   const { LL } = useI18nContext();
@@ -50,41 +48,22 @@ export const Proposal = () => {
   }, [account?.address, navigate, params.proposalId]);
 
   return (
-    <>
-      <ProposalNavbar>
-        <Flex alignItems={"center"} gap={6} width={"full"}>
-          <BackButton />
-          <Text
-            display={{ base: "none", md: "flex" }}
-            fontSize={"14px"}
-            color={"primary.200"}
-            alignItems={"center"}
-            gap={1}>
-            {LL.homepage()} <Icon as={ArrowRightIcon} width={5} height={4} /> {LL.proposal.title()}
-          </Text>
-          {account?.address && <ProposalNavbarActions proposal={proposal} />}
-        </Flex>
-      </ProposalNavbar>
+    <Box bg={"white"}>
+      <ProposalNavbar />
 
       {isLoading ? (
         <PageContainer
           padding={0}
           paddingX={{ base: "20px", md: "40px" }}
           paddingTop={{ base: "112px", md: "192px" }}
-          paddingBottom={{ base: 10, md: 20 }}
-          bg={"white"}>
+          paddingBottom={{ base: 10, md: 20 }}>
           <SingleProposalSkeleton />
         </PageContainer>
       ) : !proposal ? (
         <Box>{"Proposal not found"}</Box>
       ) : (
         <ProposalProvider proposal={proposal}>
-          <PageContainer
-            padding={0}
-            paddingX={{ base: "24px", md: "80px" }}
-            paddingTop={{ base: "112px", md: "192px" }}
-            paddingBottom={{ base: "40px", md: "80px" }}
-            bg={"white"}>
+          <PageContainer bg={"white"}>
             {/* New layout structure */}
             <Flex
               flexDirection={{ base: "column-reverse", md: "column-reverse" }}
@@ -104,9 +83,14 @@ export const Proposal = () => {
                 alignItems={"start"}
                 order={2}>
                 {/* Left column - Main content */}
-                <Flex flexDirection={"column"} gap={{ base: "48px", md: "48px" }} flex={1} minW={0}>
+                <Flex flexDirection={"column"} flex={1} minW={0} gap={12}>
                   {/* Proposal Header with status badge and proposer info */}
                   <NewProposalHeader />
+
+                  {/* Proposal title */}
+                  <Text fontSize={{ base: "20px", md: "24px" }} fontWeight={500} color={"gray.800"} lineHeight={"1.33"}>
+                    {proposal.title}
+                  </Text>
 
                   {/* Title and Description */}
                   <NewDescriptionSection />
@@ -134,31 +118,31 @@ export const Proposal = () => {
           </PageContainer>
         </ProposalProvider>
       )}
-    </>
+    </Box>
   );
 };
 
-const ProposalNavbarActions = ({ proposal }: { proposal: ProposalCardType | undefined }) => {
-  const { hasVoted } = useHasVoted({ proposalId: proposal?.id || "" });
-  const { isExecutor, isWhitelisted } = useUser();
+// const ProposalNavbarActions = ({ proposal }: { proposal: ProposalCardType | undefined }) => {
+//   const { hasVoted } = useHasVoted({ proposalId: proposal?.id || "" });
+//   const { isExecutor, isWhitelisted } = useUser();
 
-  const canCancel = useMemo(
-    () => isWhitelisted && ["upcoming"].includes(proposal?.status || ""),
-    [isWhitelisted, proposal?.status],
-  );
+//   const canCancel = useMemo(
+//     () => isWhitelisted && ["upcoming"].includes(proposal?.status || ""),
+//     [isWhitelisted, proposal?.status],
+//   );
 
-  const canEditDraft = useMemo(
-    () => isWhitelisted && ["draft"].includes(proposal?.status || ""),
-    [isWhitelisted, proposal?.status],
-  );
+//   const canEditDraft = useMemo(
+//     () => isWhitelisted && ["draft"].includes(proposal?.status || ""),
+//     [isWhitelisted, proposal?.status],
+//   );
 
-  return (
-    <Flex alignItems={"center"} gap={2} marginLeft={"auto"}>
-      {canEditDraft && <DeleteEditProposal />}
-      {canCancel && <CancelProposal proposalId={proposal?.id} />}
-      {isExecutor && proposal?.status === "approved" && <ExecuteModal proposalId={proposal?.id} />}
+//   return (
+//     <Flex alignItems={"center"} gap={2} marginLeft={"auto"}>
+//       {canEditDraft && <DeleteEditProposal />}
+//       {canCancel && <CancelProposal proposalId={proposal?.id} />}
+//       {isExecutor && proposal?.status === "approved" && <ExecuteModal proposalId={proposal?.id} />}
 
-      {["voting"].includes(proposal?.status || "") && hasVoted && <VotedChip />}
-    </Flex>
-  );
-};
+//       {["voting"].includes(proposal?.status || "") && hasVoted && <VotedChip />}
+//     </Flex>
+//   );
+// };

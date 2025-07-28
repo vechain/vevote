@@ -1,13 +1,10 @@
-import { useUser } from "@/contexts/UserProvider";
-import { useShowNavbar } from "@/hooks/useShowNavbar";
 import { Box, BoxProps, defineStyle, Flex, FlexProps, Link } from "@chakra-ui/react";
-import { PropsWithChildren, useMemo } from "react";
 import { ConnectButton } from "../ui/ConnectButton";
 import { VotingPowerModal } from "../proposal/VotingPowerModal";
 import { useWallet } from "@vechain/vechain-kit";
 import { VoteLogo } from "../ui/VoteLogo";
 
-const NavbarContainer = ({ children, ...restProps }: BoxProps) => {
+export const NavbarContainer = ({ children, ...restProps }: BoxProps) => {
   return (
     <Box
       transition={"all 0.3s"}
@@ -23,7 +20,7 @@ const NavbarContainer = ({ children, ...restProps }: BoxProps) => {
   );
 };
 
-const NavbarInnerContainer = ({ children, ...restProps }: FlexProps) => {
+export const NavbarInnerContainer = ({ children, ...restProps }: FlexProps) => {
   const { connection } = useWallet();
   return (
     <Flex
@@ -61,31 +58,6 @@ export const Navbar = () => {
           <VoteLogo height={{ base: "24px", md: "60px" }} />
         </Link>
       </NavbarInnerContainer>
-    </NavbarContainer>
-  );
-};
-
-export const ProposalNavbar = ({ children }: PropsWithChildren) => {
-  const { showBackground } = useShowNavbar();
-
-  const { isAdmin } = useUser();
-
-  const bgVariant = useMemo(() => {
-    if (!showBackground) {
-      return isAdmin
-        ? "rgba(38, 20, 112, 0.75)"
-        : "linear-gradient(102deg, rgba(38, 20, 112, 0.75) 0%, rgba(38, 20, 112, 0.75) 100%)";
-    } else {
-      return isAdmin ? "primary.800" : "linear-gradient(102deg, #351C9B 0%, #4324C6 100%)";
-    }
-  }, [showBackground, isAdmin]);
-  return (
-    <NavbarContainer
-      bg={bgVariant}
-      paddingX={{ base: 4, md: showBackground ? 20 : 6 }}
-      paddingY={{ base: 6, md: showBackground ? 10 : 6 }}
-      backdropBlur={!showBackground ? "md" : "none"}>
-      <NavbarInnerContainer>{children}</NavbarInnerContainer>
     </NavbarContainer>
   );
 };
