@@ -48,6 +48,10 @@ import { AlertTriangle } from "./AlertTriangle";
 import { Logout } from "./Logout";
 import { Node } from "./Node";
 import { MessageSquare } from "./MessageSquare";
+import { Comment } from "./Comment";
+import { Like } from "./Like";
+import { DisLike } from "./DisLike";
+import { Abstain } from "./Abstain";
 
 export {
   Vote as VoteIcon,
@@ -100,4 +104,8 @@ export {
   AlertTriangle as AlertTriangleIcon,
   Logout as LogoutIcon,
   Node as NodeIcon,
+  Comment as CommentIcon,
+  Like as LikeIcon,
+  DisLike as DisLikeIcon,
+  Abstain as AbstainIcon,
 };

@@ -2,6 +2,7 @@ import type { BaseTranslation } from "../i18n-types.js";
 
 const en = {
   left: "Left",
+  by: "by",
   homepage: "Homepage",
   back: "Back",
   start: "Start",
