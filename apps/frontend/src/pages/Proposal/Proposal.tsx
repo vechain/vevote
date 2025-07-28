@@ -1,14 +1,9 @@
 import { ProposalNavbar } from "@/components/navbar/Navbar";
 import { PageContainer } from "@/components/PageContainer";
-import { BuyANode } from "@/components/proposal/BuyANode";
 import { CancelProposal } from "@/components/proposal/CancelProposal";
 import { DeleteEditProposal } from "@/components/proposal/DeleteEditProposal";
 import { ExecuteModal } from "@/components/proposal/ExecuteModal";
-import { ProposalDetailsCards } from "@/components/proposal/ProposalDetailsCards";
-import { ProposalInfoBox } from "@/components/proposal/ProposalInfoBox";
-import { ProposalInfos } from "@/components/proposal/ProposalInfos";
 import { ProposalProvider } from "@/components/proposal/ProposalProvider";
-import { VotingSection } from "@/components/proposal/VotingSection";
 import { BackButton } from "@/components/ui/BackButton";
 import { SingleProposalSkeleton } from "@/components/ui/SingleProposalSkeleton";
 import { VotedChip } from "@/components/ui/VotedChip";
@@ -18,13 +13,17 @@ import { useProposalEvents } from "@/hooks/useProposalEvent";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { ArrowRightIcon } from "@/icons";
 import { ProposalCardType } from "@/types/proposal";
-import { sanitizeImageUrl } from "@/utils/proposals/helpers";
-import { Box, Flex, Icon, Image, Text } from "@chakra-ui/react";
+import { Box, Flex, Icon, Text, useBreakpointValue } from "@chakra-ui/react";
 import { useWallet } from "@vechain/vechain-kit";
 import { useEffect, useMemo } from "react";
 import { useNavigate, useParams } from "react-router";
 import { useCreateProposal } from "../CreateProposal/CreateProposalProvider";
 import { Routes } from "@/types/routes";
+import { NewVotingCard } from "./components/NewVotingCard";
+import { NewTimelineCard } from "./components/NewTimelineCard";
+import { NewBuyNodeCta } from "./components/NewBuyNodeCta";
+import { NewProposalHeader } from "./components/NewProposalHeader";
+import { NewDescriptionSection } from "./components/NewDescriptionSection";
 
 export const Proposal = () => {
   const { LL } = useI18nContext();
@@ -32,6 +31,7 @@ export const Proposal = () => {
   const { account } = useWallet();
   const params = useParams();
   const navigate = useNavigate();
+  const isMobile = useBreakpointValue({ base: true, md: false });
 
   const proposalId = useMemo(() => {
     if (params.proposalId !== "draft") return params.proposalId;
@@ -81,30 +81,55 @@ export const Proposal = () => {
         <ProposalProvider proposal={proposal}>
           <PageContainer
             padding={0}
-            paddingX={{ base: "20px", md: "40px" }}
+            paddingX={{ base: "24px", md: "80px" }}
             paddingTop={{ base: "112px", md: "192px" }}
-            paddingBottom={{ base: 10, md: 20 }}
+            paddingBottom={{ base: "40px", md: "80px" }}
             bg={"white"}>
-            <Flex flexDirection={"column"} gap={10} width={"full"}>
-              <Image
-                src={sanitizeImageUrl(proposal.headerImage?.url)}
-                borderRadius={16}
-                alt="Proposal Header"
-                width={"100%"}
-                aspectRatio={"5/2"}
-                objectFit={"cover"}
-              />
-              <PageContainer.Header flexDirection={"column"} gap={10} alignItems={"start"}>
-                <ProposalInfos />
-                <ProposalDetailsCards />
-                <ProposalInfoBox canceledReason={proposal.reason} />
-              </PageContainer.Header>
-              {proposal.status !== "canceled" && (
-                <>
-                  <VotingSection />
-                  <BuyANode />
-                </>
-              )}
+            {/* New layout structure */}
+            <Flex
+              flexDirection={{ base: "column-reverse", md: "column-reverse" }}
+              gap={{ base: "40px", md: "48px" }}
+              width={"full"}>
+              {/* Breadcrumbs */}
+              <Flex gap={1} alignItems={"center"} fontSize={"14px"} fontWeight={500} order={3}>
+                <Text color={"gray.600"}>{LL.homepage()}</Text>
+                <Text color={"gray.400"}>{"→"}</Text>
+                <Text color={"gray.600"}>{LL.proposal.title()}</Text>
+              </Flex>
+
+              {/* Main content area */}
+              <Flex
+                flexDirection={{ base: "column", md: "row" }}
+                gap={{ base: "24px", md: "64px" }}
+                alignItems={"start"}
+                order={2}>
+                {/* Left column - Main content */}
+                <Flex flexDirection={"column"} gap={{ base: "48px", md: "48px" }} flex={1} minW={0}>
+                  {/* Proposal Header with status badge and proposer info */}
+                  <NewProposalHeader />
+
+                  {/* Title and Description */}
+                  <NewDescriptionSection />
+                </Flex>
+
+                {/* Right column - Voting and Timeline cards */}
+                {!isMobile && (
+                  <Flex flexDirection={"column"} gap={6} minW={"480px"}>
+                    <NewVotingCard />
+                    <NewTimelineCard />
+                  </Flex>
+                )}
+
+                {/* Mobile: Voting and Timeline cards below description */}
+                {isMobile && (
+                  <Flex flexDirection={"column"} gap={6} width={"100%"}>
+                    <NewVotingCard />
+                  </Flex>
+                )}
+              </Flex>
+
+              {/* Buy Node CTA */}
+              <NewBuyNodeCta order={1} />
             </Flex>
           </PageContainer>
         </ProposalProvider>
