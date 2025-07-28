@@ -1,31 +1,47 @@
+import { useVotesResults } from "@/hooks/useCastVote";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { AbstainIcon, DisLikeIcon, LikeIcon } from "@/icons";
 import { Flex, FlexProps, Icon, Text } from "@chakra-ui/react";
 import { useCallback, useMemo } from "react";
 
-export const ProposalCardVotesResults = () => {
-  const votes = useMemo(
-    () => ({
-      forVotes: 100, // Replace with actual data
-      againstVotes: 50, // Replace with actual data
-      abstainVotes: 25, // Replace with actual data
-    }),
-    [],
-  );
+export const ProposalCardVotesResults = ({ proposalId }: { proposalId: string }) => {
+  const { results } = useVotesResults({ proposalId });
+
+  const proposalVotes = useMemo(() => {
+    return (
+      results?.data.reduce(
+        (acc, vote) => {
+          if (vote.support === "FOR") {
+            acc.for += vote.totalWeight;
+          } else if (vote.support === "AGAINST") {
+            acc.against += vote.totalWeight;
+          } else if (vote.support === "ABSTAIN") {
+            acc.abstain += vote.totalWeight;
+          }
+          return acc;
+        },
+        {
+          for: 0,
+          against: 0,
+          abstain: 0,
+        },
+      ) || { for: 0, against: 0, abstain: 0 }
+    );
+  }, [results?.data]);
 
   const isMostVOted = useCallback(
     (voteCount: number) => {
-      const highestVoteCount = Math.max(votes.forVotes, votes.againstVotes, votes.abstainVotes);
+      const highestVoteCount = Math.max(proposalVotes.for, proposalVotes.against, proposalVotes.abstain);
       return voteCount === highestVoteCount;
     },
-    [votes],
+    [proposalVotes.abstain, proposalVotes.against, proposalVotes.for],
   );
 
   return (
     <Flex alignItems={"center"} gap={4}>
-      <VoteBadge isMostVoted={isMostVOted(votes.forVotes)} icon={LikeIcon} votes={votes.forVotes} />
-      <VoteBadge isMostVoted={isMostVOted(votes.againstVotes)} icon={DisLikeIcon} votes={votes.againstVotes} />
-      <VoteBadge isMostVoted={isMostVOted(votes.abstainVotes)} icon={AbstainIcon} votes={votes.abstainVotes} />
+      <VoteBadge isMostVoted={isMostVOted(proposalVotes.for)} icon={LikeIcon} votes={proposalVotes.for} />
+      <VoteBadge isMostVoted={isMostVOted(proposalVotes.abstain)} icon={AbstainIcon} votes={proposalVotes.abstain} />
+      <VoteBadge isMostVoted={isMostVOted(proposalVotes.against)} icon={DisLikeIcon} votes={proposalVotes.against} />
     </Flex>
   );
 };

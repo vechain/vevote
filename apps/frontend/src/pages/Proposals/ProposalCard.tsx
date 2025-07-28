@@ -48,7 +48,7 @@ export const ProposalCard = ({ status, title, endDate, startDate, id, proposer }
       alignItems={"start"}
       flexDirection={"column"}>
       <TopBar title={title} proposer={proposer} />
-      <BottomBar status={status} endDate={endDate} startDate={startDate} />
+      <BottomBar status={status} endDate={endDate} startDate={startDate} id={id} />
     </Flex>
   );
 };
@@ -83,7 +83,12 @@ const TopBar = ({ title, proposer }: { title: string; proposer: string }) => {
   );
 };
 
-const BottomBar = ({ startDate, endDate, status }: Pick<ProposalCardType, "endDate" | "startDate" | "status">) => {
+const BottomBar = ({
+  startDate,
+  endDate,
+  status,
+  id,
+}: Pick<ProposalCardType, "endDate" | "startDate" | "status" | "id">) => {
   const variant = useMemo(() => {
     switch (status) {
       case "min-not-reached":
@@ -107,7 +112,7 @@ const BottomBar = ({ startDate, endDate, status }: Pick<ProposalCardType, "endDa
         <IconBadge variant={variant} />
         {showDate && <DateItem startDate={startDate} endDate={endDate} status={status} />}
       </Flex>
-      <ProposalCardVotesResults />
+      <ProposalCardVotesResults proposalId={id} />
     </Flex>
   );
 };

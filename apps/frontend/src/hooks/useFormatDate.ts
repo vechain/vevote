@@ -32,7 +32,7 @@ export const useFormatDate = () => {
 
   const formattedProposalCardDate = useCallback((date?: Date) => {
     if (!date) return;
-    return dayjs(date).format("D[d |] HH [h |] mm[m]");
+    return dayjs(date).format("D[d |] HH[h |] mm[m]");
   }, []);
   return {
     leftVotingDate,
