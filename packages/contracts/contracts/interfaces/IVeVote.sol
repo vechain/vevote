@@ -131,12 +131,12 @@ interface IVeVote is IERC165, IERC6372 {
    * @param canceller The address that canceled the proposal.
    * @param reason The reason for canceling the proposal.
    */
-  event ProposalCanceled(uint256 proposalId, address canceller, string reason);
+  event ProposalCanceled(uint256 indexed proposalId, address canceller, string reason);
 
   /**
    * @dev Emitted when a proposal is executed.
    */
-  event VeVoteProposalExecuted(uint256 proposalId, string comment);
+  event VeVoteProposalExecuted(uint256 indexed proposalId, string comment);
 
   /**
    * @notice Emitted when the quorum numerator is updated.
@@ -222,17 +222,6 @@ interface IVeVote is IERC165, IERC6372 {
    * @param updatedMultipliers The updated multipliers by level ID index.
    */
   event VoteMultipliersUpdated(uint256[] updatedMultipliers);
-
-  // ------------------------------- Structs -------------------------------
-  /**
-   * @notice Represents the result of a proposal vote.
-   * @param choice The label of the choice.
-   * @param weight The total votes for that choice.
-   */
-  struct ProposalVoteResult {
-    bytes32 choice;
-    uint256 weight;
-  }
 
   // ------------------------------- Getter Functions -------------------------------
   /**
