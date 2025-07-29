@@ -1,7 +1,7 @@
 import { ProposalsHeader } from "@/components/navbar/Header";
 import { PageContainer } from "@/components/PageContainer";
 import { CreateProposalButton } from "@/components/proposal/CreateProposalButton";
-import { FiltersDropdown } from "@/components/ui/FiltersDropDown";
+import { FiltersDropdown } from "@/components/ui/FiltersDropdown";
 import { Pagination } from "@/components/ui/Pagination";
 import { ProposalsListSkeleton } from "@/components/ui/ProposalsListSkeleton";
 import { SearchInput } from "@/components/ui/SearchInput";
@@ -9,13 +9,14 @@ import { useUser } from "@/contexts/UserProvider";
 import { useProposalsEvents } from "@/hooks/useProposalsEvents";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { CircleInfoIcon } from "@/icons";
-import { ProposalCardType, ProposalStatus } from "@/types/proposal";
+import { FilterStatuses, ProposalCardType } from "@/types/proposal";
 import { areAddressesEqual } from "@/utils/address";
-import { Flex, Heading, Icon, TabPanel, Text } from "@chakra-ui/react";
+import { Flex, Heading, Icon, Text } from "@chakra-ui/react";
 import { useWallet } from "@vechain/vechain-kit";
 import { PropsWithChildren, useMemo, useState } from "react";
 import { useCreateProposal } from "../CreateProposal/CreateProposalProvider";
 import { ProposalCard } from "./ProposalCard";
+import { filterStatus } from "@/utils/proposals/helpers";
 
 const ITEMS_PER_PAGE = 6;
 
@@ -27,18 +28,27 @@ export const Proposals = () => {
 
   const { draftProposal } = useCreateProposal();
   const [searchValue, setSearchValue] = useState("");
-  const [statuses, setStatuses] = useState<ProposalStatus[]>([]);
+  const [statuses, setStatuses] = useState<FilterStatuses[]>([
+    "approved",
+    "canceled",
+    "draft",
+    "executed",
+    "rejected",
+    "upcoming",
+    "voting",
+  ]);
 
   const { proposals, loading } = useProposalsEvents();
 
-  const proposalsBySearch = useMemo(() => {
+  const filteredProposals = useMemo(() => {
     const searchLower = searchValue.toLowerCase();
     const isDraftProposal = draftProposal && areAddressesEqual(draftProposal?.proposer, account?.address);
-    const filteredProposals = proposals.filter(({ title }) => title.toLowerCase().includes(searchLower)).reverse();
+    const filteredProposals = proposals
+      .filter(({ title }) => title.toLowerCase().includes(searchLower))
+      .filter(({ status }) => filterStatus(statuses, status))
+      .reverse();
     return isDraftProposal ? [draftProposal, ...filteredProposals] : filteredProposals;
-  }, [account?.address, draftProposal, proposals, searchValue]);
-
-  const filteredProposals = useMemo(() => proposalsBySearch, [proposalsBySearch]);
+  }, [account?.address, draftProposal, proposals, searchValue, statuses]);
 
   const canCreateProposal = useMemo(() => account?.address && isWhitelisted, [account?.address, isWhitelisted]);
 
@@ -126,30 +136,28 @@ const BasePanel = ({ children }: PropsWithChildren) => {
 const EmptyPanel = () => {
   const { LL } = useI18nContext();
   return (
-    <TabPanel>
+    <Flex
+      padding={20}
+      justifyContent={"center"}
+      alignItems={"center"}
+      bg={"white"}
+      direction={"column"}
+      borderRadius={16}
+      border={"1px"}
+      borderColor={"#F1F2F3"}
+      gap={6}>
       <Flex
-        padding={20}
+        borderRadius={"full"}
+        bg={"gray.100"}
+        width={20}
+        height={20}
         justifyContent={"center"}
-        alignItems={"center"}
-        bg={"white"}
-        direction={"column"}
-        borderRadius={16}
-        border={"1px"}
-        borderColor={"#F1F2F3"}
-        gap={6}>
-        <Flex
-          borderRadius={"full"}
-          bg={"gray.100"}
-          width={20}
-          height={20}
-          justifyContent={"center"}
-          alignItems={"center"}>
-          <Icon as={CircleInfoIcon} color={"gray.400"} width={8} height={8} />
-        </Flex>
-        <Text color={"gray.600"} fontSize={24} whiteSpace={"nowrap"}>
-          {LL.proposals.no_proposals()}
-        </Text>
+        alignItems={"center"}>
+        <Icon as={CircleInfoIcon} color={"gray.400"} width={8} height={8} />
       </Flex>
-    </TabPanel>
+      <Text color={"gray.600"} fontSize={24} whiteSpace={"nowrap"}>
+        {LL.proposals.no_proposals()}
+      </Text>
+    </Flex>
   );
 };

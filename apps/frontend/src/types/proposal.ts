@@ -23,6 +23,8 @@ export type ProposalStatus =
   | "rejected"
   | "min-not-reached";
 
+export type FilterStatuses = Omit<ProposalStatus, "min-not-reached">;
+
 export type ProposalCardType = ProposalDetails & {
   id: string;
   status: ProposalStatus;

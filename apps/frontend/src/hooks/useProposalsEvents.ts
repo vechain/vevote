@@ -2,7 +2,7 @@ import { IpfsDetails } from "@/types/ipfs";
 import { getProposalsFromIpfs } from "@/utils/ipfs/proposal";
 import { mergeIpfsDetails } from "@/utils/proposals/helpers";
 import { getProposalsEvents, getProposalsWithState } from "@/utils/proposals/proposalsQueries";
-import { getVoteResults } from "@/utils/proposals/votedQueries";
+import { getVoteCastResults } from "@/utils/proposals/votedQueries";
 import { useQuery } from "@tanstack/react-query";
 import { ThorClient, useThor } from "@vechain/vechain-kit";
 
@@ -10,7 +10,7 @@ const getProposals = async (thor: ThorClient) => {
   const data = await getProposalsEvents(thor);
   const proposals = data?.proposals || [];
 
-  const { votes } = await getVoteResults(thor, { proposalIds: proposals.map(p => p.id) });
+  const { votes } = await getVoteCastResults(thor, { proposalIds: proposals.map(p => p.id) });
 
   const ipfsFetches = proposals.map(p => getProposalsFromIpfs(p.ipfsHash));
   const ipfsDetails: IpfsDetails[] = await Promise.all(ipfsFetches);

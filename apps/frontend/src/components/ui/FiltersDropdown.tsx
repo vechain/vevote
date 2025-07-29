@@ -1,5 +1,6 @@
 import {
   Button,
+  Checkbox,
   Flex,
   Icon,
   Menu,
@@ -12,20 +13,20 @@ import {
 } from "@chakra-ui/react";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { Dispatch, SetStateAction, useCallback, useMemo } from "react";
-import { CheckIcon, FilterIcon } from "@/icons";
-import { ProposalStatus } from "@/types/proposal";
+import { FilterIcon } from "@/icons";
+import { FilterStatuses } from "@/types/proposal";
 
 export const FiltersDropdown = ({
   statuses,
   setStatuses,
   ...restProps
 }: Omit<MenuButtonProps, "children"> & {
-  statuses: ProposalStatus[];
-  setStatuses: Dispatch<SetStateAction<ProposalStatus[]>>;
+  statuses: FilterStatuses[];
+  setStatuses: Dispatch<SetStateAction<FilterStatuses[]>>;
 }) => {
   const { LL } = useI18nContext();
   const onChangeStatus = useCallback(
-    (value: ProposalStatus) => {
+    (value: FilterStatuses) => {
       const values = statuses.includes(value) ? statuses.filter(status => status !== value) : [...statuses, value];
       setStatuses(values);
     },
@@ -33,7 +34,7 @@ export const FiltersDropdown = ({
   );
   const options = useMemo(() => {
     return Object.entries(LL.badge).map(opt => ({
-      value: opt[0] as ProposalStatus,
+      value: opt[0] as FilterStatuses,
       label: opt[1](),
     }));
   }, [LL.badge]);
@@ -46,7 +47,7 @@ export const FiltersDropdown = ({
         </Flex>
       </MenuButton>
       <MenuList>
-        <MenuOptionGroup defaultValue={statuses} type="checkbox">
+        <MenuOptionGroup type="checkbox">
           {options.map((option, id) => {
             const isSelected = statuses.includes(option.value);
             return (
@@ -57,7 +58,7 @@ export const FiltersDropdown = ({
                 fontWeight={isSelected ? "semibold" : "normal"}
                 _hover={{ bg: isSelected ? "primary.100" : "gray.50" }}>
                 {option.label}
-                {isSelected && <Icon marginLeft={"auto"} as={CheckIcon} />}
+                <Checkbox marginLeft={"auto"} isChecked={isSelected} pointerEvents={"none"} />
               </MenuItem>
             );
           })}

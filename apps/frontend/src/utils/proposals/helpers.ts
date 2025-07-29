@@ -1,4 +1,11 @@
-import { ProposalCardType, ProposalEvent, ProposalState, ProposalStatus, SingleChoiceEnum } from "@/types/proposal";
+import {
+  FilterStatuses,
+  ProposalCardType,
+  ProposalEvent,
+  ProposalState,
+  ProposalStatus,
+  SingleChoiceEnum,
+} from "@/types/proposal";
 import dayjs from "dayjs";
 import { Delta } from "quill";
 import { IpfsDetails } from "@/types/ipfs";
@@ -54,6 +61,11 @@ export const getIndexFromSingleChoice = (choice: SingleChoiceEnum): 0 | 1 | 2 =>
 
 export const getSingleChoiceFromIndex = (index: 0 | 1 | 2): SingleChoiceEnum => {
   return defaultSingleChoice[index];
+};
+
+export const filterStatus = (statuses: FilterStatuses[], status: ProposalStatus): boolean => {
+  if (status === "min-not-reached") return statuses.includes("rejected");
+  return statuses.includes(status);
 };
 
 export const fromEventsToProposals = async (events: ProposalEvent[]): Promise<FromEventsToProposalsReturnType> => {
