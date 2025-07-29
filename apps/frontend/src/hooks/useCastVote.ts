@@ -88,6 +88,8 @@ export const useVotesResults = ({ proposalId, size }: { proposalId?: string; siz
     refetchInterval: 10000,
   });
 
+  console.log("Votes results data:", data);
+
   return {
     results: data?.results,
     isLoading,
