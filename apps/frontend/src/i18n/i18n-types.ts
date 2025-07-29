@@ -929,6 +929,10 @@ type RootTranslation = {
 		rejected: string
 	}
 	filters: {
+		/**
+		 * F​i​l​t​e​r​s
+		 */
+		title: string
 		sort: {
 			/**
 			 * N​e​w​e​s​t
@@ -1941,6 +1945,10 @@ JPG, PNG or SVG of maximum of {size}MB.
 		rejected: () => LocalizedString
 	}
 	filters: {
+		/**
+		 * Filters
+		 */
+		title: () => LocalizedString
 		sort: {
 			/**
 			 * Newest

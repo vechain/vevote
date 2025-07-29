@@ -292,6 +292,7 @@ const en = {
     rejected: "Rejected",
   },
   filters: {
+    title: "Filters",
     sort: {
       newest: "Newest",
       oldest: "Oldest",
