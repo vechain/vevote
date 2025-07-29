@@ -13,11 +13,8 @@ export const VotingCard = () => {
       borderRadius={16}
       width={"100%"}
       minWidth={{ base: "auto", md: "480px" }}>
-      {/* Countdown section */}
       <CountdownSection />
-      {/* Results section */}
       <ResultsSection />
-      {/* Vote section */}
       <VoteSection />
     </Flex>
   );

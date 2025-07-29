@@ -14,7 +14,6 @@ export const ResultsSection = () => {
   const colors = ["green.500", "orange.300", "red.600"];
   const icons = [ThumbsUpIcon, AbstainIcon, ThumbsDownIcon];
   const { proposal } = useProposal();
-  console.log("proposal", proposal);
   const { results } = useVotesResults({ proposalId: proposal.id, size: defaultSingleChoice.length });
 
   const votePercentages = useMemo(() => {
@@ -25,14 +24,11 @@ export const ResultsSection = () => {
     const totalVotes = abstainVotes + forVotes + againstVotes;
 
     return {
-      abstain: (abstainVotes / totalVotes) * 100,
-      for: (forVotes / totalVotes) * 100,
-      against: (againstVotes / totalVotes) * 100,
+      abstain: totalVotes ? (abstainVotes / totalVotes) * 100 : 0,
+      for: totalVotes ? (forVotes / totalVotes) * 100 : 0,
+      against: totalVotes ? (againstVotes / totalVotes) * 100 : 0,
     };
   }, [results]);
-
-  console.log("results", results);
-  console.log("votePercentages", votePercentages);
 
   return (
     <Flex

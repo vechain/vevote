@@ -2,18 +2,28 @@ import { Flex, Text, Icon } from "@chakra-ui/react";
 import { useProposal } from "@/components/proposal/ProposalProvider";
 import { CalendarIcon } from "@/icons";
 import { useFormatDate } from "@/hooks/useFormatDate";
+import { ProposalStatus } from "@/types/proposal";
+
+enum TimelineItemStatus {
+  COMPLETED = "completed",
+  ACTIVE = "active",
+  PENDING = "pending",
+}
 
 export const TimelineCard = () => {
   const { proposal } = useProposal();
 
-  const getVoteStatus = (): "completed" | "active" | "pending" => {
-    if (proposal.status === "upcoming") return "pending";
-    if (proposal.status === "voting") return "active";
-    return "completed";
+  const getVoteStatus = (): TimelineItemStatus => {
+    if (proposal.status === ProposalStatus.UPCOMING || proposal.status === ProposalStatus.DRAFT)
+      return TimelineItemStatus.PENDING;
+    if (proposal.status === ProposalStatus.VOTING) return TimelineItemStatus.ACTIVE;
+    return TimelineItemStatus.COMPLETED;
   };
 
-  const getFinishedStatus = (): "completed" | "pending" => {
-    return ["approved", "rejected", "executed"].includes(proposal.status) ? "completed" : "pending";
+  const getFinishedStatus = (): TimelineItemStatus => {
+    return [ProposalStatus.DRAFT, ProposalStatus.UPCOMING, ProposalStatus.VOTING].includes(proposal.status)
+      ? TimelineItemStatus.PENDING
+      : TimelineItemStatus.COMPLETED;
   };
 
   const timelineItems = [
@@ -21,7 +31,7 @@ export const TimelineCard = () => {
       id: "created",
       label: "Created",
       date: proposal.createdAt,
-      status: "completed" as const,
+      status: TimelineItemStatus.COMPLETED,
     },
     {
       id: "vote",
@@ -78,7 +88,7 @@ interface TimelineItemProps {
   label: string;
   date?: Date;
   endDate?: Date;
-  status: "completed" | "active" | "pending";
+  status: TimelineItemStatus;
   isLast?: boolean;
 }
 
@@ -87,11 +97,11 @@ const TimelineItem = ({ label, date, endDate, status, isLast }: TimelineItemProp
 
   const getStatusColor = () => {
     switch (status) {
-      case "completed":
+      case TimelineItemStatus.COMPLETED:
         return "primary.500";
-      case "active":
+      case TimelineItemStatus.ACTIVE:
         return "primary.500";
-      case "pending":
+      case TimelineItemStatus.PENDING:
         return "gray.600";
       default:
         return "gray.600";
@@ -100,19 +110,19 @@ const TimelineItem = ({ label, date, endDate, status, isLast }: TimelineItemProp
 
   const getIconStyle = () => {
     switch (status) {
-      case "completed":
+      case TimelineItemStatus.COMPLETED:
         return {
           backgroundColor: "primary.500",
           border: "2px solid",
           borderColor: "primary.500",
         };
-      case "active":
+      case TimelineItemStatus.ACTIVE:
         return {
           backgroundColor: "white",
           border: "2px solid",
           borderColor: "primary.500",
         };
-      case "pending":
+      case TimelineItemStatus.PENDING:
         return {
           backgroundColor: "white",
           border: "2px solid",
@@ -138,10 +148,10 @@ const TimelineItem = ({ label, date, endDate, status, isLast }: TimelineItemProp
           {...getIconStyle()}
           alignItems={"center"}
           justifyContent={"center"}>
-          {status === "completed" && (
+          {status === TimelineItemStatus.COMPLETED && (
             <Flex width={"8px"} height={"8px"} backgroundColor={"white"} borderRadius={"full"} />
           )}
-          {status === "active" && (
+          {status === TimelineItemStatus.ACTIVE && (
             <Flex width={"8px"} height={"8px"} backgroundColor={"primary.500"} borderRadius={"full"} />
           )}
         </Flex>
