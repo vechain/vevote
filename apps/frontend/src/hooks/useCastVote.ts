@@ -81,11 +81,11 @@ export const useVoteCastResults = ({ proposalIds, enabled }: { proposalIds?: str
   };
 };
 
-export const useVoteResultsPerProposal = ({ proposalId, size }: { proposalId?: string; size?: number }) => {
+export const useIndexerVoteResults = ({ proposalId, size }: { proposalId?: string; size?: number }) => {
   const { data, isLoading, error } = useQuery({
     queryKey: ["votesResults", proposalId],
     queryFn: async () => await getIndexerVoteResults(proposalId, size),
-    // refetchInterval: 10000, // Uncomment if you want to refetch results periodically
+    refetchInterval: 10000,
   });
 
   return {

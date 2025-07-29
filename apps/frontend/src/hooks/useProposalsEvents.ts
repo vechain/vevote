@@ -6,6 +6,7 @@ import { getVoteCastResults } from "@/utils/proposals/votedQueries";
 import { useQuery } from "@tanstack/react-query";
 import { ThorClient, useThor } from "@vechain/vechain-kit";
 
+//TODO: Pagination and filtering
 const getProposals = async (thor: ThorClient) => {
   const data = await getProposalsEvents(thor);
   const proposals = data?.proposals || [];

@@ -1,5 +1,7 @@
 import { useI18nContext } from "@/i18n/i18n-react";
 import { AbstainIcon, DisLikeIcon, LikeIcon } from "@/icons";
+import { defaultSingleChoice } from "@/pages/CreateProposal/CreateProposalProvider";
+import { SingleChoiceEnum } from "@/types/proposal";
 import { VotesCastResult } from "@/types/votes";
 import { Flex, FlexProps, Icon, Text } from "@chakra-ui/react";
 import { useCallback, useMemo } from "react";
@@ -14,12 +16,17 @@ export const ProposalCardVotesResults = ({ results }: { proposalId: string; resu
       results?.reduce(
         (acc, vote) => {
           const weight = Number(vote.weight);
-          if (vote.choice === 1) {
-            acc.for += weight;
-          } else if (vote.choice === 0) {
-            acc.against += weight;
-          } else if (vote.choice === 2) {
-            acc.abstain += weight;
+          const choice = defaultSingleChoice[vote.choice];
+          switch (choice) {
+            case SingleChoiceEnum.FOR:
+              acc.for += weight;
+              break;
+            case SingleChoiceEnum.AGAINST:
+              acc.against += weight;
+              break;
+            case SingleChoiceEnum.ABSTAIN:
+              acc.abstain += weight;
+              break;
           }
           return acc;
         },
@@ -40,7 +47,7 @@ export const ProposalCardVotesResults = ({ results }: { proposalId: string; resu
     };
   }, [proposalVotes, totalPerVotes]);
 
-  const isMostVOted = useCallback(
+  const isMostVoted = useCallback(
     (voteCount: number) => {
       if (voteCount === 0) return false;
       const highestVoteCount = Math.max(proposalVotes.for, proposalVotes.against, proposalVotes.abstain);
@@ -51,14 +58,14 @@ export const ProposalCardVotesResults = ({ results }: { proposalId: string; resu
 
   return (
     <Flex alignItems={"center"} gap={4}>
-      <VoteBadge isMostVoted={isMostVOted(proposalVotes.for)} icon={LikeIcon} votes={proposalVotesPercentage.for} />
+      <VoteBadge isMostVoted={isMostVoted(proposalVotes.for)} icon={LikeIcon} votes={proposalVotesPercentage.for} />
       <VoteBadge
-        isMostVoted={isMostVOted(proposalVotes.abstain)}
+        isMostVoted={isMostVoted(proposalVotes.abstain)}
         icon={AbstainIcon}
         votes={proposalVotesPercentage.abstain}
       />
       <VoteBadge
-        isMostVoted={isMostVOted(proposalVotes.against)}
+        isMostVoted={isMostVoted(proposalVotes.against)}
         icon={DisLikeIcon}
         votes={proposalVotesPercentage.against}
       />

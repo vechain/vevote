@@ -1,4 +1,4 @@
-import { useVoteResultsPerProposal } from "@/hooks/useCastVote";
+import { useIndexerVoteResults } from "@/hooks/useCastVote";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { VoteIcon } from "@/icons";
 import { Flex, Heading, Icon, Text } from "@chakra-ui/react";
@@ -10,7 +10,7 @@ import { defaultSingleChoice } from "@/pages/CreateProposal/CreateProposalProvid
 
 export const VotingSection = () => {
   const { proposal } = useProposal();
-  const { results } = useVoteResultsPerProposal({ proposalId: proposal.id, size: defaultSingleChoice.length });
+  const { results } = useIndexerVoteResults({ proposalId: proposal.id, size: defaultSingleChoice.length });
   return (
     <VotingSectionContainer>
       <VotingSectionHeader />
