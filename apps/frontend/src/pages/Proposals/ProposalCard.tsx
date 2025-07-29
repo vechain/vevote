@@ -6,7 +6,9 @@ import { useI18nContext } from "@/i18n/i18n-react";
 import { ProposalCardType } from "@/types/proposal";
 import { formatAddress } from "@/utils/address";
 import { MixPanelEvent, trackEvent } from "@/utils/mixpanel/utilsMixpanel";
+import { getPicassoImgSrc } from "@/utils/picasso";
 import { Flex, Text } from "@chakra-ui/react";
+import { useWallet } from "@vechain/vechain-kit";
 import { useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -54,6 +56,13 @@ export const ProposalCard = ({ status, title, endDate, startDate, id, proposer, 
 
 const TopBar = ({ title, proposer }: { title: string; proposer: string }) => {
   const { LL } = useI18nContext();
+
+  const { account } = useWallet();
+
+  const imageUrl = useMemo(
+    () => account?.image || getPicassoImgSrc(account?.address || ""),
+    [account?.address, account?.image],
+  );
   return (
     <Flex
       width={"100%"}
@@ -74,7 +83,7 @@ const TopBar = ({ title, proposer }: { title: string; proposer: string }) => {
           <Text fontSize={{ base: "14px", md: "16px" }} color={"gray.800"}>
             {formatAddress(proposer)}
           </Text>
-          <Avatar boxSize={{ base: 6, md: 6 }} />
+          <Avatar src={imageUrl} bg="gray.200" borderRadius="full" boxSize={6} />
         </Flex>
         {/* TODO: add lince tu discourse */}
         {/* <CommentIcon /> */}
