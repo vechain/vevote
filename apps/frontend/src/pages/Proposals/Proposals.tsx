@@ -126,8 +126,15 @@ const ProposalsPanel = ({ proposals, loading }: { proposals: ProposalCardType[];
 };
 
 const BasePanel = ({ children }: PropsWithChildren) => {
+  const { account } = useWallet();
+  const { isWhitelisted } = useUser();
+  const canCreateProposal = useMemo(() => account?.address && isWhitelisted, [account?.address, isWhitelisted]);
+
   return (
-    <Flex flexDirection={"column"} gap={{ base: 2, md: 4 }}>
+    <Flex 
+      flexDirection={"column"} 
+      gap={{ base: 2, md: 4 }}
+      paddingBottom={{ base: canCreateProposal ? "120px" : 0, md: 0 }}>
       {children}
     </Flex>
   );

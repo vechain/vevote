@@ -1,3 +1,4 @@
+import { useFooterAwareFixed } from "@/hooks/useFooterAwareFixed";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { CirclePlusIcon } from "@/icons";
 import { Routes } from "@/types/routes";
@@ -8,8 +9,8 @@ import { useNavigate } from "react-router-dom";
 
 export const CreateProposalButton = () => {
   const { LL } = useI18nContext();
-
   const navigate = useNavigate();
+  const footerAwareStyles = useFooterAwareFixed(100);
 
   const onCreate = useCallback(() => {
     trackEvent(MixPanelEvent.CTA_CREATE_PROPOSAL_CLICKED, { page: "proposals" });
@@ -25,9 +26,10 @@ export const CreateProposalButton = () => {
         bg={"#FFFFFF40"}
         justifyContent={"center"}
         alignItems={"center"}
-        position={{ base: "fixed", md: "static" }}
-        left={0}
-        bottom={0}
+        position={{ base: footerAwareStyles.position, md: "static" }}
+        left={{ base: footerAwareStyles.left, md: "auto" }}
+        bottom={{ base: footerAwareStyles.bottom, md: "auto" }}
+        top={{ base: footerAwareStyles.top, md: "auto" }}
         width={"full"}
         zIndex={100}
         paddingX={10}
