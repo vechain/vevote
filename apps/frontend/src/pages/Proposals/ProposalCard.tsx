@@ -3,7 +3,6 @@ import { Avatar } from "@/components/ui/Avatar";
 import { IconBadge } from "@/components/ui/IconBadge";
 import { useFormatDate } from "@/hooks/useFormatDate";
 import { useI18nContext } from "@/i18n/i18n-react";
-import { CommentIcon } from "@/icons";
 import { ProposalCardType } from "@/types/proposal";
 import { formatAddress } from "@/utils/address";
 import { MixPanelEvent, trackEvent } from "@/utils/mixpanel/utilsMixpanel";
@@ -77,7 +76,8 @@ const TopBar = ({ title, proposer }: { title: string; proposer: string }) => {
           </Text>
           <Avatar boxSize={{ base: 6, md: 6 }} />
         </Flex>
-        <CommentIcon />
+        {/* TODO: add lince tu discourse */}
+        {/* <CommentIcon /> */}
       </Flex>
     </Flex>
   );
