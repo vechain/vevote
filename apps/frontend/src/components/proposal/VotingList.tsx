@@ -65,7 +65,7 @@ export const VotingSingleChoice = ({ proposal, results }: VotingSingleChoiceProp
             label={option}
             isSelected={currentSelection === option}
             variant={votingVariant}
-            choiceIndex={index + 1}
+            choiceIndex={index}
             onClick={() => setSelectedOption(option)}
             results={results}
           />
