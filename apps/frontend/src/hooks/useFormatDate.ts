@@ -11,7 +11,7 @@ export const useFormatDate = () => {
 
     const daysString = days > 0 ? `${days}d` : undefined;
     const hoursString = hours > 0 ? `${hours}h` : undefined;
-    const minutesString = minutes > 0 ? `${minutes}min` : undefined;
+    const minutesString = minutes > 0 ? `${minutes}m` : undefined;
 
     return {
       days: daysString,
