@@ -1,13 +1,16 @@
 import { useMemo } from "react";
 import { VotedResult } from "@/types/votes";
+import { defaultSingleChoice } from "@/pages/CreateProposal/CreateProposalProvider";
+import { SingleChoiceEnum } from "@/types/proposal";
 
 const getSupportByIndex = (choiceIndex: number) => {
-  switch (choiceIndex) {
-    case 0:
-      return "AGAINST";
-    case 1:
+  const choice = defaultSingleChoice[choiceIndex];
+  switch (choice) {
+    case SingleChoiceEnum.FOR:
       return "FOR";
-    case 2:
+    case SingleChoiceEnum.AGAINST:
+      return "AGAINST";
+    case SingleChoiceEnum.ABSTAIN:
       return "ABSTAIN";
   }
 };
