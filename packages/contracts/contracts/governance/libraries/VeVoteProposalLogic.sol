@@ -70,12 +70,12 @@ library VeVoteProposalLogic {
   /**
    * @dev Emitted when a proposal is canceled.
    */
-  event ProposalCanceled(uint256 proposalId, address canceller, string reason);
+  event ProposalCanceled(uint256 indexed proposalId, address canceller, string reason);
 
   /**
    * @dev Emitted when a proposal is executed.
    */
-  event VeVoteProposalExecuted(uint256 proposalId, string comment);
+  event VeVoteProposalExecuted(uint256 indexed proposalId, string comment);
 
   // ------------------------------- Functions -------------------------------
   // ------------------------------- Setter Functions -------------------------------
