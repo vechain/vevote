@@ -10,8 +10,8 @@ export const useFormatDate = () => {
     const minutes = dateJs.diff(dayjs(), "minutes") % 60;
 
     const daysString = days > 0 ? `${days}d` : undefined;
-    const hoursString = hours > 0 ? `${hours}h` : undefined;
-    const minutesString = minutes > 0 ? `${minutes}m` : undefined;
+    const hoursString = `${hours}h`;
+    const minutesString = `${minutes}m`;
 
     return {
       days: daysString,
@@ -35,7 +35,6 @@ export const useFormatDate = () => {
       if (!date) return;
       const { days, hours, minutes } = leftVotingDate(date) || {};
       if (!days) return `${hours} | ${minutes}`;
-      if (!days && !hours) return `${minutes}`;
       return `${days} | ${hours} | ${minutes}`;
     },
     [leftVotingDate],
