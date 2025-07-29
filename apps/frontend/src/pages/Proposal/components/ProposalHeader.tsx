@@ -4,8 +4,9 @@ import { IconBadge } from "@/components/ui/IconBadge";
 import { formatAddress } from "@/utils/address";
 import { useMemo } from "react";
 import { getPicassoImgSrc } from "@/utils/picasso";
+import { Discourse } from "@/icons/Discourse";
 
-export const NewProposalHeader = () => {
+export const ProposalHeader = () => {
   const { proposal } = useProposal();
 
   const infoVariant = useMemo(() => {
@@ -18,7 +19,7 @@ export const NewProposalHeader = () => {
   }, [proposal.status]);
 
   return (
-    <Flex flexDirection={"column"} gap={4}>
+    <Flex flexDirection={"column"} gap={4} width={"full"}>
       {/* Status badge and proposer info row */}
       <HStack justifyContent={"space-between"} alignItems={{ base: "start", md: "center" }} gap={{ base: 2, md: 4 }}>
         {/* Status badge */}
@@ -32,8 +33,14 @@ export const NewProposalHeader = () => {
             <Text color={"gray.800"} fontSize={{ base: "14px", md: "16px" }} fontWeight={400}>
               {formatAddress(proposal.proposer)}
             </Text>
-            <Avatar size={{ base: "xs", md: "sm" }} src={getPicassoImgSrc(proposal.proposer)} borderRadius="full" />
-            <Divider orientation="vertical" borderColor={"gray.100"} />
+            <Avatar
+              height={{ base: 4, md: 6 }}
+              width={{ base: 4, md: 6 }}
+              src={getPicassoImgSrc(proposal.proposer)}
+              borderRadius="full"
+            />
+            <Divider orientation="vertical" borderColor={"gray.100"} height={"24px"} mx={1} />
+            <Discourse onClick={() => window.open("https://vechain.discourse.group/latest", "_blank")} />
           </Flex>
         </Flex>
       </HStack>

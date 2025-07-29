@@ -5,7 +5,7 @@ interface NewBuyNodeCtaProps extends FlexProps {
   // Can extend props if needed
 }
 
-export const NewBuyNodeCta = (props: NewBuyNodeCtaProps) => {
+export const BuyNodeCta = (props: NewBuyNodeCtaProps) => {
   const isMobile = useBreakpointValue({ base: true, md: false });
 
   if (isMobile) {

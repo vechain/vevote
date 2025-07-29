@@ -42,11 +42,15 @@ export const Proposals = () => {
   }, [account?.address, draftProposal, proposals, searchValue, sort]);
 
   const proposalsByTabStatus: Record<string, ProposalCardType[]> = useMemo(() => {
-    const finishedStatuses: ProposalStatus[] = ["canceled", "rejected", "min-not-reached"];
+    const finishedStatuses: ProposalStatus[] = [
+      ProposalStatus.CANCELED,
+      ProposalStatus.REJECTED,
+      ProposalStatus.MIN_NOT_REACHED,
+    ];
     return {
       all: proposalsBySearch,
-      voting: proposalsBySearch.filter(({ status }) => status === "voting"),
-      upcoming: proposalsBySearch.filter(({ status }) => status === "upcoming"),
+      voting: proposalsBySearch.filter(({ status }) => status === ProposalStatus.VOTING),
+      upcoming: proposalsBySearch.filter(({ status }) => status === ProposalStatus.UPCOMING),
       finished: proposalsBySearch.filter(
         ({ endDate, status }) => dayjs(endDate).isBefore(dayjs()) || finishedStatuses.includes(status),
       ),

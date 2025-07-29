@@ -7,7 +7,7 @@ import { ChevronDownIcon } from "@/icons";
 import { motion } from "framer-motion";
 import { forwardRef, PropsWithChildren, useCallback, useEffect, useRef, useState } from "react";
 
-export const NewDescriptionSection = () => {
+export const DescriptionSection = () => {
   const { LL } = useI18nContext();
   const { proposal } = useProposal();
   const [isExpanded, setIsExpanded] = useState(false);

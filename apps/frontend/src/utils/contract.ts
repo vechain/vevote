@@ -51,6 +51,7 @@ export const executeCall = async <T extends Interface>({
   try {
     const interfaceJson = contractInterface.getFunction(method)?.format("full");
     if (!interfaceJson) throw new Error(`Method ${method} not found`);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const functionAbi = new ABIFunction(interfaceJson) as any;
     const results = await thorClient.contracts.executeCall(contractAddress, functionAbi, args, callOptions);
     return results;

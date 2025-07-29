@@ -3,7 +3,7 @@ import { useProposal } from "@/components/proposal/ProposalProvider";
 import { CalendarIcon } from "@/icons";
 import { useFormatDate } from "@/hooks/useFormatDate";
 
-export const NewTimelineCard = () => {
+export const TimelineCard = () => {
   const { proposal } = useProposal();
 
   const getVoteStatus = (): "completed" | "active" | "pending" => {

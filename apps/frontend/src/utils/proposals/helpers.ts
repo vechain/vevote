@@ -15,19 +15,19 @@ export type FromEventsToProposalsReturnType = ({ ipfsHash: string } & Omit<
 export const getStatusFromState = (state: ProposalState): ProposalStatus => {
   switch (state) {
     case ProposalState.PENDING:
-      return "upcoming";
+      return ProposalStatus.UPCOMING;
     case ProposalState.DEFEATED:
-      return "min-not-reached";
+      return ProposalStatus.MIN_NOT_REACHED;
     case ProposalState.ACTIVE:
-      return "voting";
+      return ProposalStatus.VOTING;
     case ProposalState.CANCELED:
-      return "canceled";
+      return ProposalStatus.CANCELED;
     case ProposalState.EXECUTED:
-      return "executed";
+      return ProposalStatus.EXECUTED;
     case ProposalState.SUCCEEDED:
-      return "approved";
+      return ProposalStatus.APPROVED;
     default:
-      return "upcoming";
+      return ProposalStatus.UPCOMING;
   }
 };
 

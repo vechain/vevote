@@ -10,11 +10,11 @@ import { useWallet } from "@vechain/vechain-kit";
 import { defaultSingleChoice } from "@/pages/CreateProposal/CreateProposalProvider";
 
 export const SHOW_RESULTS_STATUSES: ProposalStatus[] = [
-  "approved",
-  "executed",
-  "voting",
-  "rejected",
-  "min-not-reached",
+  ProposalStatus.APPROVED,
+  ProposalStatus.EXECUTED,
+  ProposalStatus.VOTING,
+  ProposalStatus.REJECTED,
+  ProposalStatus.MIN_NOT_REACHED,
 ];
 
 export const useVotingBase = (proposal: { id: string; status: ProposalStatus; startDate?: Date }) => {
