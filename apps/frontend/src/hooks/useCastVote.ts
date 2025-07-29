@@ -1,7 +1,7 @@
 import { ProposalCardType } from "@/types/proposal";
 import { useVevoteSendTransaction } from "@/utils/hooks/useVevoteSendTransaction";
 import { fromStringToUint256 } from "@/utils/proposals/helpers";
-import { getHasVoted, getVoteResults, getVotesResultsPerProposal } from "@/utils/proposals/votedQueries";
+import { getHasVoted, getVoteCastResults, getIndexerVoteResults } from "@/utils/proposals/votedQueries";
 import { getConfig } from "@repo/config";
 import { VeVote__factory } from "@repo/contracts";
 import { useQuery } from "@tanstack/react-query";
@@ -64,13 +64,13 @@ export const useCastVote = ({ proposalId, masterNode }: { proposalId?: string; m
   });
 };
 
-export const useVoteResults = ({ proposalIds, enabled }: { proposalIds?: string[]; enabled?: boolean }) => {
+export const useVoteCastResults = ({ proposalIds, enabled }: { proposalIds?: string[]; enabled?: boolean }) => {
   const { account } = useWallet();
   const thor = useThor();
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["votedChoices", proposalIds, account?.address],
-    queryFn: async () => await getVoteResults(thor, { proposalIds, address: account?.address }),
+    queryFn: async () => await getVoteCastResults(thor, { proposalIds, address: account?.address }),
     enabled: enabled && !!thor && !!account?.address,
   });
 
@@ -84,28 +84,12 @@ export const useVoteResults = ({ proposalIds, enabled }: { proposalIds?: string[
 export const useVoteResultsPerProposal = ({ proposalId, size }: { proposalId?: string; size?: number }) => {
   const { data, isLoading, error } = useQuery({
     queryKey: ["votesResults", proposalId],
-    queryFn: async () => await getVotesResultsPerProposal(proposalId, size),
+    queryFn: async () => await getIndexerVoteResults(proposalId, size),
     // refetchInterval: 10000, // Uncomment if you want to refetch results periodically
   });
 
   return {
     results: data?.results,
-    isLoading,
-    error,
-  };
-};
-
-export const useVotesInfo = ({ proposalIds }: { proposalIds: string[] }) => {
-  const thor = useThor();
-
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["votedChoices", proposalIds],
-    queryFn: async () => await getVoteResults(thor, { proposalIds }),
-    enabled: !!thor,
-  });
-
-  return {
-    votedInfo: data?.votes,
     isLoading,
     error,
   };

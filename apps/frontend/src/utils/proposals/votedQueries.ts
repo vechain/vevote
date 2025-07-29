@@ -35,7 +35,7 @@ export const getHasVoted = async (proposalId?: string, address?: string) => {
   }
 };
 
-export const getVoteResults = async (
+export const getVoteCastResults = async (
   thor: ThorClient,
   { address, proposalIds }: { proposalIds?: string[]; address?: string },
 ) => {
@@ -93,7 +93,7 @@ export const getVoteResults = async (
   }
 };
 
-export const getVotesResultsPerProposal = async (proposalId?: string, size?: number, page?: number) => {
+export const getIndexerVoteResults = async (proposalId?: string, size?: number, page?: number) => {
   if (!proposalId) return { results: undefined };
 
   try {

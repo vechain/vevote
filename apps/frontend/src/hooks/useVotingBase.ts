@@ -1,6 +1,6 @@
 import { ProposalStatus } from "@/types/proposal";
 import { useMemo, useCallback, useState, useEffect } from "react";
-import { useCastVote, useHasVoted, useVoteResults } from "./useCastVote";
+import { useCastVote, useHasVoted, useVoteCastResults } from "./useCastVote";
 import { VotingItemVariant } from "@/components/proposal/VotingItem";
 import { getVotingVariant } from "@/utils/voting";
 import { trackEvent, MixPanelEvent } from "@/utils/mixpanel/utilsMixpanel";
@@ -23,7 +23,7 @@ export const useVotingBase = (proposal: { id: string; status: ProposalStatus; st
   const enabled = useMemo(() => SHOW_RESULTS_STATUSES.includes(proposal.status), [proposal.status]);
   const { account } = useWallet();
 
-  const { votes } = useVoteResults({
+  const { votes } = useVoteCastResults({
     proposalIds: [proposal.id],
     enabled,
   });

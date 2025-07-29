@@ -4,6 +4,7 @@ import { Delta } from "quill";
 import { IpfsDetails } from "@/types/ipfs";
 import { HexUInt } from "@vechain/sdk-core";
 import { thorClient } from "../thorClient";
+import { defaultSingleChoice } from "@/pages/CreateProposal/CreateProposalProvider";
 
 const AVERAGE_BLOCK_TIME = 10; // in seconds
 
@@ -52,16 +53,7 @@ export const getIndexFromSingleChoice = (choice: SingleChoiceEnum): 0 | 1 | 2 =>
 };
 
 export const getSingleChoiceFromIndex = (index: 0 | 1 | 2): SingleChoiceEnum => {
-  switch (index) {
-    case 0:
-      return SingleChoiceEnum.AGAINST;
-    case 1:
-      return SingleChoiceEnum.FOR;
-    case 2:
-      return SingleChoiceEnum.ABSTAIN;
-    default:
-      throw new Error(`Invalid index: ${index}`);
-  }
+  return defaultSingleChoice[index];
 };
 
 export const fromEventsToProposals = async (events: ProposalEvent[]): Promise<FromEventsToProposalsReturnType> => {
