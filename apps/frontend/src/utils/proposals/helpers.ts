@@ -9,7 +9,7 @@ const AVERAGE_BLOCK_TIME = 10; // in seconds
 
 export type FromEventsToProposalsReturnType = ({ ipfsHash: string } & Omit<
   ProposalCardType,
-  "status" | "description" | "title" | "votingQuestion" | "headerImage"
+  "status" | "description" | "title" | "votingQuestion" | "headerImage" | "canceledDate" | "executedDate"
 >)[];
 
 export const getStatusFromState = (state: ProposalState): ProposalStatus => {
@@ -67,9 +67,11 @@ export const getSingleChoiceFromIndex = (index: 0 | 1 | 2): SingleChoiceEnum => 
 export const fromEventsToProposals = async (events: ProposalEvent[]): Promise<FromEventsToProposalsReturnType> => {
   return await Promise.all(
     events.map(async event => {
-      const [startDate, endDate] = await Promise.all([
+      const [startDate, endDate, canceledDate, executedDate] = await Promise.all([
         getDateFromBlock(Number(event.startTime)),
         getDateFromBlock(Number(event.startTime) + Number(event.voteDuration)),
+        getDateFromBlock(Number(event.canceledTime)),
+        getDateFromBlock(Number(event.executedTime)),
       ]);
 
       return {
@@ -78,6 +80,8 @@ export const fromEventsToProposals = async (events: ProposalEvent[]): Promise<Fr
         createdAt: startDate,
         startDate,
         endDate,
+        canceledDate,
+        executedDate,
         ipfsHash: event.description,
         reason: event.reason,
         executedProposalLink: event.executedProposalLink,

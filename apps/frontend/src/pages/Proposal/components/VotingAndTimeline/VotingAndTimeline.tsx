@@ -47,7 +47,7 @@ export const VotingAndTimeline = () => {
         </>
       )}
       {!isMobile && (
-        <VStack>
+        <VStack gap={6}>
           <VotingCard />
           <TimelineCard />
         </VStack>

@@ -109,6 +109,7 @@ export const getProposalsEvents = async (
             proposalId: proposalIdEvent.toString(),
             canceller,
             reason: reason || "",
+            canceledTime: event.meta.blockTimestamp.toString(),
           };
         }
 
@@ -128,6 +129,7 @@ export const getProposalsEvents = async (
           return {
             proposalId: proposalIdEvent.toString(),
             executedProposalLink,
+            executedTime: event.meta.blockTimestamp.toString(),
           };
         }
 

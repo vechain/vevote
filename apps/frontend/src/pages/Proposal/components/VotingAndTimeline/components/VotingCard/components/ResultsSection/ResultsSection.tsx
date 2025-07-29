@@ -1,21 +1,38 @@
 import { Flex, Icon, Text, Box } from "@chakra-ui/react";
-import { VoteIcon, CircleInfoIcon } from "@/icons";
+import { VoteIcon } from "@/icons";
 import { useProposal } from "@/components/proposal/ProposalProvider";
 import { useVotesResults } from "@/hooks/useCastVote";
 import { defaultSingleChoice } from "@/pages/CreateProposal/CreateProposalProvider";
 import { ThumbsUpIcon } from "@/icons/ThumbsUpIcon";
 import { AbstainIcon } from "@/icons/AbstainIcon";
 import { ThumbsDownIcon } from "@/icons/ThumbsDownIcon";
+import { useMemo } from "react";
+import { ResultsInfo } from "./components/ResultsInfo";
 
 export const ResultsSection = () => {
-  const voteOptions = ["Yes", "Abstain", "No"];
+  const voteOptions = ["for", "abstain", "against"];
   const colors = ["green.500", "orange.300", "red.600"];
   const icons = [ThumbsUpIcon, AbstainIcon, ThumbsDownIcon];
   const { proposal } = useProposal();
   console.log("proposal", proposal);
   const { results } = useVotesResults({ proposalId: proposal.id, size: defaultSingleChoice.length });
 
+  const votePercentages = useMemo(() => {
+    const abstainVotes = results?.data?.find(result => result.support === "ABSTAIN")?.totalWeight ?? 0;
+    const forVotes = results?.data?.find(result => result.support === "FOR")?.totalWeight ?? 0;
+    const againstVotes = results?.data?.find(result => result.support === "AGAINST")?.totalWeight ?? 0;
+
+    const totalVotes = abstainVotes + forVotes + againstVotes;
+
+    return {
+      abstain: (abstainVotes / totalVotes) * 100,
+      for: (forVotes / totalVotes) * 100,
+      against: (againstVotes / totalVotes) * 100,
+    };
+  }, [results]);
+
   console.log("results", results);
+  console.log("votePercentages", votePercentages);
 
   return (
     <Flex
@@ -36,9 +53,9 @@ export const ResultsSection = () => {
       <Flex flexDirection={"column"} gap={4}>
         {/* Progress bar */}
         <Flex height={"8px"} borderRadius={8} overflow={"hidden"} backgroundColor={"gray.200"}>
-          <Box flex={1} backgroundColor={colors[0]} />
-          <Box width={"27px"} backgroundColor={colors[1]} />
-          <Box width={"35px"} backgroundColor={colors[2]} />
+          <Box flex={votePercentages.for} backgroundColor={colors[0]} />
+          <Box flex={votePercentages.abstain} backgroundColor={colors[1]} />
+          <Box flex={votePercentages.against} backgroundColor={colors[2]} />
         </Flex>
 
         {/* Vote percentages */}
@@ -47,20 +64,13 @@ export const ResultsSection = () => {
             <Flex key={option} alignItems={"center"} gap={2}>
               <Icon as={icons[index]} width={4} height={4} color={colors[index]} />
               <Text fontSize={{ base: "14px", md: "16px" }} color={"gray.600"}>
-                XX%
+                {votePercentages[option as keyof typeof votePercentages].toFixed(2)}%
               </Text>
             </Flex>
           ))}
         </Flex>
       </Flex>
-
-      {/* Info alert */}
-      <Flex gap={2} alignItems={"start"}>
-        <Icon as={CircleInfoIcon} width={4} height={4} color={"blue.500"} marginTop={"2px"} />
-        <Text fontSize={"12px"} color={"blue.700"}>
-          A minimum of 30% participation must be reached to validate the voting of the proposal and get approval.
-        </Text>
-      </Flex>
+      <ResultsInfo />
     </Flex>
   );
 };

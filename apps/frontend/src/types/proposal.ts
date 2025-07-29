@@ -30,6 +30,8 @@ export type ProposalCardType = ProposalDetails & {
   createdAt: Date;
   reason?: string;
   executedProposalLink?: string;
+  canceledDate?: Date;
+  executedDate?: Date;
 };
 
 export type ProposalEvent = {
@@ -41,6 +43,8 @@ export type ProposalEvent = {
   canceller?: string;
   reason?: string;
   executedProposalLink?: string;
+  canceledTime?: string;
+  executedTime?: string;
 };
 
 export enum ProposalState {

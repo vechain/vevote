@@ -40,6 +40,7 @@ export const ProposalHeader = () => {
               borderRadius="full"
             />
             <Divider orientation="vertical" borderColor={"gray.100"} height={"24px"} mx={1} />
+            {/* TODO: add a link to the proposal on discourse */}
             <Discourse onClick={() => window.open("https://vechain.discourse.group/latest", "_blank")} />
           </Flex>
         </Flex>
