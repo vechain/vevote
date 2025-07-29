@@ -1,12 +1,22 @@
 import { Flex, Icon, Text, Box } from "@chakra-ui/react";
 import { VoteIcon, CircleInfoIcon } from "@/icons";
 import { useProposal } from "@/components/proposal/ProposalProvider";
+import { useVotesResults } from "@/hooks/useCastVote";
+import { defaultSingleChoice } from "@/pages/CreateProposal/CreateProposalProvider";
+import { ThumbsUpIcon } from "@/icons/ThumbsUpIcon";
+import { AbstainIcon } from "@/icons/AbstainIcon";
+import { ThumbsDownIcon } from "@/icons/ThumbsDownIcon";
 
 export const ResultsSection = () => {
   const voteOptions = ["Yes", "Abstain", "No"];
   const colors = ["green.500", "orange.300", "red.600"];
+  const icons = [ThumbsUpIcon, AbstainIcon, ThumbsDownIcon];
   const { proposal } = useProposal();
   console.log("proposal", proposal);
+  const { results } = useVotesResults({ proposalId: proposal.id, size: defaultSingleChoice.length });
+
+  console.log("results", results);
+
   return (
     <Flex
       flexDirection={"column"}
@@ -35,7 +45,7 @@ export const ResultsSection = () => {
         <Flex justifyContent={"space-between"} alignItems={"center"}>
           {voteOptions.map((option, index) => (
             <Flex key={option} alignItems={"center"} gap={2}>
-              <Flex width={"24px"} height={"24px"} backgroundColor={colors[index]} borderRadius={4} />
+              <Icon as={icons[index]} width={4} height={4} color={colors[index]} />
               <Text fontSize={{ base: "14px", md: "16px" }} color={"gray.600"}>
                 XX%
               </Text>
