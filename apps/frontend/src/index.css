@@ -1,9 +1,19 @@
-@import url("https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap");
+/* Google Fonts rimossi - usando Fontsource locale per performance */
+
+/* Font display optimization per ridurre layout shift */
+@font-face {
+  font-family: 'Inter Variable';
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Rubik Variable';
+  font-display: swap;
+}
 
 body {
   margin: 0;
-  font-family: "Inter", sans-serif;
+  font-family: "Inter Variable", "Inter", sans-serif;
 }
 
 h1,
@@ -12,7 +22,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: "Rubik Variable", sans-serif;
+  font-family: "Rubik Variable", "Rubik", sans-serif;
 }
 
 .ql-toolbar.ql-snow {
