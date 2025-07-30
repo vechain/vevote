@@ -116,7 +116,7 @@ interface VotersTableProps {
 
 export const VotersTable = ({ data }: VotersTableProps) => {
   const { LL } = useI18nContext();
-  console.log("data", data);
+
   const votersColumn = [
     columnHelper.accessor("date", {
       cell: data => <BaseCell value={dayjs(data.getValue()).format("DD/MM/YYYY")} />,
