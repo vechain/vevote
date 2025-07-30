@@ -2,7 +2,7 @@ import { FormSkeleton } from "@/components/ui/FormSkeleton";
 import { CreateFormWrapper } from "./CreateFormWrapper";
 import { useMemo } from "react";
 import { useCreateProposal } from "./CreateProposalProvider";
-import { Button, Flex, FormControl, Icon, Input, Text } from "@chakra-ui/react";
+import { Button, Flex, FormControl, Icon, Input, Text, InputGroup, InputLeftAddon } from "@chakra-ui/react";
 import { Label } from "@/components/ui/Label";
 import { InputMessage } from "@/components/ui/InputMessage";
 import { useI18nContext } from "@/i18n/i18n-react";
@@ -26,6 +26,7 @@ export const ProposalDetailsForm = () => {
       title: proposalDetails?.title || "",
       description: proposalDetails?.description || [],
       headerImage: proposalDetails?.headerImage,
+      discourseUrl: proposalDetails?.discourseUrl || "",
       startDate: proposalDetails?.startDate,
       endDate: proposalDetails?.endDate,
     }),
@@ -67,8 +68,27 @@ export const ProposalDetailsForm = () => {
                 <InputMessage error={errors.description?.message} />
               </FormControl>
 
+              <FormControl isInvalid={Boolean(errors.discourseUrl)}>
+                <Label label={LLDetailsForm.discourse_topic()} />
+                <InputGroup flexDirection={{ base: "column", md: "row" }}>
+                  <InputLeftAddon
+                    display={"flex"}
+                    alignItems={"center"}
+                    justifyContent={"start"}
+                    backgroundColor={"gray.100"}
+                    borderWidth={1}
+                    borderColor={"gray.300"}
+                    h={12}
+                    p={4}>
+                    https://vechain.discourse.group/t/
+                  </InputLeftAddon>
+                  <Input placeholder={LLDetailsForm.discourse_topic_placeholder()} {...register("discourseUrl")} />
+                </InputGroup>
+                <InputMessage error={errors.discourseUrl?.message} message={LLDetailsForm.discourse_topic_help()} />
+              </FormControl>
+
               <FormControl isInvalid={Boolean(errors.headerImage)}>
-                <Label label={LLDetailsForm.header_image()} />
+                <Label label={`${LLDetailsForm.header_image()} (${LL.optional()})`} />
                 <ImageUploadControlled name="headerImage" />
               </FormControl>
 

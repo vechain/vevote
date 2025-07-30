@@ -16,6 +16,8 @@ const getProposals = async (thor: ThorClient) => {
   const ipfsFetches = proposals.map(p => getProposalsFromIpfs(p.ipfsHash));
   const ipfsDetails: IpfsDetails[] = await Promise.all(ipfsFetches);
 
+  console.log("IPFS details fetched:", ipfsDetails);
+
   const mergedWithIpfs = mergeIpfsDetails(ipfsDetails, proposals);
   const merged = mergedWithIpfs?.map(p => ({
     ...p,

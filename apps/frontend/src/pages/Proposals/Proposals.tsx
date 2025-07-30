@@ -13,7 +13,7 @@ import { FilterStatuses, ProposalCardType } from "@/types/proposal";
 import { areAddressesEqual } from "@/utils/address";
 import { Flex, Heading, Icon, Text } from "@chakra-ui/react";
 import { useWallet } from "@vechain/vechain-kit";
-import { PropsWithChildren, useMemo, useState } from "react";
+import { PropsWithChildren, useEffect, useMemo, useState } from "react";
 import { useCreateProposal } from "../CreateProposal/CreateProposalProvider";
 import { ProposalCard } from "./ProposalCard";
 import { filterStatus } from "@/utils/proposals/helpers";
@@ -39,6 +39,8 @@ export const Proposals = () => {
   ]);
 
   const { proposals, loading } = useProposalsEvents();
+
+  useEffect(() => console.log("Proposals loaded:", proposals.reverse()), [proposals]);
 
   const filteredProposals = useMemo(() => {
     const searchLower = searchValue.toLowerCase();
@@ -131,8 +133,8 @@ const BasePanel = ({ children }: PropsWithChildren) => {
   const canCreateProposal = useMemo(() => account?.address && isWhitelisted, [account?.address, isWhitelisted]);
 
   return (
-    <Flex 
-      flexDirection={"column"} 
+    <Flex
+      flexDirection={"column"}
       gap={{ base: 2, md: 4 }}
       paddingBottom={{ base: canCreateProposal ? "120px" : 0, md: 0 }}>
       {children}

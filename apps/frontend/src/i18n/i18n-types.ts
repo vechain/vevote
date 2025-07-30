@@ -730,7 +730,7 @@ type RootTranslation = {
 				 */
 				title: string
 				/**
-				 * W​h​a​t​’​s​ ​t​h​e​ ​p​r​o​p​o​s​a​l​ ​t​i​t​l​e​?
+				 * W​h​a​t​'​s​ ​t​h​e​ ​p​r​o​p​o​s​a​l​ ​t​i​t​l​e​?
 				 */
 				title_placeholder: string
 				/**
@@ -745,6 +745,22 @@ type RootTranslation = {
 				 * H​e​a​d​e​r​ ​i​m​a​g​e
 				 */
 				header_image: string
+				/**
+				 * D​i​s​c​o​u​r​s​e​ ​u​r​l
+				 */
+				discourse_url: string
+				/**
+				 * D​i​s​c​o​u​r​s​e​ ​T​o​p​i​c
+				 */
+				discourse_topic: string
+				/**
+				 * y​o​u​r​-​t​o​p​i​c​-​n​a​m​e
+				 */
+				discourse_topic_placeholder: string
+				/**
+				 * E​n​t​e​r​ ​t​h​e​ ​t​o​p​i​c​ ​n​a​m​e​ ​f​r​o​m​ ​y​o​u​r​ ​V​e​C​h​a​i​n​ ​D​i​s​c​o​u​r​s​e​ ​d​i​s​c​u​s​s​i​o​n
+				 */
+				discourse_topic_help: string
 				/**
 				 * V​o​t​i​n​g​ ​c​a​l​e​n​d​a​r
 				 */
@@ -1750,7 +1766,7 @@ JPG, PNG or SVG of maximum of {size}MB.
 				 */
 				title: () => LocalizedString
 				/**
-				 * What’s the proposal title?
+				 * What's the proposal title?
 				 */
 				title_placeholder: () => LocalizedString
 				/**
@@ -1765,6 +1781,22 @@ JPG, PNG or SVG of maximum of {size}MB.
 				 * Header image
 				 */
 				header_image: () => LocalizedString
+				/**
+				 * Discourse url
+				 */
+				discourse_url: () => LocalizedString
+				/**
+				 * Discourse Topic
+				 */
+				discourse_topic: () => LocalizedString
+				/**
+				 * your-topic-name
+				 */
+				discourse_topic_placeholder: () => LocalizedString
+				/**
+				 * Enter the topic name from your VeChain Discourse discussion
+				 */
+				discourse_topic_help: () => LocalizedString
 				/**
 				 * Voting calendar
 				 */

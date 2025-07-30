@@ -1,3 +1,4 @@
+import { DiscourseLink } from "@/components/proposal/DiscourseLink";
 import { ProposalCardVotesResults } from "@/components/proposal/ProposalCardVotesResults";
 import { Avatar } from "@/components/ui/Avatar";
 import { IconBadge } from "@/components/ui/IconBadge";
@@ -12,7 +13,16 @@ import { useWallet } from "@vechain/vechain-kit";
 import { useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 
-export const ProposalCard = ({ status, title, endDate, startDate, id, proposer, results }: ProposalCardType) => {
+export const ProposalCard = ({
+  status,
+  title,
+  endDate,
+  startDate,
+  id,
+  proposer,
+  results,
+  discourseUrl,
+}: ProposalCardType) => {
   const navigate = useNavigate();
 
   const onClick = useCallback(() => {
@@ -48,13 +58,13 @@ export const ProposalCard = ({ status, title, endDate, startDate, id, proposer, 
       gap={6}
       alignItems={"start"}
       flexDirection={"column"}>
-      <TopBar title={title} proposer={proposer} />
+      <TopBar title={title} proposer={proposer} discourseUrl={discourseUrl} />
       <BottomBar status={status} endDate={endDate} startDate={startDate} id={id} results={results} />
     </Flex>
   );
 };
 
-const TopBar = ({ title, proposer }: { title: string; proposer: string }) => {
+const TopBar = ({ title, proposer, discourseUrl }: { title: string; proposer: string; discourseUrl?: string }) => {
   const { LL } = useI18nContext();
 
   const { account } = useWallet();
@@ -85,8 +95,7 @@ const TopBar = ({ title, proposer }: { title: string; proposer: string }) => {
           </Text>
           <Avatar src={imageUrl} bg="gray.200" borderRadius="full" boxSize={6} />
         </Flex>
-        {/* TODO: add lince tu discourse */}
-        {/* <CommentIcon /> */}
+        {discourseUrl && <DiscourseLink src={discourseUrl} />}
       </Flex>
     </Flex>
   );
