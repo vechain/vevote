@@ -1,4 +1,4 @@
-import { Button, Flex, HStack, Icon, Link, Text, useDisclosure } from "@chakra-ui/react";
+import { Button, Flex, HStack, Icon, Link, Text, UseDisclosureReturn } from "@chakra-ui/react";
 import { useProposal } from "@/components/proposal/ProposalProvider";
 import { ProposalStatus, SingleChoiceEnum } from "@/types/proposal";
 import { useHasVoted, useVotedChoices } from "@/hooks/useCastVote";
@@ -7,7 +7,6 @@ import { useWallet } from "@vechain/vechain-kit";
 import { getConfig } from "@repo/config";
 import { useMemo } from "react";
 import { useNodes } from "@/hooks/useUserQueries";
-import { SubmitVoteModal } from "./components/SubmitVoteModal";
 
 const EXPLORER_URL = getConfig(import.meta.env.VITE_APP_ENV).network.explorerUrl;
 
@@ -23,7 +22,7 @@ const IconByVote = {
   [SingleChoiceEnum.ABSTAIN]: <AbstainIcon width={"20px"} height={"20px"} />,
 };
 
-export const VoteSection = () => {
+export const VoteSection = ({ submitVoteModal }: { submitVoteModal: UseDisclosureReturn }) => {
   const { proposal } = useProposal();
   const isUpcoming = proposal.status === ProposalStatus.UPCOMING;
   const { account } = useWallet();
@@ -36,7 +35,6 @@ export const VoteSection = () => {
   const vote = IndexToVoteMap[votedChoices?.choice || 0];
   const voteIcon = IconByVote[vote];
   const voteColor = ColorByVote[vote];
-  const submitVoteModal = useDisclosure();
 
   const cantVote = useMemo(
     () => isUpcoming || !account || hasVoted || !isVoter,
@@ -103,7 +101,6 @@ export const VoteSection = () => {
         }}>
         {"Submit your vote"}
       </Button>
-      <SubmitVoteModal submitVoteModal={submitVoteModal} />
       {cantVoteReason && (
         <HStack>
           <Text fontSize={"sm"} fontWeight={500} color={"orange.500"}>

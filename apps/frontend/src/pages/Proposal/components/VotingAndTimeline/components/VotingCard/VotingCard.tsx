@@ -1,9 +1,11 @@
-import { Flex } from "@chakra-ui/react";
+import { Flex, useDisclosure } from "@chakra-ui/react";
 import { CountdownSection } from "./components/CountdownSection";
 import { ResultsSection } from "./components/ResultsSection/ResultsSection";
-import { VoteSection } from "./components/VoteSection/VoteSection";
+import { VoteSection } from "./components/VoteSection";
+import { SubmitVoteModal } from "./components/SubmitVoteModal";
 
 export const VotingCard = () => {
+  const submitVoteModal = useDisclosure();
   return (
     <Flex
       flexDirection={"column"}
@@ -15,7 +17,8 @@ export const VotingCard = () => {
       minWidth={{ base: "auto", md: "480px" }}>
       <CountdownSection />
       <ResultsSection />
-      <VoteSection />
+      <VoteSection submitVoteModal={submitVoteModal} />
+      <SubmitVoteModal submitVoteModal={submitVoteModal} />
     </Flex>
   );
 };
