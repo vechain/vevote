@@ -67,17 +67,18 @@ export const getSingleChoiceFromIndex = (index: 0 | 1 | 2): SingleChoiceEnum => 
 export const fromEventsToProposals = async (events: ProposalEvent[]): Promise<FromEventsToProposalsReturnType> => {
   return await Promise.all(
     events.map(async event => {
-      const [startDate, endDate, canceledDate, executedDate] = await Promise.all([
+      const [createdDate, startDate, endDate, canceledDate, executedDate] = await Promise.all([
+        new Date(event.createdTime || 0),
         getDateFromBlock(Number(event.startTime)),
         getDateFromBlock(Number(event.startTime) + Number(event.voteDuration)),
-        getDateFromBlock(Number(event.canceledTime)),
-        getDateFromBlock(Number(event.executedTime)),
+        new Date(event.canceledTime || 0),
+        new Date(event.executedTime || 0),
       ]);
 
       return {
         id: event.proposalId,
         proposer: event.proposer,
-        createdAt: startDate,
+        createdAt: createdDate,
         startDate,
         endDate,
         canceledDate,

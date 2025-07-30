@@ -45,6 +45,7 @@ export type ProposalEvent = {
   executedProposalLink?: string;
   canceledTime?: string;
   executedTime?: string;
+  createdTime?: string;
 };
 
 export enum ProposalState {
