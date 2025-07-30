@@ -1,5 +1,6 @@
 type QuillOp = {
   insert: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   attributes?: Record<string, any>;
 };
 

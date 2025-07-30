@@ -5,9 +5,10 @@ import { useHasVoted, useVoteCastResults } from "@/hooks/useCastVote";
 import { ArrowLinkIcon, CircleInfoIcon } from "@/icons";
 import { useWallet } from "@vechain/vechain-kit";
 import { getConfig } from "@repo/config";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { useNodes } from "@/hooks/useUserQueries";
 import { IndexToVoteMap, IconByVote, ColorByVote } from "../constants";
+import { MixPanelEvent, trackEvent } from "@/utils/mixpanel/utilsMixpanel";
 
 const EXPLORER_URL = getConfig(import.meta.env.VITE_APP_ENV).network.explorerUrl;
 
@@ -43,6 +44,14 @@ export const VoteSection = ({ submitVoteModal }: { submitVoteModal: UseDisclosur
     if (!isVoter) return "You don't have enough voting power";
     return "";
   }, [account, hasVoted, isVoter, isUpcoming]);
+
+  const handleVote = useCallback(() => {
+    trackEvent(MixPanelEvent.CTA_VOTE_CLICKED, {
+      proposalId: proposal?.id || "",
+      voteOption: "submit",
+    });
+    submitVoteModal.onOpen();
+  }, [proposal?.id, submitVoteModal]);
 
   if (proposal.status === ProposalStatus.DRAFT) {
     return null;
@@ -104,7 +113,7 @@ export const VoteSection = ({ submitVoteModal }: { submitVoteModal: UseDisclosur
         borderRadius={8}
         isDisabled={cantVote}
         loadingText={"Confirm in your wallet"}
-        onClick={submitVoteModal.onOpen}
+        onClick={handleVote}
         _hover={{
           backgroundColor: isUpcoming ? "primary.100" : "primary.600",
         }}>
