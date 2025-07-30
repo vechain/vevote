@@ -13,6 +13,9 @@ import { CreateProposalStep } from "@/types/proposal";
 import { proposalDetailsSchema, ProposalDetailsSchema, TITLE_MAX_CHARS } from "@/schema/createProposalSchema";
 import { ArrowLeftIcon, ArrowRightIcon } from "@/icons";
 import { useProposalClock } from "@/hooks/useProposalClock";
+import { getConfig } from "@repo/config";
+
+const discourseBaseUrl = getConfig(import.meta.env.VITE_APP_ENV).discourseBaseUrl;
 
 export const ProposalDetailsForm = () => {
   const { proposalDetails, setProposalDetails, setStep } = useCreateProposal();
@@ -80,7 +83,7 @@ export const ProposalDetailsForm = () => {
                     borderColor={"gray.300"}
                     h={12}
                     p={4}>
-                    https://vechain.discourse.group/t/
+                    {discourseBaseUrl}
                   </InputLeftAddon>
                   <Input placeholder={LLDetailsForm.discourse_topic_placeholder()} {...register("discourseUrl")} />
                 </InputGroup>

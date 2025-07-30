@@ -20,6 +20,7 @@ export type AppConfig = {
   indexerUrl: string;
   WCProjectId: string;
   mixPanelToken?: string;
+  discourseBaseUrl: string;
 };
 
 export const getConfig = (env?: EnvConfig): AppConfig => {
