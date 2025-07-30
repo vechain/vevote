@@ -12,7 +12,7 @@ import { Routes } from "@/types/routes";
 import { BuyNodeCta } from "./components/BuyNodeCta";
 import { ProposalHeader } from "./components/ProposalHeader";
 import { DescriptionSection } from "./components/DescriptionSection";
-import { ProposalNavbar } from "./components/ProposalNavbar";
+import { ProposalNavbar } from "./components/ProposalNavbar/ProposalNavbar";
 import { VotingAndTimeline } from "./components/VotingAndTimeline/VotingAndTimeline";
 import { ProposalStatus } from "@/types/proposal";
 import { CanceledProposal } from "./components/CanceledProposal";

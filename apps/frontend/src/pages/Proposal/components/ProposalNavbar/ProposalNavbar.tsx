@@ -6,9 +6,9 @@ import { Box, Flex } from "@chakra-ui/react";
 import { useWallet } from "@vechain/vechain-kit";
 import { Link } from "react-router-dom";
 import { useMemo } from "react";
-import { DeleteEditProposal } from "@/components/proposal/DeleteEditProposal";
-import { CancelProposal } from "@/components/proposal/CancelProposal";
-import { ExecuteModal } from "@/components/proposal/ExecuteModal";
+import { DeleteEditProposal } from "./components/DeleteEditProposal";
+import { CancelProposal } from "./components/CancelProposal";
+import { ExecuteModal } from "./components/ExecuteModal";
 import { useProposal } from "@/components/proposal/ProposalProvider";
 import { bgHeaderStyle } from "@/components/navbar/Navbar";
 

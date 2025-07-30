@@ -10,12 +10,12 @@ import {
   useBreakpointValue,
   useDisclosure,
 } from "@chakra-ui/react";
-import { MessageModal } from "../ui/ModalSkeleton";
+import { MessageModal } from "../../../../../components/ui/ModalSkeleton";
 import { useCallback } from "react";
-import { FormSkeleton } from "../ui/FormSkeleton";
+import { FormSkeleton } from "../../../../../components/ui/FormSkeleton";
 import { z } from "zod";
-import { Label } from "../ui/Label";
-import { InputMessage } from "../ui/InputMessage";
+import { Label } from "../../../../../components/ui/Label";
+import { InputMessage } from "../../../../../components/ui/InputMessage";
 import { DeleteIcon, MinusCircleIcon } from "@/icons";
 import { useCancelProposal } from "@/hooks/useCancelProposal";
 import { Routes } from "@/types/routes";
