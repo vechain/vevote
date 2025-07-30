@@ -18,6 +18,14 @@ type RootTranslation = {
 	 */
 	left: string
 	/**
+	 * b​y
+	 */
+	by: string
+	/**
+	 * N​o​t​ ​p​u​b​l​i​s​h​e​d
+	 */
+	not_published: string
+	/**
 	 * H​o​m​e​p​a​g​e
 	 */
 	homepage: string
@@ -921,6 +929,10 @@ type RootTranslation = {
 		rejected: string
 	}
 	filters: {
+		/**
+		 * F​i​l​t​e​r​s
+		 */
+		title: string
 		sort: {
 			/**
 			 * N​e​w​e​s​t
@@ -1037,6 +1049,14 @@ export type TranslationFunctions = {
 	 * Left
 	 */
 	left: () => LocalizedString
+	/**
+	 * by
+	 */
+	by: () => LocalizedString
+	/**
+	 * Not published
+	 */
+	not_published: () => LocalizedString
 	/**
 	 * Homepage
 	 */
@@ -1925,6 +1945,10 @@ JPG, PNG or SVG of maximum of {size}MB.
 		rejected: () => LocalizedString
 	}
 	filters: {
+		/**
+		 * Filters
+		 */
+		title: () => LocalizedString
 		sort: {
 			/**
 			 * Newest

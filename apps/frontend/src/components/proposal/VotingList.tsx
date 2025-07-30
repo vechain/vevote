@@ -16,22 +16,15 @@ type VotingSingleChoiceProps = {
 };
 
 export const VotingSingleChoice = ({ proposal, results }: VotingSingleChoiceProps) => {
-  const {
-    votedChoices,
-    votingVariant,
-    sendTransaction,
-    isTransactionPending,
-    isSuccessOpen,
-    onSuccessClose,
-    onSuccessOpen,
-  } = useVotingBase(proposal);
+  const { votes, votingVariant, sendTransaction, isTransactionPending, isSuccessOpen, onSuccessClose, onSuccessOpen } =
+    useVotingBase(proposal);
 
   const [transactionId, setTransactionId] = useState<string | undefined>(undefined);
 
   const initialSelectedOption = useMemo(() => {
-    if (!votedChoices?.choice) return undefined;
-    return getSingleChoiceFromIndex(votedChoices.choice);
-  }, [votedChoices?.choice]);
+    if (!votes?.choice) return undefined;
+    return getSingleChoiceFromIndex(votes.choice);
+  }, [votes?.choice]);
 
   const [selectedOption, setSelectedOption] = useState<SingleChoiceEnum | undefined>(undefined);
 
