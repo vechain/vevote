@@ -1,7 +1,5 @@
 import { useI18nContext } from "@/i18n/i18n-react";
 import { AbstainIcon, DisLikeIcon, LikeIcon } from "@/icons";
-import { defaultSingleChoice } from "@/pages/CreateProposal/CreateProposalProvider";
-import { SingleChoiceEnum } from "@/types/proposal";
 import { VotesCastResult } from "@/types/votes";
 import { Flex, FlexProps, Icon, Text } from "@chakra-ui/react";
 import { useCallback, useMemo } from "react";
@@ -16,15 +14,14 @@ export const ProposalCardVotesResults = ({ results }: { proposalId: string; resu
       results?.reduce(
         (acc, vote) => {
           const weight = Number(vote.weight);
-          const choice = defaultSingleChoice[vote.choice];
-          switch (choice) {
-            case SingleChoiceEnum.FOR:
+          switch (vote.choice) {
+            case 1:
               acc.for += weight;
               break;
-            case SingleChoiceEnum.AGAINST:
+            case 0:
               acc.against += weight;
               break;
-            case SingleChoiceEnum.ABSTAIN:
+            case 2:
               acc.abstain += weight;
               break;
           }
