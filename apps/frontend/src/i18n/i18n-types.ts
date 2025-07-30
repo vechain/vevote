@@ -169,86 +169,6 @@ type RootTranslation = {
    */
   buy_a_node: string;
   /**
-   * B​u​y​ ​a​n​o​t​h​e​r​ ​n​o​d​e​ ​t​o​ ​i​n​c​r​e​a​s​e​ ​y​o​u​r​ ​v​o​t​i​n​g​ ​p​o​w​e​r​ ​o​n​ ​f​u​t​u​r​e​ ​p​r​o​p​o​s​a​l​s​.
-   */
-  buy_node_cta_description: string;
-  /**
-   * G​o​ ​t​o​ ​S​t​a​r​g​a​t​e
-   */
-  go_to_stargate: string;
-  /**
-   * P​r​o​p​o​s​a​l​ ​C​a​n​c​e​l​e​d
-   */
-  proposal_canceled: string;
-  /**
-   * T​h​e​ ​p​r​o​p​o​s​a​l​ ​w​a​s​ ​c​a​n​c​e​l​e​d​ ​b​y​ ​V​e​C​h​a​i​n​ ​o​r​ ​t​h​e​ ​p​r​o​p​o​s​e​r​ ​b​y​ ​t​h​e​ ​f​o​l​l​o​w​i​n​g​ ​r​e​a​s​o​n​:
-   */
-  proposal_canceled_description: string;
-  /**
-   * N​o​ ​r​e​a​s​o​n​ ​p​r​o​v​i​d​e​d
-   */
-  no_reason_provided: string;
-  /**
-   * T​i​m​e​l​i​n​e
-   */
-  timeline: string;
-  /**
-   * C​r​e​a​t​e​d
-   */
-  timeline_created: string;
-  /**
-   * P​r​o​p​o​s​a​l​ ​n​o​t​ ​f​o​u​n​d
-   */
-  proposal_not_found: string;
-  /**
-   * S​e​e​ ​a​l​l​ ​v​o​t​e​r​s
-   */
-  see_all_voters: string;
-  /**
-   * S​t​a​r​t​s​ ​i​n
-   */
-  starts_in: string;
-  /**
-   * E​n​d​s​ ​i​n
-   */
-  ends_in: string;
-  /**
-   * D​a​t​e
-   */
-  date: string;
-  /**
-   * A​d​d​r​e​s​s
-   */
-  address: string;
-  /**
-   * N​o​d​e​ ​I​D
-   */
-  node_id: string;
-  /**
-   * V​o​t​e​d​ ​O​p​t​i​o​n
-   */
-  voted_option: string;
-  /**
-   * T​r​a​n​s​a​c​t​i​o​n​ ​I​D
-   */
-  transaction_id: string;
-  /**
-   * V​o​t​i​n​g​ ​O​p​t​i​o​n​s
-   */
-  voting_options: string;
-  /**
-   * S​o​r​t​ ​b​y
-   */
-  sort_by: string;
-  /**
-   * U​n​k​n​o​w​n​ ​e​r​r​o​r
-   */
-  unknown_error: string;
-  /**
-   * F​a​i​l​e​d​ ​t​o​ ​e​x​e​c​u​t​e​ ​p​r​o​p​o​s​a​l
-   */
-  failed_to_execute_proposal: string;
-  /**
    * {​c​u​r​r​e​n​t​}​/​{​m​a​x​}
    * @param {number} current
    * @param {number} max
@@ -455,6 +375,22 @@ type RootTranslation = {
      * S​e​l​e​c​t​ ​a​n​ ​o​p​t​i​o​n​ ​t​o​ ​v​o​t​e​:
      */
     option_to_vote: string;
+    /**
+     * V​o​t​i​n​g​ ​h​a​s​ ​n​o​t​ ​s​t​a​r​t​e​d​ ​y​e​t
+     */
+    voting_has_not_started_yet: string;
+    /**
+     * P​l​e​a​s​e​ ​c​o​n​n​e​c​t​ ​y​o​u​r​ ​w​a​l​l​e​t
+     */
+    please_connect_your_wallet: string;
+    /**
+     * Y​o​u​ ​h​a​v​e​ ​a​l​r​e​a​d​y​ ​v​o​t​e​d
+     */
+    you_have_already_voted: string;
+    /**
+     * Y​o​u​ ​d​o​n​'​t​ ​h​a​v​e​ ​e​n​o​u​g​h​ ​v​o​t​i​n​g​ ​p​o​w​e​r
+     */
+    you_dont_have_enough_voting_power: string;
   };
   proposal: {
     /**
@@ -946,6 +882,50 @@ type RootTranslation = {
         publish_success_description: string;
       };
     };
+    /**
+     * G​o​ ​t​o​ ​S​t​a​r​g​a​t​e
+     */
+    go_to_stargate: string;
+    /**
+     * P​r​o​p​o​s​a​l​ ​n​o​t​ ​f​o​u​n​d
+     */
+    proposal_not_found: string;
+    /**
+     * S​t​a​r​t​s​ ​i​n
+     */
+    starts_in: string;
+    /**
+     * E​n​d​s​ ​i​n
+     */
+    ends_in: string;
+    /**
+     * T​i​m​e​l​i​n​e
+     */
+    timeline: string;
+    /**
+     * C​r​e​a​t​e​d
+     */
+    timeline_created: string;
+    /**
+     * P​r​o​p​o​s​a​l​ ​C​a​n​c​e​l​e​d
+     */
+    proposal_canceled: string;
+    /**
+     * T​h​e​ ​p​r​o​p​o​s​a​l​ ​w​a​s​ ​c​a​n​c​e​l​e​d​ ​b​y​ ​V​e​C​h​a​i​n​ ​o​r​ ​t​h​e​ ​p​r​o​p​o​s​e​r​ ​b​y​ ​t​h​e​ ​f​o​l​l​o​w​i​n​g​ ​r​e​a​s​o​n​:
+     */
+    proposal_canceled_description: string;
+    /**
+     * N​o​ ​r​e​a​s​o​n​ ​p​r​o​v​i​d​e​d
+     */
+    no_reason_provided: string;
+    /**
+     * U​n​k​n​o​w​n​ ​e​r​r​o​r
+     */
+    unknown_error: string;
+    /**
+     * F​a​i​l​e​d​ ​t​o​ ​e​x​e​c​u​t​e​ ​p​r​o​p​o​s​a​l
+     */
+    failed_to_execute_proposal: string;
   };
   proposals: {
     /**
@@ -1281,86 +1261,6 @@ export type TranslationFunctions = {
    */
   buy_a_node: () => LocalizedString;
   /**
-   * Buy another node to increase your voting power on future proposals.
-   */
-  buy_node_cta_description: () => LocalizedString;
-  /**
-   * Go to Stargate
-   */
-  go_to_stargate: () => LocalizedString;
-  /**
-   * Proposal Canceled
-   */
-  proposal_canceled: () => LocalizedString;
-  /**
-   * The proposal was canceled by VeChain or the proposer by the following reason:
-   */
-  proposal_canceled_description: () => LocalizedString;
-  /**
-   * No reason provided
-   */
-  no_reason_provided: () => LocalizedString;
-  /**
-   * Timeline
-   */
-  timeline: () => LocalizedString;
-  /**
-   * Created
-   */
-  timeline_created: () => LocalizedString;
-  /**
-   * Proposal not found
-   */
-  proposal_not_found: () => LocalizedString;
-  /**
-   * See all voters
-   */
-  see_all_voters: () => LocalizedString;
-  /**
-   * Starts in
-   */
-  starts_in: () => LocalizedString;
-  /**
-   * Ends in
-   */
-  ends_in: () => LocalizedString;
-  /**
-   * Date
-   */
-  date: () => LocalizedString;
-  /**
-   * Address
-   */
-  address: () => LocalizedString;
-  /**
-   * Node ID
-   */
-  node_id: () => LocalizedString;
-  /**
-   * Voted Option
-   */
-  voted_option: () => LocalizedString;
-  /**
-   * Transaction ID
-   */
-  transaction_id: () => LocalizedString;
-  /**
-   * Voting Options
-   */
-  voting_options: () => LocalizedString;
-  /**
-   * Sort by
-   */
-  sort_by: () => LocalizedString;
-  /**
-   * Unknown error
-   */
-  unknown_error: () => LocalizedString;
-  /**
-   * Failed to execute proposal
-   */
-  failed_to_execute_proposal: () => LocalizedString;
-  /**
    * {current}/{max}
    */
   filed_length: (arg: { current: number; max: number }) => LocalizedString;
@@ -1562,6 +1462,22 @@ JPG, PNG or SVG of maximum of {size}MB.
      * Select an option to vote:
      */
     option_to_vote: () => LocalizedString;
+    /**
+     * Voting has not started yet
+     */
+    voting_has_not_started_yet: () => LocalizedString;
+    /**
+     * Please connect your wallet
+     */
+    please_connect_your_wallet: () => LocalizedString;
+    /**
+     * You have already voted
+     */
+    you_have_already_voted: () => LocalizedString;
+    /**
+     * You don't have enough voting power
+     */
+    you_dont_have_enough_voting_power: () => LocalizedString;
   };
   proposal: {
     /**
@@ -2044,6 +1960,50 @@ JPG, PNG or SVG of maximum of {size}MB.
         publish_success_description: () => LocalizedString;
       };
     };
+    /**
+     * Go to Stargate
+     */
+    go_to_stargate: () => LocalizedString;
+    /**
+     * Proposal not found
+     */
+    proposal_not_found: () => LocalizedString;
+    /**
+     * Starts in
+     */
+    starts_in: () => LocalizedString;
+    /**
+     * Ends in
+     */
+    ends_in: () => LocalizedString;
+    /**
+     * Timeline
+     */
+    timeline: () => LocalizedString;
+    /**
+     * Created
+     */
+    timeline_created: () => LocalizedString;
+    /**
+     * Proposal Canceled
+     */
+    proposal_canceled: () => LocalizedString;
+    /**
+     * The proposal was canceled by VeChain or the proposer by the following reason:
+     */
+    proposal_canceled_description: () => LocalizedString;
+    /**
+     * No reason provided
+     */
+    no_reason_provided: () => LocalizedString;
+    /**
+     * Unknown error
+     */
+    unknown_error: () => LocalizedString;
+    /**
+     * Failed to execute proposal
+     */
+    failed_to_execute_proposal: () => LocalizedString;
   };
   proposals: {
     /**

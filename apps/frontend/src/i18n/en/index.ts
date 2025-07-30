@@ -99,6 +99,10 @@ const en = {
   voting_list: {
     voting_options: "Voting options:",
     option_to_vote: "Select an option to vote:",
+    voting_has_not_started_yet: "Voting has not started yet",
+    please_connect_your_wallet: "Please connect your wallet",
+    you_have_already_voted: "You have already voted",
+    you_dont_have_enough_voting_power: "You don't have enough voting power",
   },
   proposal: {
     title: "Proposal",

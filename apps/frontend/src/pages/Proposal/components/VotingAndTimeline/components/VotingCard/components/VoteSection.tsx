@@ -9,10 +9,12 @@ import { useCallback, useMemo } from "react";
 import { useNodes } from "@/hooks/useUserQueries";
 import { IconByVote, ColorByVote } from "../constants";
 import { MixPanelEvent, trackEvent } from "@/utils/mixpanel/utilsMixpanel";
+import { useI18nContext } from "@/i18n/i18n-react";
 
 const EXPLORER_URL = getConfig(import.meta.env.VITE_APP_ENV).network.explorerUrl;
 
 export const VoteSection = ({ submitVoteModal }: { submitVoteModal: UseDisclosureReturn }) => {
+  const { LL } = useI18nContext();
   const { proposal } = useProposal();
   const isUpcoming = proposal.status === ProposalStatus.UPCOMING;
   const isVoting = proposal.status === ProposalStatus.VOTING;
@@ -34,12 +36,12 @@ export const VoteSection = ({ submitVoteModal }: { submitVoteModal: UseDisclosur
   );
 
   const cantVoteReason = useMemo(() => {
-    if (isUpcoming) return "Voting has not started yet";
-    if (!account) return "Please connect your wallet";
-    if (hasVoted) return "You have already voted";
-    if (!isVoter) return "You don't have enough voting power";
+    if (isUpcoming) return LL.voting_list.voting_has_not_started_yet();
+    if (!account) return LL.voting_list.please_connect_your_wallet();
+    if (hasVoted) return LL.voting_list.you_have_already_voted();
+    if (!isVoter) return LL.voting_list.you_dont_have_enough_voting_power();
     return "";
-  }, [account, hasVoted, isVoter, isUpcoming]);
+  }, [LL, account, hasVoted, isVoter, isUpcoming]);
 
   const handleVote = useCallback(() => {
     trackEvent(MixPanelEvent.CTA_VOTE_CLICKED, {
@@ -112,12 +114,12 @@ export const VoteSection = ({ submitVoteModal }: { submitVoteModal: UseDisclosur
         fontSize={"16px"}
         borderRadius={8}
         isDisabled={cantVote}
-        loadingText={"Confirm in your wallet"}
+        loadingText={LL.proposal.confirm_in_your_wallet()}
         onClick={handleVote}
         _hover={{
           backgroundColor: isUpcoming ? "primary.100" : "primary.600",
         }}>
-        {"Submit your vote"}
+        {LL.submit_vote()}
       </Button>
       {cantVoteReason && (
         <HStack>

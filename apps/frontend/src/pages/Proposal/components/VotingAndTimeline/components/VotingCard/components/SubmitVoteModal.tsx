@@ -84,7 +84,7 @@ export const SubmitVoteModal = ({ submitVoteModal }: { submitVoteModal: UseDiscl
       trackEvent(MixPanelEvent.PROPOSAL_VOTE_FAILED, {
         proposalId: proposal.id,
         vote: selectedOption,
-        error: txError.error?.message || txError.message || LL.unknown_error(),
+        error: txError.error?.message || txError.message || LL.proposal.unknown_error(),
         transactionId: txId,
         reason: "",
       });

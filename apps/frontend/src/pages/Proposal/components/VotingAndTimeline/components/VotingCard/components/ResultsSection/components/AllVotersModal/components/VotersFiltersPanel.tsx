@@ -100,7 +100,7 @@ export const VotersFiltersPanel = ({
         />
 
         <VotingBaseDropdown
-          label={LL.sort_by()}
+          label={LL.proposal.voters_table.filters.sort_by()}
           options={sortOptions}
           selectedOption={sort}
           onChange={handleSortChange}
