@@ -17,6 +17,7 @@ export const VoteSection = ({ submitVoteModal }: { submitVoteModal: UseDisclosur
   const { account } = useWallet();
 
   const { hasVoted } = useHasVoted({ proposalId: proposal?.id || "" });
+
   const { votes } = useVoteCastResults({
     proposalIds: [proposal.id],
     enabled: hasVoted,

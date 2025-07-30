@@ -28,7 +28,7 @@ export const useVotersData = ({
     votes: votedInfo,
     isLoading: isVotesLoading,
     error: votesError,
-  } = useVoteCastResults({ proposalIds: [proposalId] });
+  } = useVoteCastResults({ proposalIds: [proposalId], enabled: proposalId !== "draft" });
 
   const {
     nodes,
