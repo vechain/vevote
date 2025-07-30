@@ -11,12 +11,12 @@ import { useI18nContext } from "@/i18n/i18n-react";
 import { CircleInfoIcon } from "@/icons";
 import { FilterStatuses, ProposalCardType } from "@/types/proposal";
 import { areAddressesEqual } from "@/utils/address";
+import { filterStatus } from "@/utils/proposals/helpers";
 import { Flex, Heading, Icon, Text } from "@chakra-ui/react";
 import { useWallet } from "@vechain/vechain-kit";
-import { PropsWithChildren, useEffect, useMemo, useState } from "react";
+import { PropsWithChildren, useMemo, useState } from "react";
 import { useCreateProposal } from "../CreateProposal/CreateProposalProvider";
 import { ProposalCard } from "./ProposalCard";
-import { filterStatus } from "@/utils/proposals/helpers";
 
 const ITEMS_PER_PAGE = 6;
 
@@ -39,8 +39,6 @@ export const Proposals = () => {
   ]);
 
   const { proposals, loading } = useProposalsEvents();
-
-  useEffect(() => console.log("Proposals loaded:", proposals.reverse()), [proposals]);
 
   const filteredProposals = useMemo(() => {
     const searchLower = searchValue.toLowerCase();
