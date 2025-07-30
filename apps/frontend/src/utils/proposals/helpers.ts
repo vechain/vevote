@@ -79,6 +79,7 @@ export const filterStatus = (statuses: FilterStatuses[], status: ProposalStatus)
 export const fromEventsToProposals = async (events: ProposalEvent[]): Promise<FromEventsToProposalsReturnType> => {
   return await Promise.all(
     events.map(async event => {
+      console.log("event.canceledTime", event.canceledTime);
       const [createdDate, startDate, endDate, canceledDate, executedDate] = await Promise.all([
         new Date(event.createdTime || 0),
         getDateFromBlock(Number(event.startTime)),
@@ -86,7 +87,7 @@ export const fromEventsToProposals = async (events: ProposalEvent[]): Promise<Fr
         new Date(event.canceledTime || 0),
         new Date(event.executedTime || 0),
       ]);
-
+      console.log("canceledDate", canceledDate);
       return {
         id: event.proposalId,
         proposer: event.proposer,

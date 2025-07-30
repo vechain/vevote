@@ -15,6 +15,7 @@ const EXPLORER_URL = getConfig(import.meta.env.VITE_APP_ENV).network.explorerUrl
 export const VoteSection = ({ submitVoteModal }: { submitVoteModal: UseDisclosureReturn }) => {
   const { proposal } = useProposal();
   const isUpcoming = proposal.status === ProposalStatus.UPCOMING;
+  const isVoting = proposal.status === ProposalStatus.VOTING;
   const { account } = useWallet();
 
   const { hasVoted } = useHasVoted({ proposalId: proposal?.id || "" });
@@ -89,6 +90,10 @@ export const VoteSection = ({ submitVoteModal }: { submitVoteModal: UseDisclosur
         </Link>
       </HStack>
     );
+  }
+
+  if (!isVoting && !isUpcoming) {
+    return null;
   }
 
   return (

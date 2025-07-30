@@ -89,7 +89,7 @@ export const getProposalsEvents = async (
             choices,
             maxSelection: Number(maxSelection),
             minSelection: Number(minSelection),
-            createdTime: event.meta.blockTimestamp,
+            createdTime: event.meta.blockTimestamp * 1000,
           };
         }
 
@@ -110,7 +110,7 @@ export const getProposalsEvents = async (
             proposalId: proposalIdEvent.toString(),
             canceller,
             reason: reason || "",
-            canceledTime: event.meta.blockTimestamp,
+            canceledTime: event.meta.blockTimestamp * 1000,
           };
         }
 
@@ -130,7 +130,7 @@ export const getProposalsEvents = async (
           return {
             proposalId: proposalIdEvent.toString(),
             executedProposalLink,
-            executedTime: event.meta.blockTimestamp,
+            executedTime: event.meta.blockTimestamp * 1000,
           };
         }
 
