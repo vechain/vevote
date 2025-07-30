@@ -31,7 +31,7 @@ export const TimelineCard = () => {
   const timelineItems = [
     {
       id: "created",
-      label: LL.timeline_created(),
+      label: LL.proposal.timeline_created(),
       date: proposal.createdAt,
       status: TimelineItemStatus.COMPLETED,
     },
@@ -64,7 +64,7 @@ export const TimelineCard = () => {
         <Flex alignItems={"center"} gap={3}>
           <Icon as={CalendarIcon} width={5} height={5} color={"primary.700"} />
           <Text fontWeight={600} color={"primary.700"} fontSize={{ base: "14px", md: "16px" }}>
-            {LL.timeline()}
+            {LL.proposal.timeline()}
           </Text>
         </Flex>
 

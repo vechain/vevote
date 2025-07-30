@@ -120,37 +120,37 @@ export const VotersTable = ({ data }: VotersTableProps) => {
   const votersColumn = [
     columnHelper.accessor("date", {
       cell: data => <BaseCell value={dayjs(data.getValue()).format("DD/MM/YYYY")} />,
-      header: () => <TableHeader label={LL.date()} />,
+      header: () => <TableHeader label={LL.proposal.voters_table.header.date()} />,
       id: "DATE",
     }),
     columnHelper.accessor("address", {
       cell: data => <AddressCell value={data.getValue()} />,
-      header: () => <TableHeader label={LL.address()} />,
+      header: () => <TableHeader label={LL.proposal.voters_table.header.address()} />,
       id: "ADDRESS",
     }),
     columnHelper.accessor("node", {
       cell: data => <BaseCell value={data.getValue()} />,
-      header: () => <TableHeader label={LL.node()} />,
+      header: () => <TableHeader label={LL.proposal.voters_table.header.node()} />,
       id: "NODE",
     }),
     columnHelper.accessor("nodeId", {
       cell: data => <BaseCell value={formatAddress(data.getValue())} />,
-      header: () => <TableHeader label={LL.node_id()} />,
+      header: () => <TableHeader label={LL.proposal.voters_table.header.node_id()} />,
       id: "NODE_ID",
     }),
     columnHelper.accessor("votingPower", {
       cell: data => <BaseCell value={data.getValue().toString()} />,
-      header: () => <TableHeader label={LL.voting_power()} />,
+      header: () => <TableHeader label={LL.proposal.voters_table.header.voting_power()} />,
       id: "VOTING_POWER",
     }),
     columnHelper.accessor("votedOption", {
       cell: data => <VotedOptionCell option={data.getValue()} />,
-      header: () => <TableHeader label={LL.voted_option()} />,
+      header: () => <TableHeader label={LL.proposal.voters_table.header.voted_option()} />,
       id: "VOTED_OPTION",
     }),
     columnHelper.accessor("transactionId", {
       cell: data => <TransactionIdCell value={data.getValue()} />,
-      header: () => <TableHeader label={LL.transaction_id()} />,
+      header: () => <TableHeader label={LL.proposal.voters_table.header.transaction_id()} />,
       id: "TRANSACTION_ID",
     }),
   ];

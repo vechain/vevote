@@ -22,7 +22,7 @@ export const BuyNodeCta = () => {
         width={"100%"}>
         <Flex flexDirection={"column"} gap={2.5} flex={1}>
           <Text fontSize={"14px"} fontWeight={500} color={"gray.600"} lineHeight={"1.43"}>
-            {LL.buy_node_cta_description()}
+            {LL.proposal.buy_another_node()}
           </Text>
         </Flex>
         <Button
@@ -38,7 +38,7 @@ export const BuyNodeCta = () => {
             backgroundColor: "gray.50",
           }}
           onClick={() => window.open("https://app.stargate.vechain.org", "_blank")}>
-          {LL.go_to_stargate()}
+          {LL.proposal.go_to_stargate()}
         </Button>
       </Stack>
     </HStack>

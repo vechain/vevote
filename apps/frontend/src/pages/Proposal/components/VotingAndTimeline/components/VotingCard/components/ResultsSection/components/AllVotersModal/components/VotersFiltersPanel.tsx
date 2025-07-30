@@ -83,7 +83,7 @@ export const VotersFiltersPanel = ({
 
       <Flex gap={{ base: 3, md: 4 }} width={{ base: "full", md: "fit-content" }}>
         <VotingBaseDropdown
-          label={LL.voting_options()}
+          label={LL.proposal.voters_table.filters.voting_options()}
           options={optionsWithAll}
           selectedOption={selectedOption}
           onChange={handleOptionChange}

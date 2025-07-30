@@ -54,7 +54,7 @@ export const CountdownSection = () => {
 
   if (!isValidStatus) return null;
 
-  const label = proposal.status === ProposalStatus.UPCOMING ? LL.starts_in() : LL.ends_in();
+  const label = proposal.status === ProposalStatus.UPCOMING ? LL.proposal.starts_in() : LL.proposal.ends_in();
   const date = proposal.status === ProposalStatus.UPCOMING ? proposal.startDate : proposal.endDate;
 
   // Calculate the difference
