@@ -19,7 +19,7 @@ export const Banner = () => {
     <Box
       paddingX={{ base: 6, md: 20 }}
       paddingY={10}
-      bgImage={{ base: "/images/banner-bg-mobile.png", md: "/images/banner-bg.png" }}
+      bgImage={{ base: "/images/banner-bg-mobile.webp", md: "/images/banner-bg.webp" }}
       bgSize={"cover"}
       bgPosition={"top"}
       bgRepeat={"no-repeat"}
