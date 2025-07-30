@@ -97,11 +97,17 @@ export const useIndexerVoteResults = ({ proposalId, size }: { proposalId?: strin
 
 //TODO: This is a workaround because useVoteCastResults is returning results for all proposals
 export const useVoteByProposalId = ({ proposalId, enabled }: { proposalId: string; enabled?: boolean }) => {
-  const { votes } = useVoteCastResults({
+  const { votes, isLoading, error } = useVoteCastResults({
     proposalIds: [proposalId],
     enabled,
   });
 
-  const votedChoice = useMemo(() => votes?.find(v => v.proposalId === proposalId), [votes, proposalId]);
-  return getSingleChoiceFromIndex(votedChoice?.choice || 0);
+  const voteData = useMemo(() => votes?.find(v => v.proposalId === proposalId), [votes, proposalId]);
+
+  return {
+    voteData,
+    vote: getSingleChoiceFromIndex(voteData?.choice || 0),
+    isLoading,
+    error,
+  };
 };

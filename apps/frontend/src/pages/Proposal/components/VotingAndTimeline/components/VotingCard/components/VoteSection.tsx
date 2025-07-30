@@ -18,7 +18,7 @@ export const VoteSection = ({ submitVoteModal }: { submitVoteModal: UseDisclosur
   const { account } = useWallet();
 
   const { hasVoted } = useHasVoted({ proposalId: proposal?.id || "" });
-  const vote = useVoteByProposalId({ proposalId: proposal?.id || "", enabled: hasVoted });
+  const { vote, voteData } = useVoteByProposalId({ proposalId: proposal?.id || "", enabled: hasVoted });
 
   const { nodes } = useNodes();
 
@@ -83,7 +83,7 @@ export const VoteSection = ({ submitVoteModal }: { submitVoteModal: UseDisclosur
           gap={1}
           alignItems={"center"}
           isExternal
-          href={`${EXPLORER_URL}/accounts/${account?.address}/txs`}>
+          href={`${EXPLORER_URL}/transactions/${voteData?.transactionId}`}>
           See details
           <Icon as={ArrowLinkIcon} width={4} height={4} />
         </Link>

@@ -23,14 +23,12 @@ import { trackEvent, MixPanelEvent } from "@/utils/mixpanel/utilsMixpanel";
 import { IconByVote, ColorByVote } from "../constants";
 import { getIndexFromSingleChoice } from "@/utils/proposals/helpers";
 import { getConfig } from "@repo/config";
-import { useWallet } from "@vechain/vechain-kit";
 import { ModalSkeleton } from "@/components/ui/ModalSkeleton";
 
 const EXPLORER_URL = getConfig(import.meta.env.VITE_APP_ENV).network.explorerUrl;
 
 export const SubmitVoteModal = ({ submitVoteModal }: { submitVoteModal: UseDisclosureReturn }) => {
   const { proposal } = useProposal();
-  const { account } = useWallet();
   const { nodes, masterNode } = useNodes();
   const [selectedOption, setSelectedOption] = useState<SingleChoiceEnum | undefined>();
   const [isSuccess, setIsSuccess] = useState(false);
@@ -180,7 +178,7 @@ export const SubmitVoteModal = ({ submitVoteModal }: { submitVoteModal: UseDiscl
                 gap={1}
                 alignItems={"center"}
                 isExternal
-                href={`${EXPLORER_URL}/accounts/${account?.address}/txs/${txId}`}>
+                href={`${EXPLORER_URL}/transactions/${txId}`}>
                 See details
                 <Icon as={ArrowLinkIcon} width={4} height={4} />
               </Link>
