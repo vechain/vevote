@@ -61,13 +61,15 @@ export const Banner = () => {
         </Flex>
         <Image
           display={{ base: "none", md: "block" }}
-          src="/images/bemo.png"
+          src="/images/bemo.webp"
           alt="bemo"
           width={{ md: "320px", lg: "420px" }}
           height={{ md: "520px", lg: "720px" }}
           objectFit={"cover"}
           flexShrink={1}
           transform={{ md: "translateY(80px)", lg: "translateY(100px)" }}
+          fetchPriority="high"
+          loading="eager"
         />
       </Flex>
     </Box>
