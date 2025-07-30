@@ -30,10 +30,12 @@ export const ProposalSummaryForm = () => {
             lineClamp={5}
           />
 
-          <SummaryCard.BaseItem
-            label={LL.proposal.create.details_form.discourse_url()}
-            value={getFullDiscourseUrl(proposalDetails.discourseUrl)}
-          />
+          {proposalDetails.discourseUrl && (
+            <SummaryCard.BaseItem
+              label={LL.proposal.create.details_form.discourse_url()}
+              value={getFullDiscourseUrl(proposalDetails.discourseUrl)}
+            />
+          )}
 
           <SummaryCard.CalendarItem
             label={LL.proposal.create.details_form.voting_calendar()}

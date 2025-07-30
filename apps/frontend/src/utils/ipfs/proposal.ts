@@ -33,7 +33,7 @@ export const uploadProposalToIpfs = async ({
           url: headerImageUrl,
         }
       : undefined,
-    discourseUrl: getFullDiscourseUrl(discourseUrl),
+    discourseUrl: getFullDiscourseUrl(discourseUrl || ""),
   };
 
   try {
