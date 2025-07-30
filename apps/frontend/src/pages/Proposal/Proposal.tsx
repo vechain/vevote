@@ -45,7 +45,7 @@ export const Proposal = () => {
 
   if (isLoading) {
     return (
-      <Box bg={"white"}>
+      <Box bg={"white"} pt={{ base: 24, md: 32 }}>
         <ProposalNavbar />
         <PageContainer>
           <SingleProposalSkeleton />
