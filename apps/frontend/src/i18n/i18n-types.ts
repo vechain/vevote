@@ -169,6 +169,34 @@ type RootTranslation = {
    */
   buy_a_node: string;
   /**
+   * B​u​y​ ​a​n​o​t​h​e​r​ ​n​o​d​e​ ​t​o​ ​i​n​c​r​e​a​s​e​ ​y​o​u​r​ ​v​o​t​i​n​g​ ​p​o​w​e​r​ ​o​n​ ​f​u​t​u​r​e​ ​p​r​o​p​o​s​a​l​s​.
+   */
+  buy_node_cta_description: string;
+  /**
+   * G​o​ ​t​o​ ​S​t​a​r​g​a​t​e
+   */
+  go_to_stargate: string;
+  /**
+   * P​r​o​p​o​s​a​l​ ​C​a​n​c​e​l​e​d
+   */
+  proposal_canceled: string;
+  /**
+   * T​h​e​ ​p​r​o​p​o​s​a​l​ ​w​a​s​ ​c​a​n​c​e​l​e​d​ ​b​y​ ​V​e​C​h​a​i​n​ ​o​r​ ​t​h​e​ ​p​r​o​p​o​s​e​r​ ​b​y​ ​t​h​e​ ​f​o​l​l​o​w​i​n​g​ ​r​e​a​s​o​n​:
+   */
+  proposal_canceled_description: string;
+  /**
+   * N​o​ ​r​e​a​s​o​n​ ​p​r​o​v​i​d​e​d
+   */
+  no_reason_provided: string;
+  /**
+   * T​i​m​e​l​i​n​e
+   */
+  timeline: string;
+  /**
+   * C​r​e​a​t​e​d
+   */
+  timeline_created: string;
+  /**
    * {​c​u​r​r​e​n​t​}​/​{​m​a​x​}
    * @param {number} current
    * @param {number} max
@@ -1200,6 +1228,34 @@ export type TranslationFunctions = {
    * Buy a Node
    */
   buy_a_node: () => LocalizedString;
+  /**
+   * Buy another node to increase your voting power on future proposals.
+   */
+  buy_node_cta_description: () => LocalizedString;
+  /**
+   * Go to Stargate
+   */
+  go_to_stargate: () => LocalizedString;
+  /**
+   * Proposal Canceled
+   */
+  proposal_canceled: () => LocalizedString;
+  /**
+   * The proposal was canceled by VeChain or the proposer by the following reason:
+   */
+  proposal_canceled_description: () => LocalizedString;
+  /**
+   * No reason provided
+   */
+  no_reason_provided: () => LocalizedString;
+  /**
+   * Timeline
+   */
+  timeline: () => LocalizedString;
+  /**
+   * Created
+   */
+  timeline_created: () => LocalizedString;
   /**
    * {current}/{max}
    */

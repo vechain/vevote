@@ -1,7 +1,10 @@
 import { Button, Flex, Text, Icon, HStack, Stack } from "@chakra-ui/react";
 import { CircleInfoIcon, ArrowRightIcon } from "@/icons";
+import { useI18nContext } from "@/i18n/i18n-react";
 
 export const BuyNodeCta = () => {
+  const { LL } = useI18nContext();
+
   return (
     <HStack
       alignItems={{ base: "flex-start", md: "center" }}
@@ -19,7 +22,7 @@ export const BuyNodeCta = () => {
         width={"100%"}>
         <Flex flexDirection={"column"} gap={2.5} flex={1}>
           <Text fontSize={"14px"} fontWeight={500} color={"gray.600"} lineHeight={"1.43"}>
-            Buy another node to increase your voting power on future proposals.
+            {LL.buy_node_cta_description()}
           </Text>
         </Flex>
         <Button
@@ -35,7 +38,7 @@ export const BuyNodeCta = () => {
             backgroundColor: "gray.50",
           }}
           onClick={() => window.open("https://app.stargate.vechain.org", "_blank")}>
-          Go to Stargate
+          {LL.go_to_stargate()}
         </Button>
       </Stack>
     </HStack>

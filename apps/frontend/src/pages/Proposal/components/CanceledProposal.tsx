@@ -2,8 +2,10 @@ import { Box, Flex, Icon, Text, VStack } from "@chakra-ui/react";
 import { CircleXIcon } from "@/icons";
 import { useProposal } from "@/components/proposal/ProposalProvider";
 import { useFormatDate } from "@/hooks/useFormatDate";
+import { useI18nContext } from "@/i18n/i18n-react";
 
 export const CanceledProposal = () => {
+  const { LL } = useI18nContext();
   const { proposal } = useProposal();
   const { formattedProposalDate } = useFormatDate();
 
@@ -26,7 +28,7 @@ export const CanceledProposal = () => {
       <Flex alignItems="center" gap={3}>
         <Icon as={CircleXIcon} color="red.500" boxSize={6} />
         <Text fontSize={{ base: "18px", md: "20px" }} fontWeight={600} color="red.700">
-          Proposal Canceled
+          {LL.proposal_canceled()}
         </Text>
       </Flex>
 
@@ -40,13 +42,13 @@ export const CanceledProposal = () => {
       {/* Description */}
       <VStack align="stretch" gap={3}>
         <Text fontSize={{ base: "14px", md: "16px" }} color="red.700">
-          The proposal was canceled by VeChain or the proposer by the following reason:
+          {LL.proposal_canceled_description()}
         </Text>
 
         {/* Reason box */}
         <Box backgroundColor="gray.100" borderRadius={8} padding={4} minHeight="60px">
           <Text fontSize={{ base: "14px", md: "16px" }} color="gray.600">
-            {proposal.reason || "No reason provided"}
+            {proposal.reason || LL.no_reason_provided()}
           </Text>
         </Box>
       </VStack>

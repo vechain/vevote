@@ -2,8 +2,10 @@ import { Button, Flex, useBreakpointValue, VStack } from "@chakra-ui/react";
 import { useState } from "react";
 import { VotingCard } from "./components/VotingCard/VotingCard";
 import { TimelineCard } from "./components/TimelineCard";
+import { useI18nContext } from "@/i18n/i18n-react";
 
 export const VotingAndTimeline = () => {
+  const { LL } = useI18nContext();
   const isMobile = useBreakpointValue({ base: true, md: false });
   const [activeTab, setActiveTab] = useState<"voting" | "timeline">("voting");
 
@@ -23,7 +25,7 @@ export const VotingAndTimeline = () => {
             fontWeight={600}
             fontSize={"14px"}
             onClick={() => setActiveTab("voting")}>
-            Voting
+            {LL.voting()}
           </Button>
           <Button
             variant={"ghost"}
@@ -36,7 +38,7 @@ export const VotingAndTimeline = () => {
             fontWeight={600}
             fontSize={"14px"}
             onClick={() => setActiveTab("timeline")}>
-            Timeline
+            {LL.timeline()}
           </Button>
         </Flex>
       )}

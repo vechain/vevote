@@ -3,6 +3,7 @@ import { useProposal } from "@/components/proposal/ProposalProvider";
 import { CalendarIcon } from "@/icons";
 import { useFormatDate } from "@/hooks/useFormatDate";
 import { ProposalStatus } from "@/types/proposal";
+import { useI18nContext } from "@/i18n/i18n-react";
 
 enum TimelineItemStatus {
   COMPLETED = "completed",
@@ -11,6 +12,7 @@ enum TimelineItemStatus {
 }
 
 export const TimelineCard = () => {
+  const { LL } = useI18nContext();
   const { proposal } = useProposal();
 
   const getVoteStatus = (): TimelineItemStatus => {
@@ -29,20 +31,20 @@ export const TimelineCard = () => {
   const timelineItems = [
     {
       id: "created",
-      label: "Created",
+      label: LL.timeline_created(),
       date: proposal.createdAt,
       status: TimelineItemStatus.COMPLETED,
     },
     {
       id: "vote",
-      label: "Vote",
+      label: LL.vote(),
       date: proposal.startDate,
       endDate: proposal.endDate,
       status: getVoteStatus(),
     },
     {
       id: "finished",
-      label: "Finished",
+      label: LL.finished(),
       date: proposal.endDate,
       status: getFinishedStatus(),
     },
@@ -62,7 +64,7 @@ export const TimelineCard = () => {
         <Flex alignItems={"center"} gap={3}>
           <Icon as={CalendarIcon} width={5} height={5} color={"primary.700"} />
           <Text fontWeight={600} color={"primary.700"} fontSize={{ base: "14px", md: "16px" }}>
-            Timeline
+            {LL.timeline()}
           </Text>
         </Flex>
 
