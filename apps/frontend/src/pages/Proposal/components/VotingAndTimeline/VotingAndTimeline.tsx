@@ -38,7 +38,7 @@ export const VotingAndTimeline = () => {
             fontWeight={600}
             fontSize={"14px"}
             onClick={() => setActiveTab("timeline")}>
-            {LL.timeline()}
+            {LL.proposal.timeline()}
           </Button>
         </Flex>
       )}
