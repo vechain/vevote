@@ -24,7 +24,7 @@ const columnHelper = createColumnHelper<VoteItem>();
 
 const TableHeader = ({ label }: { label: string }) => {
   return (
-    <Text whiteSpace={"nowrap"} fontSize={12} color={"gray.800"} fontWeight={600}>
+    <Text whiteSpace={"nowrap"} fontSize={12} color={"gray.800"} fontWeight={500} textTransform={"none"}>
       {label}
     </Text>
   );

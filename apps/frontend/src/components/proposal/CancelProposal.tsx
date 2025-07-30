@@ -1,5 +1,15 @@
 import { useI18nContext } from "@/i18n/i18n-react";
-import { Button, FormControl, Icon, ModalBody, ModalFooter, Text, Textarea, useDisclosure } from "@chakra-ui/react";
+import {
+  Button,
+  FormControl,
+  Icon,
+  ModalBody,
+  ModalFooter,
+  Text,
+  Textarea,
+  useBreakpointValue,
+  useDisclosure,
+} from "@chakra-ui/react";
 import { MessageModal } from "../ui/ModalSkeleton";
 import { useCallback } from "react";
 import { FormSkeleton } from "../ui/FormSkeleton";
@@ -16,6 +26,7 @@ export const CancelProposal = ({ proposalId }: { proposalId?: string }) => {
   const { LL } = useI18nContext();
   const { isOpen, onClose, onOpen } = useDisclosure();
   const navigate = useNavigate();
+  const isMobile = useBreakpointValue({ base: true, md: false });
 
   const { sendTransaction, isTransactionPending } = useCancelProposal();
 
@@ -65,7 +76,7 @@ export const CancelProposal = ({ proposalId }: { proposalId?: string }) => {
           onOpen();
         }}
         leftIcon={<Icon as={MinusCircleIcon} />}>
-        {LL.cancel()}
+        {!isMobile && LL.cancel()}
       </Button>
       <MessageModal
         isOpen={isOpen}

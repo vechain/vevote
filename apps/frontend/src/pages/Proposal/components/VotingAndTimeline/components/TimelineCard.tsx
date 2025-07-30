@@ -26,8 +26,6 @@ export const TimelineCard = () => {
       : TimelineItemStatus.COMPLETED;
   };
 
-  console.log("proposal", proposal);
-
   const timelineItems = [
     {
       id: "created",

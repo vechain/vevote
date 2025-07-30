@@ -8,6 +8,7 @@ import { ThumbsDownIcon } from "@/icons/ThumbsDownIcon";
 import { useMemo } from "react";
 import { ResultsInfo } from "./components/ResultsInfo";
 import { useIndexerVoteResults } from "@/hooks/useCastVote";
+import { AllVotersModal } from "./components/AllVotersModal/AllVotersModal";
 
 export const ResultsSection = () => {
   const voteOptions = ["for", "abstain", "against"];
@@ -44,6 +45,7 @@ export const ResultsSection = () => {
             Results
           </Text>
         </Flex>
+        <AllVotersModal />
       </Flex>
 
       <Flex flexDirection={"column"} gap={4}>

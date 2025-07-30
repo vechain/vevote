@@ -1,15 +1,8 @@
 import { PageContainer } from "@/components/PageContainer";
-// import { CancelProposal } from "@/components/proposal/CancelProposal";
-// import { DeleteEditProposal } from "@/components/proposal/DeleteEditProposal";
-// import { ExecuteModal } from "@/components/proposal/ExecuteModal";
 import { ProposalProvider } from "@/components/proposal/ProposalProvider";
 import { SingleProposalSkeleton } from "@/components/ui/SingleProposalSkeleton";
-// import { VotedChip } from "@/components/ui/VotedChip";
-// import { useUser } from "@/contexts/UserProvider";
-// import { useHasVoted } from "@/hooks/useCastVote";
 import { useProposalEvents } from "@/hooks/useProposalEvent";
 import { useI18nContext } from "@/i18n/i18n-react";
-// import { ProposalCardType } from "@/types/proposal";
 import { Box, Flex, Stack, Text, useBreakpointValue, VStack } from "@chakra-ui/react";
 import { useWallet } from "@vechain/vechain-kit";
 import { useEffect, useMemo } from "react";
@@ -71,9 +64,9 @@ export const Proposal = () => {
   }
 
   return (
-    <Box bg={"white"}>
-      <ProposalNavbar />
-      <ProposalProvider proposal={proposal}>
+    <ProposalProvider proposal={proposal}>
+      <Box bg={"white"}>
+        <ProposalNavbar />
         <PageContainer bg={"white"} pt={{ base: 24, md: 32 }} pb={10}>
           <VStack gap={10} w={"full"} alignItems={"stretch"}>
             <Flex gap={1} alignItems={"center"} fontSize={"14px"} fontWeight={500}>
@@ -99,32 +92,7 @@ export const Proposal = () => {
             <BuyNodeCta />
           </VStack>
         </PageContainer>
-      </ProposalProvider>
-    </Box>
+      </Box>
+    </ProposalProvider>
   );
 };
-
-// const ProposalNavbarActions = ({ proposal }: { proposal: ProposalCardType | undefined }) => {
-//   const { hasVoted } = useHasVoted({ proposalId: proposal?.id || "" });
-//   const { isExecutor, isWhitelisted } = useUser();
-
-//   const canCancel = useMemo(
-//     () => isWhitelisted && ["upcoming"].includes(proposal?.status || ""),
-//     [isWhitelisted, proposal?.status],
-//   );
-
-//   const canEditDraft = useMemo(
-//     () => isWhitelisted && ["draft"].includes(proposal?.status || ""),
-//     [isWhitelisted, proposal?.status],
-//   );
-
-//   return (
-//     <Flex alignItems={"center"} gap={2} marginLeft={"auto"}>
-//       {canEditDraft && <DeleteEditProposal />}
-//       {canCancel && <CancelProposal proposalId={proposal?.id} />}
-//       {isExecutor && proposal?.status === "approved" && <ExecuteModal proposalId={proposal?.id} />}
-
-//       {["voting"].includes(proposal?.status || "") && hasVoted && <VotedChip />}
-//     </Flex>
-//   );
-// };
