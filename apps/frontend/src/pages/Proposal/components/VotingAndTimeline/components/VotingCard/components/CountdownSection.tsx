@@ -39,6 +39,17 @@ export const CountdownSection = () => {
     return () => clearInterval(interval);
   }, [isValidStatus]);
 
+  // if the voting has started reload the page
+  useEffect(() => {
+    if (proposal.status === ProposalStatus.UPCOMING) {
+      const now = dayjs();
+      const startDate = dayjs(proposal.startDate);
+      if (startDate.isBefore(now)) {
+        window.location.reload();
+      }
+    }
+  }, [proposal.startDate, proposal.status]);
+
   if (!isValidStatus) return null;
 
   const label = proposal.status === ProposalStatus.UPCOMING ? "Starts in" : "Ends in";

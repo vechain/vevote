@@ -1,26 +1,15 @@
 import { Button, Flex, HStack, Icon, Link, Text, UseDisclosureReturn } from "@chakra-ui/react";
 import { useProposal } from "@/components/proposal/ProposalProvider";
-import { ProposalStatus, SingleChoiceEnum } from "@/types/proposal";
+import { ProposalStatus } from "@/types/proposal";
 import { useHasVoted, useVotedChoices } from "@/hooks/useCastVote";
-import { AbstainIcon, ArrowLinkIcon, CircleInfoIcon, ThumbsDownIcon, ThumbsUpIcon } from "@/icons";
+import { ArrowLinkIcon, CircleInfoIcon } from "@/icons";
 import { useWallet } from "@vechain/vechain-kit";
 import { getConfig } from "@repo/config";
 import { useMemo } from "react";
 import { useNodes } from "@/hooks/useUserQueries";
+import { IndexToVoteMap, IconByVote, ColorByVote } from "../constants";
 
 const EXPLORER_URL = getConfig(import.meta.env.VITE_APP_ENV).network.explorerUrl;
-
-const IndexToVoteMap = [SingleChoiceEnum.AGAINST, SingleChoiceEnum.FOR, SingleChoiceEnum.ABSTAIN];
-const ColorByVote = {
-  [SingleChoiceEnum.AGAINST]: "red.600",
-  [SingleChoiceEnum.FOR]: "green.600",
-  [SingleChoiceEnum.ABSTAIN]: "orange.400",
-};
-const IconByVote = {
-  [SingleChoiceEnum.AGAINST]: <ThumbsDownIcon width={"20px"} height={"20px"} />,
-  [SingleChoiceEnum.FOR]: <ThumbsUpIcon width={"20px"} height={"20px"} />,
-  [SingleChoiceEnum.ABSTAIN]: <AbstainIcon width={"20px"} height={"20px"} />,
-};
 
 export const VoteSection = ({ submitVoteModal }: { submitVoteModal: UseDisclosureReturn }) => {
   const { proposal } = useProposal();

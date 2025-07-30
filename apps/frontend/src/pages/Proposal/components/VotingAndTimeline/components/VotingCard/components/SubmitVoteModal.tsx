@@ -19,31 +19,13 @@ import {
 import { useState, useMemo } from "react";
 import { SingleChoiceEnum } from "@/types/proposal";
 import { defaultSingleChoice } from "@/pages/CreateProposal/CreateProposalProvider";
-import {
-  ThumbsUpIcon,
-  ThumbsDownIcon,
-  AbstainIcon,
-  VoteIcon,
-  CheckIcon,
-  VotingPowerIcon,
-  ArrowLinkIcon,
-} from "@/icons";
+import { VoteIcon, CheckIcon, VotingPowerIcon, ArrowLinkIcon } from "@/icons";
 import { useNodes } from "@/hooks/useUserQueries";
 import { useCastVote } from "@/hooks/useCastVote";
 import { useProposal } from "@/components/proposal/ProposalProvider";
 import { trackEvent, MixPanelEvent } from "@/utils/mixpanel/utilsMixpanel";
-
-const IconByVote = {
-  [SingleChoiceEnum.FOR]: <ThumbsUpIcon width="20px" height="20px" />,
-  [SingleChoiceEnum.AGAINST]: <ThumbsDownIcon width="20px" height="20px" />,
-  [SingleChoiceEnum.ABSTAIN]: <AbstainIcon width="20px" height="20px" />,
-};
-
-const ColorByVote = {
-  [SingleChoiceEnum.FOR]: "green.600",
-  [SingleChoiceEnum.AGAINST]: "red.600",
-  [SingleChoiceEnum.ABSTAIN]: "orange.400",
-};
+import { IconByVote, ColorByVote } from "../constants";
+import { getIndexFromSingleChoice } from "@/utils/proposals/helpers";
 
 export const SubmitVoteModal = ({ submitVoteModal }: { submitVoteModal: UseDisclosureReturn }) => {
   const { proposal } = useProposal();
@@ -67,8 +49,7 @@ export const SubmitVoteModal = ({ submitVoteModal }: { submitVoteModal: UseDiscl
   const handleConfirmVote = async () => {
     if (!selectedOption) return;
 
-    // Map vote option to index for the smart contract
-    const voteIndex = defaultSingleChoice.indexOf(selectedOption);
+    const voteIndex = getIndexFromSingleChoice(selectedOption);
 
     try {
       trackEvent(MixPanelEvent.PROPOSAL_VOTE, {
@@ -77,9 +58,7 @@ export const SubmitVoteModal = ({ submitVoteModal }: { submitVoteModal: UseDiscl
         reason: "",
       });
       // Close the modal after selection - in real implementation, this would trigger the actual voting
-      console.log("Vote submitted:", selectedOption, "Index:", voteIndex);
       const result = await sendTransaction({ id: proposal.id, selectedOption: voteIndex as 0 | 1 | 2, reason: "" });
-      console.log("result", result);
       trackEvent(MixPanelEvent.PROPOSAL_VOTE_SUCCESS, {
         proposalId: proposal.id,
         vote: defaultSingleChoice[voteIndex],
