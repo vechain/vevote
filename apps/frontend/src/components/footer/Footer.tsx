@@ -1,34 +1,22 @@
-import { useUser } from "@/contexts/UserProvider";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { LegalLinks, ResourcesLinks, VeVoteLinks } from "@/types/terms";
 import { Flex, Heading, Link, Text } from "@chakra-ui/react";
-import { useWallet } from "@vechain/vechain-kit";
-import { PropsWithChildren, useMemo } from "react";
-import { useLocation } from "react-router-dom";
+import { PropsWithChildren } from "react";
 import { VoteLogo } from "../ui/VoteLogo";
 
 export const Footer = () => {
   const { LL } = useI18nContext();
-  const { connection } = useWallet();
-  const { isWhitelisted } = useUser();
-
-  const location = useLocation();
-
-  const canCreateProposal = useMemo(
-    () => connection.isConnected && isWhitelisted && location.pathname === "/",
-    [connection.isConnected, isWhitelisted, location.pathname],
-  );
 
   return (
     <Flex
+      id="footer"
       w={"100%"}
       direction={"column"}
       gap={6}
       alignItems={"center"}
       paddingX={{ base: 6, md: 44 }}
       paddingY={{ base: 10, md: 20 }}
-      bgColor={"gray.800"}
-      marginBottom={{ base: canCreateProposal ? "100px" : 0, md: 0 }}>
+      bgColor={"gray.800"}>
       <Flex
         width={"100%"}
         flexDirection={{ base: "column", md: "row" }}

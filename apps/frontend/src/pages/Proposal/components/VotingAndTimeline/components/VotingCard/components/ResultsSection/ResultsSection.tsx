@@ -1,20 +1,20 @@
 import { Flex, Icon, Text, Box } from "@chakra-ui/react";
 import { VoteIcon } from "@/icons";
 import { useProposal } from "@/components/proposal/ProposalProvider";
-import { useVotesResults } from "@/hooks/useCastVote";
 import { defaultSingleChoice } from "@/pages/CreateProposal/CreateProposalProvider";
 import { ThumbsUpIcon } from "@/icons/ThumbsUpIcon";
 import { AbstainIcon } from "@/icons/AbstainIcon";
 import { ThumbsDownIcon } from "@/icons/ThumbsDownIcon";
 import { useMemo } from "react";
 import { ResultsInfo } from "./components/ResultsInfo";
+import { useIndexerVoteResults } from "@/hooks/useCastVote";
 
 export const ResultsSection = () => {
   const voteOptions = ["for", "abstain", "against"];
   const colors = ["green.500", "orange.300", "red.600"];
   const icons = [ThumbsUpIcon, AbstainIcon, ThumbsDownIcon];
   const { proposal } = useProposal();
-  const { results } = useVotesResults({ proposalId: proposal.id, size: defaultSingleChoice.length });
+  const { results } = useIndexerVoteResults({ proposalId: proposal.id, size: defaultSingleChoice.length });
 
   const votePercentages = useMemo(() => {
     const abstainVotes = results?.data?.find(result => result.support === "ABSTAIN")?.totalWeight ?? 0;

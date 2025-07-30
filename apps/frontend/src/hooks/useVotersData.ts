@@ -1,6 +1,6 @@
 import { VoteItem } from "@/components/proposal/VotersTable";
 import { Sort } from "@/components/ui/SortDropdown";
-import { useVotesInfo } from "@/hooks/useCastVote";
+import { useVoteCastResults } from "@/hooks/useCastVote";
 import { useVotersNodes } from "@/hooks/useUserQueries";
 import { NodeStrengthLevel } from "@/types/user";
 import { getSingleChoiceFromIndex } from "@/utils/proposals/helpers";
@@ -24,7 +24,11 @@ export const useVotersData = ({
   page?: number;
   pageSize?: number;
 }) => {
-  const { votedInfo, isLoading: isVotesLoading, error: votesError } = useVotesInfo({ proposalId });
+  const {
+    votes: votedInfo,
+    isLoading: isVotesLoading,
+    error: votesError,
+  } = useVoteCastResults({ proposalIds: [proposalId] });
 
   const {
     nodes,

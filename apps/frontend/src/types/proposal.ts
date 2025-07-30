@@ -1,4 +1,5 @@
 import { ProposalDetails } from "@/pages/CreateProposal/CreateProposalProvider";
+import { VotesCastResult } from "./votes";
 
 export enum CreateProposalStep {
   VOTING_DETAILS,
@@ -23,12 +24,15 @@ export enum ProposalStatus {
   MIN_NOT_REACHED = "min-not-reached",
 }
 
+export type FilterStatuses = Omit<ProposalStatus, "min-not-reached">;
+
 export type ProposalCardType = ProposalDetails & {
   id: string;
   status: ProposalStatus;
   proposer: string;
   createdAt: Date;
   reason?: string;
+  results?: VotesCastResult[];
   executedProposalLink?: string;
   canceledDate?: Date;
   executedDate?: Date;

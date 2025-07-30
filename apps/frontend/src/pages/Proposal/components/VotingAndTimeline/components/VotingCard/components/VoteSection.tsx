@@ -1,7 +1,7 @@
 import { Button, Flex, HStack, Icon, Link, Text, UseDisclosureReturn } from "@chakra-ui/react";
 import { useProposal } from "@/components/proposal/ProposalProvider";
 import { ProposalStatus } from "@/types/proposal";
-import { useHasVoted, useVotedChoices } from "@/hooks/useCastVote";
+import { useHasVoted, useVoteCastResults } from "@/hooks/useCastVote";
 import { ArrowLinkIcon, CircleInfoIcon } from "@/icons";
 import { useWallet } from "@vechain/vechain-kit";
 import { getConfig } from "@repo/config";
@@ -17,11 +17,16 @@ export const VoteSection = ({ submitVoteModal }: { submitVoteModal: UseDisclosur
   const { account } = useWallet();
 
   const { hasVoted } = useHasVoted({ proposalId: proposal?.id || "" });
-  const { votedChoices } = useVotedChoices({ proposalId: proposal?.id || "", enabled: hasVoted });
+  const { votes } = useVoteCastResults({
+    proposalIds: [proposal.id],
+    enabled: hasVoted,
+  });
+
+  const votedChoice = useMemo(() => votes?.[0], [votes]);
   const { nodes } = useNodes();
 
   const isVoter = useMemo(() => nodes.length > 0, [nodes.length]);
-  const vote = IndexToVoteMap[votedChoices?.choice || 0];
+  const vote = IndexToVoteMap[votedChoice?.choice || 0];
   const voteIcon = IconByVote[vote];
   const voteColor = ColorByVote[vote];
 
