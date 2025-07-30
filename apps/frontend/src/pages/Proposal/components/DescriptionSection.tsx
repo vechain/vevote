@@ -71,9 +71,9 @@ const ReadOnlyEditorContainer = forwardRef<
   return (
     <motion.div
       ref={ref}
-      initial={{ height: "80px" }}
+      initial={{ height: "300px" }}
       animate={{
-        height: isExpanded ? `${contentHeight}px` : "80px",
+        height: isExpanded ? `${contentHeight}px` : "300px",
       }}
       transition={{
         duration: 0.4,

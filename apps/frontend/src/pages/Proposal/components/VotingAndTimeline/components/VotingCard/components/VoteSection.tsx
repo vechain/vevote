@@ -2,9 +2,11 @@ import { Button, Flex, HStack, Icon, Link, Text } from "@chakra-ui/react";
 import { useProposal } from "@/components/proposal/ProposalProvider";
 import { ProposalStatus, SingleChoiceEnum } from "@/types/proposal";
 import { useHasVoted, useVotedChoices } from "@/hooks/useCastVote";
-import { AbstainIcon, ArrowLinkIcon, ThumbsDownIcon, ThumbsUpIcon } from "@/icons";
+import { AbstainIcon, ArrowLinkIcon, CircleInfoIcon, ThumbsDownIcon, ThumbsUpIcon } from "@/icons";
 import { useWallet } from "@vechain/vechain-kit";
 import { getConfig } from "@repo/config";
+import { useMemo } from "react";
+import { useNodes } from "@/hooks/useUserQueries";
 
 const EXPLORER_URL = getConfig(import.meta.env.VITE_APP_ENV).network.explorerUrl;
 
@@ -27,9 +29,25 @@ export const VoteSection = () => {
 
   const { hasVoted } = useHasVoted({ proposalId: proposal?.id || "" });
   const { votedChoices } = useVotedChoices({ proposalId: proposal?.id || "", enabled: hasVoted });
+  const { nodes } = useNodes();
+
+  const isVoter = useMemo(() => nodes.length > 0, [nodes.length]);
   const vote = IndexToVoteMap[votedChoices?.choice || 0];
   const voteIcon = IconByVote[vote];
   const voteColor = ColorByVote[vote];
+
+  const cantVote = useMemo(
+    () => isUpcoming || !account || hasVoted || !isVoter,
+    [account, hasVoted, isVoter, isUpcoming],
+  );
+
+  const cantVoteReason = useMemo(() => {
+    if (isUpcoming) return "Voting has not started yet";
+    if (!account) return "Please connect your wallet";
+    if (hasVoted) return "You have already voted";
+    if (!isVoter) return "You don't have enough voting power";
+    return "";
+  }, [account, hasVoted, isVoter, isUpcoming]);
 
   if (hasVoted) {
     return (
@@ -66,7 +84,7 @@ export const VoteSection = () => {
   }
 
   return (
-    <Flex flexDirection={"column"} gap={6} padding={{ base: "16px", md: "24px" }}>
+    <Flex flexDirection={"column"} gap={4} padding={{ base: "16px", md: "24px" }}>
       <Button
         width={"100%"}
         height={"56px"}
@@ -75,13 +93,23 @@ export const VoteSection = () => {
         fontWeight={600}
         fontSize={"16px"}
         borderRadius={8}
-        isDisabled={isUpcoming}
+        isDisabled={cantVote}
         loadingText={"Confirm in your wallet"}
         _hover={{
           backgroundColor: isUpcoming ? "primary.100" : "primary.600",
         }}>
-        Submit your vote
+        {"Submit your vote"}
       </Button>
+      {cantVoteReason && (
+        <HStack>
+          <Text fontSize={"sm"} fontWeight={500} color={"orange.500"}>
+            <Icon as={CircleInfoIcon} width={4} height={4} />
+          </Text>
+          <Text fontSize={"sm"} fontWeight={500} color={"orange.500"}>
+            {cantVoteReason}
+          </Text>
+        </HStack>
+      )}
     </Flex>
   );
 };

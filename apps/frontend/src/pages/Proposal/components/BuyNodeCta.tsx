@@ -24,13 +24,12 @@ export const BuyNodeCta = () => {
         </Flex>
         <Button
           variant={"outline"}
-          size={"sm"}
-          height={"32px"}
-          fontSize={"12px"}
+          size={"md"}
           fontWeight={600}
           color={"gray.600"}
           borderColor={"gray.200"}
           backgroundColor={"white"}
+          rounded={"8px"}
           rightIcon={<Icon as={ArrowRightIcon} width={4} height={4} />}
           _hover={{
             backgroundColor: "gray.50",

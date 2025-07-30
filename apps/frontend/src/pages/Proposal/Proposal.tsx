@@ -74,10 +74,12 @@ export const Proposal = () => {
     <Box bg={"white"}>
       <ProposalNavbar />
       <ProposalProvider proposal={proposal}>
-        <PageContainer bg={"white"}>
+        <PageContainer bg={"white"} pt={24} pb={10}>
           <VStack gap={10} w={"full"} alignItems={"stretch"}>
             <Flex gap={1} alignItems={"center"} fontSize={"14px"} fontWeight={500}>
-              <Text color={"gray.600"}>{LL.homepage()}</Text>
+              <Text color={"gray.600"} onClick={() => navigate(Routes.HOME)} cursor={"pointer"}>
+                {LL.homepage()}
+              </Text>
               <Text color={"gray.400"}>{"→"}</Text>
               <Text color={"gray.600"}>{LL.proposal.title()}</Text>
             </Flex>
