@@ -70,7 +70,7 @@ const TopBar = ({ title, proposer }: { title: string; proposer: string }) => {
         {title}
       </Text>
       <Flex alignItems={"center"} gap={4}>
-        <Flex alignItems={"center"} gap={1} borderRightWidth={"1px"} borderColor={"gray.100"} paddingRight={4}>
+        <Flex alignItems={"center"} gap={2} borderRightWidth={"1px"} borderColor={"gray.100"} paddingRight={4}>
           <Text fontSize={{ base: "14px", md: "16px" }} color={"gray.500"}>
             {LL.by()}
           </Text>
