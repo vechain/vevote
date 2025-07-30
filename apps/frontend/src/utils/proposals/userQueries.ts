@@ -134,7 +134,24 @@ export const getAMN = async (address?: string) => {
   try {
     const res = await axios.get<AmnResponse>(`${indexerUrl}${IndexerRoutes.MASTER_NODE}/${address}`);
 
-    return { data: res.data };
+    if (!res.data || !res.data.nodeMaster) {
+      return { data: undefined };
+    }
+
+    const masterNode = res.data.nodeMaster;
+
+    const powerRes = await executeCall({
+      contractAddress,
+      contractInterface,
+      method: "getValidatorVoteWeight",
+      args: [address, masterNode],
+    });
+
+    if (!powerRes.success) {
+      return { data: { ...res.data, votingPower: BigInt(0) } };
+    }
+
+    return { data: { ...res.data, votingPower: powerRes.result.plain as bigint } };
   } catch (error) {
     console.error(`Failed to fetch votes results: ${error}`);
     return { data: undefined };
