@@ -26,9 +26,14 @@ import { useProposal } from "@/components/proposal/ProposalProvider";
 import { trackEvent, MixPanelEvent } from "@/utils/mixpanel/utilsMixpanel";
 import { IconByVote, ColorByVote } from "../constants";
 import { getIndexFromSingleChoice } from "@/utils/proposals/helpers";
+import { getConfig } from "@repo/config";
+import { useWallet } from "@vechain/vechain-kit";
+
+const EXPLORER_URL = getConfig(import.meta.env.VITE_APP_ENV).network.explorerUrl;
 
 export const SubmitVoteModal = ({ submitVoteModal }: { submitVoteModal: UseDisclosureReturn }) => {
   const { proposal } = useProposal();
+  const { account } = useWallet();
   const { nodes, masterNode } = useNodes();
   const [selectedOption, setSelectedOption] = useState<SingleChoiceEnum | undefined>();
   const [isSuccess, setIsSuccess] = useState(false);
@@ -126,12 +131,17 @@ export const SubmitVoteModal = ({ submitVoteModal }: { submitVoteModal: UseDiscl
                     // Add navigation logic here
                   }}
                   _hover={{ textDecoration: "none" }}>
-                  <HStack spacing={1.5} align="center">
-                    <Text fontSize="md" fontWeight="medium" color="primary.600">
-                      See details
-                    </Text>
-                    <Icon as={ArrowLinkIcon} boxSize={4} color="primary.600" />
-                  </HStack>
+                  <Link
+                    color={"primary.700"}
+                    fontWeight={500}
+                    display={"flex"}
+                    gap={1}
+                    alignItems={"center"}
+                    isExternal
+                    href={`${EXPLORER_URL}/accounts/${account?.address}/txs`}>
+                    See details
+                    <Icon as={ArrowLinkIcon} width={4} height={4} />
+                  </Link>
                 </Link>
               </VStack>
 
