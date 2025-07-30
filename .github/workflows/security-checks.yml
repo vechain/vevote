@@ -1,0 +1,15 @@
+name: 'Security Checks'
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  sonar-scan:
+    uses: vechain/github-actions/.github/workflows/sonar-scan.yaml@ceb183bdac66f0a97f51bd1318a17c027b2bfa07 # v.1.7.0
+    secrets:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    with:
+      download-coverage-report: false
