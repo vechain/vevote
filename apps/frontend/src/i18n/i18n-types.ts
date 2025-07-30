@@ -197,6 +197,58 @@ type RootTranslation = {
    */
   timeline_created: string;
   /**
+   * P​r​o​p​o​s​a​l​ ​n​o​t​ ​f​o​u​n​d
+   */
+  proposal_not_found: string;
+  /**
+   * S​e​e​ ​a​l​l​ ​v​o​t​e​r​s
+   */
+  see_all_voters: string;
+  /**
+   * S​t​a​r​t​s​ ​i​n
+   */
+  starts_in: string;
+  /**
+   * E​n​d​s​ ​i​n
+   */
+  ends_in: string;
+  /**
+   * D​a​t​e
+   */
+  date: string;
+  /**
+   * A​d​d​r​e​s​s
+   */
+  address: string;
+  /**
+   * N​o​d​e​ ​I​D
+   */
+  node_id: string;
+  /**
+   * V​o​t​e​d​ ​O​p​t​i​o​n
+   */
+  voted_option: string;
+  /**
+   * T​r​a​n​s​a​c​t​i​o​n​ ​I​D
+   */
+  transaction_id: string;
+  /**
+   * V​o​t​i​n​g​ ​O​p​t​i​o​n​s
+   */
+  voting_options: string;
+  /**
+   * S​o​r​t​ ​b​y
+   */
+  sort_by: string;
+  /**
+   * U​n​k​n​o​w​n​ ​e​r​r​o​r
+   */
+  unknown_error: string;
+  /**
+   * F​a​i​l​e​d​ ​t​o​ ​e​x​e​c​u​t​e​ ​p​r​o​p​o​s​a​l
+   */
+  failed_to_execute_proposal: string;
+  /**
    * {​c​u​r​r​e​n​t​}​/​{​m​a​x​}
    * @param {number} current
    * @param {number} max
@@ -1256,6 +1308,58 @@ export type TranslationFunctions = {
    * Created
    */
   timeline_created: () => LocalizedString;
+  /**
+   * Proposal not found
+   */
+  proposal_not_found: () => LocalizedString;
+  /**
+   * See all voters
+   */
+  see_all_voters: () => LocalizedString;
+  /**
+   * Starts in
+   */
+  starts_in: () => LocalizedString;
+  /**
+   * Ends in
+   */
+  ends_in: () => LocalizedString;
+  /**
+   * Date
+   */
+  date: () => LocalizedString;
+  /**
+   * Address
+   */
+  address: () => LocalizedString;
+  /**
+   * Node ID
+   */
+  node_id: () => LocalizedString;
+  /**
+   * Voted Option
+   */
+  voted_option: () => LocalizedString;
+  /**
+   * Transaction ID
+   */
+  transaction_id: () => LocalizedString;
+  /**
+   * Voting Options
+   */
+  voting_options: () => LocalizedString;
+  /**
+   * Sort by
+   */
+  sort_by: () => LocalizedString;
+  /**
+   * Unknown error
+   */
+  unknown_error: () => LocalizedString;
+  /**
+   * Failed to execute proposal
+   */
+  failed_to_execute_proposal: () => LocalizedString;
   /**
    * {current}/{max}
    */

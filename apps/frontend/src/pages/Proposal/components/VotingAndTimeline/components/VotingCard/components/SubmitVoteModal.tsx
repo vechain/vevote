@@ -24,10 +24,12 @@ import { IconByVote, ColorByVote } from "../constants";
 import { getIndexFromSingleChoice } from "@/utils/proposals/helpers";
 import { getConfig } from "@repo/config";
 import { ModalSkeleton } from "@/components/ui/ModalSkeleton";
+import { useI18nContext } from "@/i18n/i18n-react";
 
 const EXPLORER_URL = getConfig(import.meta.env.VITE_APP_ENV).network.explorerUrl;
 
 export const SubmitVoteModal = ({ submitVoteModal }: { submitVoteModal: UseDisclosureReturn }) => {
+  const { LL } = useI18nContext();
   const { proposal } = useProposal();
   const { nodes, masterNode } = useNodes();
   const [selectedOption, setSelectedOption] = useState<SingleChoiceEnum | undefined>();
@@ -82,7 +84,7 @@ export const SubmitVoteModal = ({ submitVoteModal }: { submitVoteModal: UseDiscl
       trackEvent(MixPanelEvent.PROPOSAL_VOTE_FAILED, {
         proposalId: proposal.id,
         vote: selectedOption,
-        error: txError.error?.message || txError.message || "Unknown error",
+        error: txError.error?.message || txError.message || LL.unknown_error(),
         transactionId: txId,
         reason: "",
       });

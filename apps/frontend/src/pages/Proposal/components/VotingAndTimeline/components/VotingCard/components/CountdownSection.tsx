@@ -4,6 +4,7 @@ import { ProposalStatus } from "@/types/proposal";
 import { Flex, Icon, Text } from "@chakra-ui/react";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
+import { useI18nContext } from "@/i18n/i18n-react";
 
 const CountdownBox = ({ value, label }: { value: number; label: string }) => {
   return (
@@ -25,6 +26,7 @@ const CountdownBox = ({ value, label }: { value: number; label: string }) => {
 };
 
 export const CountdownSection = () => {
+  const { LL } = useI18nContext();
   const [, setTime] = useState<number>(0);
   const { proposal } = useProposal();
 
@@ -52,7 +54,7 @@ export const CountdownSection = () => {
 
   if (!isValidStatus) return null;
 
-  const label = proposal.status === ProposalStatus.UPCOMING ? "Starts in" : "Ends in";
+  const label = proposal.status === ProposalStatus.UPCOMING ? LL.starts_in() : LL.ends_in();
   const date = proposal.status === ProposalStatus.UPCOMING ? proposal.startDate : proposal.endDate;
 
   // Calculate the difference

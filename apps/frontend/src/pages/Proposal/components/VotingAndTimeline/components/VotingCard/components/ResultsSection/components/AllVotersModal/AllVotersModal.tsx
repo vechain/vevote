@@ -61,11 +61,13 @@ export const AllVotersModal = () => {
     setCurrentPage(page);
   }, []);
 
+  if (votes.length === 0) return null;
+
   return (
     <>
       <Flex alignItems={"center"} gap={1} onClick={onOpen} cursor={"pointer"}>
         <Text fontSize={{ base: "14px", md: "16px" }} color={"primary.600"} fontWeight={500}>
-          See all voters
+          {LL.see_all_voters()}
         </Text>
         <Icon as={ArrowRightIcon} width={4} height={4} color={"primary.600"} />
       </Flex>

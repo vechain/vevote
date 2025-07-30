@@ -41,7 +41,7 @@ export const ExecuteModal = ({ proposalId }: { proposalId: string }) => {
         await sendTransaction({ proposalId, link });
         onClose();
       } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : "Failed to execute proposal";
+        const errorMessage = error instanceof Error ? error.message : LL.failed_to_execute_proposal();
         setError("link", { message: errorMessage });
       }
     },

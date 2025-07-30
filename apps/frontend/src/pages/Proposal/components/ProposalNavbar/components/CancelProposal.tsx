@@ -57,7 +57,7 @@ export const CancelProposal = ({ proposalId }: { proposalId?: string }) => {
 
         trackEvent(MixPanelEvent.PROPOSAL_CANCEL_FAILED, {
           proposalId,
-          error: txError.error?.message || txError.message || "Unknown error",
+          error: txError.error?.message || txError.message || LL.unknown_error(),
           transactionId: txError.txId || "unknown",
         });
       }

@@ -58,7 +58,7 @@ export const Proposal = () => {
     return (
       <Box bg={"white"}>
         <ProposalNavbar />
-        <Box>{"Proposal not found"}</Box>
+        <Box>{LL.proposal_not_found()}</Box>
       </Box>
     );
   }

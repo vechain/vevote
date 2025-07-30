@@ -83,7 +83,7 @@ export const VotersFiltersPanel = ({
 
       <Flex gap={{ base: 3, md: 4 }} width={{ base: "full", md: "fit-content" }}>
         <VotingBaseDropdown
-          label="Voting Options"
+          label={LL.voting_options()}
           options={optionsWithAll}
           selectedOption={selectedOption}
           onChange={handleOptionChange}
@@ -92,7 +92,7 @@ export const VotersFiltersPanel = ({
         />
 
         <VotingBaseDropdown
-          label="Node"
+          label={LL.node()}
           options={nodesWithAll}
           selectedOption={node}
           onChange={handleNodeChange}
@@ -100,7 +100,7 @@ export const VotersFiltersPanel = ({
         />
 
         <VotingBaseDropdown
-          label="Sort by"
+          label={LL.sort_by()}
           options={sortOptions}
           selectedOption={sort}
           onChange={handleSortChange}
