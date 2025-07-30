@@ -1,13 +1,13 @@
 import { ProposalCardType } from "@/types/proposal";
 import { useVevoteSendTransaction } from "@/utils/hooks/useVevoteSendTransaction";
-import { fromStringToUint256 } from "@/utils/proposals/helpers";
+import { fromStringToUint256, getSingleChoiceFromIndex } from "@/utils/proposals/helpers";
 import { getHasVoted, getVoteCastResults, getIndexerVoteResults } from "@/utils/proposals/votedQueries";
 import { getConfig } from "@repo/config";
 import { VeVote__factory } from "@repo/contracts";
 import { useQuery } from "@tanstack/react-query";
 import { ABIFunction, Address, Clause, ZERO_ADDRESS } from "@vechain/sdk-core";
 import { EnhancedClause, useThor, useWallet } from "@vechain/vechain-kit";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 
 const contractAddress = getConfig(import.meta.env.VITE_APP_ENV).vevoteContractAddress;
 const contractInterface = VeVote__factory.createInterface();
@@ -93,4 +93,15 @@ export const useIndexerVoteResults = ({ proposalId, size }: { proposalId?: strin
     isLoading,
     error,
   };
+};
+
+//TODO: This is a workaround because useVoteCastResults is returning results for all proposals
+export const useVoteByProposalId = ({ proposalId, enabled }: { proposalId: string; enabled?: boolean }) => {
+  const { votes } = useVoteCastResults({
+    proposalIds: [proposalId],
+    enabled,
+  });
+
+  const votedChoice = useMemo(() => votes?.find(v => v.proposalId === proposalId), [votes, proposalId]);
+  return getSingleChoiceFromIndex(votedChoice?.choice || 0);
 };

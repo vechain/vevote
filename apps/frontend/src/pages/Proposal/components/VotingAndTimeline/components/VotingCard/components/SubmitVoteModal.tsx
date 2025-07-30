@@ -54,6 +54,7 @@ export const SubmitVoteModal = ({ submitVoteModal }: { submitVoteModal: UseDiscl
     setIsError(false);
     setIsSuccess(false);
     setSelectedOption(undefined);
+    setTxId(undefined);
     submitVoteModal.onClose();
   }, [submitVoteModal]);
 
@@ -65,13 +66,13 @@ export const SubmitVoteModal = ({ submitVoteModal }: { submitVoteModal: UseDiscl
     try {
       trackEvent(MixPanelEvent.PROPOSAL_VOTE, {
         proposalId: proposal.id,
-        vote: defaultSingleChoice[voteIndex],
+        vote: selectedOption,
         reason: "",
       });
       const result = await sendTransaction({ id: proposal.id, selectedOption: voteIndex as 0 | 1 | 2, reason: "" });
       trackEvent(MixPanelEvent.PROPOSAL_VOTE_SUCCESS, {
         proposalId: proposal.id,
-        vote: defaultSingleChoice[voteIndex],
+        vote: selectedOption,
         transactionId: result.txId,
         reason: "",
       });
@@ -82,7 +83,7 @@ export const SubmitVoteModal = ({ submitVoteModal }: { submitVoteModal: UseDiscl
       const txId = txError.txId || "unknown";
       trackEvent(MixPanelEvent.PROPOSAL_VOTE_FAILED, {
         proposalId: proposal.id,
-        vote: defaultSingleChoice[voteIndex],
+        vote: selectedOption,
         error: txError.error?.message || txError.message || "Unknown error",
         transactionId: txId,
         reason: "",
@@ -93,7 +94,7 @@ export const SubmitVoteModal = ({ submitVoteModal }: { submitVoteModal: UseDiscl
 
   if (isError) {
     return (
-      <ModalSkeleton isOpen={submitVoteModal.isOpen} onClose={submitVoteModal.onClose} trapFocus={false} size="md">
+      <ModalSkeleton isOpen={submitVoteModal.isOpen} onClose={handleClose} trapFocus={false} size="md">
         <ModalBody>
           <VStack spacing={6} align="center">
             {/* Header with icon and title */}
@@ -147,7 +148,7 @@ export const SubmitVoteModal = ({ submitVoteModal }: { submitVoteModal: UseDiscl
     const selectedColor = selectedOption ? ColorByVote[selectedOption] : "gray.500";
 
     return (
-      <ModalSkeleton isOpen={submitVoteModal.isOpen} onClose={submitVoteModal.onClose} trapFocus={false} size="md">
+      <ModalSkeleton isOpen={submitVoteModal.isOpen} onClose={handleClose} trapFocus={false} size="md">
         <ModalBody>
           <VStack spacing={6} align="center">
             {/* Header with icon and title */}

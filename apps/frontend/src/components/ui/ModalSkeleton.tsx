@@ -21,7 +21,7 @@ export const ModalSkeleton = ({
     <BaseModal isCentered {...props}>
       <ModalOverlay />
       <BaseModalContent>
-        {showCloseButton && <ModalCloseButton />}
+        {showCloseButton && <ModalCloseButton onClick={props.onClose} />}
         {children}
       </BaseModalContent>
     </BaseModal>
