@@ -12,10 +12,10 @@ import {
   Link,
   ModalBody,
 } from "@chakra-ui/react";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { SingleChoiceEnum } from "@/types/proposal";
 import { defaultSingleChoice } from "@/pages/CreateProposal/CreateProposalProvider";
-import { VoteIcon, CheckIcon, VotingPowerIcon, ArrowLinkIcon } from "@/icons";
+import { VoteIcon, CheckIcon, VotingPowerIcon, ArrowLinkIcon, CircleXIcon } from "@/icons";
 import { useNodes } from "@/hooks/useUserQueries";
 import { useCastVote } from "@/hooks/useCastVote";
 import { useProposal } from "@/components/proposal/ProposalProvider";
@@ -34,6 +34,8 @@ export const SubmitVoteModal = ({ submitVoteModal }: { submitVoteModal: UseDiscl
   const { nodes, masterNode } = useNodes();
   const [selectedOption, setSelectedOption] = useState<SingleChoiceEnum | undefined>();
   const [isSuccess, setIsSuccess] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const [txId, setTxId] = useState<string | undefined>();
 
   const totalVotingPower = useMemo(() => {
     return nodes.reduce((acc, node) => acc + Number(node.votingPower) / 100, 0);
@@ -48,6 +50,13 @@ export const SubmitVoteModal = ({ submitVoteModal }: { submitVoteModal: UseDiscl
     masterNode,
   });
 
+  const handleClose = useCallback(() => {
+    setIsError(false);
+    setIsSuccess(false);
+    setSelectedOption(undefined);
+    submitVoteModal.onClose();
+  }, [submitVoteModal]);
+
   const handleConfirmVote = async () => {
     if (!selectedOption) return;
 
@@ -59,7 +68,6 @@ export const SubmitVoteModal = ({ submitVoteModal }: { submitVoteModal: UseDiscl
         vote: defaultSingleChoice[voteIndex],
         reason: "",
       });
-      // Close the modal after selection - in real implementation, this would trigger the actual voting
       const result = await sendTransaction({ id: proposal.id, selectedOption: voteIndex as 0 | 1 | 2, reason: "" });
       trackEvent(MixPanelEvent.PROPOSAL_VOTE_SUCCESS, {
         proposalId: proposal.id,
@@ -67,6 +75,7 @@ export const SubmitVoteModal = ({ submitVoteModal }: { submitVoteModal: UseDiscl
         transactionId: result.txId,
         reason: "",
       });
+      setTxId(result.txId);
       setIsSuccess(true);
     } catch (error) {
       const txError = error as { txId?: string; error?: { message?: string }; message?: string };
@@ -78,9 +87,60 @@ export const SubmitVoteModal = ({ submitVoteModal }: { submitVoteModal: UseDiscl
         transactionId: txId,
         reason: "",
       });
-      throw error;
+      setIsError(true);
     }
   };
+
+  if (isError) {
+    return (
+      <ModalSkeleton isOpen={submitVoteModal.isOpen} onClose={submitVoteModal.onClose} trapFocus={false} size="md">
+        <ModalBody>
+          <VStack spacing={6} align="center">
+            {/* Header with icon and title */}
+            <VStack spacing={6} align="center">
+              <Icon as={CircleXIcon} boxSize={10} color="red.500" />
+              <Text fontSize="xl" fontWeight="semibold" color="gray.600" textAlign="center">
+                Vote submission failed
+              </Text>
+            </VStack>
+
+            {/* Action buttons */}
+            <VStack spacing={3} w="full">
+              <Button
+                onClick={() => {
+                  setIsError(false);
+                  handleConfirmVote();
+                }}
+                w="full"
+                h={14}
+                bg="red.500"
+                color="white"
+                fontSize="md"
+                fontWeight="semibold"
+                borderRadius="lg"
+                _hover={{ bg: "red.600" }}
+                _active={{ bg: "red.600" }}>
+                Try Again
+              </Button>
+              <Button
+                onClick={handleClose}
+                w="full"
+                h={14}
+                bg="gray.200"
+                color="gray.600"
+                fontSize="md"
+                fontWeight="semibold"
+                borderRadius="lg"
+                _hover={{ bg: "gray.300" }}
+                _active={{ bg: "gray.300" }}>
+                Close
+              </Button>
+            </VStack>
+          </VStack>
+        </ModalBody>
+      </ModalSkeleton>
+    );
+  }
 
   if (isSuccess) {
     const selectedIcon = selectedOption ? IconByVote[selectedOption] : null;
@@ -98,7 +158,6 @@ export const SubmitVoteModal = ({ submitVoteModal }: { submitVoteModal: UseDiscl
               </Text>
             </VStack>
 
-            {/* Vote selection display and see details */}
             <VStack spacing={6} align="center" w="full">
               {/* Selected vote display */}
               {selectedOption && (
@@ -114,29 +173,21 @@ export const SubmitVoteModal = ({ submitVoteModal }: { submitVoteModal: UseDiscl
 
               {/* See details link */}
               <Link
-                href="#"
-                onClick={e => {
-                  e.preventDefault();
-                  // Add navigation logic here
-                }}
-                _hover={{ textDecoration: "none" }}>
-                <Link
-                  color={"primary.700"}
-                  fontWeight={500}
-                  display={"flex"}
-                  gap={1}
-                  alignItems={"center"}
-                  isExternal
-                  href={`${EXPLORER_URL}/accounts/${account?.address}/txs`}>
-                  See details
-                  <Icon as={ArrowLinkIcon} width={4} height={4} />
-                </Link>
+                color={"primary.700"}
+                fontWeight={500}
+                display={"flex"}
+                gap={1}
+                alignItems={"center"}
+                isExternal
+                href={`${EXPLORER_URL}/accounts/${account?.address}/txs/${txId}`}>
+                See details
+                <Icon as={ArrowLinkIcon} width={4} height={4} />
               </Link>
             </VStack>
 
             {/* Close button */}
             <Button
-              onClick={submitVoteModal.onClose}
+              onClick={handleClose}
               w="full"
               h={14}
               bg="gray.200"
@@ -157,10 +208,10 @@ export const SubmitVoteModal = ({ submitVoteModal }: { submitVoteModal: UseDiscl
   return (
     <ModalSkeleton
       isOpen={submitVoteModal.isOpen}
-      onClose={submitVoteModal.onClose}
+      onClose={handleClose}
       trapFocus={false}
       size="md"
-      closeOnOverlayClick={false}
+      closeOnOverlayClick={!isTransactionPending}
       showCloseButton={!isTransactionPending}>
       <ModalHeader pb={4}>
         <HStack justify="space-between" align="center" w="full">

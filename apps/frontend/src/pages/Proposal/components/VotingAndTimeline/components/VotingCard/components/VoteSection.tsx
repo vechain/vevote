@@ -7,8 +7,9 @@ import { useWallet } from "@vechain/vechain-kit";
 import { getConfig } from "@repo/config";
 import { useCallback, useMemo } from "react";
 import { useNodes } from "@/hooks/useUserQueries";
-import { IndexToVoteMap, IconByVote, ColorByVote } from "../constants";
+import { IconByVote, ColorByVote } from "../constants";
 import { MixPanelEvent, trackEvent } from "@/utils/mixpanel/utilsMixpanel";
+import { getSingleChoiceFromIndex } from "@/utils/proposals/helpers";
 
 const EXPLORER_URL = getConfig(import.meta.env.VITE_APP_ENV).network.explorerUrl;
 
@@ -28,7 +29,7 @@ export const VoteSection = ({ submitVoteModal }: { submitVoteModal: UseDisclosur
   const { nodes } = useNodes();
 
   const isVoter = useMemo(() => nodes.length > 0, [nodes.length]);
-  const vote = IndexToVoteMap[votedChoice?.choice || 0];
+  const vote = getSingleChoiceFromIndex(votedChoice?.choice || 0);
   const voteIcon = IconByVote[vote];
   const voteColor = ColorByVote[vote];
 

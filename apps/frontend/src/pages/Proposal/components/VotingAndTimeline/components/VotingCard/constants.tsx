@@ -1,8 +1,6 @@
 import { SingleChoiceEnum } from "@/types/proposal";
 import { AbstainIcon, ThumbsDownIcon, ThumbsUpIcon } from "@/icons";
 
-export const IndexToVoteMap = [SingleChoiceEnum.AGAINST, SingleChoiceEnum.FOR, SingleChoiceEnum.ABSTAIN];
-
 export const ColorByVote = {
   [SingleChoiceEnum.AGAINST]: "red.600",
   [SingleChoiceEnum.FOR]: "green.600",

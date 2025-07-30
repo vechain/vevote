@@ -5,6 +5,7 @@ import { formatAddress } from "@/utils/address";
 import {
   Button,
   Flex,
+  HStack,
   Icon,
   Link,
   ModalBody,
@@ -55,7 +56,7 @@ export const VotingPowerModal = () => {
   return (
     <>
       <Button onClick={onOpen} leftIcon={<Icon as={VotingPowerIcon} boxSize={5} />} size={{ base: "md", md: "lg" }}>
-        {totalVotingPower || isMobile ? "0" : LL.proposal.voting_power.get_voting_power()}
+        {totalVotingPower || (isMobile ? "0" : LL.proposal.voting_power.get_voting_power())}
       </Button>
       <ModalSkeleton isOpen={isOpen} onClose={onClose}>
         <ModalHeader>
@@ -91,8 +92,10 @@ const VotingWallet = () => {
   const { LL } = useI18nContext();
 
   return (
-    <Text display={"inline-flex"} alignItems={"center"} gap={2} color={"gray.600"}>
-      {`${LL.wallet()}:`}
+    <HStack>
+      <Text display={"inline-flex"} alignItems={"center"} gap={2} color={"gray.600"}>
+        {`${LL.wallet()}:`}
+      </Text>
       <CopyLink
         href={`${EXPLORER_URL}/accounts/${account?.address}`}
         isExternal
@@ -101,6 +104,6 @@ const VotingWallet = () => {
         fontWeight={500}>
         {formatAddress(account?.address || "")}
       </CopyLink>
-    </Text>
+    </HStack>
   );
 };
