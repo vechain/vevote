@@ -1,7 +1,7 @@
 import { Flex } from "@chakra-ui/react";
 import { CountdownSection } from "./components/CountdownSection";
 import { ResultsSection } from "./components/ResultsSection/ResultsSection";
-import { VoteSection } from "./components/VoteSection";
+import { VoteSection } from "./components/VoteSection/VoteSection";
 
 export const VotingCard = () => {
   return (

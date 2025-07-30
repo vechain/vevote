@@ -1,4 +1,4 @@
-import { Button, Flex, HStack, Icon, Link, Text } from "@chakra-ui/react";
+import { Button, Flex, HStack, Icon, Link, Text, useDisclosure } from "@chakra-ui/react";
 import { useProposal } from "@/components/proposal/ProposalProvider";
 import { ProposalStatus, SingleChoiceEnum } from "@/types/proposal";
 import { useHasVoted, useVotedChoices } from "@/hooks/useCastVote";
@@ -7,6 +7,7 @@ import { useWallet } from "@vechain/vechain-kit";
 import { getConfig } from "@repo/config";
 import { useMemo } from "react";
 import { useNodes } from "@/hooks/useUserQueries";
+import { SubmitVoteModal } from "./components/SubmitVoteModal";
 
 const EXPLORER_URL = getConfig(import.meta.env.VITE_APP_ENV).network.explorerUrl;
 
@@ -35,6 +36,7 @@ export const VoteSection = () => {
   const vote = IndexToVoteMap[votedChoices?.choice || 0];
   const voteIcon = IconByVote[vote];
   const voteColor = ColorByVote[vote];
+  const submitVoteModal = useDisclosure();
 
   const cantVote = useMemo(
     () => isUpcoming || !account || hasVoted || !isVoter,
@@ -95,11 +97,13 @@ export const VoteSection = () => {
         borderRadius={8}
         isDisabled={cantVote}
         loadingText={"Confirm in your wallet"}
+        onClick={submitVoteModal.onOpen}
         _hover={{
           backgroundColor: isUpcoming ? "primary.100" : "primary.600",
         }}>
         {"Submit your vote"}
       </Button>
+      <SubmitVoteModal submitVoteModal={submitVoteModal} />
       {cantVoteReason && (
         <HStack>
           <Text fontSize={"sm"} fontWeight={500} color={"orange.500"}>
