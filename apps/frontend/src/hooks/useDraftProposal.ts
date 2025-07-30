@@ -8,8 +8,6 @@ export const useDraftProposal = () => {
     draftProposal: ProposalCardType | null,
     defaultProposal: ProposalDetails,
   ): ProposalDetails => {
-    console.log("draftProposal", draftProposal);
-    console.log("defaultProposal", defaultProposal);
     if (!draftProposal) return defaultProposal;
 
     const blob = base64ToBlob(draftProposal.headerImage?.url, draftProposal.headerImage?.type);
