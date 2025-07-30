@@ -1,11 +1,11 @@
 import React, { useCallback, useMemo } from "react";
 import { Flex } from "@chakra-ui/react";
 import { useI18nContext } from "@/i18n/i18n-react";
-import { SearchInput } from "../ui/SearchInput";
-import { VotingBaseDropdown } from "./VotingBaseDropdown";
+import { SearchInput } from "@/components/ui/SearchInput";
+import { VotingBaseDropdown } from "@/components/proposal/VotingBaseDropdown";
 import { FilterIcon, NodeIcon, SortDescIcon } from "@/icons";
 import { NodeStrengthLevel } from "@/types/user";
-import { Sort } from "../ui/SortDropdown";
+import { Sort } from "@/components/ui/SortDropdown";
 
 export const DEFAULT_FILTER = "All";
 

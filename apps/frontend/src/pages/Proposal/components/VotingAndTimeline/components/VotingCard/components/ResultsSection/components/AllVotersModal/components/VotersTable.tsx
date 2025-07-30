@@ -1,8 +1,8 @@
 import { createColumnHelper } from "@tanstack/react-table";
 import { defineStyle, Icon, Link, Text } from "@chakra-ui/react";
 import { formatAddress } from "@/utils/address";
-import { CopyLink } from "../ui/CopyLink";
-import { DataTable } from "../ui/TableSkeleton";
+import { CopyLink } from "@/components/ui/CopyLink";
+import { DataTable } from "@/components/ui/TableSkeleton";
 import dayjs from "dayjs";
 import { ArrowLinkIcon } from "@/icons";
 import { getConfig } from "@repo/config";

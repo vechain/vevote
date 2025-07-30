@@ -3,14 +3,14 @@ import { ArrowRightIcon, UserCheckIcon } from "@/icons";
 import { Icon, ModalBody, ModalHeader, useDisclosure, Spinner, Alert, AlertIcon, Flex, Text } from "@chakra-ui/react";
 import { useCallback, useState } from "react";
 import { useProposal } from "@/components/proposal/ProposalProvider";
-import { VotersFiltersPanel, DEFAULT_FILTER } from "@/components/proposal/VotersFiltersPanel";
+import { VotersFiltersPanel, DEFAULT_FILTER } from "./components/VotersFiltersPanel";
 import { useVotersData } from "@/hooks/useVotersData";
 import { NodeStrengthLevel } from "@/types/user";
 import { useDebounce } from "@/hooks/useDebounce";
 import { Sort } from "@/components/ui/SortDropdown";
 import { ModalSkeleton, ModalTitle } from "@/components/ui/ModalSkeleton";
 import { TablePagination } from "@/components/ui/TablePagination";
-import { VotersTable } from "@/components/proposal/VotersTable";
+import { VotersTable } from "./components/VotersTable";
 
 export const AllVotersModal = () => {
   const { LL } = useI18nContext();
