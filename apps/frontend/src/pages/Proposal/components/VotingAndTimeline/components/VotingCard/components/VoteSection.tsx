@@ -49,6 +49,10 @@ export const VoteSection = ({ submitVoteModal }: { submitVoteModal: UseDisclosur
     return "";
   }, [account, hasVoted, isVoter, isUpcoming]);
 
+  if (proposal.status === ProposalStatus.DRAFT) {
+    return null;
+  }
+
   if (hasVoted) {
     return (
       <HStack gap={4} padding={{ base: 4, md: 6 }} justifyContent={"space-between"}>
