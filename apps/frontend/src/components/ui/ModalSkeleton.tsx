@@ -4,22 +4,26 @@ import {
   Heading,
   Icon,
   ModalCloseButton,
-  ModalContent,
   ModalHeader,
   ModalOverlay,
   ModalProps,
   Text,
 } from "@chakra-ui/react";
 import { SVGProps } from "react";
+import { BaseModalContent } from "./BaseModalContent";
 
-export const ModalSkeleton = ({ children, ...props }: ModalProps) => {
+export const ModalSkeleton = ({
+  children,
+  showCloseButton = true,
+  ...props
+}: ModalProps & { showCloseButton?: boolean }) => {
   return (
     <BaseModal isCentered {...props}>
       <ModalOverlay />
-      <ModalContent>
-        <ModalCloseButton />
+      <BaseModalContent>
+        {showCloseButton && <ModalCloseButton />}
         {children}
-      </ModalContent>
+      </BaseModalContent>
     </BaseModal>
   );
 };
@@ -33,7 +37,7 @@ export const MessageModal = ({ children, title, icon, iconColor = "primary.500",
   return (
     <BaseModal isCentered {...props}>
       <ModalOverlay />
-      <ModalContent gap={2} maxWidth={{ base: "327px", md: "480px" }}>
+      <BaseModalContent gap={2} maxWidth={{ md: "480px" }}>
         <ModalHeader textAlign={"center"} display={"flex"} flexDirection={"column"} alignItems={"center"}>
           <Icon color={iconColor} boxSize={{ base: 14, md: 16 }} as={icon} paddingBottom={6} />
           <Text fontSize={{ base: 16, md: 20 }} color={"gray.600"} fontWeight={600}>
@@ -41,7 +45,7 @@ export const MessageModal = ({ children, title, icon, iconColor = "primary.500",
           </Text>
         </ModalHeader>
         {children}
-      </ModalContent>
+      </BaseModalContent>
     </BaseModal>
   );
 };

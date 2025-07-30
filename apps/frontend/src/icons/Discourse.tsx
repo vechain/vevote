@@ -3,7 +3,7 @@ import { SVGProps } from "react";
 export const Discourse = (props: SVGProps<SVGSVGElement>) => {
   return (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
-      <g clip-path="url(#clip0_2194_48050)">
+      <g clipPath="url(#clip0_2194_48050)">
         <path
           d="M11.97 0.22641C5.47154 0.22641 0 5.39547 0 11.7736V23.7306L11.9677 23.7192C18.4662 23.7192 23.7369 18.3509 23.7369 11.9751C23.7369 5.59924 18.4615 0.22641 11.97 0.22641Z"
           fill="#231F20"

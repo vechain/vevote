@@ -41,7 +41,7 @@ export const NavbarInnerContainer = ({ children, ...restProps }: FlexProps) => {
   );
 };
 
-const bgHeaderStyle = defineStyle({
+export const bgHeaderStyle = defineStyle({
   bgImage: { base: "/images/banner-bg-mobile.png", md: "/images/banner-bg.png" },
   bgSize: "cover",
   bgPosition: "top",
@@ -53,9 +53,9 @@ const bgHeaderStyle = defineStyle({
 export const Navbar = () => {
   return (
     <NavbarContainer {...bgHeaderStyle}>
-      <NavbarInnerContainer paddingY={{ base: 2, md: 4 }}>
+      <NavbarInnerContainer paddingY={4}>
         <Link href="/" display="flex" alignItems="center">
-          <VoteLogo height={{ base: "24px", md: "60px" }} />
+          <VoteLogo width={{ base: 16, md: 20 }} />
         </Link>
       </NavbarInnerContainer>
     </NavbarContainer>

@@ -4,7 +4,17 @@ export function bytesToMB(byteSize: number) {
 
 export function base64ToBlob(dataUrl?: string, type?: string): Blob {
   if (!dataUrl) throw new Error("Base64 url not found");
-  const base64Content = dataUrl.substring("data:image/png;base64,".length);
+  let base64Content = dataUrl;
+  if (type === "image/jpeg" || type === "image/jpg") {
+    base64Content = dataUrl.substring("data:image/jpeg;base64,".length);
+  } else if (type === "image/png") {
+    base64Content = dataUrl.substring("data:image/png;base64,".length);
+  } else if (type === "image/svg+xml") {
+    base64Content = dataUrl.substring("data:image/svg+xml;base64,".length);
+  } else {
+    console.log("Invalid image type", type);
+    return new Blob([], { type });
+  }
 
   const binaryString = atob(base64Content);
   const bytes = new Uint8Array(binaryString.length);

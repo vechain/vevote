@@ -55,7 +55,7 @@ export const VotingPowerModal = () => {
   return (
     <>
       <Button onClick={onOpen} leftIcon={<Icon as={VotingPowerIcon} boxSize={5} />} size={{ base: "md", md: "lg" }}>
-        {totalVotingPower || isMobile ? "" : LL.proposal.voting_power.get_voting_power()}
+        {totalVotingPower || isMobile ? "0" : LL.proposal.voting_power.get_voting_power()}
       </Button>
       <ModalSkeleton isOpen={isOpen} onClose={onClose}>
         <ModalHeader>

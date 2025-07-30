@@ -1,19 +1,6 @@
 import { useI18nContext } from "@/i18n/i18n-react";
 import { ArrowRightIcon, UserCheckIcon } from "@/icons";
-import {
-  Icon,
-  ModalBody,
-  ModalHeader,
-  useDisclosure,
-  Spinner,
-  Alert,
-  AlertIcon,
-  Flex,
-  Text,
-  Modal,
-  ModalOverlay,
-  ModalCloseButton,
-} from "@chakra-ui/react";
+import { Icon, ModalBody, ModalHeader, useDisclosure, Spinner, Alert, AlertIcon, Flex, Text } from "@chakra-ui/react";
 import { useCallback, useState } from "react";
 import { useProposal } from "@/components/proposal/ProposalProvider";
 import { VotersFiltersPanel, DEFAULT_FILTER } from "@/components/proposal/VotersFiltersPanel";
@@ -21,10 +8,9 @@ import { useVotersData } from "@/hooks/useVotersData";
 import { NodeStrengthLevel } from "@/types/user";
 import { useDebounce } from "@/hooks/useDebounce";
 import { Sort } from "@/components/ui/SortDropdown";
-import { ModalTitle } from "@/components/ui/ModalSkeleton";
+import { ModalSkeleton, ModalTitle } from "@/components/ui/ModalSkeleton";
 import { TablePagination } from "@/components/ui/TablePagination";
 import { VotersTable } from "@/components/proposal/VotersTable";
-import { BaseModalContent } from "@/components/ui/BaseModalContent";
 
 export const AllVotersModal = () => {
   const { LL } = useI18nContext();
@@ -75,8 +61,6 @@ export const AllVotersModal = () => {
     setCurrentPage(page);
   }, []);
 
-  if (votes.length === 0) return null;
-
   return (
     <>
       <Flex alignItems={"center"} gap={1} onClick={onOpen} cursor={"pointer"}>
@@ -85,44 +69,40 @@ export const AllVotersModal = () => {
         </Text>
         <Icon as={ArrowRightIcon} width={4} height={4} color={"primary.600"} />
       </Flex>
-      <Modal isOpen={isOpen} onClose={onClose} size={"4xl"}>
-        <ModalOverlay />
-        <BaseModalContent>
-          <ModalCloseButton />
-          <ModalHeader>
-            <ModalTitle title={LL.voters()} icon={UserCheckIcon} />
-            <VotersFiltersPanel
-              options={filterOptions}
-              nodes={nodeOptions}
-              selectedOption={selectedOption}
-              onSelectedOptionChange={handleSelectedOptionChange}
-              node={node}
-              onNodeChange={handleNodeChange}
-              sort={sort}
-              onSortChange={handleSortChange}
-              searchQuery={searchQuery}
-              onSearchChange={handleSearchChange}
-            />
-          </ModalHeader>
-          <ModalBody overflowX={"auto"}>
-            {isLoading && <Spinner size="lg" />}
-            {error && (
-              <Alert status="error">
-                <AlertIcon />
-                {LL.field_errors.failed_load_voters()}
-              </Alert>
-            )}
-            {!isLoading && !error && <VotersTable data={votes} />}
-          </ModalBody>
-          {!isLoading && !error && pagination && pagination.totalPages > 1 && (
-            <TablePagination
-              currentPage={pagination.currentPage}
-              totalPages={pagination.totalPages}
-              onPageChange={handlePageChange}
-            />
+      <ModalSkeleton isOpen={isOpen} onClose={onClose} size={"4xl"}>
+        <ModalHeader>
+          <ModalTitle title={LL.voters()} icon={UserCheckIcon} />
+          <VotersFiltersPanel
+            options={filterOptions}
+            nodes={nodeOptions}
+            selectedOption={selectedOption}
+            onSelectedOptionChange={handleSelectedOptionChange}
+            node={node}
+            onNodeChange={handleNodeChange}
+            sort={sort}
+            onSortChange={handleSortChange}
+            searchQuery={searchQuery}
+            onSearchChange={handleSearchChange}
+          />
+        </ModalHeader>
+        <ModalBody overflowX={"auto"}>
+          {isLoading && <Spinner size="lg" />}
+          {error && (
+            <Alert status="error">
+              <AlertIcon />
+              {LL.field_errors.failed_load_voters()}
+            </Alert>
           )}
-        </BaseModalContent>
-      </Modal>
+          {!isLoading && !error && <VotersTable data={votes} />}
+        </ModalBody>
+        {!isLoading && !error && pagination && pagination.totalPages > 1 && (
+          <TablePagination
+            currentPage={pagination.currentPage}
+            totalPages={pagination.totalPages}
+            onPageChange={handlePageChange}
+          />
+        )}
+      </ModalSkeleton>
     </>
   );
 };

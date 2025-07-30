@@ -49,7 +49,12 @@ export const VoteSection = ({ submitVoteModal }: { submitVoteModal: UseDisclosur
 
   if (hasVoted) {
     return (
-      <HStack gap={4} padding={{ base: 4, md: 6 }} justifyContent={"space-between"}>
+      <HStack
+        gap={4}
+        padding={{ base: 4, md: 6 }}
+        justifyContent={"space-between"}
+        borderTop={"1px solid"}
+        borderColor={"gray.200"}>
         <HStack gap={6}>
           <Text fontSize={"sm"} fontWeight={500} color={"gray.600"}>
             You voted
@@ -82,7 +87,12 @@ export const VoteSection = ({ submitVoteModal }: { submitVoteModal: UseDisclosur
   }
 
   return (
-    <Flex flexDirection={"column"} gap={4} padding={{ base: "16px", md: "24px" }}>
+    <Flex
+      flexDirection={"column"}
+      gap={4}
+      padding={{ base: "16px", md: "24px" }}
+      borderTop={"1px solid"}
+      borderColor={"gray.200"}>
       <Button
         width={"100%"}
         height={"56px"}

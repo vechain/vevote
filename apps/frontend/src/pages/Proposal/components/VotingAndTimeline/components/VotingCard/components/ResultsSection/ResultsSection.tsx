@@ -32,12 +32,7 @@ export const ResultsSection = () => {
   }, [results]);
 
   return (
-    <Flex
-      flexDirection={"column"}
-      gap={6}
-      padding={{ base: "16px", md: "24px" }}
-      borderBottom={"1px solid"}
-      borderColor={"gray.200"}>
+    <Flex flexDirection={"column"} gap={6} padding={{ base: "16px", md: "24px" }}>
       <Flex alignItems={"center"} justifyContent={"space-between"}>
         <Flex alignItems={"center"} gap={3}>
           <Icon as={VoteIcon} width={5} height={5} color={"primary.700"} />
