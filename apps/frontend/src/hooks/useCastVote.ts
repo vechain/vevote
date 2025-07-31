@@ -76,7 +76,7 @@ export const useVoteCastResults = ({
   const thor = useThor();
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ["votedChoices", { proposalIds, address }],
+    queryKey: ["votedChoices", proposalIds, address],
     queryFn: async () => await getVoteCastResults(thor, { proposalIds, address }),
     enabled: enabled && !!thor,
   });
