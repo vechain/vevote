@@ -112,6 +112,20 @@ interface IStargateNFT is IERC721, IERC721Enumerable {
      */
     event BaseURIUpdated(string oldBaseURI, string newBaseURI);
 
+    /**
+     * @notice Emitted when a whitelist entry is added
+     * @param owner The address of the whitelist entry
+     * @param tokenId The token ID of the whitelist entry
+     * @param levelId The level ID of the whitelist entry
+     */
+    event WhitelistEntryAdded(address owner, uint256 tokenId, uint8 levelId);
+
+    /**
+     * @notice Emitted when a whitelist entry is removed
+     * @param owner The address of the whitelist entry
+     */
+    event WhitelistEntryRemoved(address owner);
+
     // ------------------ Functions ------------------ //
 
     function version() external view returns (uint256);
