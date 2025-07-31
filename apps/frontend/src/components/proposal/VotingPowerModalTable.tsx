@@ -25,7 +25,8 @@ const NodesHeader = () => {
       justifyContent={"space-between"}
       fontSize={{ base: 12, md: 14 }}
       fontWeight={600}
-      color={"gray.500"}>
+      color={"gray.500"}
+      pr={5}>
       <Text>{LL.node()}</Text>
       <Text>{LL.proposal.voting_power.title()}</Text>
     </Flex>
@@ -34,15 +35,15 @@ const NodesHeader = () => {
 
 const NodesList = ({ nodesList }: { nodesList: NodeItem[] }) => {
   const shouldScroll = nodesList.length > 8;
-  
+
   return (
-    <Flex 
-      flexDirection={"column"} 
-      borderBottomWidth={1} 
+    <Flex
+      flexDirection={"column"}
+      borderBottomWidth={1}
       borderColor={"gray.200"}
-      maxHeight={shouldScroll ? "288px" : "none"}
+      maxHeight={shouldScroll ? "200px" : "none"}
       overflowY={shouldScroll ? "auto" : "visible"}
-    >
+      pr={5}>
       {nodesList.map(({ multiplier, nodeName, votingPower }, index) => (
         <Flex
           key={index}
@@ -70,7 +71,8 @@ const NodesFooter = ({ totalVotingPower }: { totalVotingPower: number }) => {
       fontWeight={600}
       alignItems={"center"}
       justifyContent={"space-between"}
-      fontSize={{ base: 14, md: 16 }}>
+      fontSize={{ base: 14, md: 16 }}
+      pr={5}>
       <Text>{LL.proposal.voting_power.total_voting_power()}</Text>
       <Text>{totalVotingPower}</Text>
     </Flex>
