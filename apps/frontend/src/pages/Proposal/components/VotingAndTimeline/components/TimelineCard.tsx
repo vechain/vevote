@@ -4,7 +4,7 @@ import { CalendarIcon } from "@/icons";
 import { useFormatDate } from "@/hooks/useFormatDate";
 import { ProposalStatus } from "@/types/proposal";
 import { useI18nContext } from "@/i18n/i18n-react";
-import { useCallback, useMemo } from "react";
+import { useMemo } from "react";
 
 enum TimelineItemStatus {
   COMPLETED = "completed",
@@ -16,14 +16,14 @@ export const TimelineCard = () => {
   const { LL } = useI18nContext();
   const { proposal } = useProposal();
 
-  const getVoteStatus = useCallback((): TimelineItemStatus => {
+  const voteStatus = useMemo((): TimelineItemStatus => {
     if (proposal.status === ProposalStatus.UPCOMING || proposal.status === ProposalStatus.DRAFT)
       return TimelineItemStatus.PENDING;
     if (proposal.status === ProposalStatus.VOTING) return TimelineItemStatus.ACTIVE;
     return TimelineItemStatus.COMPLETED;
   }, [proposal.status]);
 
-  const getFinishedStatus = useCallback((): TimelineItemStatus => {
+  const finishedStatus = useMemo((): TimelineItemStatus => {
     return [ProposalStatus.DRAFT, ProposalStatus.UPCOMING, ProposalStatus.VOTING].includes(proposal.status)
       ? TimelineItemStatus.PENDING
       : TimelineItemStatus.COMPLETED;
@@ -42,16 +42,16 @@ export const TimelineCard = () => {
         label: LL.vote(),
         date: proposal.startDate,
         endDate: proposal.endDate,
-        status: getVoteStatus(),
+        status: voteStatus,
       },
       {
         id: "finished",
         label: LL.finished(),
         date: proposal.endDate,
-        status: getFinishedStatus(),
+        status: finishedStatus,
       },
     ],
-    [LL, proposal.createdAt, proposal.startDate, proposal.endDate, getVoteStatus, getFinishedStatus],
+    [LL, proposal.createdAt, proposal.startDate, proposal.endDate, voteStatus, finishedStatus],
   );
 
   return (
