@@ -2,17 +2,13 @@ import { FileUploadChild } from "@/components/ui/FileUploadChild";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { ArrowDownIcon, ArrowRightIcon, CalendarIcon, ClockIcon } from "@/icons";
 import { SingleChoiceEnum } from "@/types/proposal";
-import { getTimeZone } from "@/utils/timezone";
 import { ZodFile } from "@/utils/zod";
 import { Flex, Heading, Icon, Text } from "@chakra-ui/react";
-import dayjs from "dayjs";
 import { PropsWithChildren, useMemo } from "react";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
-import { BaseOption, VotingChoices, VotingEnum } from "@/types/proposal";
 
 dayjs.extend(utc);
-import { ArrowDownIcon, ArrowRightIcon, CalendarIcon, ClockIcon } from "@/icons";
 
 const SummaryCard = ({ title, children }: PropsWithChildren<{ title: string }>) => {
   return (
