@@ -1,4 +1,4 @@
-import { ProposalCardType } from "@/types/proposal";
+import { ProposalCardType, ProposalStatus } from "@/types/proposal";
 import { Delta } from "quill";
 import { createContext, PropsWithChildren, useContext, useMemo } from "react";
 
@@ -13,7 +13,7 @@ export const ProposalContext = createContext<{ proposal: ProposalCardType }>({
       size: 1,
       url: "",
     },
-    status: "upcoming",
+    status: ProposalStatus.UPCOMING,
     description: new Delta().ops,
     title: "",
     startDate: new Date(),

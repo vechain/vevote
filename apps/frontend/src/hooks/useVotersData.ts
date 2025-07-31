@@ -1,4 +1,4 @@
-import { VoteItem } from "@/components/proposal/VotersTable";
+import { VoteItem } from "@/pages/Proposal/components/VotingAndTimeline/components/VotingCard/components/ResultsSection/components/AllVotersModal/components/VotersTable";
 import { Sort } from "@/components/ui/SortDropdown";
 import { useVoteCastResults } from "@/hooks/useCastVote";
 import { useVotersNodes } from "@/hooks/useUserQueries";
@@ -28,7 +28,7 @@ export const useVotersData = ({
     votes: votedInfo,
     isLoading: isVotesLoading,
     error: votesError,
-  } = useVoteCastResults({ proposalIds: [proposalId] });
+  } = useVoteCastResults({ proposalIds: [proposalId], enabled: proposalId !== "draft" });
 
   const {
     nodes,

@@ -84,8 +84,11 @@ export const getVoteCastResults = async (
       return votes;
     });
 
+    // TODO: This is a workaround because useVoteCastResults is returning results for all proposals
+    const filteredVotedEvents = votedEvents.filter(vote => proposalIds?.includes(vote.proposalId));
+
     return {
-      votes: votedEvents,
+      votes: filteredVotedEvents,
     };
   } catch (error) {
     console.error(error);

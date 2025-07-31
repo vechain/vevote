@@ -15,6 +15,7 @@ const baseStyle = definePartsStyle({
 const sizes = {
   default: definePartsStyle({
     th: {
+      letterSpacing: "default",
       paddingInlineStart: 3,
       paddingInlineEnd: 3,
       px: 2,

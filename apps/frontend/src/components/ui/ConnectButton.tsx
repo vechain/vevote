@@ -1,7 +1,6 @@
 import { useI18nContext } from "@/i18n/i18n-react";
 import { WalletIcon } from "@/icons";
-import { formatAddress } from "@/utils/address";
-import { Button, ButtonProps, Icon, Text } from "@chakra-ui/react";
+import { Avatar, Button, ButtonProps, Icon, Text } from "@chakra-ui/react";
 import { useAccountModal, useConnectModal, useWallet } from "@vechain/vechain-kit";
 
 export const ConnectButton = ({ text, ...props }: ButtonProps & { text?: string }) => {
@@ -18,15 +17,14 @@ export const ConnectButton = ({ text, ...props }: ButtonProps & { text?: string 
       </StyledButton>
     );
   return (
-    <StyledButton
-      {...props}
-      bg={"white"}
-      color={"gray.600"}
-      _hover={{ bg: "gray.200" }}
+    <Avatar
+      size="sm"
+      src={account?.image}
+      bg="gray.200"
+      borderRadius="full"
       onClick={openAccountModal}
-      leftIcon={<Icon as={WalletIcon} />}>
-      <Text display={{ base: "none", md: "block" }}>{formatAddress(account?.address || "")}</Text>
-    </StyledButton>
+      cursor="pointer"
+    />
   );
 };
 

@@ -1,18 +1,18 @@
 import { useI18nContext } from "@/i18n/i18n-react";
-import { UserCheckIcon } from "@/icons";
-import { Button, Icon, ModalBody, ModalHeader, useDisclosure, Spinner, Alert, AlertIcon } from "@chakra-ui/react";
+import { ArrowRightIcon, UserCheckIcon } from "@/icons";
+import { Icon, ModalBody, ModalHeader, useDisclosure, Spinner, Alert, AlertIcon, Flex, Text } from "@chakra-ui/react";
 import { useCallback, useState } from "react";
-import { ModalSkeleton, ModalTitle } from "../ui/ModalSkeleton";
-import { Sort } from "../ui/SortDropdown";
-import { useProposal } from "./ProposalProvider";
-import { VotersTable } from "./VotersTable";
-import { VotersFiltersPanel, DEFAULT_FILTER } from "./VotersFiltersPanel";
-import { TablePagination } from "../ui/TablePagination";
+import { useProposal } from "@/components/proposal/ProposalProvider";
+import { VotersFiltersPanel, DEFAULT_FILTER } from "./components/VotersFiltersPanel";
 import { useVotersData } from "@/hooks/useVotersData";
 import { NodeStrengthLevel } from "@/types/user";
 import { useDebounce } from "@/hooks/useDebounce";
+import { Sort } from "@/components/ui/SortDropdown";
+import { ModalSkeleton, ModalTitle } from "@/components/ui/ModalSkeleton";
+import { TablePagination } from "@/components/ui/TablePagination";
+import { VotersTable } from "./components/VotersTable";
 
-export const VotersModal = () => {
+export const AllVotersModal = () => {
   const { LL } = useI18nContext();
   const { isOpen, onClose, onOpen } = useDisclosure();
   const { proposal } = useProposal();
@@ -61,17 +61,16 @@ export const VotersModal = () => {
     setCurrentPage(page);
   }, []);
 
+  if (votes.length === 0) return null;
+
   return (
     <>
-      <Button
-        onClick={onOpen}
-        variant={"secondary"}
-        leftIcon={<Icon as={UserCheckIcon} boxSize={5} />}
-        size={{ base: "md", md: "lg" }}
-        width={{ base: "full", md: "auto" }}
-        order={{ base: 2, md: 1 }}>
-        {LL.proposal.see_all_voters()}
-      </Button>
+      <Flex alignItems={"center"} gap={1} onClick={onOpen} cursor={"pointer"}>
+        <Text fontSize={{ base: "14px", md: "16px" }} color={"primary.600"} fontWeight={500}>
+          {LL.proposal.see_all_voters()}
+        </Text>
+        <Icon as={ArrowRightIcon} width={4} height={4} color={"primary.600"} />
+      </Flex>
       <ModalSkeleton isOpen={isOpen} onClose={onClose} size={"4xl"}>
         <ModalHeader>
           <ModalTitle title={LL.voters()} icon={UserCheckIcon} />

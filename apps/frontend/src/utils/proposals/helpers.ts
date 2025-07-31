@@ -16,25 +16,25 @@ const AVERAGE_BLOCK_TIME = 10; // in seconds
 
 export type FromEventsToProposalsReturnType = ({ ipfsHash: string } & Omit<
   ProposalCardType,
-  "status" | "description" | "title" | "votingQuestion" | "headerImage"
+  "status" | "description" | "title" | "votingQuestion" | "headerImage" | "canceledDate" | "executedDate"
 >)[];
 
 export const getStatusFromState = (state: ProposalState): ProposalStatus => {
   switch (state) {
     case ProposalState.PENDING:
-      return "upcoming";
+      return ProposalStatus.UPCOMING;
     case ProposalState.DEFEATED:
-      return "min-not-reached";
+      return ProposalStatus.MIN_NOT_REACHED;
     case ProposalState.ACTIVE:
-      return "voting";
+      return ProposalStatus.VOTING;
     case ProposalState.CANCELED:
-      return "canceled";
+      return ProposalStatus.CANCELED;
     case ProposalState.EXECUTED:
-      return "executed";
+      return ProposalStatus.EXECUTED;
     case ProposalState.SUCCEEDED:
-      return "approved";
+      return ProposalStatus.APPROVED;
     default:
-      return "upcoming";
+      return ProposalStatus.UPCOMING;
   }
 };
 
@@ -79,17 +79,23 @@ export const filterStatus = (statuses: FilterStatuses[], status: ProposalStatus)
 export const fromEventsToProposals = async (events: ProposalEvent[]): Promise<FromEventsToProposalsReturnType> => {
   return await Promise.all(
     events.map(async event => {
-      const [startDate, endDate] = await Promise.all([
+      console.log("event.canceledTime", event.canceledTime);
+      const [createdDate, startDate, endDate, canceledDate, executedDate] = await Promise.all([
+        new Date(event.createdTime || 0),
         getDateFromBlock(Number(event.startTime)),
         getDateFromBlock(Number(event.startTime) + Number(event.voteDuration)),
+        new Date(event.canceledTime || 0),
+        new Date(event.executedTime || 0),
       ]);
-
+      console.log("canceledDate", canceledDate);
       return {
         id: event.proposalId,
         proposer: event.proposer,
-        createdAt: startDate,
+        createdAt: createdDate,
         startDate,
         endDate,
+        canceledDate,
+        executedDate,
         ipfsHash: event.description,
         reason: event.reason,
         executedProposalLink: event.executedProposalLink,

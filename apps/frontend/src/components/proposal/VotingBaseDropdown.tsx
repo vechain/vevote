@@ -18,6 +18,7 @@ export const VotingBaseDropdown = <T extends Option>({
   options: T[];
   selectedOption: T;
   onChange?: (value: T) => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   renderValue?: (value: T) => any;
 }) => {
   return (

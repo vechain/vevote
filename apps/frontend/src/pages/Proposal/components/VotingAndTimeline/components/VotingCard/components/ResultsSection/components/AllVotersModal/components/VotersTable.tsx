@@ -1,12 +1,13 @@
 import { createColumnHelper } from "@tanstack/react-table";
 import { defineStyle, Icon, Link, Text } from "@chakra-ui/react";
 import { formatAddress } from "@/utils/address";
-import { CopyLink } from "../ui/CopyLink";
-import { DataTable } from "../ui/TableSkeleton";
+import { CopyLink } from "@/components/ui/CopyLink";
+import { DataTable } from "@/components/ui/TableSkeleton";
 import dayjs from "dayjs";
 import { ArrowLinkIcon } from "@/icons";
 import { getConfig } from "@repo/config";
 import { SingleChoiceEnum } from "@/types/proposal";
+import { useI18nContext } from "@/i18n/i18n-react";
 
 const VECHAIN_EXPLORER_URL = getConfig(import.meta.env.VITE_APP_ENV).network.explorerUrl;
 
@@ -24,7 +25,7 @@ const columnHelper = createColumnHelper<VoteItem>();
 
 const TableHeader = ({ label }: { label: string }) => {
   return (
-    <Text whiteSpace={"nowrap"} fontSize={12} color={"gray.800"} fontWeight={600}>
+    <Text whiteSpace={"nowrap"} fontSize={12} color={"gray.800"} fontWeight={500} textTransform={"none"}>
       {label}
     </Text>
   );
@@ -109,48 +110,50 @@ const TransactionIdCell = ({ value }: { value: string }) => {
   );
 };
 
-const votersColumn = [
-  columnHelper.accessor("date", {
-    cell: data => <BaseCell value={dayjs(data.getValue()).format("DD/MM/YYYY")} />,
-    header: () => <TableHeader label="Date" />,
-    id: "DATE",
-  }),
-  columnHelper.accessor("address", {
-    cell: data => <AddressCell value={data.getValue()} />,
-    header: () => <TableHeader label="Address" />,
-    id: "ADDRESS",
-  }),
-  columnHelper.accessor("node", {
-    cell: data => <BaseCell value={data.getValue()} />,
-    header: () => <TableHeader label="Node" />,
-    id: "NODE",
-  }),
-  columnHelper.accessor("nodeId", {
-    cell: data => <BaseCell value={formatAddress(data.getValue())} />,
-    header: () => <TableHeader label="Node ID" />,
-    id: "NODE_ID",
-  }),
-  columnHelper.accessor("votingPower", {
-    cell: data => <BaseCell value={data.getValue().toString()} />,
-    header: () => <TableHeader label="Voting Power" />,
-    id: "VOTING_POWER",
-  }),
-  columnHelper.accessor("votedOption", {
-    cell: data => <VotedOptionCell option={data.getValue()} />,
-    header: () => <TableHeader label="Voted Option" />,
-    id: "VOTED_OPTION",
-  }),
-  columnHelper.accessor("transactionId", {
-    cell: data => <TransactionIdCell value={data.getValue()} />,
-    header: () => <TableHeader label="Transaction ID" />,
-    id: "TRANSACTION_ID",
-  }),
-];
-
 interface VotersTableProps {
   data: VoteItem[];
 }
 
 export const VotersTable = ({ data }: VotersTableProps) => {
+  const { LL } = useI18nContext();
+
+  const votersColumn = [
+    columnHelper.accessor("date", {
+      cell: data => <BaseCell value={dayjs(data.getValue()).format("DD/MM/YYYY")} />,
+      header: () => <TableHeader label={LL.proposal.voters_table.header.date()} />,
+      id: "DATE",
+    }),
+    columnHelper.accessor("address", {
+      cell: data => <AddressCell value={data.getValue()} />,
+      header: () => <TableHeader label={LL.proposal.voters_table.header.address()} />,
+      id: "ADDRESS",
+    }),
+    columnHelper.accessor("node", {
+      cell: data => <BaseCell value={data.getValue()} />,
+      header: () => <TableHeader label={LL.proposal.voters_table.header.node()} />,
+      id: "NODE",
+    }),
+    columnHelper.accessor("nodeId", {
+      cell: data => <BaseCell value={formatAddress(data.getValue())} />,
+      header: () => <TableHeader label={LL.proposal.voters_table.header.node_id()} />,
+      id: "NODE_ID",
+    }),
+    columnHelper.accessor("votingPower", {
+      cell: data => <BaseCell value={data.getValue().toString()} />,
+      header: () => <TableHeader label={LL.proposal.voters_table.header.voting_power()} />,
+      id: "VOTING_POWER",
+    }),
+    columnHelper.accessor("votedOption", {
+      cell: data => <VotedOptionCell option={data.getValue()} />,
+      header: () => <TableHeader label={LL.proposal.voters_table.header.voted_option()} />,
+      id: "VOTED_OPTION",
+    }),
+    columnHelper.accessor("transactionId", {
+      cell: data => <TransactionIdCell value={data.getValue()} />,
+      header: () => <TableHeader label={LL.proposal.voters_table.header.transaction_id()} />,
+      id: "TRANSACTION_ID",
+    }),
+  ];
+
   return <DataTable columns={votersColumn} data={data} />;
 };

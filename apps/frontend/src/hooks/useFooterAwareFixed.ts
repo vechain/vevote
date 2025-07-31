@@ -21,13 +21,13 @@ export const useFooterAwareFixed = (buttonHeight: number = 100): FooterAwareFixe
 
       const footerOffsetTop = footer.offsetTop;
       const buttonAbsoluteTop = footerOffsetTop - buttonHeight;
-      
+
       const scrollY = window.scrollY;
       const windowHeight = window.innerHeight;
       const viewportBottom = scrollY + windowHeight;
-      
+
       const shouldUseAbsolute = viewportBottom - buttonHeight >= buttonAbsoluteTop;
-      
+
       if (shouldUseAbsolute) {
         setPositioning({
           position: "absolute",

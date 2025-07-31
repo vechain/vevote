@@ -1,11 +1,11 @@
 import React, { useCallback, useMemo } from "react";
 import { Flex } from "@chakra-ui/react";
 import { useI18nContext } from "@/i18n/i18n-react";
-import { SearchInput } from "../ui/SearchInput";
-import { VotingBaseDropdown } from "./VotingBaseDropdown";
+import { SearchInput } from "@/components/ui/SearchInput";
+import { VotingBaseDropdown } from "@/components/proposal/VotingBaseDropdown";
 import { FilterIcon, NodeIcon, SortDescIcon } from "@/icons";
 import { NodeStrengthLevel } from "@/types/user";
-import { Sort } from "../ui/SortDropdown";
+import { Sort } from "@/components/ui/SortDropdown";
 
 export const DEFAULT_FILTER = "All";
 
@@ -83,7 +83,7 @@ export const VotersFiltersPanel = ({
 
       <Flex gap={{ base: 3, md: 4 }} width={{ base: "full", md: "fit-content" }}>
         <VotingBaseDropdown
-          label="Voting Options"
+          label={LL.proposal.voters_table.filters.voting_options()}
           options={optionsWithAll}
           selectedOption={selectedOption}
           onChange={handleOptionChange}
@@ -92,7 +92,7 @@ export const VotersFiltersPanel = ({
         />
 
         <VotingBaseDropdown
-          label="Node"
+          label={LL.node()}
           options={nodesWithAll}
           selectedOption={node}
           onChange={handleNodeChange}
@@ -100,7 +100,7 @@ export const VotersFiltersPanel = ({
         />
 
         <VotingBaseDropdown
-          label="Sort by"
+          label={LL.proposal.voters_table.filters.sort_by()}
           options={sortOptions}
           selectedOption={sort}
           onChange={handleSortChange}
