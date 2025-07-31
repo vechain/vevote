@@ -101,7 +101,7 @@ interface TimelineItemProps {
 const TimelineItem = ({ label, date, endDate, status, isLast }: TimelineItemProps) => {
   const { formattedProposalDate } = useFormatDate();
 
-  const getStatusColor = useCallback(() => {
+  const statusColor = useMemo(() => {
     switch (status) {
       case TimelineItemStatus.COMPLETED:
         return "primary.500";
@@ -114,7 +114,7 @@ const TimelineItem = ({ label, date, endDate, status, isLast }: TimelineItemProp
     }
   }, [status]);
 
-  const getIconStyle = useCallback(() => {
+  const iconStyle = useMemo(() => {
     switch (status) {
       case TimelineItemStatus.COMPLETED:
         return {
@@ -151,7 +151,7 @@ const TimelineItem = ({ label, date, endDate, status, isLast }: TimelineItemProp
           width={"20px"}
           height={"20px"}
           borderRadius={"full"}
-          {...getIconStyle()}
+          {...iconStyle}
           alignItems={"center"}
           justifyContent={"center"}>
           {status === TimelineItemStatus.COMPLETED && (
@@ -166,7 +166,7 @@ const TimelineItem = ({ label, date, endDate, status, isLast }: TimelineItemProp
 
       {/* Content */}
       <Flex flexDirection={"column"} gap={0.5} flex={1}>
-        <Text fontSize={"14px"} fontWeight={600} color={getStatusColor()}>
+        <Text fontSize={"14px"} fontWeight={600} color={statusColor}>
           {label}
         </Text>
         <Text fontSize={"14px"} color={"gray.500"}>
