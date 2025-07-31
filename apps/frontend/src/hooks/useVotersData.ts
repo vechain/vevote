@@ -4,7 +4,7 @@ import { useVotersNodes } from "@/hooks/useUserQueries";
 import { VoteItem } from "@/pages/Proposal/components/VotingAndTimeline/components/VotingCard/components/ResultsSection/components/AllVotersModal/components/VotersTable";
 import { NodeStrengthLevel } from "@/types/user";
 import { getSingleChoiceFromIndex } from "@/utils/proposals/helpers";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 
 export type VotersFilters = {
   selectedOption: string;
@@ -37,11 +37,6 @@ export const useVotersData = ({
   } = useVotersNodes({
     nodeIds: votedInfo?.flatMap(vote => vote.stargateNFTs) || [],
   });
-
-  useEffect(() => {
-    console.log("Votes data updated", votedInfo);
-    console.log("Nodes data updated", nodes);
-  }, [nodes, votedInfo]);
 
   const votes = useMemo(() => {
     if (!votedInfo) return [];
