@@ -1,8 +1,7 @@
-import { PageContainer } from "@/components/PageContainer";
 import { ProposalProvider } from "@/components/proposal/ProposalProvider";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { CloseIcon } from "@/icons";
-import { Box, Button, Flex, Heading, Icon, Text, useBreakpointValue } from "@chakra-ui/react";
+import { Button, Flex, Heading, Icon, useBreakpointValue } from "@chakra-ui/react";
 import { useWallet } from "@vechain/vechain-kit";
 import { PropsWithChildren, useEffect, useMemo } from "react";
 import { useCreateProposal } from "../CreateProposal/CreateProposalProvider";
@@ -38,26 +37,22 @@ export const ProposalPreview = () => {
   return (
     <PreviewWrapper>
       <ProposalProvider proposal={proposal}>
-        <Box bg={"white"}>
-          <PageContainer bg={"white"} pb={10}>
-            <VStack gap={10} w={"full"} alignItems={"stretch"}>
-              <Stack direction={{ base: "column", md: "row" }} w={"full"} gap={{ base: 10, md: 12 }}>
-                <VStack gap={10} align="stretch" flex={2}>
-                  <ProposalHeader />
-                  <Text fontSize={{ base: "20px", md: "24px" }} fontWeight={500} color={"gray.800"} lineHeight={"1.33"}>
-                    {proposal.title}
-                  </Text>
-                  {!isMobile && <DescriptionSection />}
-                </VStack>
-                <VStack gap={10} align="stretch" flex={1}>
-                  <VotingAndTimeline />
-                  {isMobile && <DescriptionSection />}
-                </VStack>
-              </Stack>
-              <BuyNodeCta />
+        <VStack gap={10} w={"full"} alignItems={"stretch"} p={{ base: 6, md: 20 }}>
+          <Stack direction={{ base: "column", md: "row" }} w={"full"} gap={{ base: 10, md: 12 }}>
+            <VStack gap={10} align="stretch" flex={2}>
+              <ProposalHeader />
+              <Heading fontWeight={500} color={"gray.800"} lineHeight={"1.33"}>
+                {proposal.title}
+              </Heading>
+              {!isMobile && <DescriptionSection />}
             </VStack>
-          </PageContainer>
-        </Box>
+            <VStack gap={10} align="stretch" flex={1}>
+              <VotingAndTimeline />
+              {isMobile && <DescriptionSection />}
+            </VStack>
+          </Stack>
+          <BuyNodeCta />
+        </VStack>
       </ProposalProvider>
     </PreviewWrapper>
   );
@@ -107,6 +102,7 @@ const PreviewWrapper = ({ children }: PropsWithChildren) => {
         </Button>
       </Flex>
       <Flex
+        flex={1}
         rounded={"2xl"}
         alignItems={"center"}
         justifyContent={"center"}

@@ -47,7 +47,7 @@ export const ProposalDetailsForm = () => {
       ...values,
     });
 
-    setStep(CreateProposalStep.VOTING_SETUP);
+    setStep(CreateProposalStep.VOTING_SUMMARY);
   };
   return (
     <FormSkeleton schema={schema} defaultValues={defaultValues} onSubmit={onSubmit}>

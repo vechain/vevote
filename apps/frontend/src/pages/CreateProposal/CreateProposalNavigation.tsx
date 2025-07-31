@@ -18,8 +18,6 @@ export const CreateProposalNavigation = () => {
     switch (step) {
       case CreateProposalStep.VOTING_DETAILS:
         return LL.proposal.create.voting_details_desc();
-      case CreateProposalStep.VOTING_SETUP:
-        return LL.proposal.create.voting_setup_desc();
       case CreateProposalStep.VOTING_SUMMARY:
         return LL.proposal.create.voting_summary_desc();
     }
@@ -78,7 +76,7 @@ const ProgressBar = () => {
   const stepString = useMemo(() => {
     return LL.proposal.create.steps({
       current: step + 1,
-      total: 3,
+      total: 2,
     });
   }, [LL.proposal.create, step]);
   return (
@@ -89,8 +87,8 @@ const ProgressBar = () => {
       <Box width={"80px"} height={"4px"} backgroundColor={"gray.200"} borderRadius={"full"}>
         <motion.div
           style={{ borderRadius: "full", backgroundColor: "#6042dd", height: "100%" }}
-          initial={{ width: "33.33%" }}
-          animate={{ width: `${(step + 1) * 33.33}%` }}
+          initial={{ width: "50%" }}
+          animate={{ width: `${(step + 1) * 50}%` }}
         />
       </Box>
     </Flex>
