@@ -231,10 +231,14 @@ const en = {
       },
       details_form: {
         title: "Title",
-        title_placeholder: "What’s the proposal title?",
+        title_placeholder: "What's the proposal title?",
         description: "Description",
         description_placeholder: "Add a description...",
         header_image: "Header image",
+        discourse_url: "Discourse url",
+        discourse_topic: "Discourse Topic",
+        discourse_topic_placeholder: "your-topic-name",
+        discourse_topic_help: "Enter the topic name from your VeChain Discourse discussion",
         voting_calendar: "Voting calendar",
       },
       setup_form: {

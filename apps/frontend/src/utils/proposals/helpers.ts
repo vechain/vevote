@@ -16,7 +16,14 @@ const AVERAGE_BLOCK_TIME = 10; // in seconds
 
 export type FromEventsToProposalsReturnType = ({ ipfsHash: string } & Omit<
   ProposalCardType,
-  "status" | "description" | "title" | "votingQuestion" | "headerImage" | "canceledDate" | "executedDate"
+  | "status"
+  | "description"
+  | "title"
+  | "votingQuestion"
+  | "headerImage"
+  | "canceledDate"
+  | "executedDate"
+  | "discourseUrl"
 >)[];
 
 export const getStatusFromState = (state: ProposalState): ProposalStatus => {
@@ -123,6 +130,7 @@ export const mergeIpfsDetails = (
       title: currentIpfsProposal?.title || "",
       description: new Delta(currentIpfsProposal?.markdownDescription || []).ops,
       votingQuestion: currentIpfsProposal?.shortDescription || "",
+      discourseUrl: currentIpfsProposal?.discourseUrl || "",
       headerImage: {
         type: currentIpfsProposal?.headerImage?.type || "",
         name: currentIpfsProposal?.headerImage?.name || "",

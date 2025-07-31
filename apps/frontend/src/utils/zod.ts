@@ -6,6 +6,8 @@ export const requiredString = z.string().min(1, { message: LL.field_errors.requi
 
 export const optionalUrl = z.union([z.string().url().nullish(), z.literal("")]);
 
+export const discourseTopic = z.string().trim().min(1, { message: LL.field_errors.required() });
+
 export const zodStartEndDates = (delay: number, duration: number) =>
   z
     .object({

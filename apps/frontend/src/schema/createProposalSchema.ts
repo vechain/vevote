@@ -1,5 +1,5 @@
 import { LL } from "@/i18n/i18n-ssr";
-import { zodFile, zodStartEndDates } from "@/utils/zod";
+import { zodFile, zodStartEndDates, discourseTopic } from "@/utils/zod";
 import { z } from "zod";
 import { descriptionSchema } from "./descriptionSchema";
 
@@ -11,7 +11,8 @@ export const proposalDetailsSchema = (delay: number, duration: number) =>
     .object({
       title: z.string().trim().min(1, { message: LL.field_errors.required() }).max(TITLE_MAX_CHARS),
       description: descriptionSchema,
-      headerImage: zodFile,
+      headerImage: zodFile.optional(),
+      discourseUrl: discourseTopic,
     })
     .and(zodStartEndDates(delay, duration));
 

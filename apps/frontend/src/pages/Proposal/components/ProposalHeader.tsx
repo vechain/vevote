@@ -4,8 +4,8 @@ import { IconBadge } from "@/components/ui/IconBadge";
 import { formatAddress } from "@/utils/address";
 import { useMemo } from "react";
 import { getPicassoImgSrc } from "@/utils/picasso";
-import { Discourse } from "@/icons/Discourse";
 import { useI18nContext } from "@/i18n/i18n-react";
+import { DiscourseLink } from "@/components/proposal/DiscourseLink";
 
 export const ProposalHeader = () => {
   const { LL } = useI18nContext();
@@ -42,8 +42,7 @@ export const ProposalHeader = () => {
               borderRadius="full"
             />
             <Divider orientation="vertical" borderColor={"gray.100"} height={"24px"} mx={1} />
-            {/* TODO: add a link to the proposal on discourse */}
-            <Discourse onClick={() => window.open("https://vechain.discourse.group/latest", "_blank")} />
+            {proposal.discourseUrl && <DiscourseLink src={proposal.discourseUrl} />}
           </Flex>
         </Flex>
       </HStack>

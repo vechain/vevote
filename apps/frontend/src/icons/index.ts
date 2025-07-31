@@ -48,10 +48,10 @@ import { AlertTriangle } from "./AlertTriangle";
 import { Logout } from "./Logout";
 import { Node } from "./Node";
 import { MessageSquare } from "./MessageSquare";
+import { Discourse } from "./Discourse";
 export * from "./ThumbsUpIcon";
 export * from "./ThumbsDownIcon";
 export * from "./AbstainIcon";
-import { Comment } from "./Comment";
 
 export {
   Vote as VoteIcon,
@@ -104,5 +104,5 @@ export {
   AlertTriangle as AlertTriangleIcon,
   Logout as LogoutIcon,
   Node as NodeIcon,
-  Comment as CommentIcon,
+  Discourse as DiscourseIcon,
 };
