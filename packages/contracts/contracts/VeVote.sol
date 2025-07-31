@@ -30,7 +30,7 @@ import "@openzeppelin/contracts/utils/introspection/IERC165.sol";
 
 /**
  * @title VeVote Governance Contract
- * @notice Upgradeable multi-choice voting system for VeChain governance using Stargate NFTs and validator eligibility.
+ * @notice Upgradeable single-choice voting system for VeChain governance using Stargate NFTs and validator eligibility.
  * @dev
  * ## Governance Participation
  * - Only two categories of users can vote:
@@ -41,8 +41,7 @@ import "@openzeppelin/contracts/utils/introspection/IERC165.sol";
  *      as verified via the `Authority` contract, are eligible to participate.
  *
  * ## Voting Model
- * - Supports multi-choice voting using 32-bit bitmask encoding.
- * - Proposals specify `minSelection` and `maxSelection` constraints for voting flexibility.
+ * - Supports standard governance voting options - AGAINST, FOR, ABSTAIN.
  *
  * ## Role-Based Access Control
  * - `DEFAULT_ADMIN_ROLE`: Full administrative privileges.
