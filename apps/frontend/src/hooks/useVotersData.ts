@@ -50,7 +50,7 @@ export const useVotersData = ({
             address: vote.voter,
             node: nodeInfo?.name || "Unknown",
             nodeId: node,
-            votingPower: Number(nodeInfo?.votingPower || 0),
+            votingPower: nodeInfo?.votingPower || 0,
             votedOption: getSingleChoiceFromIndex(vote.choice),
             transactionId: vote.transactionId,
           };
