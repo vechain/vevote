@@ -16,7 +16,7 @@ export const DeleteEditProposal = () => {
   const { fromDraftToProposal } = useDraftProposal();
   const onEdit = useCallback(() => {
     setProposalDetails(fromDraftToProposal(draftProposal, DEFAULT_PROPOSAL));
-    navigate(Routes.CREATE_PROPOSAL);
+    navigate(`${Routes.CREATE_PROPOSAL}?fromDraft=true`);
   }, [draftProposal, fromDraftToProposal, navigate, setProposalDetails]);
   return (
     <>
