@@ -5,6 +5,7 @@ import { Flex, Icon, Text } from "@chakra-ui/react";
 import dayjs from "dayjs";
 import { useEffect, useMemo, useState } from "react";
 import { useI18nContext } from "@/i18n/i18n-react";
+import { useQueryClient } from "@tanstack/react-query";
 
 const CountdownBox = ({ value, label }: { value: number; label: string }) => {
   return (
@@ -47,8 +48,9 @@ const splitDateDifference = (date?: Date) => {
 
 export const CountdownSection = () => {
   const { LL } = useI18nContext();
-  const [, setTime] = useState<number>(0);
+  const [time, setTime] = useState<number>(0);
   const { proposal } = useProposal();
+  const queryClient = useQueryClient();
 
   const isValidStatus = proposal.status === ProposalStatus.UPCOMING || proposal.status === ProposalStatus.VOTING;
 
@@ -67,10 +69,10 @@ export const CountdownSection = () => {
       const now = dayjs();
       const startDate = dayjs(proposal.startDate);
       if (startDate.isBefore(now)) {
-        window.location.reload();
+        queryClient.refetchQueries({ queryKey: ["getSingleProposal", proposal.id] });
       }
     }
-  }, [proposal.startDate, proposal.status]);
+  }, [proposal.id, proposal.startDate, proposal.status, queryClient, time]);
 
   const label = useMemo(
     () => (proposal.status === ProposalStatus.UPCOMING ? LL.proposal.starts_in() : LL.proposal.ends_in()),

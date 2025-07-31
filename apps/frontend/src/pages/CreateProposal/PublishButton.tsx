@@ -22,7 +22,7 @@ export const PublishButton = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [newProposalId, setNewProposalId] = useState("");
 
-  const { proposalDetails } = useCreateProposal();
+  const { proposalDetails, removeDraftProposal } = useCreateProposal();
   const { sendTransaction } = useBuildCreateProposal();
 
   const { startBlock, durationBlock } = useGetDatesBlocks({
@@ -30,10 +30,21 @@ export const PublishButton = () => {
     endDate: proposalDetails.endDate,
   });
 
+  const isFromDraft = useCallback(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      return params.get("fromDraft") === "true";
+    }
+    return false;
+  }, []);
+
   const onSuccess = useCallback(() => {
     onPublishClose();
     onSuccessOpen();
-  }, [onPublishClose, onSuccessOpen]);
+    if (isFromDraft()) {
+      removeDraftProposal();
+    }
+  }, [isFromDraft, onPublishClose, onSuccessOpen, removeDraftProposal]);
 
   const onFailed = useCallback(() => {
     onPublishClose();
