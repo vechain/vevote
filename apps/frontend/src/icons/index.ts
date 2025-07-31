@@ -52,9 +52,6 @@ export * from "./ThumbsUpIcon";
 export * from "./ThumbsDownIcon";
 export * from "./AbstainIcon";
 import { Comment } from "./Comment";
-import { Like } from "./Like";
-import { DisLike } from "./DisLike";
-import { Abstain } from "./Abstain";
 
 export {
   Vote as VoteIcon,
@@ -108,7 +105,4 @@ export {
   Logout as LogoutIcon,
   Node as NodeIcon,
   Comment as CommentIcon,
-  Like as LikeIcon,
-  DisLike as DisLikeIcon,
-  Abstain as AbstainIcon,
 };
