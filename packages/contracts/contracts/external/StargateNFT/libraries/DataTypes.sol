@@ -34,6 +34,7 @@ library DataTypes {
     mapping(uint8 levelId => uint32) cap; // Token levels management: Mapping level ID to cap aka max supply
     mapping(uint256 tokenId => Token) tokens; // Token tracking: Mapping token ID to token
     mapping(uint256 tokenId => uint64) maturityPeriodEndBlock; // Token tracking: Maturity period end block
+    mapping(address => WhitelistEntry) whitelistEntries; // Token tracking: Whitelist entries for migration
   }
 
   struct StargateNFTInitParams {
@@ -72,5 +73,16 @@ library DataTypes {
     uint64 mintedAtBlock;
     uint256 vetAmountStaked;
     uint48 lastVthoClaimTimestamp;
+  }
+
+  struct WhitelistEntry {
+    uint256 tokenId;
+    uint8 levelId;
+  }
+
+  struct WhitelistEntryInit {
+    address owner;
+    uint256 tokenId;
+    uint8 levelId;
   }
 }

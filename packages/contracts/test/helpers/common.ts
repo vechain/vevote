@@ -2,12 +2,14 @@ import { ethers, network } from "hardhat";
 import { getOrDeployContractInstances } from "./deploy";
 import { ContractTransactionResponse } from "ethers";
 import { Clause, TransactionClause, Units, VTHO } from "@vechain/sdk-core";
-import { mine, time } from "@nomicfoundation/hardhat-network-helpers";
+import { mine } from "@nomicfoundation/hardhat-network-helpers";
 import { getTestKeys } from "../../scripts/helpers/seedAccounts";
 import { CreateProposalParams } from "./types";
 import { getConfig } from "@repo/config";
 import { TransactionUtils } from "@repo/utils";
 import { ThorClient } from "@vechain/sdk-network";
+import { HardhatEthersSigner } from "@nomicfoundation/hardhat-ethers/signers";
+import { Authority } from "../../typechain-types";
 
 const thorClient = ThorClient.at(getConfig().nodeUrl);
 
@@ -72,15 +74,8 @@ export const waitForProposalToEnd = async (proposalId: string) => {
 };
 
 export const createProposal = async ({
-  minChoices = 1,
-  maxChoices = 2,
   votingPeriod = 3,
   startIn = 10,
-  choices = [
-    ethers.encodeBytes32String("FOR"),
-    ethers.encodeBytes32String("AGAINST"),
-    ethers.encodeBytes32String("ABSTAIN"),
-  ],
   description = "QmPaAAXwS2kGyr63q6iakVT8ybqeYeRLqwqUCYu64mNLME",
   proposer,
   startBlock,
@@ -90,7 +85,7 @@ export const createProposal = async ({
   const snapshot = startBlock ?? (await getCurrentBlockNumber()) + startIn;
   const proposalCreator = proposer ?? whitelistedAccount;
 
-  return vevote.connect(proposalCreator).propose(description, snapshot, votingPeriod, choices, maxChoices, minChoices);
+  return vevote.connect(proposalCreator).propose(description, snapshot, votingPeriod);
 };
 
 export const createValidator = async (
@@ -99,5 +94,5 @@ export const createValidator = async (
   validator: HardhatEthersSigner,
 ) => {
   const mockIdentity = ethers.encodeBytes32String("vechain-validator");
-  await authorityContract.setValidator(validator.address, true, endorser.address, mockIdentity, true);
+  await authorityContract.add(validator.address, endorser.address, mockIdentity);
 };

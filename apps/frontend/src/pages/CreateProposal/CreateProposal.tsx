@@ -2,7 +2,7 @@ import { PageContainer } from "@/components/PageContainer";
 import { CreateProposalNavigation } from "./CreateProposalNavigation";
 import { CreateProposalContent } from "./CreateProposalContent";
 import { useCreateProposal } from "./CreateProposalProvider";
-import { ProposalPreview } from "./ProposalPreview";
+import { ProposalPreview } from "../Proposal/ProposalPreview";
 import { useEffect } from "react";
 import { useWallet } from "@vechain/vechain-kit";
 import { useUser } from "@/contexts/UserProvider";

@@ -18,6 +18,14 @@ type RootTranslation = {
 	 */
 	left: string
 	/**
+	 * b​y
+	 */
+	by: string
+	/**
+	 * N​o​t​ ​p​u​b​l​i​s​h​e​d
+	 */
+	not_published: string
+	/**
 	 * H​o​m​e​p​a​g​e
 	 */
 	homepage: string
@@ -250,6 +258,14 @@ type RootTranslation = {
 	 * A​d​d​ ​a​ ​c​o​m​m​e​n​t​ ​t​o​ ​y​o​u​r​ ​v​o​t​e​.​.​.
 	 */
 	comment_placeholder: string
+	/**
+	 * M​i​g​r​a​t​e
+	 */
+	migrate: string
+	/**
+	 * S​t​a​r​G​a​t​e
+	 */
+	stargate: string
 	datepicker: {
 		/**
 		 * S​e​l​e​c​t​ ​d​a​t​e
@@ -477,9 +493,25 @@ type RootTranslation = {
 		 */
 		voting_options: string
 		/**
-		 * o​p​t​i​o​n​ ​t​o​ ​v​o​t​e​:
+		 * S​e​l​e​c​t​ ​a​n​ ​o​p​t​i​o​n​ ​t​o​ ​v​o​t​e​:
 		 */
 		option_to_vote: string
+		/**
+		 * V​o​t​i​n​g​ ​h​a​s​ ​n​o​t​ ​s​t​a​r​t​e​d​ ​y​e​t
+		 */
+		voting_has_not_started_yet: string
+		/**
+		 * P​l​e​a​s​e​ ​c​o​n​n​e​c​t​ ​y​o​u​r​ ​w​a​l​l​e​t
+		 */
+		please_connect_your_wallet: string
+		/**
+		 * Y​o​u​ ​h​a​v​e​ ​a​l​r​e​a​d​y​ ​v​o​t​e​d
+		 */
+		you_have_already_voted: string
+		/**
+		 * Y​o​u​ ​d​o​n​'​t​ ​h​a​v​e​ ​e​n​o​u​g​h​ ​v​o​t​i​n​g​ ​p​o​w​e​r
+		 */
+		you_dont_have_enough_voting_power: string
 	}
 	proposal: {
 		/**
@@ -494,6 +526,10 @@ type RootTranslation = {
 		 * V​o​t​i​n​g​ ​c​a​l​e​n​d​a​r
 		 */
 		voting_calendar: string
+		/**
+		 * C​o​n​f​i​r​m​ ​i​n​ ​y​o​u​r​ ​w​a​l​l​e​t​.​.​.
+		 */
+		confirm_in_your_wallet: string
 		/**
 		 * W​h​o​ ​c​a​n​ ​v​o​t​e
 		 */
@@ -531,6 +567,16 @@ type RootTranslation = {
 		 * V​o​t​i​n​g​ ​i​s​ ​o​n​l​y​ ​p​o​s​s​i​b​l​e​ ​f​o​r​ ​N​o​d​e​ ​h​o​l​d​e​r​s​.​ ​B​u​y​ ​a​ ​n​o​d​e​ ​t​o​ ​v​o​t​e​ ​o​n​ ​f​u​t​u​r​e​ ​p​r​o​p​o​s​a​l​s​ ​o​r​ ​i​n​c​r​e​a​s​e​ ​y​o​u​r​ ​v​o​t​i​n​g​ ​p​o​w​e​r​.
 		 */
 		buy_a_node: string
+		vote_success: {
+			/**
+			 * V​o​t​e​ ​s​u​b​m​i​t​t​e​d​!
+			 */
+			title: string
+			/**
+			 * Y​o​u​r​ ​v​o​t​e​ ​w​a​s​ ​s​u​b​m​i​t​t​e​d​ ​s​u​c​c​e​s​s​f​u​l​l​y​.
+			 */
+			description: string
+		}
 		cancel_proposal: {
 			/**
 			 * C​a​n​c​e​l​ ​p​r​o​p​o​s​a​l
@@ -588,16 +634,6 @@ type RootTranslation = {
 			 * Y​e​s​,​ ​D​e​l​e​t​e
 			 */
 			yes_delete: string
-		}
-		draft_dialog: {
-			/**
-			 * D​r​a​f​t​ ​p​r​o​p​o​s​a​l
-			 */
-			title: string
-			/**
-			 * B​y​ ​c​o​n​t​i​n​u​i​n​g​,​ ​y​o​u​r​ ​o​l​d​ ​p​r​o​p​o​s​a​l​ ​l​i​n​k​e​d​ ​t​o​ ​t​h​e​ ​p​r​e​v​i​e​w​ ​a​c​c​o​u​n​t​ ​w​i​l​l​ ​b​e​ ​d​i​s​c​a​r​d​e​d​.​ ​A​r​e​ ​y​o​u​ ​s​u​r​e​ ​y​o​u​ ​w​a​n​t​ ​t​o​ ​p​r​o​c​e​e​d​?
-			 */
-			description: string
 		}
 		info_box: {
 			info: {
@@ -666,18 +702,46 @@ type RootTranslation = {
 		}
 		voting_power: {
 			/**
+			 * G​e​t​ ​m​o​r​e​ ​V​o​t​i​n​g​ ​P​o​w​e​r
+			 */
+			get_more_voting_power: string
+			/**
+			 * G​e​t​ ​V​o​t​i​n​g​ ​P​o​w​e​r
+			 */
+			get_voting_power: string
+			/**
 			 * V​o​t​i​n​g​ ​P​o​w​e​r
 			 */
 			title: string
 			/**
-			 * Y​o​u​r​ ​v​o​t​i​n​g​ ​p​o​w​e​r​ ​w​a​s​ ​c​a​l​c​u​l​a​t​e​d​ ​a​t​ ​t​h​e​ ​t​i​m​e​ ​o​f​ ​t​h​e​ ​s​n​a​p​s​h​o​t​ ​{​s​n​a​p​s​h​o​t​}​.
+			 * Y​o​u​r​ ​V​o​t​i​n​g​ ​P​o​w​e​r​ ​w​a​s​ ​c​a​l​c​u​l​a​t​e​d​ ​a​t​ ​t​h​e​ ​t​i​m​e​ ​o​f​ ​t​h​e​ ​s​n​a​p​s​h​o​t​ ​{​s​n​a​p​s​h​o​t​}​.
 			 * @param {string} snapshot
 			 */
 			calculation: RequiredParams<'snapshot'>
 			/**
-			 * T​o​t​a​l​ ​v​o​t​i​n​g​ ​p​o​w​e​r
+			 * T​o​t​a​l​ ​V​o​t​i​n​g​ ​P​o​w​e​r
 			 */
 			total_voting_power: string
+			warnings: {
+				/**
+				 * T​h​e​ ​c​o​n​n​e​c​t​e​d​ ​w​a​l​l​e​t​ ​h​a​s​ ​n​o​ ​V​o​t​i​n​g​ ​P​o​w​e​r
+				 */
+				zero_voting_power: string
+				/**
+				 * Y​o​u​ ​h​a​v​e​ ​l​e​g​a​c​y​ ​n​o​d​e​s​ ​t​h​a​t​ ​h​a​v​e​n​’​t​ ​b​e​e​n​ ​m​i​g​r​a​t​e​d​ ​y​e​t​.​ ​ ​M​i​g​r​a​t​e​ ​t​o​ ​g​e​t​ ​m​o​r​e​ ​V​o​t​i​n​g​ ​P​o​w​e​r​.
+				 */
+				legacy_node: string
+				delegated: {
+					/**
+					 * Y​o​u​r​ ​V​o​t​i​n​g​ ​P​o​w​e​r​ ​i​s​ ​d​e​l​e​g​a​t​e​d
+					 */
+					title: string
+					/**
+					 * Y​o​u​r​ ​V​o​t​i​n​g​ ​P​o​w​e​r​ ​i​s​ ​d​e​l​e​g​a​t​e​d​ ​t​o​ ​a​n​o​t​h​e​r​ ​n​o​d​e
+					 */
+					description: string
+				}
+			}
 		}
 		voters_table: {
 			filters: {
@@ -802,7 +866,7 @@ type RootTranslation = {
 				 */
 				title: string
 				/**
-				 * W​h​a​t​’​s​ ​t​h​e​ ​p​r​o​p​o​s​a​l​ ​t​i​t​l​e​?
+				 * W​h​a​t​'​s​ ​t​h​e​ ​p​r​o​p​o​s​a​l​ ​t​i​t​l​e​?
 				 */
 				title_placeholder: string
 				/**
@@ -817,6 +881,22 @@ type RootTranslation = {
 				 * H​e​a​d​e​r​ ​i​m​a​g​e
 				 */
 				header_image: string
+				/**
+				 * D​i​s​c​o​u​r​s​e​ ​u​r​l
+				 */
+				discourse_url: string
+				/**
+				 * D​i​s​c​o​u​r​s​e​ ​T​o​p​i​c
+				 */
+				discourse_topic: string
+				/**
+				 * y​o​u​r​-​t​o​p​i​c​-​n​a​m​e
+				 */
+				discourse_topic_placeholder: string
+				/**
+				 * E​n​t​e​r​ ​t​h​e​ ​t​o​p​i​c​ ​n​a​m​e​ ​f​r​o​m​ ​y​o​u​r​ ​V​e​C​h​a​i​n​ ​D​i​s​c​o​u​r​s​e​ ​d​i​s​c​u​s​s​i​o​n
+				 */
+				discourse_topic_help: string
 				/**
 				 * V​o​t​i​n​g​ ​c​a​l​e​n​d​a​r
 				 */
@@ -871,38 +951,6 @@ type RootTranslation = {
 				 * W​r​i​t​e​ ​t​h​e​ ​v​o​t​i​n​g​ ​o​p​t​i​o​n​.​.​.
 				 */
 				voting_option_placeholder: string
-				voting_types: {
-					single_choice: {
-						/**
-						 * S​i​n​g​l​e​ ​c​h​o​i​c​e
-						 */
-						title: string
-						/**
-						 * Y​e​s​ ​/​ ​N​o​ ​/​ ​A​b​s​t​a​i​n
-						 */
-						subtitle: string
-					}
-					single_option: {
-						/**
-						 * S​i​n​g​l​e​ ​c​h​o​i​c​e
-						 */
-						title: string
-						/**
-						 * V​o​t​e​r​ ​c​a​n​ ​s​e​l​e​c​t​ ​1​ ​o​f​ ​m​u​l​t​i​p​l​e​ ​o​p​t​i​o​n​s
-						 */
-						subtitle: string
-					}
-					multi_options: {
-						/**
-						 * M​u​l​t​i​p​l​e​ ​c​h​o​i​c​e
-						 */
-						title: string
-						/**
-						 * V​o​t​e​r​ ​c​a​n​ ​s​e​l​e​c​t​ ​1​ ​o​r​ ​m​o​r​e​ ​o​p​t​i​o​n​s
-						 */
-						subtitle: string
-					}
-				}
 			}
 			summary_form: {
 				main_details: {
@@ -936,17 +984,9 @@ type RootTranslation = {
 					limit: RequiredParams<'limit' | 'min'>
 					types: {
 						/**
-						 * S​i​n​g​l​e​ ​c​h​o​i​c​e​ ​-​ ​Y​e​s​ ​/​ ​N​o​ ​/​ ​A​b​s​t​a​i​n
+						 * S​i​n​g​l​e​ ​c​h​o​i​c​e​ ​-​ ​F​o​r​ ​/​ ​A​g​a​i​n​s​t​ ​/​ ​A​b​s​t​a​i​n
 						 */
 						SINGLE_CHOICE: string
-						/**
-						 * S​i​n​g​l​e​ ​c​h​o​i​c​e​ ​-​ ​M​u​l​t​i​p​l​e​ ​v​o​t​i​n​g​ ​o​p​t​i​o​n​s
-						 */
-						SINGLE_OPTION: string
-						/**
-						 * M​u​l​t​i​p​l​e​ ​c​h​o​i​c​e​ ​-​ ​M​u​l​t​i​p​l​e​ ​v​o​t​i​n​g​ ​o​p​t​i​o​n​s
-						 */
-						MULTIPLE_OPTIONS: string
 					}
 				}
 				/**
@@ -979,6 +1019,90 @@ type RootTranslation = {
 				publish_success_description: string
 			}
 		}
+		/**
+		 * G​o​ ​t​o​ ​S​t​a​r​g​a​t​e
+		 */
+		go_to_stargate: string
+		/**
+		 * P​r​o​p​o​s​a​l​ ​n​o​t​ ​f​o​u​n​d
+		 */
+		proposal_not_found: string
+		/**
+		 * S​t​a​r​t​s​ ​i​n
+		 */
+		starts_in: string
+		/**
+		 * E​n​d​s​ ​i​n
+		 */
+		ends_in: string
+		/**
+		 * T​i​m​e​l​i​n​e
+		 */
+		timeline: string
+		/**
+		 * C​r​e​a​t​e​d
+		 */
+		timeline_created: string
+		/**
+		 * P​r​o​p​o​s​a​l​ ​C​a​n​c​e​l​e​d
+		 */
+		proposal_canceled: string
+		/**
+		 * T​h​e​ ​p​r​o​p​o​s​a​l​ ​w​a​s​ ​c​a​n​c​e​l​e​d​ ​b​y​ ​V​e​C​h​a​i​n​ ​o​r​ ​t​h​e​ ​p​r​o​p​o​s​e​r​ ​b​y​ ​t​h​e​ ​f​o​l​l​o​w​i​n​g​ ​r​e​a​s​o​n​:
+		 */
+		proposal_canceled_description: string
+		/**
+		 * N​o​ ​r​e​a​s​o​n​ ​p​r​o​v​i​d​e​d
+		 */
+		no_reason_provided: string
+		/**
+		 * U​n​k​n​o​w​n​ ​e​r​r​o​r
+		 */
+		unknown_error: string
+		/**
+		 * F​a​i​l​e​d​ ​t​o​ ​e​x​e​c​u​t​e​ ​p​r​o​p​o​s​a​l
+		 */
+		failed_to_execute_proposal: string
+		/**
+		 * P​r​o​p​o​s​a​l​ ​A​p​p​r​o​v​e​d​ ​a​n​d​ ​E​x​e​c​u​t​e​d
+		 */
+		proposal_approved_and_executed: string
+		/**
+		 * T​h​e​ ​v​o​t​i​n​g​ ​a​p​p​r​o​v​e​d​ ​t​h​e​ ​p​r​o​p​o​s​a​l​ ​a​n​d​ ​t​h​e​ ​a​c​t​i​o​n​s​ ​h​a​v​e​ ​b​e​e​n​ ​e​x​e​c​u​t​e​d​.
+		 */
+		the_voting_approved_the_proposal_and_the_actions_have_been_executed: string
+		/**
+		 * S​e​e​ ​d​e​t​a​i​l​s
+		 */
+		see_details: string
+		/**
+		 * P​r​o​p​o​s​a​l​ ​R​e​j​e​c​t​e​d
+		 */
+		proposal_rejected: string
+		/**
+		 * T​h​e​ ​p​r​o​p​o​s​a​l​ ​d​i​d​n​'​t​ ​g​e​t​ ​e​n​o​u​g​h​ ​v​o​t​e​s​ ​i​n​ ​f​a​v​o​r​ ​t​o​ ​g​e​t​ ​a​p​p​r​o​v​a​l​.
+		 */
+		the_proposal_didnt_get_enough_votes_in_favor_to_get_approval: string
+		/**
+		 * M​i​n​i​m​u​m​ ​p​a​r​t​i​c​i​p​a​t​i​o​n​ ​n​o​t​ ​r​e​a​c​h​e​d
+		 */
+		minimum_participation_not_reached: string
+		/**
+		 * T​h​e​ ​v​o​t​i​n​g​ ​p​a​r​t​i​c​i​p​a​t​i​o​n​ ​d​i​d​n​'​t​ ​r​e​a​c​h​e​d​ ​t​h​e​ ​m​i​n​i​m​u​m​ ​r​e​q​u​i​r​e​d​ ​o​f​ ​3​0​%​ ​t​o​ ​g​e​t​ ​a​p​p​r​o​v​a​l​.
+		 */
+		the_voting_participation_didnt_reached_the_minimum_required_of_30_to_get_approval: string
+		/**
+		 * A​ ​m​i​n​i​m​u​m​ ​o​f​ ​3​0​%​ ​p​a​r​t​i​c​i​p​a​t​i​o​n​ ​m​u​s​t​ ​b​e​ ​r​e​a​c​h​e​d​ ​t​o​ ​v​a​l​i​d​a​t​e​ ​t​h​e​ ​v​o​t​i​n​g​ ​o​f​ ​t​h​e​ ​p​r​o​p​o​s​a​l​ ​a​n​d​ ​g​e​t​ ​a​p​p​r​o​v​a​l​.
+		 */
+		a_minimum_of_30_participation_must_be_reached_to_validate_the_voting_of_the_proposal_and_get_approval: string
+		/**
+		 * V​o​t​e​ ​s​u​b​m​i​s​s​i​o​n​ ​f​a​i​l​e​d
+		 */
+		vote_submission_failed: string
+		/**
+		 * Y​o​u​ ​v​o​t​e​d
+		 */
+		you_voted: string
 	}
 	proposals: {
 		/**
@@ -1041,6 +1165,10 @@ type RootTranslation = {
 		rejected: string
 	}
 	filters: {
+		/**
+		 * F​i​l​t​e​r​s
+		 */
+		title: string
 		sort: {
 			/**
 			 * N​e​w​e​s​t
@@ -1062,29 +1190,21 @@ type RootTranslation = {
 	}
 	header: {
 		/**
-		 * O​f​f​i​c​i​a​l
+		 * V​e​C​h​a​i​n​T​h​o​r​ ​V​o​t​i​n​g​ ​P​l​a​t​f​o​r​m
 		 */
-		official: string
+		title: string
 		/**
-		 * V​e​C​h​a​i​n​T​h​o​r​ ​B​l​o​c​k​c​h​a​i​n
+		 * V​o​t​e​ ​t​o​ ​s​h​a​p​e​ ​t​h​e​ ​f​u​t​u​r​e​ ​o​f​ ​V​e​C​h​a​i​n​T​h​o​r
 		 */
-		blockchain: string
+		description: string
 		/**
-		 * v​o​t​i​n​g​ ​p​l​a​t​f​o​r​m
+		 * H​o​w​ ​t​o​ ​V​o​t​e
 		 */
-		voting_platform: string
+		how_to_vote: string
 		/**
-		 * I​m​m​u​t​a​b​l​e​.
+		 * H​o​w​ ​t​o​ ​g​e​t​ ​V​o​t​i​n​g​ ​P​o​w​e​r
 		 */
-		immutable: string
-		/**
-		 * T​r​a​n​s​p​a​r​e​n​t​.
-		 */
-		transparent: string
-		/**
-		 * D​e​c​e​n​t​r​a​l​i​z​e​d​.
-		 */
-		decentralized: string
+		how_to_get_voting_power: string
 	}
 	stargate_warning: {
 		/**
@@ -1114,11 +1234,18 @@ type RootTranslation = {
 	}
 	footer: {
 		/**
-		 * A​l​l​ ​R​i​g​h​t​s​ ​R​e​s​e​r​v​e​d​ ​
-	​ ​©​ ​V​e​c​h​a​i​n​ ​F​o​u​n​d​a​t​i​o​n​ ​S​a​n​ ​M​a​r​i​n​o​ ​S​.​r​.​l​.
+		 * v​1​.​0​.​0
+		 */
+		version: string
+		/**
+		 * A​l​l​ ​R​i​g​h​t​s​ ​R​e​s​e​r​v​e​d​ ​©​ ​V​e​c​h​a​i​n​ ​F​o​u​n​d​a​t​i​o​n​ ​S​a​n​ ​M​a​r​i​n​o​ ​S​.​r​.​l​.
 		 */
 		all_right: string
 		legal: {
+			/**
+			 * L​e​g​a​l
+			 */
+			title: string
 			/**
 			 * T​e​r​m​s​ ​o​f​ ​S​e​r​v​i​c​e
 			 */
@@ -1132,6 +1259,24 @@ type RootTranslation = {
 			 */
 			cookies_policy: string
 		}
+		resources: {
+			/**
+			 * R​e​s​o​u​r​c​e​s
+			 */
+			title: string
+			/**
+			 * D​o​c​u​m​e​n​t​a​t​i​o​n
+			 */
+			docs: string
+			/**
+			 * S​t​a​r​G​a​t​e
+			 */
+			stargate: string
+			/**
+			 * S​u​p​p​o​r​t
+			 */
+			support: string
+		}
 	}
 }
 
@@ -1140,6 +1285,14 @@ export type TranslationFunctions = {
 	 * Left
 	 */
 	left: () => LocalizedString
+	/**
+	 * by
+	 */
+	by: () => LocalizedString
+	/**
+	 * Not published
+	 */
+	not_published: () => LocalizedString
 	/**
 	 * Homepage
 	 */
@@ -1369,6 +1522,14 @@ JPG, PNG or SVG of maximum of {size}MB.
 	 * Add a comment to your vote...
 	 */
 	comment_placeholder: () => LocalizedString
+	/**
+	 * Migrate
+	 */
+	migrate: () => LocalizedString
+	/**
+	 * StarGate
+	 */
+	stargate: () => LocalizedString
 	datepicker: {
 		/**
 		 * Select date
@@ -1595,9 +1756,25 @@ JPG, PNG or SVG of maximum of {size}MB.
 		 */
 		voting_options: () => LocalizedString
 		/**
-		 * option to vote:
+		 * Select an option to vote:
 		 */
 		option_to_vote: () => LocalizedString
+		/**
+		 * Voting has not started yet
+		 */
+		voting_has_not_started_yet: () => LocalizedString
+		/**
+		 * Please connect your wallet
+		 */
+		please_connect_your_wallet: () => LocalizedString
+		/**
+		 * You have already voted
+		 */
+		you_have_already_voted: () => LocalizedString
+		/**
+		 * You don't have enough voting power
+		 */
+		you_dont_have_enough_voting_power: () => LocalizedString
 	}
 	proposal: {
 		/**
@@ -1612,6 +1789,10 @@ JPG, PNG or SVG of maximum of {size}MB.
 		 * Voting calendar
 		 */
 		voting_calendar: () => LocalizedString
+		/**
+		 * Confirm in your wallet...
+		 */
+		confirm_in_your_wallet: () => LocalizedString
 		/**
 		 * Who can vote
 		 */
@@ -1648,6 +1829,16 @@ JPG, PNG or SVG of maximum of {size}MB.
 		 * Voting is only possible for Node holders. Buy a node to vote on future proposals or increase your voting power.
 		 */
 		buy_a_node: () => LocalizedString
+		vote_success: {
+			/**
+			 * Vote submitted!
+			 */
+			title: () => LocalizedString
+			/**
+			 * Your vote was submitted successfully.
+			 */
+			description: () => LocalizedString
+		}
 		cancel_proposal: {
 			/**
 			 * Cancel proposal
@@ -1705,16 +1896,6 @@ JPG, PNG or SVG of maximum of {size}MB.
 			 * Yes, Delete
 			 */
 			yes_delete: () => LocalizedString
-		}
-		draft_dialog: {
-			/**
-			 * Draft proposal
-			 */
-			title: () => LocalizedString
-			/**
-			 * By continuing, your old proposal linked to the preview account will be discarded. Are you sure you want to proceed?
-			 */
-			description: () => LocalizedString
 		}
 		info_box: {
 			info: {
@@ -1780,17 +1961,45 @@ JPG, PNG or SVG of maximum of {size}MB.
 		}
 		voting_power: {
 			/**
+			 * Get more Voting Power
+			 */
+			get_more_voting_power: () => LocalizedString
+			/**
+			 * Get Voting Power
+			 */
+			get_voting_power: () => LocalizedString
+			/**
 			 * Voting Power
 			 */
 			title: () => LocalizedString
 			/**
-			 * Your voting power was calculated at the time of the snapshot {snapshot}.
+			 * Your Voting Power was calculated at the time of the snapshot {snapshot}.
 			 */
 			calculation: (arg: { snapshot: string }) => LocalizedString
 			/**
-			 * Total voting power
+			 * Total Voting Power
 			 */
 			total_voting_power: () => LocalizedString
+			warnings: {
+				/**
+				 * The connected wallet has no Voting Power
+				 */
+				zero_voting_power: () => LocalizedString
+				/**
+				 * You have legacy nodes that haven’t been migrated yet.  Migrate to get more Voting Power.
+				 */
+				legacy_node: () => LocalizedString
+				delegated: {
+					/**
+					 * Your Voting Power is delegated
+					 */
+					title: () => LocalizedString
+					/**
+					 * Your Voting Power is delegated to another node
+					 */
+					description: () => LocalizedString
+				}
+			}
 		}
 		voters_table: {
 			filters: {
@@ -1913,7 +2122,7 @@ JPG, PNG or SVG of maximum of {size}MB.
 				 */
 				title: () => LocalizedString
 				/**
-				 * What’s the proposal title?
+				 * What's the proposal title?
 				 */
 				title_placeholder: () => LocalizedString
 				/**
@@ -1928,6 +2137,22 @@ JPG, PNG or SVG of maximum of {size}MB.
 				 * Header image
 				 */
 				header_image: () => LocalizedString
+				/**
+				 * Discourse url
+				 */
+				discourse_url: () => LocalizedString
+				/**
+				 * Discourse Topic
+				 */
+				discourse_topic: () => LocalizedString
+				/**
+				 * your-topic-name
+				 */
+				discourse_topic_placeholder: () => LocalizedString
+				/**
+				 * Enter the topic name from your VeChain Discourse discussion
+				 */
+				discourse_topic_help: () => LocalizedString
 				/**
 				 * Voting calendar
 				 */
@@ -1982,38 +2207,6 @@ JPG, PNG or SVG of maximum of {size}MB.
 				 * Write the voting option...
 				 */
 				voting_option_placeholder: () => LocalizedString
-				voting_types: {
-					single_choice: {
-						/**
-						 * Single choice
-						 */
-						title: () => LocalizedString
-						/**
-						 * Yes / No / Abstain
-						 */
-						subtitle: () => LocalizedString
-					}
-					single_option: {
-						/**
-						 * Single choice
-						 */
-						title: () => LocalizedString
-						/**
-						 * Voter can select 1 of multiple options
-						 */
-						subtitle: () => LocalizedString
-					}
-					multi_options: {
-						/**
-						 * Multiple choice
-						 */
-						title: () => LocalizedString
-						/**
-						 * Voter can select 1 or more options
-						 */
-						subtitle: () => LocalizedString
-					}
-				}
 			}
 			summary_form: {
 				main_details: {
@@ -2045,17 +2238,9 @@ JPG, PNG or SVG of maximum of {size}MB.
 					limit: (arg: { limit: number, min: number }) => LocalizedString
 					types: {
 						/**
-						 * Single choice - Yes / No / Abstain
+						 * Single choice - For / Against / Abstain
 						 */
 						SINGLE_CHOICE: () => LocalizedString
-						/**
-						 * Single choice - Multiple voting options
-						 */
-						SINGLE_OPTION: () => LocalizedString
-						/**
-						 * Multiple choice - Multiple voting options
-						 */
-						MULTIPLE_OPTIONS: () => LocalizedString
 					}
 				}
 				/**
@@ -2088,6 +2273,90 @@ JPG, PNG or SVG of maximum of {size}MB.
 				publish_success_description: () => LocalizedString
 			}
 		}
+		/**
+		 * Go to Stargate
+		 */
+		go_to_stargate: () => LocalizedString
+		/**
+		 * Proposal not found
+		 */
+		proposal_not_found: () => LocalizedString
+		/**
+		 * Starts in
+		 */
+		starts_in: () => LocalizedString
+		/**
+		 * Ends in
+		 */
+		ends_in: () => LocalizedString
+		/**
+		 * Timeline
+		 */
+		timeline: () => LocalizedString
+		/**
+		 * Created
+		 */
+		timeline_created: () => LocalizedString
+		/**
+		 * Proposal Canceled
+		 */
+		proposal_canceled: () => LocalizedString
+		/**
+		 * The proposal was canceled by VeChain or the proposer by the following reason:
+		 */
+		proposal_canceled_description: () => LocalizedString
+		/**
+		 * No reason provided
+		 */
+		no_reason_provided: () => LocalizedString
+		/**
+		 * Unknown error
+		 */
+		unknown_error: () => LocalizedString
+		/**
+		 * Failed to execute proposal
+		 */
+		failed_to_execute_proposal: () => LocalizedString
+		/**
+		 * Proposal Approved and Executed
+		 */
+		proposal_approved_and_executed: () => LocalizedString
+		/**
+		 * The voting approved the proposal and the actions have been executed.
+		 */
+		the_voting_approved_the_proposal_and_the_actions_have_been_executed: () => LocalizedString
+		/**
+		 * See details
+		 */
+		see_details: () => LocalizedString
+		/**
+		 * Proposal Rejected
+		 */
+		proposal_rejected: () => LocalizedString
+		/**
+		 * The proposal didn't get enough votes in favor to get approval.
+		 */
+		the_proposal_didnt_get_enough_votes_in_favor_to_get_approval: () => LocalizedString
+		/**
+		 * Minimum participation not reached
+		 */
+		minimum_participation_not_reached: () => LocalizedString
+		/**
+		 * The voting participation didn't reached the minimum required of 30% to get approval.
+		 */
+		the_voting_participation_didnt_reached_the_minimum_required_of_30_to_get_approval: () => LocalizedString
+		/**
+		 * A minimum of 30% participation must be reached to validate the voting of the proposal and get approval.
+		 */
+		a_minimum_of_30_participation_must_be_reached_to_validate_the_voting_of_the_proposal_and_get_approval: () => LocalizedString
+		/**
+		 * Vote submission failed
+		 */
+		vote_submission_failed: () => LocalizedString
+		/**
+		 * You voted
+		 */
+		you_voted: () => LocalizedString
 	}
 	proposals: {
 		/**
@@ -2148,6 +2417,10 @@ JPG, PNG or SVG of maximum of {size}MB.
 		rejected: () => LocalizedString
 	}
 	filters: {
+		/**
+		 * Filters
+		 */
+		title: () => LocalizedString
 		sort: {
 			/**
 			 * Newest
@@ -2169,29 +2442,21 @@ JPG, PNG or SVG of maximum of {size}MB.
 	}
 	header: {
 		/**
-		 * Official
+		 * VeChainThor Voting Platform
 		 */
-		official: () => LocalizedString
+		title: () => LocalizedString
 		/**
-		 * VeChainThor Blockchain
+		 * Vote to shape the future of VeChainThor
 		 */
-		blockchain: () => LocalizedString
+		description: () => LocalizedString
 		/**
-		 * voting platform
+		 * How to Vote
 		 */
-		voting_platform: () => LocalizedString
+		how_to_vote: () => LocalizedString
 		/**
-		 * Immutable.
+		 * How to get Voting Power
 		 */
-		immutable: () => LocalizedString
-		/**
-		 * Transparent.
-		 */
-		transparent: () => LocalizedString
-		/**
-		 * Decentralized.
-		 */
-		decentralized: () => LocalizedString
+		how_to_get_voting_power: () => LocalizedString
 	}
 	stargate_warning: {
 		/**
@@ -2221,11 +2486,18 @@ JPG, PNG or SVG of maximum of {size}MB.
 	}
 	footer: {
 		/**
-		 * All Rights Reserved 
-	 © Vechain Foundation San Marino S.r.l.
+		 * v1.0.0
+		 */
+		version: () => LocalizedString
+		/**
+		 * All Rights Reserved © Vechain Foundation San Marino S.r.l.
 		 */
 		all_right: () => LocalizedString
 		legal: {
+			/**
+			 * Legal
+			 */
+			title: () => LocalizedString
 			/**
 			 * Terms of Service
 			 */
@@ -2238,6 +2510,24 @@ JPG, PNG or SVG of maximum of {size}MB.
 			 * Cookies Policy
 			 */
 			cookies_policy: () => LocalizedString
+		}
+		resources: {
+			/**
+			 * Resources
+			 */
+			title: () => LocalizedString
+			/**
+			 * Documentation
+			 */
+			docs: () => LocalizedString
+			/**
+			 * StarGate
+			 */
+			stargate: () => LocalizedString
+			/**
+			 * Support
+			 */
+			support: () => LocalizedString
 		}
 	}
 }

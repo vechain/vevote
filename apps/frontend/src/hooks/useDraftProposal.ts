@@ -1,5 +1,5 @@
 import { ProposalDetails } from "@/pages/CreateProposal/CreateProposalProvider";
-import { ProposalCardType } from "@/types/proposal";
+import { ProposalCardType, ProposalStatus } from "@/types/proposal";
 import { base64ToBlob } from "@/utils/file";
 import dayjs from "dayjs";
 
@@ -39,7 +39,7 @@ export const useDraftProposal = () => {
 
     const draft: ProposalCardType = {
       ...proposalDetails,
-      status: "draft",
+      status: ProposalStatus.DRAFT,
       id: "draft",
       proposer,
       createdAt: new Date(),

@@ -2,6 +2,8 @@ import type { BaseTranslation } from "../i18n-types.js";
 
 const en = {
   left: "Left",
+  by: "by",
+  not_published: "Not published",
   homepage: "Homepage",
   back: "Back",
   start: "Start",
@@ -60,6 +62,8 @@ const en = {
   connect_wallet_to_vote: "Connect your wallet to vote",
   comment: "Comment",
   comment_placeholder: "Add a comment to your vote...",
+  migrate: "Migrate",
+  stargate: "StarGate",
   datepicker: {
     select_date: "Select date",
     previous_month: "Previous month",
@@ -130,12 +134,17 @@ const en = {
   },
   voting_list: {
     voting_options: "Voting options:",
-    option_to_vote: "option to vote:",
+    option_to_vote: "Select an option to vote:",
+    voting_has_not_started_yet: "Voting has not started yet",
+    please_connect_your_wallet: "Please connect your wallet",
+    you_have_already_voted: "You have already voted",
+    you_dont_have_enough_voting_power: "You don't have enough voting power",
   },
   proposal: {
     title: "Proposal",
     proposed_by: "Proposed by",
     voting_calendar: "Voting calendar",
+    confirm_in_your_wallet: "Confirm in your wallet...",
     who_can_vote: "Who can vote",
     vechain_foundation: "VeChain Foundation",
     node_holders: "Node holders with voting power will be able to vote on this proposal.",
@@ -146,6 +155,10 @@ const en = {
     buy_another_node: "Buy another node to increase your voting power on future proposals.",
     buy_a_node:
       "Voting is only possible for Node holders. Buy a node to vote on future proposals or increase your voting power.",
+    vote_success: {
+      title: "Vote submitted!",
+      description: "Your vote was submitted successfully.",
+    },
     cancel_proposal: {
       title: "Cancel proposal",
       description:
@@ -167,11 +180,6 @@ const en = {
       confirmation: "Are you sure you want to delete it?",
       no_go_back: "No, go back",
       yes_delete: "Yes, Delete",
-    },
-    draft_dialog: {
-      title: "Draft proposal",
-      description:
-        "By continuing, your old proposal linked to the preview account will be discarded. Are you sure you want to proceed?",
     },
     info_box: {
       info: {
@@ -202,9 +210,20 @@ const en = {
       },
     },
     voting_power: {
+      get_more_voting_power: "Get more Voting Power",
+      get_voting_power: "Get Voting Power",
       title: "Voting Power",
-      calculation: "Your voting power was calculated at the time of the snapshot {snapshot:string}.",
-      total_voting_power: "Total voting power",
+
+      calculation: "Your Voting Power was calculated at the time of the snapshot {snapshot:string}.",
+      total_voting_power: "Total Voting Power",
+      warnings: {
+        zero_voting_power: "The connected wallet has no Voting Power",
+        legacy_node: "You have legacy nodes that haven’t been migrated yet.  Migrate to get more Voting Power.",
+        delegated: {
+          title: "Your Voting Power is delegated",
+          description: "Your Voting Power is delegated to another node",
+        },
+      },
     },
     voters_table: {
       filters: {
@@ -248,10 +267,14 @@ const en = {
       },
       details_form: {
         title: "Title",
-        title_placeholder: "What’s the proposal title?",
+        title_placeholder: "What's the proposal title?",
         description: "Description",
         description_placeholder: "Add a description...",
         header_image: "Header image",
+        discourse_url: "Discourse url",
+        discourse_topic: "Discourse Topic",
+        discourse_topic_placeholder: "your-topic-name",
+        discourse_topic_help: "Enter the topic name from your VeChain Discourse discussion",
         voting_calendar: "Voting calendar",
       },
       setup_form: {
@@ -267,20 +290,6 @@ const en = {
         voting_options_subtitle: "Add between 2 and 30 options to vote:",
         add_new_option: "Add new option",
         voting_option_placeholder: "Write the voting option...",
-        voting_types: {
-          single_choice: {
-            title: "Single choice",
-            subtitle: "Yes / No / Abstain",
-          },
-          single_option: {
-            title: "Single choice",
-            subtitle: "Voter can select 1 of multiple options",
-          },
-          multi_options: {
-            title: "Multiple choice",
-            subtitle: "Voter can select 1 or more options",
-          },
-        },
       },
       summary_form: {
         main_details: {
@@ -293,9 +302,7 @@ const en = {
           type: "Type",
           limit: "Minimum {min:number} options - Maximum {limit:number} options",
           types: {
-            SINGLE_CHOICE: "Single choice - Yes / No / Abstain",
-            SINGLE_OPTION: "Single choice - Multiple voting options",
-            MULTIPLE_OPTIONS: "Multiple choice - Multiple voting options",
+            SINGLE_CHOICE: "Single choice - For / Against / Abstain",
           },
         },
         publish_proposal: "Publish Proposal",
@@ -308,6 +315,31 @@ const en = {
         publish_success_description: "The proposal has been successfully publish and can now be seen publicly.",
       },
     },
+    go_to_stargate: "Go to Stargate",
+    proposal_not_found: "Proposal not found",
+    starts_in: "Starts in",
+    ends_in: "Ends in",
+    timeline: "Timeline",
+    timeline_created: "Created",
+    proposal_canceled: "Proposal Canceled",
+    proposal_canceled_description: "The proposal was canceled by VeChain or the proposer by the following reason:",
+    no_reason_provided: "No reason provided",
+    unknown_error: "Unknown error",
+    failed_to_execute_proposal: "Failed to execute proposal",
+    proposal_approved_and_executed: "Proposal Approved and Executed",
+    the_voting_approved_the_proposal_and_the_actions_have_been_executed:
+      "The voting approved the proposal and the actions have been executed.",
+    see_details: "See details",
+    proposal_rejected: "Proposal Rejected",
+    the_proposal_didnt_get_enough_votes_in_favor_to_get_approval:
+      "The proposal didn't get enough votes in favor to get approval.",
+    minimum_participation_not_reached: "Minimum participation not reached",
+    the_voting_participation_didnt_reached_the_minimum_required_of_30_to_get_approval:
+      "The voting participation didn't reached the minimum required of 30% to get approval.",
+    a_minimum_of_30_participation_must_be_reached_to_validate_the_voting_of_the_proposal_and_get_approval:
+      "A minimum of 30% participation must be reached to validate the voting of the proposal and get approval.",
+    vote_submission_failed: "Vote submission failed",
+    you_voted: "You voted",
   },
   proposals: {
     title: "Proposals",
@@ -329,6 +361,7 @@ const en = {
     rejected: "Rejected",
   },
   filters: {
+    title: "Filters",
     sort: {
       newest: "Newest",
       oldest: "Oldest",
@@ -337,12 +370,10 @@ const en = {
     },
   },
   header: {
-    official: "Official",
-    blockchain: "VeChainThor Blockchain",
-    voting_platform: "voting platform",
-    immutable: "Immutable.",
-    transparent: "Transparent.",
-    decentralized: "Decentralized.",
+    title: "VeChainThor Voting Platform",
+    description: "Vote to shape the future of VeChainThor",
+    how_to_vote: "How to Vote",
+    how_to_get_voting_power: "How to get Voting Power",
   },
   stargate_warning: {
     title: "Stargate Node Migration Required",
@@ -354,11 +385,19 @@ const en = {
     confirmation_error: "Please type exactly 'agree-with-this' to continue",
   },
   footer: {
-    all_right: "All Rights Reserved \n © Vechain Foundation San Marino S.r.l.",
+    version: "v1.0.0",
+    all_right: "All Rights Reserved © Vechain Foundation San Marino S.r.l.",
     legal: {
+      title: "Legal",
       terms_of_service: "Terms of Service",
       privacy_policy: "Privacy Policy",
       cookies_policy: "Cookies Policy",
+    },
+    resources: {
+      title: "Resources",
+      docs: "Documentation",
+      stargate: "StarGate",
+      support: "Support",
     },
   },
 } satisfies BaseTranslation;

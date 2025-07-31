@@ -1,13 +1,13 @@
 import { ProposalCardType } from "@/types/proposal";
 import { useVevoteSendTransaction } from "@/utils/hooks/useVevoteSendTransaction";
-import { fromStringToUint256 } from "@/utils/proposals/helpers";
-import { getHasVoted, getVotedChoices, getVotesResults } from "@/utils/proposals/votedQueries";
+import { fromStringToUint256, getSingleChoiceFromIndex } from "@/utils/proposals/helpers";
+import { getHasVoted, getVoteCastResults, getIndexerVoteResults } from "@/utils/proposals/votedQueries";
 import { getConfig } from "@repo/config";
 import { VeVote__factory } from "@repo/contracts";
 import { useQuery } from "@tanstack/react-query";
 import { ABIFunction, Address, Clause, ZERO_ADDRESS } from "@vechain/sdk-core";
 import { EnhancedClause, useThor, useWallet } from "@vechain/vechain-kit";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 
 const contractAddress = getConfig(import.meta.env.VITE_APP_ENV).vevoteContractAddress;
 const contractInterface = VeVote__factory.createInterface();
@@ -26,21 +26,15 @@ export const useHasVoted = ({ proposalId }: { proposalId?: string }) => {
 export const useCastVote = ({ proposalId, masterNode }: { proposalId?: string; masterNode?: string }) => {
   const { account } = useWallet();
   const buildClauses = useCallback(
-    ({
-      id,
-      selectedOptions,
-      reason,
-    }: Pick<ProposalCardType, "id"> & { selectedOptions: (1 | 0)[]; reason?: string }) => {
+    ({ id, selectedOption, reason }: Pick<ProposalCardType, "id"> & { selectedOption: 0 | 1 | 2; reason?: string }) => {
       const clauses: EnhancedClause[] = [];
-
-      const numberChoices = parseInt(selectedOptions.reverse().join(""), 2);
 
       try {
         const functionName = reason && reason.trim() ? "castVoteWithReason" : "castVote";
         const encodedData =
           reason && reason.trim()
-            ? [fromStringToUint256(id), numberChoices, reason, masterNode || ZERO_ADDRESS]
-            : [fromStringToUint256(id), numberChoices, masterNode || ZERO_ADDRESS];
+            ? [fromStringToUint256(id), selectedOption, reason, masterNode || ZERO_ADDRESS]
+            : [fromStringToUint256(id), selectedOption, masterNode || ZERO_ADDRESS];
 
         const interfaceJson = contractInterface.getFunction(functionName)?.format("full");
         if (!interfaceJson) throw new Error(`Method ${functionName} not found`);
@@ -70,27 +64,34 @@ export const useCastVote = ({ proposalId, masterNode }: { proposalId?: string; m
   });
 };
 
-export const useVotedChoices = ({ proposalId, enabled }: { proposalId?: string; enabled?: boolean }) => {
-  const { account } = useWallet();
+export const useVoteCastResults = ({
+  proposalIds,
+  address,
+  enabled,
+}: {
+  proposalIds?: string[];
+  address?: string;
+  enabled?: boolean;
+}) => {
   const thor = useThor();
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ["votedChoices", proposalId, account?.address],
-    queryFn: async () => await getVotedChoices(thor, proposalId, account?.address),
-    enabled: enabled && !!thor && !!proposalId && !!account?.address,
+    queryKey: ["votedChoices", proposalIds, address],
+    queryFn: async () => await getVoteCastResults(thor, { proposalIds, address }),
+    enabled: enabled && !!thor,
   });
 
   return {
-    votedChoices: data?.votedChoices?.[0],
+    votes: data?.votes,
     isLoading,
     error,
   };
 };
 
-export const useVotesResults = ({ proposalId, size }: { proposalId?: string; size?: number }) => {
+export const useIndexerVoteResults = ({ proposalId, size }: { proposalId?: string; size?: number }) => {
   const { data, isLoading, error } = useQuery({
     queryKey: ["votesResults", proposalId],
-    queryFn: async () => await getVotesResults(proposalId, size),
+    queryFn: async () => await getIndexerVoteResults(proposalId, size),
     refetchInterval: 10000,
   });
 
@@ -101,17 +102,19 @@ export const useVotesResults = ({ proposalId, size }: { proposalId?: string; siz
   };
 };
 
-export const useVotesInfo = ({ proposalId }: { proposalId: string }) => {
-  const thor = useThor();
-
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["votedChoices", proposalId],
-    queryFn: async () => await getVotedChoices(thor, proposalId),
-    enabled: !!thor && !!proposalId,
+export const useVoteByProposalId = ({ proposalId, enabled }: { proposalId: string; enabled?: boolean }) => {
+  const { account } = useWallet();
+  const { votes, isLoading, error } = useVoteCastResults({
+    proposalIds: [proposalId],
+    address: account?.address,
+    enabled,
   });
 
+  const voteData = useMemo(() => votes?.find(v => v.proposalId === proposalId), [votes, proposalId]);
+
   return {
-    votedInfo: data?.votedChoices,
+    voteData,
+    vote: getSingleChoiceFromIndex(voteData?.choice || 0),
     isLoading,
     error,
   };

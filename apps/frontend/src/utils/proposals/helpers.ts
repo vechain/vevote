@@ -1,17 +1,12 @@
 import {
-  BaseOption,
+  FilterStatuses,
   ProposalCardType,
   ProposalEvent,
   ProposalState,
   ProposalStatus,
   SingleChoiceEnum,
-  VotingEnum,
 } from "@/types/proposal";
 import dayjs from "dayjs";
-import { ethers } from "ethers";
-import { v4 as uuidv4 } from "uuid";
-import { isArraysEqual } from "../array";
-import { defaultSingleChoice } from "@/pages/CreateProposal/CreateProposalProvider";
 import { Delta } from "quill";
 import { IpfsDetails } from "@/types/ipfs";
 import { HexUInt } from "@vechain/sdk-core";
@@ -21,25 +16,32 @@ const AVERAGE_BLOCK_TIME = 10; // in seconds
 
 export type FromEventsToProposalsReturnType = ({ ipfsHash: string } & Omit<
   ProposalCardType,
-  "status" | "description" | "title" | "votingQuestion" | "headerImage"
+  | "status"
+  | "description"
+  | "title"
+  | "votingQuestion"
+  | "headerImage"
+  | "canceledDate"
+  | "executedDate"
+  | "discourseUrl"
 >)[];
 
 export const getStatusFromState = (state: ProposalState): ProposalStatus => {
   switch (state) {
     case ProposalState.PENDING:
-      return "upcoming";
+      return ProposalStatus.UPCOMING;
     case ProposalState.DEFEATED:
-      return "min-not-reached";
+      return ProposalStatus.MIN_NOT_REACHED;
     case ProposalState.ACTIVE:
-      return "voting";
+      return ProposalStatus.VOTING;
     case ProposalState.CANCELED:
-      return "canceled";
+      return ProposalStatus.CANCELED;
     case ProposalState.EXECUTED:
-      return "executed";
+      return ProposalStatus.EXECUTED;
     case ProposalState.SUCCEEDED:
-      return "approved";
+      return ProposalStatus.APPROVED;
     default:
-      return "upcoming";
+      return ProposalStatus.UPCOMING;
   }
 };
 
@@ -50,49 +52,61 @@ export const getStatusParProposalMethod = (proposalIds?: string[]) => {
   }));
 };
 
+export const getIndexFromSingleChoice = (choice: SingleChoiceEnum): 0 | 1 | 2 => {
+  switch (choice) {
+    case SingleChoiceEnum.AGAINST:
+      return 0;
+    case SingleChoiceEnum.FOR:
+      return 1;
+    case SingleChoiceEnum.ABSTAIN:
+      return 2;
+    default:
+      throw new Error(`Invalid choice: ${choice}`);
+  }
+};
+
+export const getSingleChoiceFromIndex = (index: 0 | 1 | 2): SingleChoiceEnum => {
+  switch (index) {
+    case 0:
+      return SingleChoiceEnum.AGAINST;
+    case 1:
+      return SingleChoiceEnum.FOR;
+    case 2:
+      return SingleChoiceEnum.ABSTAIN;
+    default:
+      throw new Error(`Invalid index: ${index}`);
+  }
+};
+
+export const filterStatus = (statuses: FilterStatuses[], status: ProposalStatus): boolean => {
+  if (status === "min-not-reached") return statuses.includes("rejected");
+  return statuses.includes(status);
+};
+
 export const fromEventsToProposals = async (events: ProposalEvent[]): Promise<FromEventsToProposalsReturnType> => {
   return await Promise.all(
     events.map(async event => {
-      const isSingleOption = Number(event.maxSelection) === 1;
-      const decodedChoices = event.choices.map(c => ethers.decodeBytes32String(c));
-
-      const votingType = isArraysEqual(decodedChoices, defaultSingleChoice)
-        ? VotingEnum.SINGLE_CHOICE
-        : isSingleOption
-          ? VotingEnum.SINGLE_OPTION
-          : VotingEnum.MULTIPLE_OPTIONS;
-
-      const parsedChoices = decodedChoices as SingleChoiceEnum[];
-      const parsedChoicesWithId = decodedChoices.map(c => ({
-        id: uuidv4(),
-        value: c,
-      })) as BaseOption[];
-
-      const [startDate, endDate] = await Promise.all([
+      console.log("event.canceledTime", event.canceledTime);
+      const [createdDate, startDate, endDate, canceledDate, executedDate] = await Promise.all([
+        new Date(event.createdTime || 0),
         getDateFromBlock(Number(event.startTime)),
         getDateFromBlock(Number(event.startTime) + Number(event.voteDuration)),
+        new Date(event.canceledTime || 0),
+        new Date(event.executedTime || 0),
       ]);
-
-      const base = {
+      console.log("canceledDate", canceledDate);
+      return {
         id: event.proposalId,
         proposer: event.proposer,
-        createdAt: startDate,
+        createdAt: createdDate,
         startDate,
         endDate,
-        votingLimit: event.maxSelection,
-        votingMin: event.minSelection,
+        canceledDate,
+        executedDate,
         ipfsHash: event.description,
         reason: event.reason,
         executedProposalLink: event.executedProposalLink,
       };
-
-      switch (votingType) {
-        case VotingEnum.SINGLE_CHOICE:
-          return { votingType, votingOptions: parsedChoices, ...base };
-        case VotingEnum.SINGLE_OPTION:
-        case VotingEnum.MULTIPLE_OPTIONS:
-          return { votingType, votingOptions: parsedChoicesWithId, ...base };
-      }
     }),
   );
 };
@@ -116,6 +130,7 @@ export const mergeIpfsDetails = (
       title: currentIpfsProposal?.title || "",
       description: new Delta(currentIpfsProposal?.markdownDescription || []).ops,
       votingQuestion: currentIpfsProposal?.shortDescription || "",
+      discourseUrl: currentIpfsProposal?.discourseUrl || "",
       headerImage: {
         type: currentIpfsProposal?.headerImage?.type || "",
         name: currentIpfsProposal?.headerImage?.name || "",

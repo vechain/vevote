@@ -11,7 +11,7 @@ async function main() {
   const config = getConfig(process.env.VITE_APP_ENV as EnvConfig);
 
   console.log(
-    `Upgrading VoterRewards contract at address: ${config.vevoteContractAddress} on network: ${config.network.name}`,
+    `Upgrading VeVote contract at address: ${config.vevoteContractAddress} on network: ${config.network.name}`,
   );
 
   /// --------------- Deploy Libraries --------------- ///
@@ -31,14 +31,14 @@ async function main() {
     },
   })) as VeVote;
 
-  console.log(`VoterRewards upgraded`);
+  console.log(`VeVote upgraded`);
 
   // check that upgrade was successful
   const version = await vevote.version();
-  console.log(`New VoterRewards version: ${version}`);
+  console.log(`New VeVote version: ${version}`);
 
   if (version !== 1n) {
-    throw new Error(`VoterRewards version is not 1: ${version}`);
+    throw new Error(`VeVote version is not 1: ${version}`);
   }
 
   console.log("Execution completed");

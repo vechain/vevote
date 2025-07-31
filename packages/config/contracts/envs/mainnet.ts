@@ -10,7 +10,6 @@ export function createMainnetConfig() {
     INITIAL_MIN_VOTING_DELAY: 60480, // 1 week
     INITIAL_MAX_VOTING_DURATION: 259200, // 30 days
     INITIAL_MIN_VOTING_DURATION: 60480, // 1 week
-    INITIAL_MAX_CHOICES: 32, // TODO: Update this value
     MIN_VET_STAKE: 10000000000000000000000n, // Dawn - TODO: review when stargate is live
   });
 }

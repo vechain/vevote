@@ -1,18 +1,19 @@
 // SPDX-License-Identifier: MIT
 
-//  8b           d8       8b           d8                            
-//  `8b         d8'       `8b         d8'           ,d               
-//   `8b       d8'         `8b       d8'            88               
-//    `8b     d8' ,adPPYba, `8b     d8' ,adPPYba, MM88MMM ,adPPYba,  
-//     `8b   d8' a8P   _d88  `8b   d8' a8"     "8a  88   a8P_____88  
-//      `8b d8'  8PP  "PP""   `8b d8'  8b       d8  88   8PP"""""""  
-//       `888'   "8b,   ,aa    `888'   "8a,   ,a8"  88,  "8b,   ,aa  
-//        `8'     `"Ybbd8"'     `8'     `"YbbdP"'   "Y888 `"Ybbd8"'  
+//  8b           d8       8b           d8
+//  `8b         d8'       `8b         d8'           ,d
+//   `8b       d8'         `8b       d8'            88
+//    `8b     d8' ,adPPYba, `8b     d8' ,adPPYba, MM88MMM ,adPPYba,
+//     `8b   d8' a8P   _d88  `8b   d8' a8"     "8a  88   a8P_____88
+//      `8b d8'  8PP  "PP""   `8b d8'  8b       d8  88   8PP"""""""
+//       `888'   "8b,   ,aa    `888'   "8a,   ,a8"  88,  "8b,   ,aa
+//        `8'     `"Ybbd8"'     `8'     `"YbbdP"'   "Y888 `"Ybbd8"'
 
 pragma solidity 0.8.20;
 
 import { VeVoteStorageTypes } from "./VeVoteStorageTypes.sol";
 import { VeVoteProposalLogic } from "./VeVoteProposalLogic.sol";
+import { VeVoteVoteLogic } from "./VeVoteVoteLogic.sol";
 import { VeVoteClockLogic } from "./VeVoteClockLogic.sol";
 import { VeVoteQuorumLogic } from "./VeVoteQuorumLogic.sol";
 import { VeVoteTypes } from "./VeVoteTypes.sol";
@@ -95,7 +96,7 @@ library VeVoteStateLogic {
     // Cache the proposal and its snapshot
     VeVoteTypes.ProposalCore storage proposal = self.proposals[proposalId];
     uint256 snapshot = proposal.voteStart;
-      
+
     // If there is no snapshot, the proposal does not exist
     if (snapshot == 0) {
       revert VeVoteNonexistentProposal(proposalId);
@@ -126,8 +127,8 @@ library VeVoteStateLogic {
     if (deadline >= currentBlock) {
       return VeVoteTypes.ProposalState.Active;
     }
-    // If the quorum was not reached, the proposal is Defeated
-    else if (!VeVoteQuorumLogic._quorumReached(self, proposalId)) {
+    // If the quorum was not reached or FOR votes were not greater than against votes, the proposal is Defeated
+    else if (!VeVoteQuorumLogic._quorumReached(self, proposalId) || !VeVoteVoteLogic._voteSucceeded(self, proposalId)) {
       return VeVoteTypes.ProposalState.Defeated;
     }
     // Otherwise, the proposal has succeeded

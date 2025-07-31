@@ -33,7 +33,8 @@
     "solo-clean": "make solo-clean",
     "prepare": "husky install",
     "fe:dev": "yarn workspace frontend dev",
-    "fe:build": "yarn workspace frontend build"
+    "fe:build": "yarn workspace frontend build",
+    "i18n:generate": "yarn workspace frontend typesafe-i18n"
   },
   "devDependencies": {
     "prettier": "^3.2.5",

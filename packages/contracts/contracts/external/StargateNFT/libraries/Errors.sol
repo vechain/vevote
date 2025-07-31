@@ -26,6 +26,9 @@ library Errors {
   /// @notice Thrown upon initialization of contract when a value is zero, eg legacy last token ID
   error ValueCannotBeZero();
 
+  /// @notice Thrown when a value is invalid, eg token id
+  error InvalidValue(uint256 value);
+
   /// @notice Thrown upon initialization of contract when a list is empty, eg token levels
   error ArrayCannotHaveZeroLength();
 
@@ -94,4 +97,9 @@ library Errors {
 
   /// @notice Thrown when the block number is in the future
   error BlockInFuture();
+
+  // ------------------ Whitelist Errors ------------------ //
+
+  /// @notice Thrown upon removal of a whitelist entry, when the entry is not found
+  error WhitelistEntryNotFound(address owner);
 }

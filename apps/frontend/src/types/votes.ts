@@ -19,13 +19,24 @@ export type Pagination = {
 };
 
 export type VotedResult = {
-  data: VotedBaseData &
-    {
-      choice: number;
-      totalWeight: number;
-      totalVoters: number;
-    }[];
+  data: (VotedBaseData & {
+    support: "ABSTAIN" | "AGAINST" | "FOR";
+    totalWeight: number;
+    totalVoters: number;
+  })[];
   pagination: Pagination;
+};
+
+export type VotesCastResult = {
+  proposalId: string;
+  voter: string;
+  choice: 0 | 1 | 2;
+  weight: string;
+  reason: string;
+  stargateNFTs: string[];
+  validator: string;
+  date: Date;
+  transactionId: string;
 };
 
 export type VotedComments = {

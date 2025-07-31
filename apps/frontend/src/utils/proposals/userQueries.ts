@@ -59,16 +59,13 @@ export const getUserRoles = async ({ address }: { address?: string }) => {
   };
 };
 
-export const getUserNodes = async ({ address, blockN }: { address: string; blockN: string }) => {
+export const getUserNodes = async ({ address }: { address: string }) => {
   try {
     const nodesRes = await executeCall({
       contractAddress: nodeManagementAddress,
       contractInterface: nodeManagementInterface,
       method: "getUserStargateNFTsInfo",
       args: [address],
-      callOptions: {
-        revision: blockN,
-      },
     });
 
     if (!nodesRes.success) return { nodes: [] };
@@ -114,22 +111,37 @@ export const getUserNodes = async ({ address, blockN }: { address: string; block
   }
 };
 
-export const getNodesName = async ({ nodeIds }: { nodeIds: string[] }) => {
-  const res = await executeMultipleClauses({
-    contractAddress: nodeManagementAddress,
-    contractInterface: nodeManagementInterface,
-    methodsWithArgs: nodeIds.map(nodeId => ({
-      method: "getNodeLevel" as const,
-      args: [nodeId],
-    })),
-  });
-
-  const nodeLevels = res.map((result, id) => ({
-    id: nodeIds[id],
-    name: result.success ? NodeStrengthLevels[result.result.plain as number] : "Unknown",
+export const getNodesNameAndPower = async ({ nodeIds }: { nodeIds: string[] }) => {
+  const votingPowerArgs = nodeIds.map(node => ({
+    method: "getNodeVoteWeight" as const,
+    args: [node],
+  }));
+  const nodeLevelArgs = nodeIds.map(node => ({
+    method: "getNodeLevel" as const,
+    args: [node],
   }));
 
-  return nodeLevels;
+  const [nodesPower, nodesLevel] = await Promise.all([
+    executeMultipleClauses({
+      contractAddress,
+      contractInterface,
+      methodsWithArgs: votingPowerArgs,
+    }),
+    executeMultipleClauses({
+      contractAddress: nodeManagementAddress,
+      contractInterface: nodeManagementInterface,
+      methodsWithArgs: nodeLevelArgs,
+    }),
+  ]);
+
+  const power = nodesPower.map(r => (r.success ? (r.result.plain as bigint) : BigInt(0)));
+  const levels = nodesLevel.map(r => (r.success ? (r.result.plain as number) : 0));
+
+  return nodeIds.map((nodeId, index) => ({
+    id: nodeId,
+    votingPower: Number(power[index]) / 100 || 0,
+    name: NodeStrengthLevels[levels[index]],
+  }));
 };
 
 export const getAMN = async (address?: string) => {
@@ -137,7 +149,24 @@ export const getAMN = async (address?: string) => {
   try {
     const res = await axios.get<AmnResponse>(`${indexerUrl}${IndexerRoutes.MASTER_NODE}/${address}`);
 
-    return { data: res.data };
+    if (!res.data || !res.data.nodeMaster) {
+      return { data: undefined };
+    }
+
+    const masterNode = res.data.nodeMaster;
+
+    const powerRes = await executeCall({
+      contractAddress,
+      contractInterface,
+      method: "getValidatorVoteWeight",
+      args: [address, masterNode],
+    });
+
+    if (!powerRes.success) {
+      return { data: { ...res.data, votingPower: BigInt(0) } };
+    }
+
+    return { data: { ...res.data, votingPower: powerRes.result.plain as bigint } };
   } catch (error) {
     console.error(`Failed to fetch votes results: ${error}`);
     return { data: undefined };
@@ -167,4 +196,20 @@ export const getAllUsersNodes = async (address: string) => {
   return {
     nodes,
   };
+};
+
+export const isNodeDelegator = async (address: string) => {
+  try {
+    const res = await executeCall({
+      contractAddress: nodeManagementAddress,
+      contractInterface: nodeManagementInterface,
+      method: "isNodeDelegator",
+      args: [address],
+    });
+
+    return res.success ? (res.result.plain as boolean) : false;
+  } catch (error) {
+    console.error("Error checking if user is a node delegator:", error);
+    return false;
+  }
 };

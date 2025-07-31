@@ -10,7 +10,6 @@ export function createGalacticaTestConfig() {
     INITIAL_MIN_VOTING_DELAY: 18, // 3 minutes
     INITIAL_MAX_VOTING_DURATION: 259200, // 30 days
     INITIAL_MIN_VOTING_DURATION: 6, // 1 minute
-    INITIAL_MAX_CHOICES: 32,
     MIN_VET_STAKE: 10000000000000000000000n, // Dawn
   });
 }

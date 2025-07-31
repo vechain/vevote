@@ -1,6 +1,6 @@
 import { useDraftProposal } from "@/hooks/useDraftProposal";
-import { useLocalStorage } from "@/hooks/useLocalStorage";
-import { CreateProposalStep, ProposalCardType, SingleChoiceEnum, VotingChoices, VotingEnum } from "@/types/proposal";
+import { usePerAddressDraftStorage } from "@/hooks/usePerAddressDraftStorage";
+import { CreateProposalStep, ProposalCardType, SingleChoiceEnum } from "@/types/proposal";
 import { DEFAULT_DESCRIPTION_TEMPLATE } from "@/utils/template/descriptionTemplate";
 import { ZodFile } from "@/utils/zod";
 import { useWallet } from "@vechain/vechain-kit";
@@ -16,19 +16,8 @@ import {
   useMemo,
   useState,
 } from "react";
-import { v4 as uuidv4 } from "uuid";
 
-export const defaultSingleChoice = [SingleChoiceEnum.YES, SingleChoiceEnum.NO, SingleChoiceEnum.ABSTAIN];
-export const defaultMultiOptionsChoice = [
-  {
-    id: uuidv4(),
-    value: "",
-  },
-  {
-    id: uuidv4(),
-    value: "",
-  },
-];
+export const defaultSingleChoice = [SingleChoiceEnum.FOR, SingleChoiceEnum.AGAINST, SingleChoiceEnum.ABSTAIN];
 
 export type ProposalDescription = Op;
 
@@ -38,19 +27,15 @@ export type ProposalDetails = {
   headerImage?: ZodFile;
   startDate?: Date;
   endDate?: Date;
-  votingLimit?: number;
-  votingMin?: number;
   votingQuestion: string;
-} & VotingChoices;
+  discourseUrl?: string;
+};
 
 export const DEFAULT_PROPOSAL: ProposalDetails = {
   title: "",
   description: DEFAULT_DESCRIPTION_TEMPLATE().ops,
   votingQuestion: "",
-  votingLimit: 1,
-  votingMin: 1,
-  votingType: VotingEnum.SINGLE_CHOICE,
-  votingOptions: defaultSingleChoice,
+  discourseUrl: "",
 };
 
 export type CreateProposalContextType = {
@@ -81,10 +66,7 @@ export const CreateProposalProvider = ({ children }: PropsWithChildren) => {
   const { account } = useWallet();
   const { fromProposalToDraft } = useDraftProposal();
   const [openPreview, setOpenPreview] = useState(false);
-  const [draftProposal, setDraftProposal, removeDraftProposal] = useLocalStorage<ProposalCardType | null>(
-    "draft-proposal",
-    null,
-  );
+  const [draftProposal, setDraftProposal, removeDraftProposal] = usePerAddressDraftStorage(account?.address);
   const [proposalDetails, setProposalDetails] = useState<ProposalDetails>(DEFAULT_PROPOSAL);
   const [step, setStep] = useState<CreateProposalStep>(CreateProposalStep.VOTING_DETAILS);
 

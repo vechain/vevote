@@ -1,22 +1,39 @@
-import { getBlockFromDate } from "@/utils/proposals/helpers";
-import { getAllUsersNodes, getNodesName, getAMN, getUserNodes, getUserRoles } from "@/utils/proposals/userQueries";
+import { ExtendedStargateNode, NodeStrengthLevel } from "@/types/user";
+import {
+  getAllUsersNodes,
+  getAMN,
+  getNodesNameAndPower,
+  getUserNodes,
+  getUserRoles,
+  isNodeDelegator,
+} from "@/utils/proposals/userQueries";
 import { useQuery } from "@tanstack/react-query";
 import { useWallet } from "@vechain/vechain-kit";
-import dayjs from "dayjs";
 
-const getNodes = async ({ address, startDate }: { address: string; startDate: Date }) => {
+const getValidatorNode = (votingPower: bigint): ExtendedStargateNode => {
+  return {
+    votingPower,
+    nodeName: NodeStrengthLevel.Validator,
+    levelId: 0,
+    mintedAtBlock: BigInt(0),
+    tokenId: BigInt(0),
+    vetAmountStaked: BigInt(0),
+    lastVthoClaimTimestamp: 0,
+    multiplier: BigInt(100),
+  };
+};
+
+const getNodes = async ({ address }: { address: string }) => {
   try {
-    const today = dayjs();
-    const blockDate = dayjs(startDate).isAfter(today) ? today.toDate() : startDate;
-    const blockN = await getBlockFromDate(blockDate);
-    if (!blockN) return { nodes: [] };
-
     const { data } = await getAMN(address);
     const masterNode = data?.nodeMaster;
+    const masterNodeVotingPower = data?.votingPower || BigInt(500000);
 
-    const r = await getUserNodes({ address, blockN: blockN?.number.toString() });
+    const r = await getUserNodes({ address });
+    const nodes = masterNode ? [getValidatorNode(masterNodeVotingPower), ...(r?.nodes || [])] : r?.nodes || [];
+
     return {
-      nodes: r?.nodes || [],
+      nodes,
       masterNode,
     };
   } catch (error) {
@@ -25,13 +42,13 @@ const getNodes = async ({ address, startDate }: { address: string; startDate: Da
   }
 };
 
-export const useNodes = ({ startDate }: { startDate?: Date }) => {
+export const useNodes = () => {
   const { account } = useWallet();
 
   const { data, error, isLoading } = useQuery({
-    queryKey: ["allNodes", startDate],
-    queryFn: async () => await getNodes({ address: account?.address || "", startDate: startDate! }),
-    enabled: Boolean(account?.address && startDate),
+    queryKey: ["allNodes", account?.address],
+    queryFn: async () => await getNodes({ address: account?.address || "" }),
+    enabled: Boolean(account?.address),
   });
 
   return {
@@ -61,7 +78,7 @@ export const useUserRoles = () => {
 export const useVotersNodes = ({ nodeIds }: { nodeIds: string[] }) => {
   const { data, error, isLoading } = useQuery({
     queryKey: ["votersNodes", nodeIds],
-    queryFn: async () => await getNodesName({ nodeIds }),
+    queryFn: async () => await getNodesNameAndPower({ nodeIds }),
   });
 
   return {
@@ -82,6 +99,22 @@ export const useAllUserNodes = () => {
 
   return {
     allNodes: data?.nodes || [],
+    isLoading,
+    isError: Boolean(error),
+  };
+};
+
+export const useIsDelegator = () => {
+  const { account } = useWallet();
+
+  const { data, error, isLoading } = useQuery({
+    queryKey: ["isNodeDelegator", account?.address],
+    queryFn: async () => await isNodeDelegator(account?.address || ""),
+    enabled: Boolean(account?.address),
+  });
+
+  return {
+    isDelegator: data || false,
     isLoading,
     isError: Boolean(error),
   };

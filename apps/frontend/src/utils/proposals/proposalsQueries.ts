@@ -1,5 +1,5 @@
 import { ProposalDetails } from "@/pages/CreateProposal/CreateProposalProvider";
-import { BaseOption, ProposalCardType, ProposalEvent, VotingEnum } from "@/types/proposal";
+import { ProposalCardType, ProposalEvent } from "@/types/proposal";
 import { getConfig } from "@repo/config";
 import { VeVote__factory } from "@repo/contracts";
 import { getAllEventLogs, ThorClient } from "@vechain/vechain-kit";
@@ -64,7 +64,7 @@ export const getProposalsEvents = async (
       filterCriteria,
     });
 
-    const decodedProposalEvents = events
+    const decodedCreateProposalEvents = events
       .map(event => {
         const eventSignature = event.topics[0];
 
@@ -89,6 +89,7 @@ export const getProposalsEvents = async (
             choices,
             maxSelection: Number(maxSelection),
             minSelection: Number(minSelection),
+            createdTime: event.meta.blockTimestamp * 1000,
           };
         }
 
@@ -109,6 +110,7 @@ export const getProposalsEvents = async (
             proposalId: proposalIdEvent.toString(),
             canceller,
             reason: reason || "",
+            canceledTime: event.meta.blockTimestamp * 1000,
           };
         }
 
@@ -128,6 +130,7 @@ export const getProposalsEvents = async (
           return {
             proposalId: proposalIdEvent.toString(),
             executedProposalLink,
+            executedTime: event.meta.blockTimestamp * 1000,
           };
         }
 
@@ -135,7 +138,7 @@ export const getProposalsEvents = async (
       })
       .filter(Boolean);
 
-    const mergedProposals: ProposalEvent[] = decodedProposalEvents
+    const mergedProposals: ProposalEvent[] = decodedCreateProposalEvents
       .map(proposal => {
         const canceledProposal = decodedCanceledProposals.find(
           canceled => canceled?.proposalId === proposal?.proposalId,
@@ -147,8 +150,15 @@ export const getProposalsEvents = async (
 
         return {
           ...proposal,
-          ...(canceledProposal && { canceller: canceledProposal.canceller, reason: canceledProposal.reason }),
-          ...(executedProposal && { executedProposalLink: executedProposal.executedProposalLink }),
+          ...(canceledProposal && {
+            canceller: canceledProposal.canceller,
+            reason: canceledProposal.reason,
+            canceledTime: canceledProposal.canceledTime,
+          }),
+          ...(executedProposal && {
+            executedProposalLink: executedProposal.executedProposalLink,
+            executedTime: executedProposal.executedTime,
+          }),
         };
       })
       .filter(Boolean) as ProposalEvent[];
@@ -188,11 +198,8 @@ export const getProposalsWithState = async (proposalsData?: Omit<ProposalCardTyp
 
 export const getHashProposal = async ({
   description,
-  votingOptions,
-  votingType,
   durationBlock,
   startBlock,
-  votingLimit,
   proposer,
 }: Omit<ProposalDetails, "description" | "startTime" | "endTime"> & {
   description: string;
@@ -200,20 +207,7 @@ export const getHashProposal = async ({
   startBlock: number;
   durationBlock: number;
 }) => {
-  const encodedChoices =
-    votingType === VotingEnum.SINGLE_CHOICE
-      ? votingOptions.map(c => ethers.encodeBytes32String(c as string))
-      : votingOptions.map(c => ethers.encodeBytes32String((c as BaseOption).value));
-
-  const args = [
-    proposer,
-    startBlock,
-    durationBlock - startBlock,
-    encodedChoices,
-    ethers.keccak256(ethers.toUtf8Bytes(description)),
-    votingLimit || 1,
-    1,
-  ];
+  const args = [proposer, startBlock, durationBlock - startBlock, ethers.keccak256(ethers.toUtf8Bytes(description))];
 
   return await executeCall({
     contractAddress,

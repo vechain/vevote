@@ -1,15 +1,14 @@
-import { useUser } from "@/contexts/UserProvider";
-import { useShowNavbar } from "@/hooks/useShowNavbar";
-import { Box, BoxProps, Flex, FlexProps, Image } from "@chakra-ui/react";
-import { PropsWithChildren, useMemo } from "react";
+import { Box, BoxProps, defineStyle, Flex, FlexProps, Link } from "@chakra-ui/react";
 import { ConnectButton } from "../ui/ConnectButton";
+import { VotingPowerModal } from "../proposal/VotingPowerModal";
+import { useWallet } from "@vechain/vechain-kit";
+import { VoteLogo } from "../ui/VoteLogo";
 
-const NavbarContainer = ({ children, ...restProps }: BoxProps) => {
+export const NavbarContainer = ({ children, ...restProps }: BoxProps) => {
   return (
     <Box
       transition={"all 0.3s"}
-      paddingX={{ base: 2, md: 20 }}
-      paddingY={2}
+      paddingX={{ base: 6, md: 20 }}
       position={"fixed"}
       top={0}
       left={0}
@@ -21,7 +20,8 @@ const NavbarContainer = ({ children, ...restProps }: BoxProps) => {
   );
 };
 
-const NavbarInnerContainer = ({ children, ...restProps }: FlexProps) => {
+export const NavbarInnerContainer = ({ children, ...restProps }: FlexProps) => {
+  const { connection } = useWallet();
   return (
     <Flex
       transition={"all 0.3s"}
@@ -33,56 +33,31 @@ const NavbarInnerContainer = ({ children, ...restProps }: FlexProps) => {
       gap={6}
       {...restProps}>
       {children}
-      <ConnectButton bg={"primary.700"} />
+      <Flex alignItems={"center"} gap={{ base: 3, md: 6 }}>
+        {connection.isConnected && <VotingPowerModal />}
+        <ConnectButton bg={"primary.700"} />
+      </Flex>
     </Flex>
   );
 };
 
+export const bgHeaderStyle = defineStyle({
+  bgImage: { base: "/images/banner-bg-mobile.png", md: "/images/banner-bg.png" },
+  bgSize: "cover",
+  bgPosition: "top",
+  bgRepeat: "no-repeat",
+  bgAttachment: "fixed",
+  borderBottom: "1px solid rgba(255, 255, 255, 0.2)",
+});
+
 export const Navbar = () => {
-  const { showBackground } = useShowNavbar();
-
   return (
-    <NavbarContainer>
-      <NavbarInnerContainer
-        backdropFilter="auto"
-        backdropBlur={!showBackground ? "md" : "none"}
-        bgColor={!showBackground ? "rgba(38, 20, 112, 0.65)" : "transparent"}
-        paddingX={{ base: 2, md: 6 }}
-        paddingY={{ base: 2, md: 4 }}>
-        <Image
-          src="/svgs/vevote_logo.svg"
-          alt="VeVote Logo"
-          width={"auto"}
-          height={{ base: "16px", md: showBackground ? "32px" : "24px" }}
-          objectFit={"cover"}
-          transition={"all 0.3s"}
-        />
+    <NavbarContainer {...bgHeaderStyle}>
+      <NavbarInnerContainer paddingY={4}>
+        <Link href="/" display="flex" alignItems="center">
+          <VoteLogo width={{ base: 16, md: 20 }} />
+        </Link>
       </NavbarInnerContainer>
-    </NavbarContainer>
-  );
-};
-
-export const ProposalNavbar = ({ children }: PropsWithChildren) => {
-  const { showBackground } = useShowNavbar();
-
-  const { isAdmin } = useUser();
-
-  const bgVariant = useMemo(() => {
-    if (!showBackground) {
-      return isAdmin
-        ? "rgba(38, 20, 112, 0.75)"
-        : "linear-gradient(102deg, rgba(38, 20, 112, 0.75) 0%, rgba(38, 20, 112, 0.75) 100%)";
-    } else {
-      return isAdmin ? "primary.800" : "linear-gradient(102deg, #351C9B 0%, #4324C6 100%)";
-    }
-  }, [showBackground, isAdmin]);
-  return (
-    <NavbarContainer
-      bg={bgVariant}
-      paddingX={{ base: 4, md: showBackground ? 20 : 6 }}
-      paddingY={{ base: 6, md: showBackground ? 10 : 6 }}
-      backdropBlur={!showBackground ? "md" : "none"}>
-      <NavbarInnerContainer>{children}</NavbarInnerContainer>
     </NavbarContainer>
   );
 };

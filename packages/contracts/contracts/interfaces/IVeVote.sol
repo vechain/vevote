@@ -26,16 +26,6 @@ interface IVeVote is IERC165, IERC6372 {
   error VeVoteInvalidVoteDuration(uint48 voteDuration, uint48 minVotingDuration, uint48 maxVotingDuration);
 
   /**
-   * @dev Thrown when the number of available choices is less than the allowed selection range.
-   */
-  error VeVoteInvalidChoiceCount(uint256 choiceCount, uint8 minSelection, uint8 maxSelection);
-
-  /**
-   * @dev Thrown when the minSelection is greater than maxSelection.
-   */
-  error VeVoteInvalidSelectionRange(uint8 minSelection, uint8 maxSelection);
-
-  /**
    * @dev Thrown when a proposal's state does not match the expected state.
    */
   error VeVoteUnexpectedProposalState(uint256 proposalId, VeVoteTypes.ProposalState state, bytes32 expectedState);
@@ -89,11 +79,6 @@ interface IVeVote is IERC165, IERC6372 {
   error InvalidNodeId();
 
   /**
-   * @dev Thrown when the maximum number of choices is set to an invalid value (zero).
-   */
-  error InvalidMaxChoices();
-
-  /**
    * @dev Thrown when an invalid address (zero address) is provided.
    */
   error InvalidAddress();
@@ -109,9 +94,9 @@ interface IVeVote is IERC165, IERC6372 {
   error ProposalNotActive();
 
   /**
-   * @dev Thrown when the user did not select a valid number of choices.
+   * @dev Thrown when the `support` value is not a valid `VoteType` enum member.
    */
-  error InvalidVoteChoice();
+  error InvalidVoteType();
 
   /**
    * @dev Thrown when the user is not eligible to vote.
@@ -123,11 +108,6 @@ interface IVeVote is IERC165, IERC6372 {
    */
   error AlreadyVoted();
 
-  /**
-   * @dev Thrown when the voting power calculation overflows.
-   */
-  error VotePowerOverflow();
-
   // ------------------------------- Events -------------------------------
   /**
    * @notice Emitted when a new proposal is created.
@@ -136,19 +116,13 @@ interface IVeVote is IERC165, IERC6372 {
    * @param description The IPFS CID containing the proposal details.
    * @param startBlock The timestamp when voting starts.
    * @param voteDuration The duration of the voting period in seconds.
-   * @param choices The available choices for the proposal.
-   * @param maxSelection The maximum number of choices a voter can select.
-   * @param minSelection The minimum number of choices a voter must select.
    */
   event VeVoteProposalCreated(
     uint256 indexed proposalId,
     address indexed proposer,
     string description,
     uint48 startBlock,
-    uint48 voteDuration,
-    bytes32[] choices,
-    uint8 maxSelection,
-    uint8 minSelection
+    uint48 voteDuration
   );
 
   /**
@@ -157,12 +131,12 @@ interface IVeVote is IERC165, IERC6372 {
    * @param canceller The address that canceled the proposal.
    * @param reason The reason for canceling the proposal.
    */
-  event ProposalCanceled(uint256 proposalId, address canceller, string reason);
+  event ProposalCanceled(uint256 indexed proposalId, address canceller, string reason);
 
   /**
    * @dev Emitted when a proposal is executed.
    */
-  event VeVoteProposalExecuted(uint256 proposalId, string comment);
+  event VeVoteProposalExecuted(uint256 indexed proposalId, string comment);
 
   /**
    * @notice Emitted when the quorum numerator is updated.
@@ -220,7 +194,7 @@ interface IVeVote is IERC165, IERC6372 {
    * @notice Emitted when a user casts a vote on a proposal.
    * @param voter The address of the voter.
    * @param proposalId The ID of the proposal being voted on.
-   * @param choices The bitmask representing the selected vote choices.
+   * @param support The vo
    * @param weight The voting weight of the voter.
    * @param reason The reason for the vote.
    * @param stargateNFTs The list of Stargate node token IDs used.
@@ -229,7 +203,7 @@ interface IVeVote is IERC165, IERC6372 {
   event VoteCast(
     address indexed voter,
     uint256 indexed proposalId,
-    uint32 choices,
+    uint8 support,
     uint256 weight,
     string reason,
     uint256[] stargateNFTs,
@@ -249,23 +223,14 @@ interface IVeVote is IERC165, IERC6372 {
    */
   event VoteMultipliersUpdated(uint256[] updatedMultipliers);
 
-  // ------------------------------- Structs -------------------------------
-  /**
-   * @notice Represents the result of a proposal vote.
-   * @param choice The label of the choice.
-   * @param weight The total votes for that choice.
-   */
-  struct ProposalVoteResult {
-    bytes32 choice;
-    uint256 weight;
-  }
-
   // ------------------------------- Getter Functions -------------------------------
   /**
    * @notice Retrieves the votes cast for a proposal.
    * @param proposalId The ID of the proposal.
    */
-  function getProposalVotes(uint256 proposalId) external view returns (VeVoteTypes.ProposalVoteResult[] memory results);
+  function getProposalVotes(
+    uint256 proposalId
+  ) external view returns (uint256 againstVotes, uint256 forVotes, uint256 abstainVotes);
 
   /**
    * @notice Retrieves the total votes for a proposal.
@@ -323,20 +288,14 @@ interface IVeVote is IERC165, IERC6372 {
    * @param proposer The address of the proposer.
    * @param startBlock The time when the proposal starts.
    * @param voteDuration The duration of the proposal.
-   * @param choices The voting choices for the proposal.
    * @param descriptionHash The hash of the proposal description.
-   * @param maxSelection The maximum number of choices a voter can select.
-   * @param minSelection The minimum number of choices a voter must select.
    * @return VeVoteTypes.ProposalCore The core data of the proposal
    */
   function hashProposal(
     address proposer,
     uint48 startBlock,
     uint48 voteDuration,
-    bytes32[] memory choices,
-    bytes32 descriptionHash,
-    uint8 maxSelection,
-    uint8 minSelection
+    bytes32 descriptionHash
   ) external pure returns (uint256);
 
   /**
@@ -359,20 +318,6 @@ interface IVeVote is IERC165, IERC6372 {
    * @return The address of the proposer.
    */
   function proposalProposer(uint256 proposalId) external view returns (address);
-
-  /**
-   * @notice Returns the proposal choices.
-   * @param proposalId The ID of the proposal.
-   * @return The choices available for the proposal.
-   */
-  function proposalChoices(uint256 proposalId) external view returns (bytes32[] memory);
-
-  /**
-   * @notice Returns the minimum and maximum choices that can be selected for a proposal
-   * @param proposalId The id of the proposal.
-   * @return The minimum and maximum choices that can be selected.
-   */
-  function proposalSelectionRange(uint256 proposalId) external view returns (uint8, uint8);
 
   /**
    * @notice Retrieves the current state of a proposal.
@@ -431,12 +376,6 @@ interface IVeVote is IERC165, IERC6372 {
    * @return uint48 The maximum voting duration
    */
   function getMaxVotingDuration() external view returns (uint48);
-
-  /**
-   * @notice Returns the maximum number of choices.
-   * @return uint8 The maximum number of choices
-   */
-  function getMaxChoices() external view returns (uint8);
 
   /**
    * @notice Returns the current minimum VET stake required for vote normalization.
@@ -503,19 +442,9 @@ interface IVeVote is IERC165, IERC6372 {
    * @param description The IPFS CID containing the proposal details.
    * @param startBlock The timestamp when the proposal starts.
    * @param voteDuration The duration of the proposal in seconds.
-   * @param choices The voting choices available.
-   * @param maxSelection The maximum number of choices a voter can select.
-   * @param minSelection The minimum number of choices a voter must select.
    * @return proposalId The unique identifier of the proposal.
    */
-  function propose(
-    string memory description,
-    uint48 startBlock,
-    uint48 voteDuration,
-    bytes32[] memory choices,
-    uint8 maxSelection,
-    uint8 minSelection
-  ) external returns (uint256);
+  function propose(string memory description, uint48 startBlock, uint48 voteDuration) external returns (uint256);
 
   /**
    * @notice Cancels a proposal.
@@ -568,12 +497,6 @@ interface IVeVote is IERC165, IERC6372 {
   function setMaxVotingDuration(uint48 newMaxVotingDuration) external;
 
   /**
-   * @notice Updates the maximum number of choices.
-   * @param newMaxChoices The new maximum number of choices
-   */
-  function setMaxChoices(uint8 newMaxChoices) external;
-
-  /**
    * @notice Updates the minimum VET stake required for vote weight normalization.
    * @param newMinStake The new minimum stake amount in VET (must be > 0).
    */
@@ -616,23 +539,23 @@ interface IVeVote is IERC165, IERC6372 {
    *      Reverts if the proposal is not active, the caller has already voted,
    *      or the selected choices violate min/max constraints.
    * @param proposalId The ID of the proposal to vote on.
-   * @param choices A bitmask representing the selected choices. Each bit corresponds to a choice index.
+   * @param support The support value (0 = against, 1 = for, 2 = abstain)
    * @param masterAddress Required parameter — can be zero address. Used to determine validator voting power, if applicable.
    */
-  function castVote(uint256 proposalId, uint32 choices, address masterAddress) external;
+  function castVote(uint256 proposalId, uint8 support, address masterAddress) external;
 
   /**
    * @notice Casts a vote on an active proposal with an optional reason.
    * @dev Validates the proposal state, caller eligibility, and choice constraints.
    *      Tracks voting power for each selected choice and emits a {VoteCast} event.
    * @param proposalId The ID of the proposal to vote on.
-   * @param choices A bitmask representing the selected choices. Each bit corresponds to a choice index.
+   * @param support The support value (0 = against, 1 = for, 2 = abstain)
    * @param reason An optional string explaining the rationale behind the vote. Useful for governance UIs and transparency.
    * @param masterAddress Required parameter — can be zero address. Used to determine validator voting power, if applicable.
    */
   function castVoteWithReason(
     uint256 proposalId,
-    uint32 choices,
+    uint8 support,
     string calldata reason,
     address masterAddress
   ) external;
