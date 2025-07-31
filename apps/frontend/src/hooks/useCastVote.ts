@@ -64,14 +64,21 @@ export const useCastVote = ({ proposalId, masterNode }: { proposalId?: string; m
   });
 };
 
-export const useVoteCastResults = ({ proposalIds, enabled }: { proposalIds?: string[]; enabled?: boolean }) => {
-  const { account } = useWallet();
+export const useVoteCastResults = ({
+  proposalIds,
+  address,
+  enabled,
+}: {
+  proposalIds?: string[];
+  address?: string;
+  enabled?: boolean;
+}) => {
   const thor = useThor();
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ["votedChoices", proposalIds, account?.address],
-    queryFn: async () => await getVoteCastResults(thor, { proposalIds, address: account?.address }),
-    enabled: enabled && !!thor && !!account?.address,
+    queryKey: ["votedChoices", proposalIds, address],
+    queryFn: async () => await getVoteCastResults(thor, { proposalIds, address }),
+    enabled: enabled && !!thor,
   });
 
   return {
@@ -95,10 +102,11 @@ export const useIndexerVoteResults = ({ proposalId, size }: { proposalId?: strin
   };
 };
 
-//TODO: This is a workaround because useVoteCastResults is returning results for all proposals
 export const useVoteByProposalId = ({ proposalId, enabled }: { proposalId: string; enabled?: boolean }) => {
+  const { account } = useWallet();
   const { votes, isLoading, error } = useVoteCastResults({
     proposalIds: [proposalId],
+    address: account?.address,
     enabled,
   });
 
