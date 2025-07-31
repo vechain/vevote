@@ -9,6 +9,7 @@ import { useMemo } from "react";
 import { ResultsInfo } from "./components/ResultsInfo";
 import { useIndexerVoteResults } from "@/hooks/useCastVote";
 import { AllVotersModal } from "./components/AllVotersModal/AllVotersModal";
+import { ProposalStatus } from "@/types/proposal";
 
 export const ResultsSection = () => {
   const voteOptions = ["for", "abstain", "against"];
@@ -31,6 +32,8 @@ export const ResultsSection = () => {
     };
   }, [results]);
 
+  const isGreyIcon = [ProposalStatus.DRAFT, ProposalStatus.UPCOMING].includes(proposal.status);
+
   return (
     <Flex flexDirection={"column"} gap={6} padding={{ base: "16px", md: "24px" }}>
       <Flex alignItems={"center"} justifyContent={"space-between"}>
@@ -52,10 +55,10 @@ export const ResultsSection = () => {
         </Flex>
 
         {/* Vote percentages */}
-        <Flex justifyContent={"space-between"} alignItems={"center"}>
+        <Flex gap={6} alignItems={"center"}>
           {voteOptions.map((option, index) => (
             <Flex key={option} alignItems={"center"} gap={2}>
-              <Icon as={icons[index]} width={4} height={4} color={colors[index]} />
+              <Icon as={icons[index]} width={4} height={4} color={isGreyIcon ? "gray.500" : colors[index]} />
               <Text fontSize={{ base: "14px", md: "16px" }} color={"gray.600"}>
                 {votePercentages[option as keyof typeof votePercentages].toFixed(2)}%
               </Text>
