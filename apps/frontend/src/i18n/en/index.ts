@@ -339,6 +339,11 @@ const en = {
     a_minimum_of_30_participation_must_be_reached_to_validate_the_voting_of_the_proposal_and_get_approval:
       "A minimum of 30% participation must be reached to validate the voting of the proposal and get approval.",
     vote_submission_failed: "Vote submission failed",
+    vote_submitted_successfully: "Vote submitted successfully!",
+    submit_your_vote: "Submit your Vote",
+    vote_cannot_be_changed: "Your vote cannot be changed once submitted.",
+    waiting_wallet_confirmation: "Waiting wallet confirmation...",
+    confirm_vote: "Confirm vote",
     you_voted: "You voted",
   },
   proposals: {

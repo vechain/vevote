@@ -11,6 +11,9 @@ import {
   Spinner,
   Link,
   ModalBody,
+  AlertDescription,
+  AlertIcon,
+  Alert,
 } from "@chakra-ui/react";
 import { useState, useMemo, useCallback } from "react";
 import { SingleChoiceEnum } from "@/types/proposal";
@@ -121,7 +124,7 @@ export const SubmitVoteModal = ({ submitVoteModal }: { submitVoteModal: UseDiscl
                 borderRadius="lg"
                 _hover={{ bg: "red.600" }}
                 _active={{ bg: "red.600" }}>
-                Try Again
+                {LL.try_again()}
               </Button>
               <Button
                 onClick={handleClose}
@@ -155,7 +158,7 @@ export const SubmitVoteModal = ({ submitVoteModal }: { submitVoteModal: UseDiscl
             <VStack spacing={6} align="center">
               <Icon as={VoteIcon} boxSize={10} color="primary.500" />
               <Text fontSize="xl" fontWeight="semibold" color="gray.600" textAlign="center">
-                Vote submitted successfully!
+                {LL.proposal.vote_submitted_successfully()}
               </Text>
             </VStack>
 
@@ -198,7 +201,7 @@ export const SubmitVoteModal = ({ submitVoteModal }: { submitVoteModal: UseDiscl
               borderRadius="lg"
               _hover={{ bg: "gray.300" }}
               _active={{ bg: "gray.300" }}>
-              Close
+              {LL.close()}
             </Button>
           </VStack>
         </ModalBody>
@@ -211,7 +214,7 @@ export const SubmitVoteModal = ({ submitVoteModal }: { submitVoteModal: UseDiscl
       isOpen={submitVoteModal.isOpen}
       onClose={handleClose}
       trapFocus={false}
-      size="md"
+      size="xl"
       closeOnOverlayClick={!isTransactionPending}
       showCloseButton={!isTransactionPending}>
       <ModalHeader pb={4}>
@@ -219,7 +222,7 @@ export const SubmitVoteModal = ({ submitVoteModal }: { submitVoteModal: UseDiscl
           <HStack spacing={3}>
             <Icon as={VoteIcon} boxSize={6} color="primary.500" />
             <Text fontSize="lg" fontWeight={600} color="primary.600">
-              Submit your Vote
+              {LL.proposal.submit_your_vote()}
             </Text>
           </HStack>
         </HStack>
@@ -281,7 +284,7 @@ export const SubmitVoteModal = ({ submitVoteModal }: { submitVoteModal: UseDiscl
               <HStack spacing={2}>
                 <Icon as={VotingPowerIcon} boxSize={4} color="gray.500" />
                 <Text fontSize="sm" fontWeight={500} color="gray.500">
-                  Your Voting power
+                  {LL.your_voting_power()}
                 </Text>
               </HStack>
               <Text fontSize="lg" fontWeight={600} color="gray.500">
@@ -289,20 +292,24 @@ export const SubmitVoteModal = ({ submitVoteModal }: { submitVoteModal: UseDiscl
               </Text>
             </HStack>
           </Box>
+          <Alert status="warning" variant="left-accent" borderRadius="md" colorScheme="orange">
+            <AlertIcon boxSize={5} color="orange.400" />
+            <AlertDescription color="orange.700">{LL.proposal.vote_cannot_be_changed()}</AlertDescription>
+          </Alert>
 
           {/* Confirm Button */}
           <Button
             onClick={handleConfirmVote}
             isDisabled={!selectedOption || isTransactionPending}
             isLoading={isTransactionPending}
-            loadingText="Waiting wallet confirmation..."
+            loadingText={LL.proposal.waiting_wallet_confirmation()}
             colorScheme="primary"
             size="lg"
             fontSize="md"
             fontWeight={600}
             leftIcon={isTransactionPending ? <Spinner size="sm" /> : <Icon as={CheckIcon} boxSize={4} color="white" />}
             w="full">
-            Confirm vote
+            {LL.proposal.confirm_vote()}
           </Button>
         </VStack>
       </ModalBody>
