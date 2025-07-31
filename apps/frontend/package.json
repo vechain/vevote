@@ -15,6 +15,7 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview --mode=development",
     "purge": "yarn clean; rm -rf node_modules",
+    "sirvus": "sirv dist --port 3000",
     "test": "vitest",
     "typesafe-i18n": "typesafe-i18n"
   },
@@ -38,9 +39,9 @@
     "@tanstack/react-table": "^8.21.2",
     "@vechain/connex-types": "^2.1.0",
     "@vechain/dapp-kit-react": "2.0.1",
+    "@vechain/picasso": "^2.1.1",
     "@vechain/sdk-core": "^1.2.0",
     "@vechain/sdk-network": "^1.2.0",
-    "@vechain/picasso": "^2.1.1",
     "@vechain/vechain-kit": "2.0.0-rc.5",
     "add": "^2.0.6",
     "axios": "^1.8.2",
@@ -74,6 +75,8 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.4",
     "react-test-renderer": "^18.2.0",
+    "sirv-cli": "^3.0.1",
+    "terser": "^5.43.1",
     "typescript": "^5.2.2",
     "vite-plugin-node-polyfills": "^0.17.0",
     "vitest": "^1.6.1"
