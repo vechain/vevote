@@ -1,6 +1,6 @@
 import { useI18nContext } from "@/i18n/i18n-react";
 import { NodeItem } from "@/types/user";
-import { Flex, Text } from "@chakra-ui/react";
+import { Flex, HStack, Text } from "@chakra-ui/react";
 
 type VotingPowerModalTableProps = {
   nodesList: NodeItem[];
@@ -44,17 +44,21 @@ const NodesList = ({ nodesList }: { nodesList: NodeItem[] }) => {
       maxHeight={shouldScroll ? "200px" : "none"}
       overflowY={shouldScroll ? "auto" : "visible"}
       pr={5}>
-      {nodesList.map(({ multiplier, nodeName, votingPower }, index) => (
+      {nodesList.map(({ multiplier, nodeName, votingPower, count }, index) => (
         <Flex
           key={index}
           alignItems={"center"}
           color={"gray.600"}
           paddingY={1.5}
           gap={8}
+          justifyContent={"space-between"}
           fontSize={{ base: 14, md: 16 }}>
-          <Text minWidth={"30px"}>{`${multiplier}x`}</Text>
-          <Text flex={1}>{nodeName}</Text>
-          <Text>{votingPower}</Text>
+          <HStack>
+            <Text>{count}</Text>
+            <Text>{nodeName}</Text>
+            <Text>{`(${multiplier}x)`}</Text>
+          </HStack>
+          <Text>{votingPower.toString()}</Text>
         </Flex>
       ))}
     </Flex>

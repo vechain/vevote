@@ -1,4 +1,4 @@
-import { ExtendedStargateNode, NodeStrengthLevel } from "@/types/user";
+import { ExtendedStargateNode, GroupedExtendedStargateNode, NodeStrengthLevel } from "@/types/user";
 import {
   getAllUsersNodes,
   getAMN,
@@ -32,7 +32,20 @@ const getNodes = async ({ address }: { address: string }) => {
     const r = await getUserNodes({ address });
     const nodes = masterNode ? [getValidatorNode(masterNodeVotingPower), ...(r?.nodes || [])] : r?.nodes || [];
 
+    // group nodes by levelId and add a property count, return the array of nodes with the count property
+    const groupedNodes = nodes.reduce((acc, node) => {
+      const existingNode = acc.find((n: GroupedExtendedStargateNode) => n.levelId === node.levelId);
+      if (existingNode) {
+        existingNode.count = (existingNode.count || 0) + 1;
+        existingNode.votingPower = existingNode.votingPower + node.votingPower;
+      } else {
+        acc.push({ ...node, count: 1 });
+      }
+      return acc;
+    }, [] as GroupedExtendedStargateNode[]);
+
     return {
+      groupedNodes,
       nodes,
       masterNode,
     };
@@ -52,6 +65,7 @@ export const useNodes = () => {
   });
 
   return {
+    groupedNodes: data?.groupedNodes || [],
     nodes: data?.nodes || [],
     masterNode: data?.masterNode,
     isLoading,
