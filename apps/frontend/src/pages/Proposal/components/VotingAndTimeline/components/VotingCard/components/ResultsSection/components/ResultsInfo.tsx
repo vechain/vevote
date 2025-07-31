@@ -2,9 +2,11 @@ import { Flex, Icon, Text, Button, Link } from "@chakra-ui/react";
 import { CircleInfoIcon, CheckCircleIcon, CircleXIcon, AlertTriangleIcon, ArrowLinkIcon } from "@/icons";
 import { useProposal } from "@/components/proposal/ProposalProvider";
 import { ProposalStatus } from "@/types/proposal";
+import { useI18nContext } from "@/i18n/i18n-react";
 
 export const ResultsInfo = () => {
   const { proposal } = useProposal();
+  const { LL } = useI18nContext();
 
   if (proposal.status === ProposalStatus.EXECUTED) {
     return (
@@ -19,10 +21,10 @@ export const ResultsInfo = () => {
         <Icon as={CheckCircleIcon} width={5} height={5} color={"green.500"} marginTop={"2px"} />
         <Flex flex={1} direction={"column"} gap={2}>
           <Text fontSize={"14px"} fontWeight={500} color={"green.700"}>
-            Proposal Approved and Executed
+            {LL.proposal.proposal_approved_and_executed()}
           </Text>
           <Text fontSize={"12px"} color={"green.600"}>
-            The voting approved the proposal and the actions have been executed.
+            {LL.proposal.the_voting_approved_the_proposal_and_the_actions_have_been_executed()}
           </Text>
         </Flex>
         {proposal.executedProposalLink && (
@@ -34,7 +36,7 @@ export const ResultsInfo = () => {
             rightIcon={<Icon as={ArrowLinkIcon} />}
             href={proposal.executedProposalLink}
             isExternal>
-            See details
+            {LL.proposal.see_details()}
           </Button>
         )}
       </Flex>
@@ -54,10 +56,10 @@ export const ResultsInfo = () => {
         <Icon as={CircleXIcon} width={5} height={5} color={"red.500"} marginTop={"2px"} />
         <Flex direction={"column"} gap={1}>
           <Text fontSize={"14px"} fontWeight={500} color={"red.700"}>
-            Proposal Rejected
+            {LL.proposal.proposal_rejected()}
           </Text>
           <Text fontSize={"12px"} color={"red.600"}>
-            The proposal didn't get enough votes in favor to get approval.
+            {LL.proposal.the_proposal_didnt_get_enough_votes_in_favor_to_get_approval()}
           </Text>
         </Flex>
       </Flex>
@@ -77,10 +79,10 @@ export const ResultsInfo = () => {
         <Icon as={AlertTriangleIcon} width={5} height={5} color={"red.500"} marginTop={"2px"} />
         <Flex direction={"column"} gap={1}>
           <Text fontSize={"14px"} fontWeight={500} color={"red.700"}>
-            Minimum participation not reached
+            {LL.proposal.minimum_participation_not_reached()}
           </Text>
           <Text fontSize={"12px"} color={"red.600"}>
-            The voting participation didn't reached the minimum required of 30% to get approval.
+            {LL.proposal.the_voting_participation_didnt_reached_the_minimum_required_of_30_to_get_approval()}
           </Text>
         </Flex>
       </Flex>
@@ -92,7 +94,7 @@ export const ResultsInfo = () => {
       <Flex gap={2} alignItems={"start"}>
         <Icon as={CircleInfoIcon} width={4} height={4} color={"blue.500"} marginTop={"2px"} />
         <Text fontSize={"12px"} color={"blue.700"}>
-          A minimum of 30% participation must be reached to validate the voting of the proposal and get approval.
+          {LL.proposal.a_minimum_of_30_participation_must_be_reached_to_validate_the_voting_of_the_proposal_and_get_approval()}
         </Text>
       </Flex>
     );

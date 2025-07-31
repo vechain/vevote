@@ -1,6 +1,7 @@
-import { Button, Flex, Text, Icon, HStack, Stack } from "@chakra-ui/react";
+import { Button, Flex, Text, Icon, HStack, Stack, Link } from "@chakra-ui/react";
 import { CircleInfoIcon, ArrowRightIcon } from "@/icons";
 import { useI18nContext } from "@/i18n/i18n-react";
+import { ResourcesLinks } from "@/types/terms";
 
 export const BuyNodeCta = () => {
   const { LL } = useI18nContext();
@@ -37,7 +38,9 @@ export const BuyNodeCta = () => {
           _hover={{
             backgroundColor: "gray.50",
           }}
-          onClick={() => window.open("https://app.stargate.vechain.org", "_blank")}>
+          as={Link}
+          href={ResourcesLinks.STARGATE_APP}
+          target="_blank">
           {LL.proposal.go_to_stargate()}
         </Button>
       </Stack>

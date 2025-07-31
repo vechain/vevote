@@ -3,14 +3,14 @@ import { CircleXIcon } from "@/icons";
 import { useProposal } from "@/components/proposal/ProposalProvider";
 import { useFormatDate } from "@/hooks/useFormatDate";
 import { useI18nContext } from "@/i18n/i18n-react";
+import { useMemo } from "react";
 
 export const CanceledProposal = () => {
   const { LL } = useI18nContext();
   const { proposal } = useProposal();
   const { formattedProposalDate } = useFormatDate();
 
-  // Use endDate or createdAt as fallback for the cancellation date
-  const cancellationDate = proposal.canceledDate || new Date();
+  const cancellationDate = useMemo(() => proposal.canceledDate || new Date(), [proposal.canceledDate]);
   const formattedDate = formattedProposalDate(cancellationDate);
 
   return (

@@ -69,7 +69,7 @@ export const SubmitVoteModal = ({ submitVoteModal }: { submitVoteModal: UseDiscl
         vote: selectedOption,
         reason: "",
       });
-      const result = await sendTransaction({ id: proposal.id, selectedOption: voteIndex as 0 | 1 | 2, reason: "" });
+      const result = await sendTransaction({ id: proposal.id, selectedOption: voteIndex, reason: "" });
       trackEvent(MixPanelEvent.PROPOSAL_VOTE_SUCCESS, {
         proposalId: proposal.id,
         vote: selectedOption,
@@ -101,7 +101,7 @@ export const SubmitVoteModal = ({ submitVoteModal }: { submitVoteModal: UseDiscl
             <VStack spacing={6} align="center">
               <Icon as={CircleXIcon} boxSize={10} color="red.500" />
               <Text fontSize="xl" fontWeight="semibold" color="gray.600" textAlign="center">
-                Vote submission failed
+                {LL.proposal.vote_submission_failed()}
               </Text>
             </VStack>
 
@@ -134,7 +134,7 @@ export const SubmitVoteModal = ({ submitVoteModal }: { submitVoteModal: UseDiscl
                 borderRadius="lg"
                 _hover={{ bg: "gray.300" }}
                 _active={{ bg: "gray.300" }}>
-                Close
+                {LL.close()}
               </Button>
             </VStack>
           </VStack>
@@ -181,7 +181,7 @@ export const SubmitVoteModal = ({ submitVoteModal }: { submitVoteModal: UseDiscl
                 alignItems={"center"}
                 isExternal
                 href={`${EXPLORER_URL}/transactions/${txId}`}>
-                See details
+                {LL.proposal.see_details()}
                 <Icon as={ArrowLinkIcon} width={4} height={4} />
               </Link>
             </VStack>

@@ -926,6 +926,46 @@ type RootTranslation = {
      * F​a​i​l​e​d​ ​t​o​ ​e​x​e​c​u​t​e​ ​p​r​o​p​o​s​a​l
      */
     failed_to_execute_proposal: string;
+    /**
+     * P​r​o​p​o​s​a​l​ ​A​p​p​r​o​v​e​d​ ​a​n​d​ ​E​x​e​c​u​t​e​d
+     */
+    proposal_approved_and_executed: string;
+    /**
+     * T​h​e​ ​v​o​t​i​n​g​ ​a​p​p​r​o​v​e​d​ ​t​h​e​ ​p​r​o​p​o​s​a​l​ ​a​n​d​ ​t​h​e​ ​a​c​t​i​o​n​s​ ​h​a​v​e​ ​b​e​e​n​ ​e​x​e​c​u​t​e​d​.
+     */
+    the_voting_approved_the_proposal_and_the_actions_have_been_executed: string;
+    /**
+     * S​e​e​ ​d​e​t​a​i​l​s
+     */
+    see_details: string;
+    /**
+     * P​r​o​p​o​s​a​l​ ​R​e​j​e​c​t​e​d
+     */
+    proposal_rejected: string;
+    /**
+     * T​h​e​ ​p​r​o​p​o​s​a​l​ ​d​i​d​n​'​t​ ​g​e​t​ ​e​n​o​u​g​h​ ​v​o​t​e​s​ ​i​n​ ​f​a​v​o​r​ ​t​o​ ​g​e​t​ ​a​p​p​r​o​v​a​l​.
+     */
+    the_proposal_didnt_get_enough_votes_in_favor_to_get_approval: string;
+    /**
+     * M​i​n​i​m​u​m​ ​p​a​r​t​i​c​i​p​a​t​i​o​n​ ​n​o​t​ ​r​e​a​c​h​e​d
+     */
+    minimum_participation_not_reached: string;
+    /**
+     * T​h​e​ ​v​o​t​i​n​g​ ​p​a​r​t​i​c​i​p​a​t​i​o​n​ ​d​i​d​n​'​t​ ​r​e​a​c​h​e​d​ ​t​h​e​ ​m​i​n​i​m​u​m​ ​r​e​q​u​i​r​e​d​ ​o​f​ ​3​0​%​ ​t​o​ ​g​e​t​ ​a​p​p​r​o​v​a​l​.
+     */
+    the_voting_participation_didnt_reached_the_minimum_required_of_30_to_get_approval: string;
+    /**
+     * A​ ​m​i​n​i​m​u​m​ ​o​f​ ​3​0​%​ ​p​a​r​t​i​c​i​p​a​t​i​o​n​ ​m​u​s​t​ ​b​e​ ​r​e​a​c​h​e​d​ ​t​o​ ​v​a​l​i​d​a​t​e​ ​t​h​e​ ​v​o​t​i​n​g​ ​o​f​ ​t​h​e​ ​p​r​o​p​o​s​a​l​ ​a​n​d​ ​g​e​t​ ​a​p​p​r​o​v​a​l​.
+     */
+    a_minimum_of_30_participation_must_be_reached_to_validate_the_voting_of_the_proposal_and_get_approval: string;
+    /**
+     * V​o​t​e​ ​s​u​b​m​i​s​s​i​o​n​ ​f​a​i​l​e​d
+     */
+    vote_submission_failed: string;
+    /**
+     * Y​o​u​ ​v​o​t​e​d
+     */
+    you_voted: string;
   };
   proposals: {
     /**
@@ -2004,6 +2044,46 @@ JPG, PNG or SVG of maximum of {size}MB.
      * Failed to execute proposal
      */
     failed_to_execute_proposal: () => LocalizedString;
+    /**
+     * Proposal Approved and Executed
+     */
+    proposal_approved_and_executed: () => LocalizedString;
+    /**
+     * The voting approved the proposal and the actions have been executed.
+     */
+    the_voting_approved_the_proposal_and_the_actions_have_been_executed: () => LocalizedString;
+    /**
+     * See details
+     */
+    see_details: () => LocalizedString;
+    /**
+     * Proposal Rejected
+     */
+    proposal_rejected: () => LocalizedString;
+    /**
+     * The proposal didn't get enough votes in favor to get approval.
+     */
+    the_proposal_didnt_get_enough_votes_in_favor_to_get_approval: () => LocalizedString;
+    /**
+     * Minimum participation not reached
+     */
+    minimum_participation_not_reached: () => LocalizedString;
+    /**
+     * The voting participation didn't reached the minimum required of 30% to get approval.
+     */
+    the_voting_participation_didnt_reached_the_minimum_required_of_30_to_get_approval: () => LocalizedString;
+    /**
+     * A minimum of 30% participation must be reached to validate the voting of the proposal and get approval.
+     */
+    a_minimum_of_30_participation_must_be_reached_to_validate_the_voting_of_the_proposal_and_get_approval: () => LocalizedString;
+    /**
+     * Vote submission failed
+     */
+    vote_submission_failed: () => LocalizedString;
+    /**
+     * You voted
+     */
+    you_voted: () => LocalizedString;
   };
   proposals: {
     /**

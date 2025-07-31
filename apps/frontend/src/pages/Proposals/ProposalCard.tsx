@@ -8,6 +8,7 @@ import { formatAddress } from "@/utils/address";
 import { MixPanelEvent, trackEvent } from "@/utils/mixpanel/utilsMixpanel";
 import { getPicassoImgSrc } from "@/utils/picasso";
 import { Flex, Text } from "@chakra-ui/react";
+import { useGetAvatarOfAddress } from "@vechain/vechain-kit";
 import { useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -56,7 +57,11 @@ export const ProposalCard = ({ status, title, endDate, startDate, id, proposer, 
 const TopBar = ({ title, proposer }: { title: string; proposer: string }) => {
   const { LL } = useI18nContext();
 
-  const imageUrl = useMemo(() => getPicassoImgSrc(proposer || ""), [proposer]);
+  const { data: avatar } = useGetAvatarOfAddress(proposer || "");
+  console.log(avatar);
+
+  const imageUrl = useMemo(() => avatar || getPicassoImgSrc(proposer || ""), [avatar, proposer]);
+
   return (
     <Flex
       width={"100%"}

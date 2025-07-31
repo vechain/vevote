@@ -3,7 +3,7 @@ import { ClockIcon } from "@/icons";
 import { ProposalStatus } from "@/types/proposal";
 import { Flex, Icon, Text } from "@chakra-ui/react";
 import dayjs from "dayjs";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useI18nContext } from "@/i18n/i18n-react";
 
 const CountdownBox = ({ value, label }: { value: number; label: string }) => {
@@ -23,6 +23,26 @@ const CountdownBox = ({ value, label }: { value: number; label: string }) => {
       </Text>
     </Flex>
   );
+};
+
+const splitDateDifference = (date?: Date) => {
+  if (!date) return { days: 0, hours: 0, minutes: 0, seconds: 0 };
+  // Calculate the difference
+  const now = dayjs();
+  const target = dayjs(date);
+  let diff = target.diff(now, "second");
+  if (diff < 0) diff = 0;
+
+  const secondsInDay = 24 * 60 * 60;
+  const secondsInHour = 60 * 60;
+  const secondsInMinute = 60;
+
+  const days = Math.floor(diff / secondsInDay);
+  const hours = Math.floor((diff % secondsInDay) / secondsInHour);
+  const minutes = Math.floor((diff % secondsInHour) / secondsInMinute);
+  const seconds = diff % secondsInMinute;
+
+  return { days, hours, minutes, seconds };
 };
 
 export const CountdownSection = () => {
@@ -52,25 +72,18 @@ export const CountdownSection = () => {
     }
   }, [proposal.startDate, proposal.status]);
 
+  const label = useMemo(
+    () => (proposal.status === ProposalStatus.UPCOMING ? LL.proposal.starts_in() : LL.proposal.ends_in()),
+    [proposal.status, LL],
+  );
+  const date = useMemo(
+    () => (proposal.status === ProposalStatus.UPCOMING ? proposal.startDate : proposal.endDate),
+    [proposal.status, proposal.startDate, proposal.endDate],
+  );
+
+  const { days, hours, minutes, seconds } = splitDateDifference(date);
+
   if (!isValidStatus) return null;
-
-  const label = proposal.status === ProposalStatus.UPCOMING ? LL.proposal.starts_in() : LL.proposal.ends_in();
-  const date = proposal.status === ProposalStatus.UPCOMING ? proposal.startDate : proposal.endDate;
-
-  // Calculate the difference
-  const now = dayjs();
-  const target = dayjs(date);
-  let diff = target.diff(now, "second");
-  if (diff < 0) diff = 0;
-
-  const secondsInDay = 24 * 60 * 60;
-  const secondsInHour = 60 * 60;
-  const secondsInMinute = 60;
-
-  const days = Math.floor(diff / secondsInDay);
-  const hours = Math.floor((diff % secondsInDay) / secondsInHour);
-  const minutes = Math.floor((diff % secondsInHour) / secondsInMinute);
-  const seconds = diff % secondsInMinute;
 
   return (
     <Flex

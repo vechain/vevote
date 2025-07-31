@@ -65,7 +65,7 @@ export const VoteSection = ({ submitVoteModal }: { submitVoteModal: UseDisclosur
         borderColor={"gray.200"}>
         <HStack gap={6}>
           <Text fontSize={"sm"} fontWeight={500} color={"gray.600"}>
-            You voted
+            {LL.proposal.you_voted()}
           </Text>
           <HStack
             borderRadius={8}
@@ -87,7 +87,7 @@ export const VoteSection = ({ submitVoteModal }: { submitVoteModal: UseDisclosur
           alignItems={"center"}
           isExternal
           href={`${EXPLORER_URL}/transactions/${voteData?.transactionId}`}>
-          See details
+          {LL.proposal.see_details()}
           <Icon as={ArrowLinkIcon} width={4} height={4} />
         </Link>
       </HStack>

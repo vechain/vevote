@@ -4,6 +4,7 @@ import { CalendarIcon } from "@/icons";
 import { useFormatDate } from "@/hooks/useFormatDate";
 import { ProposalStatus } from "@/types/proposal";
 import { useI18nContext } from "@/i18n/i18n-react";
+import { useCallback, useMemo } from "react";
 
 enum TimelineItemStatus {
   COMPLETED = "completed",
@@ -15,40 +16,43 @@ export const TimelineCard = () => {
   const { LL } = useI18nContext();
   const { proposal } = useProposal();
 
-  const getVoteStatus = (): TimelineItemStatus => {
+  const getVoteStatus = useCallback((): TimelineItemStatus => {
     if (proposal.status === ProposalStatus.UPCOMING || proposal.status === ProposalStatus.DRAFT)
       return TimelineItemStatus.PENDING;
     if (proposal.status === ProposalStatus.VOTING) return TimelineItemStatus.ACTIVE;
     return TimelineItemStatus.COMPLETED;
-  };
+  }, [proposal.status]);
 
-  const getFinishedStatus = (): TimelineItemStatus => {
+  const getFinishedStatus = useCallback((): TimelineItemStatus => {
     return [ProposalStatus.DRAFT, ProposalStatus.UPCOMING, ProposalStatus.VOTING].includes(proposal.status)
       ? TimelineItemStatus.PENDING
       : TimelineItemStatus.COMPLETED;
-  };
+  }, [proposal.status]);
 
-  const timelineItems = [
-    {
-      id: "created",
-      label: LL.proposal.timeline_created(),
-      date: proposal.createdAt,
-      status: TimelineItemStatus.COMPLETED,
-    },
-    {
-      id: "vote",
-      label: LL.vote(),
-      date: proposal.startDate,
-      endDate: proposal.endDate,
-      status: getVoteStatus(),
-    },
-    {
-      id: "finished",
-      label: LL.finished(),
-      date: proposal.endDate,
-      status: getFinishedStatus(),
-    },
-  ];
+  const timelineItems = useMemo(
+    () => [
+      {
+        id: "created",
+        label: LL.proposal.timeline_created(),
+        date: proposal.createdAt,
+        status: TimelineItemStatus.COMPLETED,
+      },
+      {
+        id: "vote",
+        label: LL.vote(),
+        date: proposal.startDate,
+        endDate: proposal.endDate,
+        status: getVoteStatus(),
+      },
+      {
+        id: "finished",
+        label: LL.finished(),
+        date: proposal.endDate,
+        status: getFinishedStatus(),
+      },
+    ],
+    [LL, proposal.createdAt, proposal.startDate, proposal.endDate, getVoteStatus, getFinishedStatus],
+  );
 
   return (
     <Flex
@@ -97,7 +101,7 @@ interface TimelineItemProps {
 const TimelineItem = ({ label, date, endDate, status, isLast }: TimelineItemProps) => {
   const { formattedProposalDate } = useFormatDate();
 
-  const getStatusColor = () => {
+  const getStatusColor = useCallback(() => {
     switch (status) {
       case TimelineItemStatus.COMPLETED:
         return "primary.500";
@@ -108,9 +112,9 @@ const TimelineItem = ({ label, date, endDate, status, isLast }: TimelineItemProp
       default:
         return "gray.600";
     }
-  };
+  }, [status]);
 
-  const getIconStyle = () => {
+  const getIconStyle = useCallback(() => {
     switch (status) {
       case TimelineItemStatus.COMPLETED:
         return {
@@ -137,7 +141,7 @@ const TimelineItem = ({ label, date, endDate, status, isLast }: TimelineItemProp
           borderColor: "gray.300",
         };
     }
-  };
+  }, [status]);
 
   return (
     <Flex alignItems={"center"} gap={4} width={"100%"}>
