@@ -2,7 +2,7 @@ import { ExtendedStargateNode, NodeStrengthLevel } from "@/types/user";
 import {
   getAllUsersNodes,
   getAMN,
-  getNodesName,
+  getNodesNameAndPower,
   getUserNodes,
   getUserRoles,
   isNodeDelegator,
@@ -78,7 +78,7 @@ export const useUserRoles = () => {
 export const useVotersNodes = ({ nodeIds }: { nodeIds: string[] }) => {
   const { data, error, isLoading } = useQuery({
     queryKey: ["votersNodes", nodeIds],
-    queryFn: async () => await getNodesName({ nodeIds }),
+    queryFn: async () => await getNodesNameAndPower({ nodeIds }),
   });
 
   return {

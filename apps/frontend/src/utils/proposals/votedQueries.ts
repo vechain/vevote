@@ -59,6 +59,7 @@ export const getVoteCastResults = async (
           address: contractAddress,
           topic0: eventAbi.signatureHash,
           topic1: topics?.[1],
+          topic2: topics?.[2],
         },
         eventAbi,
       })) || [];
@@ -84,11 +85,8 @@ export const getVoteCastResults = async (
       return votes;
     });
 
-    // TODO: This is a workaround because useVoteCastResults is returning results for all proposals
-    const filteredVotedEvents = votedEvents.filter(vote => proposalIds?.includes(vote.proposalId));
-
     return {
-      votes: filteredVotedEvents,
+      votes: votedEvents,
     };
   } catch (error) {
     console.error(error);

@@ -1,10 +1,10 @@
-import { VoteItem } from "@/pages/Proposal/components/VotingAndTimeline/components/VotingCard/components/ResultsSection/components/AllVotersModal/components/VotersTable";
 import { Sort } from "@/components/ui/SortDropdown";
 import { useVoteCastResults } from "@/hooks/useCastVote";
 import { useVotersNodes } from "@/hooks/useUserQueries";
+import { VoteItem } from "@/pages/Proposal/components/VotingAndTimeline/components/VotingCard/components/ResultsSection/components/AllVotersModal/components/VotersTable";
 import { NodeStrengthLevel } from "@/types/user";
 import { getSingleChoiceFromIndex } from "@/utils/proposals/helpers";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 
 export type VotersFilters = {
   selectedOption: string;
@@ -38,32 +38,31 @@ export const useVotersData = ({
     nodeIds: votedInfo?.flatMap(vote => vote.stargateNFTs) || [],
   });
 
-  const nodeMap = useMemo(() => {
-    const map = new Map<string, string>();
-    nodes.forEach(node => {
-      map.set(node.id, node.name);
-    });
-    return map;
-  }, [nodes]);
+  useEffect(() => {
+    console.log("Votes data updated", votedInfo);
+    console.log("Nodes data updated", nodes);
+  }, [nodes, votedInfo]);
 
   const votes = useMemo(() => {
     if (!votedInfo) return [];
 
-    return votedInfo.map(vote => {
-      const nodeNames = vote.stargateNFTs.map(id => nodeMap.get(id) || id);
-      const votingPower = Number(vote.weight) / 100;
-
-      return {
-        date: vote.date,
-        address: vote.voter,
-        node: nodeNames[0] || "",
-        nodeId: vote.stargateNFTs[0] || "",
-        votingPower,
-        votedOption: getSingleChoiceFromIndex(vote.choice),
-        transactionId: vote.transactionId,
-      };
-    });
-  }, [votedInfo, nodeMap]);
+    return votedInfo
+      .map(vote => {
+        return vote.stargateNFTs.map(node => {
+          const nodeInfo = nodes.find(n => n.id === node);
+          return {
+            date: vote.date,
+            address: vote.voter,
+            node: nodeInfo?.name || "Unknown",
+            nodeId: node,
+            votingPower: Number(nodeInfo?.votingPower || 0),
+            votedOption: getSingleChoiceFromIndex(vote.choice),
+            transactionId: vote.transactionId,
+          };
+        });
+      })
+      .flat();
+  }, [votedInfo, nodes]);
 
   const filterOptions = useMemo(() => {
     const optionsSet = new Set<string>();

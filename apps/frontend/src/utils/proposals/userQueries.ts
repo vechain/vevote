@@ -111,22 +111,42 @@ export const getUserNodes = async ({ address }: { address: string }) => {
   }
 };
 
-export const getNodesName = async ({ nodeIds }: { nodeIds: string[] }) => {
-  const res = await executeMultipleClauses({
-    contractAddress: nodeManagementAddress,
-    contractInterface: nodeManagementInterface,
-    methodsWithArgs: nodeIds.map(nodeId => ({
-      method: "getNodeLevel" as const,
-      args: [nodeId],
-    })),
-  });
+export const getNodesNameAndPower = async ({ nodeIds }: { nodeIds: string[] }) => {
+  console.log("getNodesNameAndPower called with nodeIds:", nodeIds);
 
-  const nodeLevels = res.map((result, id) => ({
-    id: nodeIds[id],
-    name: result.success ? NodeStrengthLevels[result.result.plain as number] : "Unknown",
+  const votingPowerArgs = nodeIds.map(node => ({
+    method: "getNodeVoteWeight" as const,
+    args: [Number(node)],
+  }));
+  const nodeLevelArgs = nodeIds.map(node => ({
+    method: "getNodeLevel" as const,
+    args: [Number(node)],
   }));
 
-  return nodeLevels;
+  const [nodesPower, nodesLevel] = await Promise.all([
+    executeMultipleClauses({
+      contractAddress,
+      contractInterface,
+      methodsWithArgs: votingPowerArgs,
+    }),
+    executeMultipleClauses({
+      contractAddress: nodeManagementAddress,
+      contractInterface: nodeManagementInterface,
+      methodsWithArgs: nodeLevelArgs,
+    }),
+  ]);
+
+  console.log("Nodes power results:", nodesPower);
+  console.log("Nodes level results:", nodesLevel);
+
+  const power = nodesPower.map(r => (r.success ? (r.result.plain as bigint) : BigInt(0)));
+  const levels = nodesLevel.map(r => (r.success ? (r.result.plain as number) : 0));
+
+  return nodeIds.map((nodeId, index) => ({
+    id: nodeId,
+    votingPower: power[index] || BigInt(0),
+    name: NodeStrengthLevels[levels[index]],
+  }));
 };
 
 export const getAMN = async (address?: string) => {

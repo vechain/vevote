@@ -53,7 +53,7 @@ const AddressCell = ({ value }: { value: string }) => {
   );
 };
 
-const votedOptionCellVariants = (choice: string) => {
+const votedOptionCellVariants = (choice: SingleChoiceEnum) => {
   const style = {
     for: defineStyle({
       background: "green.100",
@@ -79,7 +79,7 @@ const votedOptionCellVariants = (choice: string) => {
   }
 };
 
-const VotedOptionCell = ({ option }: { option: string }) => {
+const VotedOptionCell = ({ option }: { option: SingleChoiceEnum }) => {
   return (
     <Text
       textAlign={"center"}
@@ -144,7 +144,7 @@ export const VotersTable = ({ data }: VotersTableProps) => {
       id: "VOTING_POWER",
     }),
     columnHelper.accessor("votedOption", {
-      cell: data => <VotedOptionCell option={data.getValue()} />,
+      cell: data => <VotedOptionCell option={data.getValue() as SingleChoiceEnum} />,
       header: () => <TableHeader label={LL.proposal.voters_table.header.voted_option()} />,
       id: "VOTED_OPTION",
     }),
