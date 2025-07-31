@@ -376,6 +376,22 @@ type RootTranslation = {
 		 * S​e​l​e​c​t​ ​a​n​ ​o​p​t​i​o​n​ ​t​o​ ​v​o​t​e​:
 		 */
 		option_to_vote: string
+		/**
+		 * V​o​t​i​n​g​ ​h​a​s​ ​n​o​t​ ​s​t​a​r​t​e​d​ ​y​e​t
+		 */
+		voting_has_not_started_yet: string
+		/**
+		 * P​l​e​a​s​e​ ​c​o​n​n​e​c​t​ ​y​o​u​r​ ​w​a​l​l​e​t
+		 */
+		please_connect_your_wallet: string
+		/**
+		 * Y​o​u​ ​h​a​v​e​ ​a​l​r​e​a​d​y​ ​v​o​t​e​d
+		 */
+		you_have_already_voted: string
+		/**
+		 * Y​o​u​ ​d​o​n​'​t​ ​h​a​v​e​ ​e​n​o​u​g​h​ ​v​o​t​i​n​g​ ​p​o​w​e​r
+		 */
+		you_dont_have_enough_voting_power: string
 	}
 	proposal: {
 		/**
@@ -883,6 +899,90 @@ type RootTranslation = {
 				publish_success_description: string
 			}
 		}
+		/**
+		 * G​o​ ​t​o​ ​S​t​a​r​g​a​t​e
+		 */
+		go_to_stargate: string
+		/**
+		 * P​r​o​p​o​s​a​l​ ​n​o​t​ ​f​o​u​n​d
+		 */
+		proposal_not_found: string
+		/**
+		 * S​t​a​r​t​s​ ​i​n
+		 */
+		starts_in: string
+		/**
+		 * E​n​d​s​ ​i​n
+		 */
+		ends_in: string
+		/**
+		 * T​i​m​e​l​i​n​e
+		 */
+		timeline: string
+		/**
+		 * C​r​e​a​t​e​d
+		 */
+		timeline_created: string
+		/**
+		 * P​r​o​p​o​s​a​l​ ​C​a​n​c​e​l​e​d
+		 */
+		proposal_canceled: string
+		/**
+		 * T​h​e​ ​p​r​o​p​o​s​a​l​ ​w​a​s​ ​c​a​n​c​e​l​e​d​ ​b​y​ ​V​e​C​h​a​i​n​ ​o​r​ ​t​h​e​ ​p​r​o​p​o​s​e​r​ ​b​y​ ​t​h​e​ ​f​o​l​l​o​w​i​n​g​ ​r​e​a​s​o​n​:
+		 */
+		proposal_canceled_description: string
+		/**
+		 * N​o​ ​r​e​a​s​o​n​ ​p​r​o​v​i​d​e​d
+		 */
+		no_reason_provided: string
+		/**
+		 * U​n​k​n​o​w​n​ ​e​r​r​o​r
+		 */
+		unknown_error: string
+		/**
+		 * F​a​i​l​e​d​ ​t​o​ ​e​x​e​c​u​t​e​ ​p​r​o​p​o​s​a​l
+		 */
+		failed_to_execute_proposal: string
+		/**
+		 * P​r​o​p​o​s​a​l​ ​A​p​p​r​o​v​e​d​ ​a​n​d​ ​E​x​e​c​u​t​e​d
+		 */
+		proposal_approved_and_executed: string
+		/**
+		 * T​h​e​ ​v​o​t​i​n​g​ ​a​p​p​r​o​v​e​d​ ​t​h​e​ ​p​r​o​p​o​s​a​l​ ​a​n​d​ ​t​h​e​ ​a​c​t​i​o​n​s​ ​h​a​v​e​ ​b​e​e​n​ ​e​x​e​c​u​t​e​d​.
+		 */
+		the_voting_approved_the_proposal_and_the_actions_have_been_executed: string
+		/**
+		 * S​e​e​ ​d​e​t​a​i​l​s
+		 */
+		see_details: string
+		/**
+		 * P​r​o​p​o​s​a​l​ ​R​e​j​e​c​t​e​d
+		 */
+		proposal_rejected: string
+		/**
+		 * T​h​e​ ​p​r​o​p​o​s​a​l​ ​d​i​d​n​'​t​ ​g​e​t​ ​e​n​o​u​g​h​ ​v​o​t​e​s​ ​i​n​ ​f​a​v​o​r​ ​t​o​ ​g​e​t​ ​a​p​p​r​o​v​a​l​.
+		 */
+		the_proposal_didnt_get_enough_votes_in_favor_to_get_approval: string
+		/**
+		 * M​i​n​i​m​u​m​ ​p​a​r​t​i​c​i​p​a​t​i​o​n​ ​n​o​t​ ​r​e​a​c​h​e​d
+		 */
+		minimum_participation_not_reached: string
+		/**
+		 * T​h​e​ ​v​o​t​i​n​g​ ​p​a​r​t​i​c​i​p​a​t​i​o​n​ ​d​i​d​n​'​t​ ​r​e​a​c​h​e​d​ ​t​h​e​ ​m​i​n​i​m​u​m​ ​r​e​q​u​i​r​e​d​ ​o​f​ ​3​0​%​ ​t​o​ ​g​e​t​ ​a​p​p​r​o​v​a​l​.
+		 */
+		the_voting_participation_didnt_reached_the_minimum_required_of_30_to_get_approval: string
+		/**
+		 * A​ ​m​i​n​i​m​u​m​ ​o​f​ ​3​0​%​ ​p​a​r​t​i​c​i​p​a​t​i​o​n​ ​m​u​s​t​ ​b​e​ ​r​e​a​c​h​e​d​ ​t​o​ ​v​a​l​i​d​a​t​e​ ​t​h​e​ ​v​o​t​i​n​g​ ​o​f​ ​t​h​e​ ​p​r​o​p​o​s​a​l​ ​a​n​d​ ​g​e​t​ ​a​p​p​r​o​v​a​l​.
+		 */
+		a_minimum_of_30_participation_must_be_reached_to_validate_the_voting_of_the_proposal_and_get_approval: string
+		/**
+		 * V​o​t​e​ ​s​u​b​m​i​s​s​i​o​n​ ​f​a​i​l​e​d
+		 */
+		vote_submission_failed: string
+		/**
+		 * Y​o​u​ ​v​o​t​e​d
+		 */
+		you_voted: string
 	}
 	proposals: {
 		/**
@@ -1419,6 +1519,22 @@ JPG, PNG or SVG of maximum of {size}MB.
 		 * Select an option to vote:
 		 */
 		option_to_vote: () => LocalizedString
+		/**
+		 * Voting has not started yet
+		 */
+		voting_has_not_started_yet: () => LocalizedString
+		/**
+		 * Please connect your wallet
+		 */
+		please_connect_your_wallet: () => LocalizedString
+		/**
+		 * You have already voted
+		 */
+		you_have_already_voted: () => LocalizedString
+		/**
+		 * You don't have enough voting power
+		 */
+		you_dont_have_enough_voting_power: () => LocalizedString
 	}
 	proposal: {
 		/**
@@ -1917,6 +2033,90 @@ JPG, PNG or SVG of maximum of {size}MB.
 				publish_success_description: () => LocalizedString
 			}
 		}
+		/**
+		 * Go to Stargate
+		 */
+		go_to_stargate: () => LocalizedString
+		/**
+		 * Proposal not found
+		 */
+		proposal_not_found: () => LocalizedString
+		/**
+		 * Starts in
+		 */
+		starts_in: () => LocalizedString
+		/**
+		 * Ends in
+		 */
+		ends_in: () => LocalizedString
+		/**
+		 * Timeline
+		 */
+		timeline: () => LocalizedString
+		/**
+		 * Created
+		 */
+		timeline_created: () => LocalizedString
+		/**
+		 * Proposal Canceled
+		 */
+		proposal_canceled: () => LocalizedString
+		/**
+		 * The proposal was canceled by VeChain or the proposer by the following reason:
+		 */
+		proposal_canceled_description: () => LocalizedString
+		/**
+		 * No reason provided
+		 */
+		no_reason_provided: () => LocalizedString
+		/**
+		 * Unknown error
+		 */
+		unknown_error: () => LocalizedString
+		/**
+		 * Failed to execute proposal
+		 */
+		failed_to_execute_proposal: () => LocalizedString
+		/**
+		 * Proposal Approved and Executed
+		 */
+		proposal_approved_and_executed: () => LocalizedString
+		/**
+		 * The voting approved the proposal and the actions have been executed.
+		 */
+		the_voting_approved_the_proposal_and_the_actions_have_been_executed: () => LocalizedString
+		/**
+		 * See details
+		 */
+		see_details: () => LocalizedString
+		/**
+		 * Proposal Rejected
+		 */
+		proposal_rejected: () => LocalizedString
+		/**
+		 * The proposal didn't get enough votes in favor to get approval.
+		 */
+		the_proposal_didnt_get_enough_votes_in_favor_to_get_approval: () => LocalizedString
+		/**
+		 * Minimum participation not reached
+		 */
+		minimum_participation_not_reached: () => LocalizedString
+		/**
+		 * The voting participation didn't reached the minimum required of 30% to get approval.
+		 */
+		the_voting_participation_didnt_reached_the_minimum_required_of_30_to_get_approval: () => LocalizedString
+		/**
+		 * A minimum of 30% participation must be reached to validate the voting of the proposal and get approval.
+		 */
+		a_minimum_of_30_participation_must_be_reached_to_validate_the_voting_of_the_proposal_and_get_approval: () => LocalizedString
+		/**
+		 * Vote submission failed
+		 */
+		vote_submission_failed: () => LocalizedString
+		/**
+		 * You voted
+		 */
+		you_voted: () => LocalizedString
 	}
 	proposals: {
 		/**

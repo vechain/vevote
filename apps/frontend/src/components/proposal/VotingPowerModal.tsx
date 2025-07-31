@@ -2,7 +2,18 @@ import { useAllUserNodes, useIsDelegator, useNodes } from "@/hooks/useUserQuerie
 import { useI18nContext } from "@/i18n/i18n-react";
 import { VotingPowerIcon } from "@/icons";
 import { formatAddress } from "@/utils/address";
-import { Button, Flex, Icon, Link, ModalBody, ModalHeader, Text, useDisclosure } from "@chakra-ui/react";
+import {
+  Button,
+  Flex,
+  HStack,
+  Icon,
+  Link,
+  ModalBody,
+  ModalHeader,
+  Text,
+  useBreakpointValue,
+  useDisclosure,
+} from "@chakra-ui/react";
 import { useWallet } from "@vechain/vechain-kit";
 import { useMemo } from "react";
 import { CopyLink } from "../ui/CopyLink";
@@ -24,6 +35,7 @@ export const VotingPowerModal = () => {
   const { nodes } = useNodes();
   const { allNodes } = useAllUserNodes();
   const { isDelegator } = useIsDelegator();
+  const isMobile = useBreakpointValue({ base: true, md: false });
 
   const nodesList = useMemo(
     () =>
@@ -44,7 +56,7 @@ export const VotingPowerModal = () => {
   return (
     <>
       <Button onClick={onOpen} leftIcon={<Icon as={VotingPowerIcon} boxSize={5} />} size={{ base: "md", md: "lg" }}>
-        {totalVotingPower || LL.proposal.voting_power.get_voting_power()}
+        {totalVotingPower || (isMobile ? "0" : LL.proposal.voting_power.get_voting_power())}
       </Button>
       <ModalSkeleton isOpen={isOpen} onClose={onClose}>
         <ModalHeader>
@@ -80,8 +92,10 @@ const VotingWallet = () => {
   const { LL } = useI18nContext();
 
   return (
-    <Text display={"inline-flex"} alignItems={"center"} gap={2} color={"gray.600"}>
-      {`${LL.wallet()}:`}
+    <HStack>
+      <Text display={"inline-flex"} alignItems={"center"} gap={2} color={"gray.600"}>
+        {`${LL.wallet()}:`}
+      </Text>
       <CopyLink
         href={`${EXPLORER_URL}/accounts/${account?.address}`}
         isExternal
@@ -90,6 +104,6 @@ const VotingWallet = () => {
         fontWeight={500}>
         {formatAddress(account?.address || "")}
       </CopyLink>
-    </Text>
+    </HStack>
   );
 };

@@ -19,10 +19,17 @@ export const DataTable = <Data extends object>({ data, columns }: DataTableProps
       <Thead>
         {table.getHeaderGroups().map(headerGroup => (
           <Tr key={headerGroup.id}>
-            {headerGroup.headers.map(header => {
+            {headerGroup.headers.map((header, index) => {
               const meta: any = header.column.columnDef.meta;
               return (
-                <Th key={header.id} onClick={header.column.getToggleSortingHandler()} isNumeric={meta?.isNumeric}>
+                <Th
+                  key={header.id}
+                  onClick={header.column.getToggleSortingHandler()}
+                  isNumeric={meta?.isNumeric}
+                  backgroundColor={"gray.100"}
+                  borderRadius={
+                    index === 0 ? "4px 0 0 4px" : index === headerGroup.headers.length - 1 ? "0 4px 4px 0" : "0"
+                  }>
                   {flexRender(header.column.columnDef.header, header.getContext())}
                 </Th>
               );

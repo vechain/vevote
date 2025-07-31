@@ -99,6 +99,10 @@ const en = {
   voting_list: {
     voting_options: "Voting options:",
     option_to_vote: "Select an option to vote:",
+    voting_has_not_started_yet: "Voting has not started yet",
+    please_connect_your_wallet: "Please connect your wallet",
+    you_have_already_voted: "You have already voted",
+    you_dont_have_enough_voting_power: "You don't have enough voting power",
   },
   proposal: {
     title: "Proposal",
@@ -275,6 +279,31 @@ const en = {
         publish_success_description: "The proposal has been successfully publish and can now be seen publicly.",
       },
     },
+    go_to_stargate: "Go to Stargate",
+    proposal_not_found: "Proposal not found",
+    starts_in: "Starts in",
+    ends_in: "Ends in",
+    timeline: "Timeline",
+    timeline_created: "Created",
+    proposal_canceled: "Proposal Canceled",
+    proposal_canceled_description: "The proposal was canceled by VeChain or the proposer by the following reason:",
+    no_reason_provided: "No reason provided",
+    unknown_error: "Unknown error",
+    failed_to_execute_proposal: "Failed to execute proposal",
+    proposal_approved_and_executed: "Proposal Approved and Executed",
+    the_voting_approved_the_proposal_and_the_actions_have_been_executed:
+      "The voting approved the proposal and the actions have been executed.",
+    see_details: "See details",
+    proposal_rejected: "Proposal Rejected",
+    the_proposal_didnt_get_enough_votes_in_favor_to_get_approval:
+      "The proposal didn't get enough votes in favor to get approval.",
+    minimum_participation_not_reached: "Minimum participation not reached",
+    the_voting_participation_didnt_reached_the_minimum_required_of_30_to_get_approval:
+      "The voting participation didn't reached the minimum required of 30% to get approval.",
+    a_minimum_of_30_participation_must_be_reached_to_validate_the_voting_of_the_proposal_and_get_approval:
+      "A minimum of 30% participation must be reached to validate the voting of the proposal and get approval.",
+    vote_submission_failed: "Vote submission failed",
+    you_voted: "You voted",
   },
   proposals: {
     title: "Proposals",
