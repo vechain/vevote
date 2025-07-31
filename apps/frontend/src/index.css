@@ -1,13 +1,10 @@
-/* Google Fonts rimossi - usando Fontsource locale per performance */
-
-/* Font display optimization per ridurre layout shift */
 @font-face {
-  font-family: 'Inter Variable';
+  font-family: "Inter Variable";
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'Rubik Variable';
+  font-family: "Rubik Variable";
   font-display: swap;
 }
 
