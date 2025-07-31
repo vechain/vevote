@@ -1,20 +1,18 @@
 import { Icon, InputProps } from "@chakra-ui/react";
 import { InputWithIcon } from "./InputWithIcon";
 import { ClockIcon } from "@/icons";
+import { CustomTimePicker } from "./CustomTimePicker";
 
 export const TimeInput = (props: InputProps) => {
   return (
-    <InputWithIcon flex={1}>
+    <InputWithIcon flex={1} borderWidth="0px">
       <InputWithIcon.Icon iconPosition="left">
         <Icon as={ClockIcon} width={4} height={4} color={"gray.500"} />
       </InputWithIcon.Icon>
-      <InputWithIcon.Input
-        {...props}
-        size={"full"}
-        paddingLeft={"0px"}
-        type={"time"}
-        justifyContent={"center"}
-        maxWidth={{ base: "100px", md: "full" }}
+      <CustomTimePicker
+        value={props.defaultValue as string}
+        onChange={props.onChange}
+        isDisabled={props.isDisabled}
       />
     </InputWithIcon>
   );

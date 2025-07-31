@@ -6,6 +6,7 @@ import { defaultSingleChoice, useCreateProposal } from "./CreateProposalProvider
 import { PublishButton } from "./PublishButton";
 import { SummaryCard } from "./SummaryCard";
 import { ArrowLeftIcon, EyeIcon } from "@/icons";
+import { getFullDiscourseUrl } from "@/utils/discourse";
 
 export const ProposalSummaryForm = () => {
   const { LL } = useI18nContext();
@@ -15,16 +16,26 @@ export const ProposalSummaryForm = () => {
     <>
       <CreateFormWrapper gap={3} maxWidth={846}>
         <SummaryCard title={LL.proposal.create.summary_form.main_details.title()}>
-          <SummaryCard.ImageItem
-            label={LL.proposal.create.details_form.header_image()}
-            value={proposalDetails.headerImage}
-          />
+          {proposalDetails.headerImage && (
+            <SummaryCard.ImageItem
+              label={LL.proposal.create.details_form.header_image()}
+              value={proposalDetails.headerImage}
+            />
+          )}
+
           <SummaryCard.BaseItem label={LL.proposal.create.details_form.title()} value={proposalDetails.title} />
           <SummaryCard.BaseItem
             label={LL.proposal.create.details_form.description()}
             value={proposalDetails.description.map(op => op.insert).join("")}
             lineClamp={5}
           />
+
+          {proposalDetails.discourseUrl && (
+            <SummaryCard.BaseItem
+              label={LL.proposal.create.details_form.discourse_url()}
+              value={getFullDiscourseUrl(proposalDetails.discourseUrl)}
+            />
+          )}
 
           <SummaryCard.CalendarItem
             label={LL.proposal.create.details_form.voting_calendar()}

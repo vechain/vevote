@@ -13,15 +13,16 @@ export enum SingleChoiceEnum {
   ABSTAIN = "Abstain",
 }
 
-export type ProposalStatus =
-  | "draft"
-  | "upcoming"
-  | "voting"
-  | "approved"
-  | "executed"
-  | "canceled"
-  | "rejected"
-  | "min-not-reached";
+export enum ProposalStatus {
+  DRAFT = "draft",
+  UPCOMING = "upcoming",
+  VOTING = "voting",
+  APPROVED = "approved",
+  EXECUTED = "executed",
+  CANCELED = "canceled",
+  REJECTED = "rejected",
+  MIN_NOT_REACHED = "min-not-reached",
+}
 
 export type FilterStatuses = Omit<ProposalStatus, "min-not-reached">;
 
@@ -33,6 +34,8 @@ export type ProposalCardType = ProposalDetails & {
   reason?: string;
   results?: VotesCastResult[];
   executedProposalLink?: string;
+  canceledDate?: Date;
+  executedDate?: Date;
 };
 
 export type ProposalEvent = {
@@ -44,6 +47,9 @@ export type ProposalEvent = {
   canceller?: string;
   reason?: string;
   executedProposalLink?: string;
+  canceledTime?: string;
+  executedTime?: string;
+  createdTime?: string;
 };
 
 export enum ProposalState {

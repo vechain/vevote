@@ -2,11 +2,13 @@ import { FileUploadChild } from "@/components/ui/FileUploadChild";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { ArrowDownIcon, ArrowRightIcon, CalendarIcon, ClockIcon } from "@/icons";
 import { SingleChoiceEnum } from "@/types/proposal";
-import { getTimeZone } from "@/utils/timezone";
 import { ZodFile } from "@/utils/zod";
 import { Flex, Heading, Icon, Text } from "@chakra-ui/react";
-import dayjs from "dayjs";
 import { PropsWithChildren, useMemo } from "react";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+
+dayjs.extend(utc);
 
 const SummaryCard = ({ title, children }: PropsWithChildren<{ title: string }>) => {
   return (
@@ -81,10 +83,6 @@ const ImageItem = ({ label, value }: { label: string; value?: ZodFile }) => {
 const CalendarItem = ({ label, startDate, endDate }: { label: string; startDate?: Date; endDate?: Date }) => {
   const { LL } = useI18nContext();
 
-  const timeZone = useMemo(() => {
-    return getTimeZone();
-  }, []);
-
   return (
     <Flex gap={{ base: 3, md: 0 }} flexDirection={{ base: "column", md: "row" }} width={"full"}>
       <Flex width={{ base: "full", md: "25%" }} pr={3} flexDirection={"column"}>
@@ -92,7 +90,7 @@ const CalendarItem = ({ label, startDate, endDate }: { label: string; startDate?
           {label}
         </Text>
         <Text paddingTop={2} color={"gray.600"} fontSize={14}>
-          {timeZone}
+          UTC
         </Text>
       </Flex>
       <Flex flexDirection={{ base: "column", md: "row" }} alignItems={{ base: "start", md: "center" }} gap={"24px"}>
@@ -107,7 +105,7 @@ const CalendarItem = ({ label, startDate, endDate }: { label: string; startDate?
 
 const ShowDetailsDateItemChild = ({ date, label }: { date?: Date; label: string }) => {
   const onlyDate = useMemo(() => dayjs(date).format("DD/MM/YYYY"), [date]);
-  const onlyTime = useMemo(() => dayjs(date).format("hh:mm A"), [date]);
+  const onlyTime = useMemo(() => dayjs(date).utc().format("HH:mm") + " UTC", [date]);
   return (
     <Flex
       flexDirection={"column"}

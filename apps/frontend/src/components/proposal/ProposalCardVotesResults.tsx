@@ -1,5 +1,5 @@
 import { useI18nContext } from "@/i18n/i18n-react";
-import { AbstainIcon, DisLikeIcon, LikeIcon } from "@/icons";
+import { AbstainIcon, ThumbsDownIcon, ThumbsUpIcon } from "@/icons";
 import { SingleChoiceEnum } from "@/types/proposal";
 import { VotesCastResult } from "@/types/votes";
 import { getSingleChoiceFromIndex } from "@/utils/proposals/helpers";
@@ -58,7 +58,7 @@ export const ProposalCardVotesResults = ({ results }: { proposalId: string; resu
 
   return (
     <Flex alignItems={"center"} gap={4}>
-      <VoteBadge isMostVoted={isMostVoted(proposalVotes.for)} icon={LikeIcon} votes={proposalVotesPercentage.for} />
+      <VoteBadge isMostVoted={isMostVoted(proposalVotes.for)} icon={ThumbsUpIcon} votes={proposalVotesPercentage.for} />
       <VoteBadge
         isMostVoted={isMostVoted(proposalVotes.abstain)}
         icon={AbstainIcon}
@@ -66,7 +66,7 @@ export const ProposalCardVotesResults = ({ results }: { proposalId: string; resu
       />
       <VoteBadge
         isMostVoted={isMostVoted(proposalVotes.against)}
-        icon={DisLikeIcon}
+        icon={ThumbsDownIcon}
         votes={proposalVotesPercentage.against}
       />
     </Flex>

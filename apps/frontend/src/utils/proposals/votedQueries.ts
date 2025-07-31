@@ -59,6 +59,7 @@ export const getVoteCastResults = async (
           address: contractAddress,
           topic0: eventAbi.signatureHash,
           topic1: topics?.[1],
+          topic2: topics?.[2],
         },
         eventAbi,
       })) || [];

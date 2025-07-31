@@ -1,18 +1,28 @@
+import { DiscourseLink } from "@/components/proposal/DiscourseLink";
 import { ProposalCardVotesResults } from "@/components/proposal/ProposalCardVotesResults";
 import { Avatar } from "@/components/ui/Avatar";
 import { IconBadge } from "@/components/ui/IconBadge";
 import { useFormatDate } from "@/hooks/useFormatDate";
 import { useI18nContext } from "@/i18n/i18n-react";
-import { ProposalCardType } from "@/types/proposal";
+import { ProposalCardType, ProposalStatus } from "@/types/proposal";
 import { formatAddress } from "@/utils/address";
 import { MixPanelEvent, trackEvent } from "@/utils/mixpanel/utilsMixpanel";
 import { getPicassoImgSrc } from "@/utils/picasso";
 import { Flex, Text } from "@chakra-ui/react";
-import { useWallet } from "@vechain/vechain-kit";
+import { useGetAvatarOfAddress } from "@vechain/vechain-kit";
 import { useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 
-export const ProposalCard = ({ status, title, endDate, startDate, id, proposer, results }: ProposalCardType) => {
+export const ProposalCard = ({
+  status,
+  title,
+  endDate,
+  startDate,
+  id,
+  proposer,
+  results,
+  discourseUrl,
+}: ProposalCardType) => {
   const navigate = useNavigate();
 
   const onClick = useCallback(() => {
@@ -48,21 +58,19 @@ export const ProposalCard = ({ status, title, endDate, startDate, id, proposer, 
       gap={6}
       alignItems={"start"}
       flexDirection={"column"}>
-      <TopBar title={title} proposer={proposer} />
+      <TopBar title={title} proposer={proposer} discourseUrl={discourseUrl} />
       <BottomBar status={status} endDate={endDate} startDate={startDate} id={id} results={results} />
     </Flex>
   );
 };
 
-const TopBar = ({ title, proposer }: { title: string; proposer: string }) => {
+const TopBar = ({ title, proposer, discourseUrl }: { title: string; proposer: string; discourseUrl?: string }) => {
   const { LL } = useI18nContext();
 
-  const { account } = useWallet();
+  const { data: avatar } = useGetAvatarOfAddress(proposer || "");
 
-  const imageUrl = useMemo(
-    () => account?.image || getPicassoImgSrc(account?.address || ""),
-    [account?.address, account?.image],
-  );
+  const imageUrl = useMemo(() => avatar || getPicassoImgSrc(proposer || ""), [avatar, proposer]);
+
   return (
     <Flex
       width={"100%"}
@@ -76,7 +84,7 @@ const TopBar = ({ title, proposer }: { title: string; proposer: string }) => {
         {title}
       </Text>
       <Flex alignItems={"center"} gap={4}>
-        <Flex alignItems={"center"} gap={1} borderRightWidth={"1px"} borderColor={"gray.100"} paddingRight={4}>
+        <Flex alignItems={"center"} gap={2} borderRightWidth={"1px"} borderColor={"gray.100"} paddingRight={4}>
           <Text fontSize={{ base: "14px", md: "16px" }} color={"gray.500"}>
             {LL.by()}
           </Text>
@@ -85,8 +93,7 @@ const TopBar = ({ title, proposer }: { title: string; proposer: string }) => {
           </Text>
           <Avatar src={imageUrl} bg="gray.200" borderRadius="full" boxSize={6} />
         </Flex>
-        {/* TODO: add lince tu discourse */}
-        {/* <CommentIcon /> */}
+        {discourseUrl && <DiscourseLink src={discourseUrl} />}
       </Flex>
     </Flex>
   );
@@ -110,7 +117,7 @@ const BottomBar = ({
   }, [status]);
 
   const showDate = useMemo(() => {
-    return status === "upcoming" || status === "voting";
+    return status === ProposalStatus.UPCOMING || status === ProposalStatus.VOTING;
   }, [status]);
 
   const showResults = useMemo(() => {
@@ -125,7 +132,7 @@ const BottomBar = ({
       gap={4}>
       <Flex gap={4} alignItems={"center"} width={"fit-content"}>
         <IconBadge variant={variant} />
-        {status === "draft" && (
+        {status === ProposalStatus.DRAFT && (
           <Text color={"gray.500"} fontSize={{ base: "12px", md: "14px" }}>
             {LL.not_published()}
           </Text>
@@ -144,7 +151,7 @@ const DateItem = ({ startDate, endDate, status }: Pick<ProposalCardType, "endDat
 
   const stringDate = useMemo(() => {
     switch (status) {
-      case "upcoming":
+      case ProposalStatus.UPCOMING:
         return formattedProposalCardDate(startDate);
       default:
         return formattedProposalCardDate(endDate);
@@ -153,7 +160,7 @@ const DateItem = ({ startDate, endDate, status }: Pick<ProposalCardType, "endDat
 
   return (
     <Flex alignItems={"center"} gap={2} fontSize={{ base: "12px", md: "14px" }}>
-      <Text color={"gray.500"}>{status === "upcoming" ? LL.start() : LL.end()}</Text>
+      <Text color={"gray.500"}>{status === ProposalStatus.UPCOMING ? LL.start() : LL.end()}</Text>
       <Text fontWeight={500} color={"gray.600"}>
         {stringDate}
       </Text>

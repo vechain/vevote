@@ -1,13 +1,13 @@
 import { ProposalCardType } from "@/types/proposal";
 import { useVevoteSendTransaction } from "@/utils/hooks/useVevoteSendTransaction";
-import { fromStringToUint256 } from "@/utils/proposals/helpers";
+import { fromStringToUint256, getSingleChoiceFromIndex } from "@/utils/proposals/helpers";
 import { getHasVoted, getVoteCastResults, getIndexerVoteResults } from "@/utils/proposals/votedQueries";
 import { getConfig } from "@repo/config";
 import { VeVote__factory } from "@repo/contracts";
 import { useQuery } from "@tanstack/react-query";
 import { ABIFunction, Address, Clause, ZERO_ADDRESS } from "@vechain/sdk-core";
 import { EnhancedClause, useThor, useWallet } from "@vechain/vechain-kit";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 
 const contractAddress = getConfig(import.meta.env.VITE_APP_ENV).vevoteContractAddress;
 const contractInterface = VeVote__factory.createInterface();
@@ -64,14 +64,21 @@ export const useCastVote = ({ proposalId, masterNode }: { proposalId?: string; m
   });
 };
 
-export const useVoteCastResults = ({ proposalIds, enabled }: { proposalIds?: string[]; enabled?: boolean }) => {
-  const { account } = useWallet();
+export const useVoteCastResults = ({
+  proposalIds,
+  address,
+  enabled,
+}: {
+  proposalIds?: string[];
+  address?: string;
+  enabled?: boolean;
+}) => {
   const thor = useThor();
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ["votedChoices", proposalIds, account?.address],
-    queryFn: async () => await getVoteCastResults(thor, { proposalIds, address: account?.address }),
-    enabled: enabled && !!thor && !!account?.address,
+    queryKey: ["votedChoices", proposalIds, address],
+    queryFn: async () => await getVoteCastResults(thor, { proposalIds, address }),
+    enabled: enabled && !!thor,
   });
 
   return {
@@ -90,6 +97,24 @@ export const useIndexerVoteResults = ({ proposalId, size }: { proposalId?: strin
 
   return {
     results: data?.results,
+    isLoading,
+    error,
+  };
+};
+
+export const useVoteByProposalId = ({ proposalId, enabled }: { proposalId: string; enabled?: boolean }) => {
+  const { account } = useWallet();
+  const { votes, isLoading, error } = useVoteCastResults({
+    proposalIds: [proposalId],
+    address: account?.address,
+    enabled,
+  });
+
+  const voteData = useMemo(() => votes?.find(v => v.proposalId === proposalId), [votes, proposalId]);
+
+  return {
+    voteData,
+    vote: getSingleChoiceFromIndex(voteData?.choice || 0),
     isLoading,
     error,
   };

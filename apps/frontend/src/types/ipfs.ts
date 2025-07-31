@@ -9,4 +9,5 @@ export type IpfsDetails = {
     size?: number;
     url?: string;
   };
+  discourseUrl?: string;
 };

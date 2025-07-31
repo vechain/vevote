@@ -28,12 +28,14 @@ export type ProposalDetails = {
   startDate?: Date;
   endDate?: Date;
   votingQuestion: string;
+  discourseUrl?: string;
 };
 
 export const DEFAULT_PROPOSAL: ProposalDetails = {
   title: "",
   description: DEFAULT_DESCRIPTION_TEMPLATE().ops,
   votingQuestion: "",
+  discourseUrl: "",
 };
 
 export type CreateProposalContextType = {

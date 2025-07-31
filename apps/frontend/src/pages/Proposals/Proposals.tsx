@@ -11,12 +11,12 @@ import { useI18nContext } from "@/i18n/i18n-react";
 import { CircleInfoIcon } from "@/icons";
 import { FilterStatuses, ProposalCardType } from "@/types/proposal";
 import { areAddressesEqual } from "@/utils/address";
+import { filterStatus } from "@/utils/proposals/helpers";
 import { Flex, Heading, Icon, Text } from "@chakra-ui/react";
 import { useWallet } from "@vechain/vechain-kit";
 import { PropsWithChildren, useMemo, useState } from "react";
 import { useCreateProposal } from "../CreateProposal/CreateProposalProvider";
 import { ProposalCard } from "./ProposalCard";
-import { filterStatus } from "@/utils/proposals/helpers";
 
 const ITEMS_PER_PAGE = 6;
 
@@ -131,8 +131,8 @@ const BasePanel = ({ children }: PropsWithChildren) => {
   const canCreateProposal = useMemo(() => account?.address && isWhitelisted, [account?.address, isWhitelisted]);
 
   return (
-    <Flex 
-      flexDirection={"column"} 
+    <Flex
+      flexDirection={"column"}
       gap={{ base: 2, md: 4 }}
       paddingBottom={{ base: canCreateProposal ? "120px" : 0, md: 0 }}>
       {children}
