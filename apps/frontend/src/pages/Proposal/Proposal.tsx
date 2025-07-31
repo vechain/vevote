@@ -37,7 +37,7 @@ export const Proposal = () => {
     return proposalData;
   }, [draftProposal, params.proposalId, proposalData]);
 
-  const isCanceled = proposal?.status === ProposalStatus.CANCELED;
+  const isCanceled = useMemo(() => proposal?.status === ProposalStatus.CANCELED, [proposal?.status]);
 
   useEffect(() => {
     if (params.proposalId === "draft" && !account?.address) navigate(Routes.HOME);

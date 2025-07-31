@@ -68,7 +68,6 @@ const TopBar = ({ title, proposer, discourseUrl }: { title: string; proposer: st
   const { LL } = useI18nContext();
 
   const { data: avatar } = useGetAvatarOfAddress(proposer || "");
-  console.log(avatar);
 
   const imageUrl = useMemo(() => avatar || getPicassoImgSrc(proposer || ""), [avatar, proposer]);
 
