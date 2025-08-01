@@ -84,7 +84,7 @@ jobs:
       fail-on: none
       slither-args: '--filter-paths "(openzeppelin|mocks|interfaces|deprecated|templates|NodeManagement|external)" --exclude-informational --exclude-optimization --checklist --markdown-root ${{ github.server_url }}/${{ github.repository }}/blob/${{ github.sha }}/'
       skip-change-detection: true
-      env-vars: '{"VECHAIN_URL_DEVNET": "${{ secrets.VECHAIN_URL_DEVNET }}"}'
     secrets:
       MNEMONIC: ${{ secrets.MNEMONIC }}
       TESTNET_STAGING_MNEMONIC: ${{ secrets.TESTNET_STAGING_MNEMONIC }}
+      # VECHAIN_URL_DEVNET: ${{ secrets.VECHAIN_URL_DEVNET }}  # Available after pushing updated slither action
