@@ -1,41 +1,37 @@
-import { IpfsDetails } from "@/types/ipfs";
-import { getProposalsFromIpfs } from "@/utils/ipfs/proposal";
-import { mergeIpfsDetails } from "@/utils/proposals/helpers";
-import { getProposalsEvents, getProposalsWithState } from "@/utils/proposals/proposalsQueries";
-import { getVoteCastResults } from "@/utils/proposals/votedQueries";
-import { useQuery } from "@tanstack/react-query";
-import { ThorClient, useThor } from "@vechain/vechain-kit";
+import {
+  getProposals,
+  PaginatedProposalsResult,
+  PaginationOptions,
+  SESSION_KEY,
+} from "@/utils/proposals/optimizedQueries";
+import { thorClient } from "@/utils/thorClient";
+import { useInfiniteQuery } from "@tanstack/react-query";
 
-//TODO: Pagination and filtering
-const getProposals = async (thor: ThorClient) => {
-  const data = await getProposalsEvents(thor);
-  const proposals = data?.proposals || [];
+export const useProposalsEvents = (options: PaginationOptions = {}) => {
+  const thor = thorClient;
 
-  const { votes } = await getVoteCastResults(thor, { proposalIds: proposals.map(p => p.id) });
-
-  const ipfsFetches = proposals.map(p => getProposalsFromIpfs(p.ipfsHash));
-  const ipfsDetails: IpfsDetails[] = await Promise.all(ipfsFetches);
-
-  const mergedWithIpfs = mergeIpfsDetails(ipfsDetails, proposals);
-  const merged = mergedWithIpfs?.map(p => ({
-    ...p,
-    results: votes?.filter(v => v.proposalId === p.id),
-  }));
-
-  return await getProposalsWithState(merged);
-};
-
-export const useProposalsEvents = () => {
-  const thor = useThor();
-
-  const { data: proposals, isLoading } = useQuery({
-    queryKey: ["proposalsEvents"],
-    queryFn: async () => await getProposals(thor),
+  const { data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage, error } = useInfiniteQuery({
+    queryKey: ["infiniteProposals", SESSION_KEY, options],
+    queryFn: async ({ pageParam }): Promise<PaginatedProposalsResult> =>
+      await getProposals(thor, { ...options, cursor: pageParam as string }),
+    getNextPageParam: (lastPage: PaginatedProposalsResult) => lastPage.nextCursor,
     enabled: !!thor,
+    staleTime: 30 * 1000,
+    gcTime: 5 * 60 * 1000,
+    initialPageParam: undefined,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
   });
 
+  const allProposals = data?.pages.flatMap(page => page.proposals) || [];
+
   return {
-    proposals: proposals || [],
+    proposals: allProposals,
     loading: isLoading,
+    loadingMore: isFetchingNextPage,
+    hasNextPage: hasNextPage || false,
+    fetchNextPage,
+    error,
+    totalCount: data?.pages[0]?.totalCount || 0,
   };
 };

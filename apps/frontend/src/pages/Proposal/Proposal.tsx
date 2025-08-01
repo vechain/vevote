@@ -1,7 +1,6 @@
 import { PageContainer } from "@/components/PageContainer";
 import { ProposalProvider } from "@/components/proposal/ProposalProvider";
 import { SingleProposalSkeleton } from "@/components/ui/SingleProposalSkeleton";
-import { useProposalEvents } from "@/hooks/useProposalEvent";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { Box, Flex, Heading, Stack, Text, useBreakpointValue, VStack } from "@chakra-ui/react";
 import { useWallet } from "@vechain/vechain-kit";
@@ -16,6 +15,7 @@ import { ProposalNavbar } from "./components/ProposalNavbar/ProposalNavbar";
 import { VotingAndTimeline } from "./components/VotingAndTimeline/VotingAndTimeline";
 import { ProposalStatus } from "@/types/proposal";
 import { CanceledProposal } from "./components/CanceledProposal";
+import { useProposalEvent } from "@/hooks/useProposalEvent";
 
 export const Proposal = () => {
   const { LL } = useI18nContext();
@@ -30,7 +30,7 @@ export const Proposal = () => {
     return undefined;
   }, [params.proposalId]);
 
-  const { proposal: proposalData, isLoading } = useProposalEvents({ proposalId });
+  const { proposal: proposalData, loading: isLoading } = useProposalEvent(proposalId);
 
   const proposal = useMemo(() => {
     if (params.proposalId === "draft") return draftProposal || undefined;
