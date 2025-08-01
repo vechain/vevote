@@ -87,4 +87,4 @@ jobs:
     secrets:
       MNEMONIC: ${{ secrets.MNEMONIC }}
       TESTNET_STAGING_MNEMONIC: ${{ secrets.TESTNET_STAGING_MNEMONIC }}
-      # VECHAIN_URL_DEVNET: ${{ secrets.VECHAIN_URL_DEVNET }}  # Available after pushing updated slither action
+      VECHAIN_URL_DEVNET: ${{ secrets.VECHAIN_URL_DEVNET }}
