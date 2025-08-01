@@ -29,6 +29,8 @@ interface IStargateDelegation {
     error VthoTransferFailed(address recipient, uint256 amount);
     /// @notice Error thrown when the rewards accumulation period ended
     error RewardsAccumulationPeriodEnded();
+    /// @notice Error thrown when the user requests to exit delegation repeatedly
+    error DelegationExitAlreadyRequested();
 
     /*------- Events -------*/
     /// @notice Event emitted when a delegation simulation is started
@@ -55,11 +57,43 @@ interface IStargateDelegation {
 
     function version() external view returns (uint256);
 
-    function delegate(uint256 _tokenId, bool _delegateForever) external returns (bool success);
+    function clock() external view returns (uint48);
 
-    function requestDelegationExit(uint256 _tokenId) external returns (bool success);
+    function CLOCK_MODE() external view returns (string memory);
 
-    function claimRewards(uint256 _tokenId) external returns (bool success);
+    function delegate(uint256 _tokenId, bool _delegateForever) external;
+
+    function requestDelegationExit(uint256 _tokenId) external;
+
+    function claimRewards(uint256 _tokenId) external;
+
+    function claimableRewards(uint256 _tokenId) external view returns (uint256);
+
+    function accumulatedRewards(uint256 _tokenId) external view returns (uint256);
 
     function isDelegationActive(uint256 _tokenId) external view returns (bool);
+
+    function getVthoRewardPerBlock(uint256 _level) external view returns (uint256);
+
+    function getDelegationPeriod() external view returns (uint256);
+
+    function getRewardsAccumulationEndBlock() external view returns (uint256);
+
+    function getRewardsAccumulationStartBlock(uint256 _tokenId) external view returns (uint256);
+
+    function getDelegationEndBlock(uint256 _tokenId) external view returns (uint256);
+
+    function currentDelegationPeriodEndBlock(uint256 _tokenId) external view returns (uint256);
+
+    function getDelegationDetails(
+        uint256 _tokenId
+    )
+        external
+        view
+        returns (
+            bool isDelegationActive,
+            uint256 claimableRewards,
+            uint256 rewardsAccumulationStartBlock,
+            uint256 delegationEndBlock
+        );
 }

@@ -1,54 +1,62 @@
-import {
-  Button,
-  Flex,
-  Icon,
-  Menu,
-  MenuButton,
-  MenuButtonProps,
-  MenuItemOption,
-  MenuList,
-  MenuOptionGroup,
-  Text,
-} from "@chakra-ui/react";
-import { Dispatch, SetStateAction } from "react";
-import { IconType } from "react-icons";
+import { CheckIcon } from "@/icons";
+import { Button, Flex, Icon, Menu, MenuButton, MenuButtonProps, MenuItem, MenuList, Text } from "@chakra-ui/react";
+import { SVGProps } from "react";
 
-type Option = string;
+type Option = string | undefined;
 
 export const VotingBaseDropdown = <T extends Option>({
   selectedOption,
-  setSelectedOption,
+  onChange,
   options,
   label,
   icon,
+  renderValue,
   ...restProps
-}: Omit<MenuButtonProps, "children"> & {
-  icon: IconType;
+}: Omit<MenuButtonProps, "children" | "onChange"> & {
+  icon: (props: SVGProps<SVGSVGElement>) => JSX.Element;
   label?: string;
   options: T[];
   selectedOption: T;
-  setSelectedOption: Dispatch<SetStateAction<T>>;
+  onChange?: (value: T) => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  renderValue?: (value: T) => any;
 }) => {
   return (
     <Menu>
-      <MenuButton as={Button} variant={"secondary"} padding={0} {...restProps}>
-        <Flex paddingY={2} paddingX={4} gap={3} alignItems={"center"} color={"gray.600"} height={"40px"}>
+      <MenuButton
+        as={Button}
+        variant={"secondary"}
+        size={{ base: "md", md: "lg" }}
+        w={{ base: "100%", md: "fit-content" }}
+        {...restProps}>
+        <Flex
+          paddingY={2}
+          paddingX={4}
+          gap={{ base: 0, md: 3 }}
+          alignItems={"center"}
+          justifyContent={"center"}
+          color={"gray.600"}
+          w={{ base: "100%", md: "fit-content" }}>
           {label && (
-            <Text fontSize={14} fontWeight={600}>
+            <Text fontSize={14} fontWeight={600} display={{ base: "none", md: "block" }}>
               {label}
             </Text>
           )}
-          <Icon as={icon} width={"20px"} height={"20px"} />
+          <Icon as={icon} boxSize={5} />
         </Flex>
       </MenuButton>
       <MenuList>
-        <MenuOptionGroup defaultValue={selectedOption} onChange={value => setSelectedOption(value as T)}>
-          {options.map((value, id) => (
-            <MenuItemOption key={id} iconPlacement={"end"} value={value}>
-              {value}
-            </MenuItemOption>
-          ))}
-        </MenuOptionGroup>
+        {options.map((value, id) => (
+          <MenuItem
+            key={id}
+            onClick={() => onChange?.(value)}
+            color={selectedOption === value ? "primary.600" : "gray.600"}
+            fontWeight={selectedOption === value ? "semibold" : "normal"}
+            _hover={{ bg: selectedOption === value ? "primary.100" : "gray.50" }}>
+            {renderValue ? renderValue(value) : value}
+            {selectedOption === value && <Icon marginLeft={"auto"} as={CheckIcon} />}
+          </MenuItem>
+        ))}
       </MenuList>
     </Menu>
   );

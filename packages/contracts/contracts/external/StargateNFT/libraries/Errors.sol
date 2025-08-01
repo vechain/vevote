@@ -26,6 +26,9 @@ library Errors {
   /// @notice Thrown upon initialization of contract when a value is zero, eg legacy last token ID
   error ValueCannotBeZero();
 
+  /// @notice Thrown when a value is invalid, eg token id
+  error InvalidValue(uint256 value);
+
   /// @notice Thrown upon initialization of contract when a list is empty, eg token levels
   error ArrayCannotHaveZeroLength();
 
@@ -44,9 +47,6 @@ library Errors {
 
   /// @notice Thrown upon validation of a level id, when the token level spec is not found
   error LevelNotFound(uint8 levelId);
-
-  /// @notice Thrown upon staking, when the token level spec is not active
-  error LevelNotActive(uint8 levelId);
 
   /// @notice Thrown upon staking, when the circulating supply has reached cap for the level
   error LevelCapReached(uint8 levelId);
@@ -92,4 +92,14 @@ library Errors {
 
   /// @notice Thrown when the token has no VTHO rewards to claim
   error NoBaseVthoRewardsToClaim(uint256 tokenId);
+
+  // ------------------ Circulating Supply Errors ------------------ //
+
+  /// @notice Thrown when the block number is in the future
+  error BlockInFuture();
+
+  // ------------------ Whitelist Errors ------------------ //
+
+  /// @notice Thrown upon removal of a whitelist entry, when the entry is not found
+  error WhitelistEntryNotFound(address owner);
 }

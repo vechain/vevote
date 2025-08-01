@@ -1,7 +1,5 @@
+import { CancelIcon, CheckCircleIcon, CircleInfoIcon, CircleXIcon } from "@/icons";
 import { defineStyle, Flex, FlexProps, Icon } from "@chakra-ui/react";
-import { FcCancel } from "react-icons/fc";
-import { GoCheckCircle, GoXCircle } from "react-icons/go";
-import { IoIosInformationCircleOutline } from "react-icons/io";
 
 export type InfoBoxProps = FlexProps & {
   variant: "info" | "approved" | "executed" | "min-not-reached" | "rejected" | "canceled";
@@ -9,7 +7,7 @@ export type InfoBoxProps = FlexProps & {
 
 export const infoBoxVariants = {
   info: {
-    icon: IoIosInformationCircleOutline,
+    icon: CircleInfoIcon,
     style: defineStyle({
       borderColor: "blue.200",
       backgroundColor: "blue.50",
@@ -17,7 +15,7 @@ export const infoBoxVariants = {
     }),
   },
   approved: {
-    icon: GoCheckCircle,
+    icon: CheckCircleIcon,
     style: defineStyle({
       borderColor: "green.200",
       backgroundColor: "green.50",
@@ -25,7 +23,7 @@ export const infoBoxVariants = {
     }),
   },
   executed: {
-    icon: GoCheckCircle,
+    icon: CheckCircleIcon,
     style: defineStyle({
       borderColor: "green.200",
       backgroundColor: "green.50",
@@ -33,7 +31,7 @@ export const infoBoxVariants = {
     }),
   },
   "min-not-reached": {
-    icon: FcCancel,
+    icon: CircleXIcon,
     style: defineStyle({
       borderColor: "red.200",
       backgroundColor: "red.50",
@@ -41,7 +39,7 @@ export const infoBoxVariants = {
     }),
   },
   rejected: {
-    icon: GoXCircle,
+    icon: CircleXIcon,
     style: defineStyle({
       borderColor: "red.200",
       backgroundColor: "red.50",
@@ -49,7 +47,7 @@ export const infoBoxVariants = {
     }),
   },
   canceled: {
-    icon: GoXCircle,
+    icon: CancelIcon,
     style: defineStyle({
       borderColor: "red.200",
       backgroundColor: "gray.100",
@@ -70,7 +68,11 @@ export const InfoBox = ({ children, variant, ...restProps }: InfoBoxProps) => {
       width={"100%"}
       gap={3}
       {...restProps}>
-      <Icon as={infoBoxVariants[variant].icon} color={infoBoxVariants[variant].style.color} />
+      <Icon
+        as={infoBoxVariants[variant].icon}
+        color={infoBoxVariants[variant].style.color}
+        boxSize={{ base: 4, md: 6 }}
+      />
       {children}
     </Flex>
   );

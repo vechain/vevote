@@ -2,24 +2,31 @@ import { IpfsDetails } from "@/types/ipfs";
 import { getProposalsFromIpfs } from "@/utils/ipfs/proposal";
 import { mergeIpfsDetails } from "@/utils/proposals/helpers";
 import { getProposalsEvents, getProposalsWithState } from "@/utils/proposals/proposalsQueries";
+import { getVoteCastResults } from "@/utils/proposals/votedQueries";
 import { useQuery } from "@tanstack/react-query";
-import { useConnex } from "@vechain/vechain-kit";
+import { ThorClient, useThor } from "@vechain/vechain-kit";
 
-const getProposals = async (thor: Connex.Thor) => {
+//TODO: Pagination and filtering
+const getProposals = async (thor: ThorClient) => {
   const data = await getProposalsEvents(thor);
-  const proposals = data?.proposals;
-  const mergedData: IpfsDetails[] = [];
+  const proposals = data?.proposals || [];
 
-  for (let i = 0; i < proposals.length; i++) {
-    const element = await getProposalsFromIpfs(proposals[i].ipfsHash);
-    mergedData.push(element);
-  }
+  const { votes } = await getVoteCastResults(thor, { proposalIds: proposals.map(p => p.id) });
 
-  return await getProposalsWithState(mergeIpfsDetails(mergedData, proposals));
+  const ipfsFetches = proposals.map(p => getProposalsFromIpfs(p.ipfsHash));
+  const ipfsDetails: IpfsDetails[] = await Promise.all(ipfsFetches);
+
+  const mergedWithIpfs = mergeIpfsDetails(ipfsDetails, proposals);
+  const merged = mergedWithIpfs?.map(p => ({
+    ...p,
+    results: votes?.filter(v => v.proposalId === p.id),
+  }));
+
+  return await getProposalsWithState(merged);
 };
 
 export const useProposalsEvents = () => {
-  const { thor } = useConnex();
+  const thor = useThor();
 
   const { data: proposals, isLoading } = useQuery({
     queryKey: ["proposalsEvents"],
@@ -27,5 +34,8 @@ export const useProposalsEvents = () => {
     enabled: !!thor,
   });
 
-  return { proposals: proposals || [], loading: isLoading };
+  return {
+    proposals: proposals || [],
+    loading: isLoading,
+  };
 };

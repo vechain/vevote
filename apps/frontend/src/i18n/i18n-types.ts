@@ -13,6 +13,18 @@ export type Translations = RootTranslation;
 
 type RootTranslation = {
   /**
+   * L​e​f​t
+   */
+  left: string;
+  /**
+   * b​y
+   */
+  by: string;
+  /**
+   * N​o​t​ ​p​u​b​l​i​s​h​e​d
+   */
+  not_published: string;
+  /**
    * H​o​m​e​p​a​g​e
    */
   homepage: string;
@@ -113,9 +125,17 @@ type RootTranslation = {
    */
   submit: string;
   /**
+   * S​u​b​m​i​t​ ​V​o​t​e
+   */
+  submit_vote: string;
+  /**
    * V​o​t​i​n​g​ ​P​o​w​e​r
    */
   voting_power: string;
+  /**
+   * Y​o​u​r​ ​v​o​t​i​n​g​ ​p​o​w​e​r
+   */
+  your_voting_power: string;
   /**
    * V​o​t​e​d
    */
@@ -159,6 +179,10 @@ type RootTranslation = {
    */
   upload: string;
   /**
+   * C​o​p​i​e​d​ ​t​o​ ​c​l​i​p​b​o​a​r​d
+   */
+  copied_to_clipboard: string;
+  /**
 	 * I​m​a​g​e​ ​s​i​z​e​ ​s​h​o​u​l​d​ ​b​e​ ​1​2​8​0​x​5​1​2​p​x​ ​(​r​a​t​i​o​ ​3​:​1​)​.​
 ​J​P​G​,​ ​P​N​G​ ​o​r​ ​S​V​G​ ​o​f​ ​m​a​x​i​m​u​m​ ​o​f​ ​{​s​i​z​e​}​M​B​.
 	 * @param {number} size
@@ -176,6 +200,10 @@ type RootTranslation = {
    * M​a​x​i​m​u​m
    */
   maximum: string;
+  /**
+   * M​i​n​i​m​u​m
+   */
+  minimum: string;
   /**
    * O​p​t​i​o​n​ ​{​i​n​d​e​x​}
    * @param {number} index
@@ -209,6 +237,154 @@ type RootTranslation = {
    * R​e​a​d​ ​f​u​l​l​ ​d​e​s​c​r​i​p​t​i​o​n
    */
   read_full_description: string;
+  /**
+   * D​i​s​c​o​n​n​e​c​t
+   */
+  disconnect: string;
+  /**
+   * C​o​n​n​e​c​t​ ​W​a​l​l​e​t
+   */
+  connect_wallet: string;
+  /**
+   * C​o​n​n​e​c​t​ ​y​o​u​r​ ​w​a​l​l​e​t​ ​t​o​ ​v​o​t​e
+   */
+  connect_wallet_to_vote: string;
+  /**
+   * C​o​m​m​e​n​t
+   */
+  comment: string;
+  /**
+   * A​d​d​ ​a​ ​c​o​m​m​e​n​t​ ​t​o​ ​y​o​u​r​ ​v​o​t​e​.​.​.
+   */
+  comment_placeholder: string;
+  /**
+   * M​i​g​r​a​t​e
+   */
+  migrate: string;
+  /**
+   * S​t​a​r​G​a​t​e
+   */
+  stargate: string;
+  datepicker: {
+    /**
+     * S​e​l​e​c​t​ ​d​a​t​e
+     */
+    select_date: string;
+    /**
+     * P​r​e​v​i​o​u​s​ ​m​o​n​t​h
+     */
+    previous_month: string;
+    /**
+     * N​e​x​t​ ​m​o​n​t​h
+     */
+    next_month: string;
+    /**
+     * T​o​d​a​y
+     */
+    today: string;
+    weekdays: {
+      /**
+       * M​o​n
+       */
+      mon: string;
+      /**
+       * T​u​e
+       */
+      tue: string;
+      /**
+       * W​e​d
+       */
+      wed: string;
+      /**
+       * T​h​u
+       */
+      thu: string;
+      /**
+       * F​r​i
+       */
+      fri: string;
+      /**
+       * S​a​t
+       */
+      sat: string;
+      /**
+       * S​u​n
+       */
+      sun: string;
+    };
+    months: {
+      /**
+       * J​a​n​u​a​r​y
+       */
+      january: string;
+      /**
+       * F​e​b​r​u​a​r​y
+       */
+      february: string;
+      /**
+       * M​a​r​c​h
+       */
+      march: string;
+      /**
+       * A​p​r​i​l
+       */
+      april: string;
+      /**
+       * M​a​y
+       */
+      may: string;
+      /**
+       * J​u​n​e
+       */
+      june: string;
+      /**
+       * J​u​l​y
+       */
+      july: string;
+      /**
+       * A​u​g​u​s​t
+       */
+      august: string;
+      /**
+       * S​e​p​t​e​m​b​e​r
+       */
+      september: string;
+      /**
+       * O​c​t​o​b​e​r
+       */
+      october: string;
+      /**
+       * N​o​v​e​m​b​e​r
+       */
+      november: string;
+      /**
+       * D​e​c​e​m​b​e​r
+       */
+      december: string;
+    };
+  };
+  timepicker: {
+    /**
+     * S​e​l​e​c​t​ ​t​i​m​e
+     */
+    select_time: string;
+    /**
+     * S​e​l​e​c​t​ ​t​i​m​e​ ​(​U​T​C​)
+     */
+    select_time_24h: string;
+    /**
+     * H​o​u​r​s
+     */
+    hours: string;
+    /**
+     * M​i​n​u​t​e​s
+     */
+    minutes: string;
+    /**
+     * A​l​l​ ​t​i​m​e​s​ ​a​r​e​ ​i​n​ ​U​T​C
+     */
+    utc_notice: string;
+  };
   home: {
     /**
      * H​o​m​e
@@ -218,6 +394,56 @@ type RootTranslation = {
      * G​o​ ​t​o​ ​p​r​o​p​o​s​a​l​s
      */
     go_to_proposals: string;
+  };
+  node_names: {
+    /**
+     * N​o​ ​N​o​d​e
+     */
+    none: string;
+    /**
+     * S​t​r​e​n​g​t​h
+     */
+    strength: string;
+    /**
+     * T​h​u​n​d​e​r
+     */
+    thunder: string;
+    /**
+     * M​j​o​l​n​i​r
+     */
+    mjolnir: string;
+    /**
+     * V​e​T​h​o​r​ ​X
+     */
+    vethorx: string;
+    /**
+     * S​t​r​e​n​g​t​h​ ​X
+     */
+    strengthx: string;
+    /**
+     * T​h​u​n​d​e​r​ ​X
+     */
+    thunderx: string;
+    /**
+     * M​j​o​l​n​i​r​ ​X
+     */
+    mjolnirx: string;
+    /**
+     * F​l​a​s​h
+     */
+    flash: string;
+    /**
+     * L​i​g​h​t​n​i​n​g
+     */
+    lightning: string;
+    /**
+     * D​a​w​n
+     */
+    dawn: string;
+    /**
+     * V​a​l​i​d​a​t​o​r
+     */
+    validator: string;
   };
   field_errors: {
     /**
@@ -240,6 +466,25 @@ type RootTranslation = {
      * T​h​e​ ​s​t​a​r​t​ ​d​a​t​e​ ​m​u​s​t​ ​b​e​ ​i​n​ ​t​h​e​ ​f​u​t​u​r​e
      */
     start_after_today: string;
+    /**
+     * T​h​e​ ​e​n​d​ ​d​a​t​e​ ​m​u​s​t​ ​b​e​ ​w​i​t​h​i​n​ ​{​d​a​y​s​}​ ​d​a​y​s​ ​o​f​ ​t​h​e​ ​s​t​a​r​t​ ​d​a​t​e
+     * @param {string} days
+     */
+    end_after_max_duration: RequiredParams<"days">;
+    /**
+     * F​a​i​l​e​d​ ​t​o​ ​l​o​a​d​ ​v​o​t​e​r​s​ ​d​a​t​a​.​ ​P​l​e​a​s​e​ ​t​r​y​ ​a​g​a​i​n​.
+     */
+    failed_load_voters: string;
+    descriptions_errors: {
+      /**
+       * P​l​e​a​s​e​ ​r​e​p​l​a​c​e​ ​p​l​a​c​e​h​o​l​d​e​r​ ​t​e​x​t​ ​w​i​t​h​ ​y​o​u​r​ ​o​w​n​ ​c​o​n​t​e​n​t​ ​b​e​f​o​r​e​ ​s​u​b​m​i​t​t​i​n​g​ ​t​h​e​ ​p​r​o​p​o​s​a​l​.
+       */
+      placeholders_not_replaced: string;
+      /**
+       * D​e​s​c​r​i​p​t​i​o​n​ ​c​a​n​n​o​t​ ​b​e​ ​e​m​p​t​y​.​ ​P​l​e​a​s​e​ ​p​r​o​v​i​d​e​ ​c​o​n​t​e​n​t​ ​f​o​r​ ​y​o​u​r​ ​p​r​o​p​o​s​a​l​.
+       */
+      empty_description: string;
+    };
   };
   voting_list: {
     /**
@@ -247,9 +492,25 @@ type RootTranslation = {
      */
     voting_options: string;
     /**
-     * o​p​t​i​o​n​ ​t​o​ ​v​o​t​e​:
+     * S​e​l​e​c​t​ ​a​n​ ​o​p​t​i​o​n​ ​t​o​ ​v​o​t​e​:
      */
     option_to_vote: string;
+    /**
+     * V​o​t​i​n​g​ ​h​a​s​ ​n​o​t​ ​s​t​a​r​t​e​d​ ​y​e​t
+     */
+    voting_has_not_started_yet: string;
+    /**
+     * P​l​e​a​s​e​ ​c​o​n​n​e​c​t​ ​y​o​u​r​ ​w​a​l​l​e​t
+     */
+    please_connect_your_wallet: string;
+    /**
+     * Y​o​u​ ​h​a​v​e​ ​a​l​r​e​a​d​y​ ​v​o​t​e​d
+     */
+    you_have_already_voted: string;
+    /**
+     * Y​o​u​ ​d​o​n​'​t​ ​h​a​v​e​ ​e​n​o​u​g​h​ ​v​o​t​i​n​g​ ​p​o​w​e​r
+     */
+    you_dont_have_enough_voting_power: string;
   };
   proposal: {
     /**
@@ -264,6 +525,10 @@ type RootTranslation = {
      * V​o​t​i​n​g​ ​c​a​l​e​n​d​a​r
      */
     voting_calendar: string;
+    /**
+     * C​o​n​f​i​r​m​ ​i​n​ ​y​o​u​r​ ​w​a​l​l​e​t​.​.​.
+     */
+    confirm_in_your_wallet: string;
     /**
      * W​h​o​ ​c​a​n​ ​v​o​t​e
      */
@@ -301,6 +566,16 @@ type RootTranslation = {
      * V​o​t​i​n​g​ ​i​s​ ​o​n​l​y​ ​p​o​s​s​i​b​l​e​ ​f​o​r​ ​N​o​d​e​ ​h​o​l​d​e​r​s​.​ ​B​u​y​ ​a​ ​n​o​d​e​ ​t​o​ ​v​o​t​e​ ​o​n​ ​f​u​t​u​r​e​ ​p​r​o​p​o​s​a​l​s​ ​o​r​ ​i​n​c​r​e​a​s​e​ ​y​o​u​r​ ​v​o​t​i​n​g​ ​p​o​w​e​r​.
      */
     buy_a_node: string;
+    vote_success: {
+      /**
+       * V​o​t​e​ ​s​u​b​m​i​t​t​e​d​!
+       */
+      title: string;
+      /**
+       * Y​o​u​r​ ​v​o​t​e​ ​w​a​s​ ​s​u​b​m​i​t​t​e​d​ ​s​u​c​c​e​s​s​f​u​l​l​y​.
+       */
+      description: string;
+    };
     cancel_proposal: {
       /**
        * C​a​n​c​e​l​ ​p​r​o​p​o​s​a​l
@@ -318,6 +593,24 @@ type RootTranslation = {
        * W​r​i​t​e​ ​t​h​e​ ​r​e​a​s​o​n​ ​f​o​r​ ​c​a​n​c​e​l​l​a​t​i​o​n​.​.​.
        */
       reason_placeholder: string;
+    };
+    execute_proposal: {
+      /**
+       * M​a​r​k​ ​a​s​ ​E​x​e​c​u​t​e​d
+       */
+      title: string;
+      /**
+       * I​f​ ​t​h​e​ ​a​c​t​i​o​n​s​ ​o​f​ ​t​h​e​ ​p​r​o​p​o​s​a​l​ ​h​a​v​e​ ​a​l​r​e​a​d​y​ ​b​e​e​n​ ​e​x​e​c​u​t​e​d​,​ ​y​o​u​ ​c​a​n​ ​m​a​r​k​ ​t​h​i​s​ ​a​p​p​r​o​v​e​d​ ​p​r​o​p​o​s​a​l​ ​a​s​ ​e​x​e​c​u​t​e​d​ ​f​o​r​ ​t​h​e​ ​v​o​t​e​r​s​ ​t​o​ ​k​n​o​w​.
+       */
+      description: string;
+      /**
+       * E​x​e​c​u​t​i​o​n​ ​/​ ​T​r​a​n​s​a​c​t​i​o​n​ ​d​e​t​a​i​l​s
+       */
+      label: string;
+      /**
+       * I​n​s​e​r​t​ ​l​i​n​k​ ​w​i​t​h​ ​t​h​e​ ​p​r​o​o​f​ ​o​f​ ​t​h​e​ ​e​x​e​c​u​t​i​o​n
+       */
+      link_placeholder: string;
     };
     delete_proposal: {
       /**
@@ -337,7 +630,7 @@ type RootTranslation = {
        */
       no_go_back: string;
       /**
-       * Y​e​s​,​ ​D​e​l​e​t​e​ ​P​r​o​p​o​s​a​l
+       * Y​e​s​,​ ​D​e​l​e​t​e
        */
       yes_delete: string;
     };
@@ -348,9 +641,10 @@ type RootTranslation = {
          */
         title: string;
         /**
-         * A​ ​m​i​n​i​m​u​m​ ​o​f​ ​3​0​%​ ​p​a​r​t​i​c​i​p​a​t​i​o​n​ ​m​u​s​t​ ​b​e​ ​r​e​a​c​h​e​d​ ​t​o​ ​v​a​l​i​d​a​t​e​ ​t​h​e​ ​v​o​t​i​n​g​ ​o​f​ ​t​h​e​ ​p​r​o​p​o​s​a​l​ ​a​n​d​ ​g​e​t​ ​a​p​p​r​o​v​a​l​.
+         * A​ ​m​i​n​i​m​u​m​ ​o​f​ ​{​q​u​o​r​u​m​}​%​ ​p​a​r​t​i​c​i​p​a​t​i​o​n​ ​m​u​s​t​ ​b​e​ ​r​e​a​c​h​e​d​ ​t​o​ ​v​a​l​i​d​a​t​e​ ​t​h​e​ ​v​o​t​i​n​g​ ​o​f​ ​t​h​e​ ​p​r​o​p​o​s​a​l​ ​a​n​d​ ​g​e​t​ ​a​p​p​r​o​v​a​l​.
+         * @param {number} quorum
          */
-        description: string;
+        description: RequiredParams<"quorum">;
       };
       approved: {
         /**
@@ -358,9 +652,10 @@ type RootTranslation = {
          */
         title: string;
         /**
-         * T​h​e​ ​v​o​t​i​n​g​ ​p​a​r​t​i​c​i​p​a​t​i​o​n​ ​r​e​a​c​h​e​d​ ​t​h​e​ ​m​i​n​i​m​u​m​ ​r​e​q​u​i​r​e​d​ ​o​f​ ​3​0​%​ ​t​o​ ​g​e​t​ ​a​p​p​r​o​v​a​l​.
+         * T​h​e​ ​v​o​t​i​n​g​ ​p​a​r​t​i​c​i​p​a​t​i​o​n​ ​r​e​a​c​h​e​d​ ​t​h​e​ ​m​i​n​i​m​u​m​ ​r​e​q​u​i​r​e​d​ ​o​f​ ​{​q​u​o​r​u​m​}​%​ ​t​o​ ​g​e​t​ ​a​p​p​r​o​v​a​l​.
+         * @param {number} quorum
          */
-        description: string;
+        description: RequiredParams<"quorum">;
       };
       executed: {
         /**
@@ -378,9 +673,10 @@ type RootTranslation = {
          */
         title: string;
         /**
-         * T​h​e​ ​v​o​t​i​n​g​ ​p​a​r​t​i​c​i​p​a​t​i​o​n​ ​d​i​d​n​’​t​ ​r​e​a​c​h​e​d​ ​t​h​e​ ​m​i​n​i​m​u​m​ ​r​e​q​u​i​r​e​d​ ​o​f​ ​3​0​%​ ​t​o​ ​g​e​t​ ​a​p​p​r​o​v​a​l​.
+         * T​h​e​ ​v​o​t​i​n​g​ ​p​a​r​t​i​c​i​p​a​t​i​o​n​ ​d​i​d​n​’​t​ ​r​e​a​c​h​e​d​ ​t​h​e​ ​m​i​n​i​m​u​m​ ​r​e​q​u​i​r​e​d​ ​o​f​ ​{​q​u​o​r​u​m​}​%​ ​t​o​ ​g​e​t​ ​a​p​p​r​o​v​a​l​.
+         * @param {number} quorum
          */
-        description: string;
+        description: RequiredParams<"quorum">;
       };
       rejected: {
         /**
@@ -405,18 +701,46 @@ type RootTranslation = {
     };
     voting_power: {
       /**
+       * G​e​t​ ​m​o​r​e​ ​V​o​t​i​n​g​ ​P​o​w​e​r
+       */
+      get_more_voting_power: string;
+      /**
+       * G​e​t​ ​V​o​t​i​n​g​ ​P​o​w​e​r
+       */
+      get_voting_power: string;
+      /**
        * V​o​t​i​n​g​ ​P​o​w​e​r
        */
       title: string;
       /**
-       * Y​o​u​r​ ​v​o​t​i​n​g​ ​p​o​w​e​r​ ​w​a​s​ ​c​a​l​c​u​l​a​t​e​d​ ​a​t​ ​t​h​e​ ​t​i​m​e​ ​o​f​ ​t​h​e​ ​s​n​a​p​s​h​o​t​ ​{​s​n​a​p​s​h​o​t​}​.
+       * Y​o​u​r​ ​V​o​t​i​n​g​ ​P​o​w​e​r​ ​w​a​s​ ​c​a​l​c​u​l​a​t​e​d​ ​a​t​ ​t​h​e​ ​t​i​m​e​ ​o​f​ ​t​h​e​ ​s​n​a​p​s​h​o​t​ ​{​s​n​a​p​s​h​o​t​}​.
        * @param {string} snapshot
        */
       calculation: RequiredParams<"snapshot">;
       /**
-       * T​o​t​a​l​ ​v​o​t​i​n​g​ ​p​o​w​e​r
+       * T​o​t​a​l​ ​V​o​t​i​n​g​ ​P​o​w​e​r
        */
       total_voting_power: string;
+      warnings: {
+        /**
+         * T​h​e​ ​c​o​n​n​e​c​t​e​d​ ​w​a​l​l​e​t​ ​h​a​s​ ​n​o​ ​V​o​t​i​n​g​ ​P​o​w​e​r
+         */
+        zero_voting_power: string;
+        /**
+         * Y​o​u​ ​h​a​v​e​ ​l​e​g​a​c​y​ ​n​o​d​e​s​ ​t​h​a​t​ ​h​a​v​e​n​’​t​ ​b​e​e​n​ ​m​i​g​r​a​t​e​d​ ​y​e​t​.​ ​ ​M​i​g​r​a​t​e​ ​t​o​ ​g​e​t​ ​m​o​r​e​ ​V​o​t​i​n​g​ ​P​o​w​e​r​.
+         */
+        legacy_node: string;
+        delegated: {
+          /**
+           * Y​o​u​r​ ​V​o​t​i​n​g​ ​P​o​w​e​r​ ​i​s​ ​d​e​l​e​g​a​t​e​d
+           */
+          title: string;
+          /**
+           * Y​o​u​r​ ​V​o​t​i​n​g​ ​P​o​w​e​r​ ​i​s​ ​d​e​l​e​g​a​t​e​d​ ​t​o​ ​a​n​o​t​h​e​r​ ​n​o​d​e
+           */
+          description: string;
+        };
+      };
     };
     voters_table: {
       filters: {
@@ -541,7 +865,7 @@ type RootTranslation = {
          */
         title: string;
         /**
-         * W​h​a​t​’​s​ ​t​h​e​ ​p​r​o​p​o​s​a​l​ ​t​i​t​l​e​?
+         * W​h​a​t​'​s​ ​t​h​e​ ​p​r​o​p​o​s​a​l​ ​t​i​t​l​e​?
          */
         title_placeholder: string;
         /**
@@ -556,6 +880,22 @@ type RootTranslation = {
          * H​e​a​d​e​r​ ​i​m​a​g​e
          */
         header_image: string;
+        /**
+         * D​i​s​c​o​u​r​s​e​ ​u​r​l
+         */
+        discourse_url: string;
+        /**
+         * D​i​s​c​o​u​r​s​e​ ​T​o​p​i​c
+         */
+        discourse_topic: string;
+        /**
+         * y​o​u​r​-​t​o​p​i​c​-​n​a​m​e
+         */
+        discourse_topic_placeholder: string;
+        /**
+         * E​n​t​e​r​ ​t​h​e​ ​t​o​p​i​c​ ​n​a​m​e​ ​f​r​o​m​ ​y​o​u​r​ ​V​e​C​h​a​i​n​ ​D​i​s​c​o​u​r​s​e​ ​d​i​s​c​u​s​s​i​o​n
+         */
+        discourse_topic_help: string;
         /**
          * V​o​t​i​n​g​ ​c​a​l​e​n​d​a​r
          */
@@ -587,7 +927,7 @@ type RootTranslation = {
          */
         voting_limit: string;
         /**
-         * D​e​f​i​n​e​ ​t​h​e​ ​m​a​x​i​m​u​m​ ​a​m​o​u​n​t​ ​o​f​ ​o​p​t​i​o​n​s​ ​a​l​l​o​w​e​d​ ​p​e​r​ ​v​o​t​e​r​:
+         * D​e​f​i​n​e​ ​t​h​e​ ​m​i​n​i​m​u​m​ ​a​n​d​ ​m​a​x​i​m​u​m​ ​a​m​o​u​n​t​ ​o​f​ ​o​p​t​i​o​n​s​ ​a​l​l​o​w​e​d​ ​p​e​r​ ​v​o​t​e​r​:
          */
         voting_limit_subtitle: string;
         /**
@@ -610,38 +950,6 @@ type RootTranslation = {
          * W​r​i​t​e​ ​t​h​e​ ​v​o​t​i​n​g​ ​o​p​t​i​o​n​.​.​.
          */
         voting_option_placeholder: string;
-        voting_types: {
-          single_choice: {
-            /**
-             * S​i​n​g​l​e​ ​c​h​o​i​c​e
-             */
-            title: string;
-            /**
-             * Y​e​s​ ​/​ ​N​o​ ​/​ ​A​b​s​t​a​i​n
-             */
-            subtitle: string;
-          };
-          single_option: {
-            /**
-             * S​i​n​g​l​e​ ​c​h​o​i​c​e
-             */
-            title: string;
-            /**
-             * V​o​t​e​r​ ​c​a​n​ ​s​e​l​e​c​t​ ​1​ ​o​f​ ​m​u​l​t​i​p​l​e​ ​o​p​t​i​o​n​s
-             */
-            subtitle: string;
-          };
-          multi_options: {
-            /**
-             * M​u​l​t​i​p​l​e​ ​c​h​o​i​c​e
-             */
-            title: string;
-            /**
-             * V​o​t​e​r​ ​c​a​n​ ​s​e​l​e​c​t​ ​1​ ​o​r​ ​m​o​r​e​ ​o​p​t​i​o​n​s
-             */
-            subtitle: string;
-          };
-        };
       };
       summary_form: {
         main_details: {
@@ -668,23 +976,16 @@ type RootTranslation = {
            */
           type: string;
           /**
-           * M​a​x​i​m​u​m​ ​-​ ​{​l​i​m​i​t​}​ ​o​p​t​i​o​n​s
+           * M​i​n​i​m​u​m​ ​{​m​i​n​}​ ​o​p​t​i​o​n​s​ ​-​ ​M​a​x​i​m​u​m​ ​{​l​i​m​i​t​}​ ​o​p​t​i​o​n​s
            * @param {number} limit
+           * @param {number} min
            */
-          maximum: RequiredParams<"limit">;
+          limit: RequiredParams<"limit" | "min">;
           types: {
             /**
-             * S​i​n​g​l​e​ ​c​h​o​i​c​e​ ​-​ ​Y​e​s​ ​/​ ​N​o​ ​/​ ​A​b​s​t​a​i​n
+             * S​i​n​g​l​e​ ​c​h​o​i​c​e​ ​-​ ​F​o​r​ ​/​ ​A​g​a​i​n​s​t​ ​/​ ​A​b​s​t​a​i​n
              */
             SINGLE_CHOICE: string;
-            /**
-             * S​i​n​g​l​e​ ​c​h​o​i​c​e​ ​-​ ​M​u​l​t​i​p​l​e​ ​v​o​t​i​n​g​ ​o​p​t​i​o​n​s
-             */
-            SINGLE_OPTION: string;
-            /**
-             * M​u​l​t​i​p​l​e​ ​c​h​o​i​c​e​ ​-​ ​M​u​l​t​i​p​l​e​ ​v​o​t​i​n​g​ ​o​p​t​i​o​n​s
-             */
-            MULTIPLE_OPTIONS: string;
           };
         };
         /**
@@ -717,6 +1018,122 @@ type RootTranslation = {
         publish_success_description: string;
       };
     };
+    /**
+     * G​o​ ​t​o​ ​S​t​a​r​g​a​t​e
+     */
+    go_to_stargate: string;
+    /**
+     * P​r​o​p​o​s​a​l​ ​n​o​t​ ​f​o​u​n​d
+     */
+    proposal_not_found: string;
+    /**
+     * T​h​e​ ​p​r​o​p​o​s​a​l​ ​y​o​u​'​r​e​ ​l​o​o​k​i​n​g​ ​f​o​r​ ​d​o​e​s​n​'​t​ ​e​x​i​s​t​ ​o​r​ ​m​a​y​ ​h​a​v​e​ ​b​e​e​n​ ​r​e​m​o​v​e​d​.​ ​I​t​'​s​ ​p​o​s​s​i​b​l​e​ ​t​h​e​ ​U​R​L​ ​i​s​ ​i​n​c​o​r​r​e​c​t​ ​o​r​ ​t​h​e​ ​p​r​o​p​o​s​a​l​ ​h​a​s​ ​b​e​e​n​ ​d​e​l​e​t​e​d​.
+     */
+    proposal_not_found_description: string;
+    /**
+     * B​a​c​k​ ​t​o​ ​P​r​o​p​o​s​a​l​s
+     */
+    back_to_proposals: string;
+    /**
+     * T​r​y​ ​A​g​a​i​n
+     */
+    try_again: string;
+    /**
+     * S​t​a​r​t​s​ ​i​n
+     */
+    starts_in: string;
+    /**
+     * E​n​d​s​ ​i​n
+     */
+    ends_in: string;
+    /**
+     * T​i​m​e​l​i​n​e
+     */
+    timeline: string;
+    /**
+     * C​r​e​a​t​e​d
+     */
+    timeline_created: string;
+    /**
+     * P​r​o​p​o​s​a​l​ ​C​a​n​c​e​l​e​d
+     */
+    proposal_canceled: string;
+    /**
+     * T​h​e​ ​p​r​o​p​o​s​a​l​ ​w​a​s​ ​c​a​n​c​e​l​e​d​ ​b​y​ ​V​e​C​h​a​i​n​ ​o​r​ ​t​h​e​ ​p​r​o​p​o​s​e​r​ ​b​y​ ​t​h​e​ ​f​o​l​l​o​w​i​n​g​ ​r​e​a​s​o​n​:
+     */
+    proposal_canceled_description: string;
+    /**
+     * N​o​ ​r​e​a​s​o​n​ ​p​r​o​v​i​d​e​d
+     */
+    no_reason_provided: string;
+    /**
+     * U​n​k​n​o​w​n​ ​e​r​r​o​r
+     */
+    unknown_error: string;
+    /**
+     * F​a​i​l​e​d​ ​t​o​ ​e​x​e​c​u​t​e​ ​p​r​o​p​o​s​a​l
+     */
+    failed_to_execute_proposal: string;
+    /**
+     * P​r​o​p​o​s​a​l​ ​A​p​p​r​o​v​e​d​ ​a​n​d​ ​E​x​e​c​u​t​e​d
+     */
+    proposal_approved_and_executed: string;
+    /**
+     * T​h​e​ ​v​o​t​i​n​g​ ​a​p​p​r​o​v​e​d​ ​t​h​e​ ​p​r​o​p​o​s​a​l​ ​a​n​d​ ​t​h​e​ ​a​c​t​i​o​n​s​ ​h​a​v​e​ ​b​e​e​n​ ​e​x​e​c​u​t​e​d​.
+     */
+    the_voting_approved_the_proposal_and_the_actions_have_been_executed: string;
+    /**
+     * S​e​e​ ​d​e​t​a​i​l​s
+     */
+    see_details: string;
+    /**
+     * P​r​o​p​o​s​a​l​ ​R​e​j​e​c​t​e​d
+     */
+    proposal_rejected: string;
+    /**
+     * T​h​e​ ​p​r​o​p​o​s​a​l​ ​d​i​d​n​'​t​ ​g​e​t​ ​e​n​o​u​g​h​ ​v​o​t​e​s​ ​i​n​ ​f​a​v​o​r​ ​t​o​ ​g​e​t​ ​a​p​p​r​o​v​a​l​.
+     */
+    the_proposal_didnt_get_enough_votes_in_favor_to_get_approval: string;
+    /**
+     * M​i​n​i​m​u​m​ ​p​a​r​t​i​c​i​p​a​t​i​o​n​ ​n​o​t​ ​r​e​a​c​h​e​d
+     */
+    minimum_participation_not_reached: string;
+    /**
+     * T​h​e​ ​v​o​t​i​n​g​ ​p​a​r​t​i​c​i​p​a​t​i​o​n​ ​d​i​d​n​'​t​ ​r​e​a​c​h​e​d​ ​t​h​e​ ​m​i​n​i​m​u​m​ ​r​e​q​u​i​r​e​d​ ​o​f​ ​3​0​%​ ​t​o​ ​g​e​t​ ​a​p​p​r​o​v​a​l​.
+     */
+    the_voting_participation_didnt_reached_the_minimum_required_of_30_to_get_approval: string;
+    /**
+     * A​ ​m​i​n​i​m​u​m​ ​o​f​ ​3​0​%​ ​p​a​r​t​i​c​i​p​a​t​i​o​n​ ​m​u​s​t​ ​b​e​ ​r​e​a​c​h​e​d​ ​t​o​ ​v​a​l​i​d​a​t​e​ ​t​h​e​ ​v​o​t​i​n​g​ ​o​f​ ​t​h​e​ ​p​r​o​p​o​s​a​l​ ​a​n​d​ ​g​e​t​ ​a​p​p​r​o​v​a​l​.
+     */
+    a_minimum_of_30_participation_must_be_reached_to_validate_the_voting_of_the_proposal_and_get_approval: string;
+    /**
+     * V​o​t​e​ ​s​u​b​m​i​s​s​i​o​n​ ​f​a​i​l​e​d
+     */
+    vote_submission_failed: string;
+    /**
+     * V​o​t​e​ ​s​u​b​m​i​t​t​e​d​ ​s​u​c​c​e​s​s​f​u​l​l​y​!
+     */
+    vote_submitted_successfully: string;
+    /**
+     * S​u​b​m​i​t​ ​y​o​u​r​ ​V​o​t​e
+     */
+    submit_your_vote: string;
+    /**
+     * Y​o​u​r​ ​v​o​t​e​ ​c​a​n​n​o​t​ ​b​e​ ​c​h​a​n​g​e​d​ ​o​n​c​e​ ​s​u​b​m​i​t​t​e​d​.
+     */
+    vote_cannot_be_changed: string;
+    /**
+     * W​a​i​t​i​n​g​ ​w​a​l​l​e​t​ ​c​o​n​f​i​r​m​a​t​i​o​n​.​.​.
+     */
+    waiting_wallet_confirmation: string;
+    /**
+     * C​o​n​f​i​r​m​ ​v​o​t​e
+     */
+    confirm_vote: string;
+    /**
+     * Y​o​u​ ​v​o​t​e​d
+     */
+    you_voted: string;
   };
   proposals: {
     /**
@@ -779,6 +1196,10 @@ type RootTranslation = {
     rejected: string;
   };
   filters: {
+    /**
+     * F​i​l​t​e​r​s
+     */
+    title: string;
     sort: {
       /**
        * N​e​w​e​s​t
@@ -800,36 +1221,62 @@ type RootTranslation = {
   };
   header: {
     /**
-     * O​f​f​i​c​i​a​l
+     * V​e​C​h​a​i​n​T​h​o​r​ ​V​o​t​i​n​g​ ​P​l​a​t​f​o​r​m
      */
-    official: string;
+    title: string;
     /**
-     * V​e​C​h​a​i​n​T​h​o​r​ ​B​l​o​c​k​c​h​a​i​n
+     * V​o​t​e​ ​t​o​ ​s​h​a​p​e​ ​t​h​e​ ​f​u​t​u​r​e​ ​o​f​ ​V​e​C​h​a​i​n​T​h​o​r
      */
-    blockchain: string;
+    description: string;
     /**
-     * v​o​t​i​n​g​ ​p​l​a​t​f​o​r​m
+     * H​o​w​ ​t​o​ ​V​o​t​e
      */
-    voting_platform: string;
+    how_to_vote: string;
     /**
-     * I​m​m​u​t​a​b​l​e​.
+     * H​o​w​ ​t​o​ ​g​e​t​ ​V​o​t​i​n​g​ ​P​o​w​e​r
      */
-    immutable: string;
+    how_to_get_voting_power: string;
+  };
+  stargate_warning: {
     /**
-     * T​r​a​n​s​p​a​r​e​n​t​.
+     * S​t​a​r​g​a​t​e​ ​N​o​d​e​ ​M​i​g​r​a​t​i​o​n​ ​R​e​q​u​i​r​e​d
      */
-    transparent: string;
+    title: string;
     /**
-     * D​e​c​e​n​t​r​a​l​i​z​e​d​.
+     * Y​o​u​ ​h​a​v​e​ ​1​ ​o​r​ ​m​o​r​e​ ​n​o​n​-​m​i​g​r​a​t​e​d​ ​n​o​d​e​s​.​ ​P​l​e​a​s​e​ ​m​i​g​r​a​t​e​ ​t​h​e​m​ ​a​s​ ​s​o​o​n​ ​a​s​ ​p​o​s​s​i​b​l​e​ ​t​o​ ​c​o​n​t​i​n​u​e​ ​v​o​t​i​n​g​.
      */
-    decentralized: string;
+    description: string;
+    /**
+     * h​t​t​p​s​:​/​/​a​p​p​.​s​t​a​r​g​a​t​e​.​v​e​c​h​a​i​n​.​o​r​g​/
+     */
+    migration_link: string;
+    /**
+     * I​f​ ​a​ ​p​r​o​p​o​s​a​l​ ​h​a​s​ ​a​l​r​e​a​d​y​ ​s​t​a​r​t​e​d​,​ ​y​o​u​ ​w​i​l​l​ ​n​o​t​ ​b​e​ ​a​b​l​e​ ​t​o​ ​v​o​t​e​ ​o​n​ ​i​t​ ​e​v​e​n​ ​a​f​t​e​r​ ​m​i​g​r​a​t​i​o​n​.​ ​O​n​l​y​ ​f​u​t​u​r​e​ ​p​r​o​p​o​s​a​l​s​ ​w​i​l​l​ ​b​e​ ​a​v​a​i​l​a​b​l​e​ ​f​o​r​ ​v​o​t​i​n​g​.
+     */
+    ongoing_proposal_warning: string;
+    /**
+     * I​f​ ​y​o​u​ ​w​a​n​t​ ​t​o​ ​c​o​n​t​i​n​u​e​ ​a​n​y​w​a​y​,​ ​w​r​i​t​e​ ​t​h​i​s​ ​t​e​x​t​:​ ​a​g​r​e​e​-​w​i​t​h​-​t​h​i​s
+     */
+    confirmation_instruction: string;
+    /**
+     * P​l​e​a​s​e​ ​t​y​p​e​ ​e​x​a​c​t​l​y​ ​'​a​g​r​e​e​-​w​i​t​h​-​t​h​i​s​'​ ​t​o​ ​c​o​n​t​i​n​u​e
+     */
+    confirmation_error: string;
   };
   footer: {
+    /**
+     * v​1​.​0​.​0
+     */
+    version: string;
     /**
      * A​l​l​ ​R​i​g​h​t​s​ ​R​e​s​e​r​v​e​d​ ​©​ ​V​e​c​h​a​i​n​ ​F​o​u​n​d​a​t​i​o​n​ ​S​a​n​ ​M​a​r​i​n​o​ ​S​.​r​.​l​.
      */
     all_right: string;
     legal: {
+      /**
+       * L​e​g​a​l
+       */
+      title: string;
       /**
        * T​e​r​m​s​ ​o​f​ ​S​e​r​v​i​c​e
        */
@@ -843,10 +1290,40 @@ type RootTranslation = {
        */
       cookies_policy: string;
     };
+    resources: {
+      /**
+       * R​e​s​o​u​r​c​e​s
+       */
+      title: string;
+      /**
+       * D​o​c​u​m​e​n​t​a​t​i​o​n
+       */
+      docs: string;
+      /**
+       * S​t​a​r​G​a​t​e
+       */
+      stargate: string;
+      /**
+       * S​u​p​p​o​r​t
+       */
+      support: string;
+    };
   };
 };
 
 export type TranslationFunctions = {
+  /**
+   * Left
+   */
+  left: () => LocalizedString;
+  /**
+   * by
+   */
+  by: () => LocalizedString;
+  /**
+   * Not published
+   */
+  not_published: () => LocalizedString;
   /**
    * Homepage
    */
@@ -948,9 +1425,17 @@ export type TranslationFunctions = {
    */
   submit: () => LocalizedString;
   /**
+   * Submit Vote
+   */
+  submit_vote: () => LocalizedString;
+  /**
    * Voting Power
    */
   voting_power: () => LocalizedString;
+  /**
+   * Your voting power
+   */
+  your_voting_power: () => LocalizedString;
   /**
    * Voted
    */
@@ -992,6 +1477,10 @@ export type TranslationFunctions = {
    */
   upload: () => LocalizedString;
   /**
+   * Copied to clipboard
+   */
+  copied_to_clipboard: () => LocalizedString;
+  /**
 	 * Image size should be 1280x512px (ratio 3:1).
 JPG, PNG or SVG of maximum of {size}MB.
 	 */
@@ -1008,6 +1497,10 @@ JPG, PNG or SVG of maximum of {size}MB.
    * Maximum
    */
   maximum: () => LocalizedString;
+  /**
+   * Minimum
+   */
+  minimum: () => LocalizedString;
   /**
    * Option {index}
    */
@@ -1040,6 +1533,154 @@ JPG, PNG or SVG of maximum of {size}MB.
    * Read full description
    */
   read_full_description: () => LocalizedString;
+  /**
+   * Disconnect
+   */
+  disconnect: () => LocalizedString;
+  /**
+   * Connect Wallet
+   */
+  connect_wallet: () => LocalizedString;
+  /**
+   * Connect your wallet to vote
+   */
+  connect_wallet_to_vote: () => LocalizedString;
+  /**
+   * Comment
+   */
+  comment: () => LocalizedString;
+  /**
+   * Add a comment to your vote...
+   */
+  comment_placeholder: () => LocalizedString;
+  /**
+   * Migrate
+   */
+  migrate: () => LocalizedString;
+  /**
+   * StarGate
+   */
+  stargate: () => LocalizedString;
+  datepicker: {
+    /**
+     * Select date
+     */
+    select_date: () => LocalizedString;
+    /**
+     * Previous month
+     */
+    previous_month: () => LocalizedString;
+    /**
+     * Next month
+     */
+    next_month: () => LocalizedString;
+    /**
+     * Today
+     */
+    today: () => LocalizedString;
+    weekdays: {
+      /**
+       * Mon
+       */
+      mon: () => LocalizedString;
+      /**
+       * Tue
+       */
+      tue: () => LocalizedString;
+      /**
+       * Wed
+       */
+      wed: () => LocalizedString;
+      /**
+       * Thu
+       */
+      thu: () => LocalizedString;
+      /**
+       * Fri
+       */
+      fri: () => LocalizedString;
+      /**
+       * Sat
+       */
+      sat: () => LocalizedString;
+      /**
+       * Sun
+       */
+      sun: () => LocalizedString;
+    };
+    months: {
+      /**
+       * January
+       */
+      january: () => LocalizedString;
+      /**
+       * February
+       */
+      february: () => LocalizedString;
+      /**
+       * March
+       */
+      march: () => LocalizedString;
+      /**
+       * April
+       */
+      april: () => LocalizedString;
+      /**
+       * May
+       */
+      may: () => LocalizedString;
+      /**
+       * June
+       */
+      june: () => LocalizedString;
+      /**
+       * July
+       */
+      july: () => LocalizedString;
+      /**
+       * August
+       */
+      august: () => LocalizedString;
+      /**
+       * September
+       */
+      september: () => LocalizedString;
+      /**
+       * October
+       */
+      october: () => LocalizedString;
+      /**
+       * November
+       */
+      november: () => LocalizedString;
+      /**
+       * December
+       */
+      december: () => LocalizedString;
+    };
+  };
+  timepicker: {
+    /**
+     * Select time
+     */
+    select_time: () => LocalizedString;
+    /**
+     * Select time (UTC)
+     */
+    select_time_24h: () => LocalizedString;
+    /**
+     * Hours
+     */
+    hours: () => LocalizedString;
+    /**
+     * Minutes
+     */
+    minutes: () => LocalizedString;
+    /**
+     * All times are in UTC
+     */
+    utc_notice: () => LocalizedString;
+  };
   home: {
     /**
      * Home
@@ -1049,6 +1690,56 @@ JPG, PNG or SVG of maximum of {size}MB.
      * Go to proposals
      */
     go_to_proposals: () => LocalizedString;
+  };
+  node_names: {
+    /**
+     * No Node
+     */
+    none: () => LocalizedString;
+    /**
+     * Strength
+     */
+    strength: () => LocalizedString;
+    /**
+     * Thunder
+     */
+    thunder: () => LocalizedString;
+    /**
+     * Mjolnir
+     */
+    mjolnir: () => LocalizedString;
+    /**
+     * VeThor X
+     */
+    vethorx: () => LocalizedString;
+    /**
+     * Strength X
+     */
+    strengthx: () => LocalizedString;
+    /**
+     * Thunder X
+     */
+    thunderx: () => LocalizedString;
+    /**
+     * Mjolnir X
+     */
+    mjolnirx: () => LocalizedString;
+    /**
+     * Flash
+     */
+    flash: () => LocalizedString;
+    /**
+     * Lightning
+     */
+    lightning: () => LocalizedString;
+    /**
+     * Dawn
+     */
+    dawn: () => LocalizedString;
+    /**
+     * Validator
+     */
+    validator: () => LocalizedString;
   };
   field_errors: {
     /**
@@ -1071,6 +1762,24 @@ JPG, PNG or SVG of maximum of {size}MB.
      * The start date must be in the future
      */
     start_after_today: () => LocalizedString;
+    /**
+     * The end date must be within {days} days of the start date
+     */
+    end_after_max_duration: (arg: { days: string }) => LocalizedString;
+    /**
+     * Failed to load voters data. Please try again.
+     */
+    failed_load_voters: () => LocalizedString;
+    descriptions_errors: {
+      /**
+       * Please replace placeholder text with your own content before submitting the proposal.
+       */
+      placeholders_not_replaced: () => LocalizedString;
+      /**
+       * Description cannot be empty. Please provide content for your proposal.
+       */
+      empty_description: () => LocalizedString;
+    };
   };
   voting_list: {
     /**
@@ -1078,9 +1787,25 @@ JPG, PNG or SVG of maximum of {size}MB.
      */
     voting_options: () => LocalizedString;
     /**
-     * option to vote:
+     * Select an option to vote:
      */
     option_to_vote: () => LocalizedString;
+    /**
+     * Voting has not started yet
+     */
+    voting_has_not_started_yet: () => LocalizedString;
+    /**
+     * Please connect your wallet
+     */
+    please_connect_your_wallet: () => LocalizedString;
+    /**
+     * You have already voted
+     */
+    you_have_already_voted: () => LocalizedString;
+    /**
+     * You don't have enough voting power
+     */
+    you_dont_have_enough_voting_power: () => LocalizedString;
   };
   proposal: {
     /**
@@ -1095,6 +1820,10 @@ JPG, PNG or SVG of maximum of {size}MB.
      * Voting calendar
      */
     voting_calendar: () => LocalizedString;
+    /**
+     * Confirm in your wallet...
+     */
+    confirm_in_your_wallet: () => LocalizedString;
     /**
      * Who can vote
      */
@@ -1131,6 +1860,16 @@ JPG, PNG or SVG of maximum of {size}MB.
      * Voting is only possible for Node holders. Buy a node to vote on future proposals or increase your voting power.
      */
     buy_a_node: () => LocalizedString;
+    vote_success: {
+      /**
+       * Vote submitted!
+       */
+      title: () => LocalizedString;
+      /**
+       * Your vote was submitted successfully.
+       */
+      description: () => LocalizedString;
+    };
     cancel_proposal: {
       /**
        * Cancel proposal
@@ -1148,6 +1887,24 @@ JPG, PNG or SVG of maximum of {size}MB.
        * Write the reason for cancellation...
        */
       reason_placeholder: () => LocalizedString;
+    };
+    execute_proposal: {
+      /**
+       * Mark as Executed
+       */
+      title: () => LocalizedString;
+      /**
+       * If the actions of the proposal have already been executed, you can mark this approved proposal as executed for the voters to know.
+       */
+      description: () => LocalizedString;
+      /**
+       * Execution / Transaction details
+       */
+      label: () => LocalizedString;
+      /**
+       * Insert link with the proof of the execution
+       */
+      link_placeholder: () => LocalizedString;
     };
     delete_proposal: {
       /**
@@ -1167,7 +1924,7 @@ JPG, PNG or SVG of maximum of {size}MB.
        */
       no_go_back: () => LocalizedString;
       /**
-       * Yes, Delete Proposal
+       * Yes, Delete
        */
       yes_delete: () => LocalizedString;
     };
@@ -1178,9 +1935,9 @@ JPG, PNG or SVG of maximum of {size}MB.
          */
         title: () => LocalizedString;
         /**
-         * A minimum of 30% participation must be reached to validate the voting of the proposal and get approval.
+         * A minimum of {quorum}% participation must be reached to validate the voting of the proposal and get approval.
          */
-        description: () => LocalizedString;
+        description: (arg: { quorum: number }) => LocalizedString;
       };
       approved: {
         /**
@@ -1188,9 +1945,9 @@ JPG, PNG or SVG of maximum of {size}MB.
          */
         title: () => LocalizedString;
         /**
-         * The voting participation reached the minimum required of 30% to get approval.
+         * The voting participation reached the minimum required of {quorum}% to get approval.
          */
-        description: () => LocalizedString;
+        description: (arg: { quorum: number }) => LocalizedString;
       };
       executed: {
         /**
@@ -1208,9 +1965,9 @@ JPG, PNG or SVG of maximum of {size}MB.
          */
         title: () => LocalizedString;
         /**
-         * The voting participation didn’t reached the minimum required of 30% to get approval.
+         * The voting participation didn’t reached the minimum required of {quorum}% to get approval.
          */
-        description: () => LocalizedString;
+        description: (arg: { quorum: number }) => LocalizedString;
       };
       rejected: {
         /**
@@ -1235,17 +1992,45 @@ JPG, PNG or SVG of maximum of {size}MB.
     };
     voting_power: {
       /**
+       * Get more Voting Power
+       */
+      get_more_voting_power: () => LocalizedString;
+      /**
+       * Get Voting Power
+       */
+      get_voting_power: () => LocalizedString;
+      /**
        * Voting Power
        */
       title: () => LocalizedString;
       /**
-       * Your voting power was calculated at the time of the snapshot {snapshot}.
+       * Your Voting Power was calculated at the time of the snapshot {snapshot}.
        */
       calculation: (arg: { snapshot: string }) => LocalizedString;
       /**
-       * Total voting power
+       * Total Voting Power
        */
       total_voting_power: () => LocalizedString;
+      warnings: {
+        /**
+         * The connected wallet has no Voting Power
+         */
+        zero_voting_power: () => LocalizedString;
+        /**
+         * You have legacy nodes that haven’t been migrated yet.  Migrate to get more Voting Power.
+         */
+        legacy_node: () => LocalizedString;
+        delegated: {
+          /**
+           * Your Voting Power is delegated
+           */
+          title: () => LocalizedString;
+          /**
+           * Your Voting Power is delegated to another node
+           */
+          description: () => LocalizedString;
+        };
+      };
     };
     voters_table: {
       filters: {
@@ -1368,7 +2153,7 @@ JPG, PNG or SVG of maximum of {size}MB.
          */
         title: () => LocalizedString;
         /**
-         * What’s the proposal title?
+         * What's the proposal title?
          */
         title_placeholder: () => LocalizedString;
         /**
@@ -1383,6 +2168,22 @@ JPG, PNG or SVG of maximum of {size}MB.
          * Header image
          */
         header_image: () => LocalizedString;
+        /**
+         * Discourse url
+         */
+        discourse_url: () => LocalizedString;
+        /**
+         * Discourse Topic
+         */
+        discourse_topic: () => LocalizedString;
+        /**
+         * your-topic-name
+         */
+        discourse_topic_placeholder: () => LocalizedString;
+        /**
+         * Enter the topic name from your VeChain Discourse discussion
+         */
+        discourse_topic_help: () => LocalizedString;
         /**
          * Voting calendar
          */
@@ -1414,7 +2215,7 @@ JPG, PNG or SVG of maximum of {size}MB.
          */
         voting_limit: () => LocalizedString;
         /**
-         * Define the maximum amount of options allowed per voter:
+         * Define the minimum and maximum amount of options allowed per voter:
          */
         voting_limit_subtitle: () => LocalizedString;
         /**
@@ -1437,38 +2238,6 @@ JPG, PNG or SVG of maximum of {size}MB.
          * Write the voting option...
          */
         voting_option_placeholder: () => LocalizedString;
-        voting_types: {
-          single_choice: {
-            /**
-             * Single choice
-             */
-            title: () => LocalizedString;
-            /**
-             * Yes / No / Abstain
-             */
-            subtitle: () => LocalizedString;
-          };
-          single_option: {
-            /**
-             * Single choice
-             */
-            title: () => LocalizedString;
-            /**
-             * Voter can select 1 of multiple options
-             */
-            subtitle: () => LocalizedString;
-          };
-          multi_options: {
-            /**
-             * Multiple choice
-             */
-            title: () => LocalizedString;
-            /**
-             * Voter can select 1 or more options
-             */
-            subtitle: () => LocalizedString;
-          };
-        };
       };
       summary_form: {
         main_details: {
@@ -1495,22 +2264,14 @@ JPG, PNG or SVG of maximum of {size}MB.
            */
           type: () => LocalizedString;
           /**
-           * Maximum - {limit} options
+           * Minimum {min} options - Maximum {limit} options
            */
-          maximum: (arg: { limit: number }) => LocalizedString;
+          limit: (arg: { limit: number; min: number }) => LocalizedString;
           types: {
             /**
-             * Single choice - Yes / No / Abstain
+             * Single choice - For / Against / Abstain
              */
             SINGLE_CHOICE: () => LocalizedString;
-            /**
-             * Single choice - Multiple voting options
-             */
-            SINGLE_OPTION: () => LocalizedString;
-            /**
-             * Multiple choice - Multiple voting options
-             */
-            MULTIPLE_OPTIONS: () => LocalizedString;
           };
         };
         /**
@@ -1543,6 +2304,110 @@ JPG, PNG or SVG of maximum of {size}MB.
         publish_success_description: () => LocalizedString;
       };
     };
+    /**
+     * Go to Stargate
+     */
+    go_to_stargate: () => LocalizedString;
+    /**
+     * Proposal not found
+     */
+    proposal_not_found: () => LocalizedString;
+    /**
+     * Starts in
+     */
+    starts_in: () => LocalizedString;
+    /**
+     * Ends in
+     */
+    ends_in: () => LocalizedString;
+    /**
+     * Timeline
+     */
+    timeline: () => LocalizedString;
+    /**
+     * Created
+     */
+    timeline_created: () => LocalizedString;
+    /**
+     * Proposal Canceled
+     */
+    proposal_canceled: () => LocalizedString;
+    /**
+     * The proposal was canceled by VeChain or the proposer by the following reason:
+     */
+    proposal_canceled_description: () => LocalizedString;
+    /**
+     * No reason provided
+     */
+    no_reason_provided: () => LocalizedString;
+    /**
+     * Unknown error
+     */
+    unknown_error: () => LocalizedString;
+    /**
+     * Failed to execute proposal
+     */
+    failed_to_execute_proposal: () => LocalizedString;
+    /**
+     * Proposal Approved and Executed
+     */
+    proposal_approved_and_executed: () => LocalizedString;
+    /**
+     * The voting approved the proposal and the actions have been executed.
+     */
+    the_voting_approved_the_proposal_and_the_actions_have_been_executed: () => LocalizedString;
+    /**
+     * See details
+     */
+    see_details: () => LocalizedString;
+    /**
+     * Proposal Rejected
+     */
+    proposal_rejected: () => LocalizedString;
+    /**
+     * The proposal didn't get enough votes in favor to get approval.
+     */
+    the_proposal_didnt_get_enough_votes_in_favor_to_get_approval: () => LocalizedString;
+    /**
+     * Minimum participation not reached
+     */
+    minimum_participation_not_reached: () => LocalizedString;
+    /**
+     * The voting participation didn't reached the minimum required of 30% to get approval.
+     */
+    the_voting_participation_didnt_reached_the_minimum_required_of_30_to_get_approval: () => LocalizedString;
+    /**
+     * A minimum of 30% participation must be reached to validate the voting of the proposal and get approval.
+     */
+    a_minimum_of_30_participation_must_be_reached_to_validate_the_voting_of_the_proposal_and_get_approval: () => LocalizedString;
+    /**
+     * Vote submission failed
+     */
+    vote_submission_failed: () => LocalizedString;
+    /**
+     * Vote submitted successfully!
+     */
+    vote_submitted_successfully: () => LocalizedString;
+    /**
+     * Submit your Vote
+     */
+    submit_your_vote: () => LocalizedString;
+    /**
+     * Your vote cannot be changed once submitted.
+     */
+    vote_cannot_be_changed: () => LocalizedString;
+    /**
+     * Waiting wallet confirmation...
+     */
+    waiting_wallet_confirmation: () => LocalizedString;
+    /**
+     * Confirm vote
+     */
+    confirm_vote: () => LocalizedString;
+    /**
+     * You voted
+     */
+    you_voted: () => LocalizedString;
   };
   proposals: {
     /**
@@ -1603,6 +2468,10 @@ JPG, PNG or SVG of maximum of {size}MB.
     rejected: () => LocalizedString;
   };
   filters: {
+    /**
+     * Filters
+     */
+    title: () => LocalizedString;
     sort: {
       /**
        * Newest
@@ -1624,36 +2493,62 @@ JPG, PNG or SVG of maximum of {size}MB.
   };
   header: {
     /**
-     * Official
+     * VeChainThor Voting Platform
      */
-    official: () => LocalizedString;
+    title: () => LocalizedString;
     /**
-     * VeChainThor Blockchain
+     * Vote to shape the future of VeChainThor
      */
-    blockchain: () => LocalizedString;
+    description: () => LocalizedString;
     /**
-     * voting platform
+     * How to Vote
      */
-    voting_platform: () => LocalizedString;
+    how_to_vote: () => LocalizedString;
     /**
-     * Immutable.
+     * How to get Voting Power
      */
-    immutable: () => LocalizedString;
+    how_to_get_voting_power: () => LocalizedString;
+  };
+  stargate_warning: {
     /**
-     * Transparent.
+     * Stargate Node Migration Required
      */
-    transparent: () => LocalizedString;
+    title: () => LocalizedString;
     /**
-     * Decentralized.
+     * You have 1 or more non-migrated nodes. Please migrate them as soon as possible to continue voting.
      */
-    decentralized: () => LocalizedString;
+    description: () => LocalizedString;
+    /**
+     * https://app.stargate.vechain.org/
+     */
+    migration_link: () => LocalizedString;
+    /**
+     * If a proposal has already started, you will not be able to vote on it even after migration. Only future proposals will be available for voting.
+     */
+    ongoing_proposal_warning: () => LocalizedString;
+    /**
+     * If you want to continue anyway, write this text: agree-with-this
+     */
+    confirmation_instruction: () => LocalizedString;
+    /**
+     * Please type exactly 'agree-with-this' to continue
+     */
+    confirmation_error: () => LocalizedString;
   };
   footer: {
+    /**
+     * v1.0.0
+     */
+    version: () => LocalizedString;
     /**
      * All Rights Reserved © Vechain Foundation San Marino S.r.l.
      */
     all_right: () => LocalizedString;
     legal: {
+      /**
+       * Legal
+       */
+      title: () => LocalizedString;
       /**
        * Terms of Service
        */
@@ -1666,6 +2561,24 @@ JPG, PNG or SVG of maximum of {size}MB.
        * Cookies Policy
        */
       cookies_policy: () => LocalizedString;
+    };
+    resources: {
+      /**
+       * Resources
+       */
+      title: () => LocalizedString;
+      /**
+       * Documentation
+       */
+      docs: () => LocalizedString;
+      /**
+       * StarGate
+       */
+      stargate: () => LocalizedString;
+      /**
+       * Support
+       */
+      support: () => LocalizedString;
     };
   };
 };

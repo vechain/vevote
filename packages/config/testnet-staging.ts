@@ -2,10 +2,10 @@ import { AppConfig } from ".";
 const config: AppConfig = {
   environment: "testnet-staging",
   basePath: "https://governance.vebetterdao.org",
-  vevoteContractAddress: "0x90a3c072cf8493ccdd9b86b1c9b5d18f86fdf3e0",
-  vechainNodesContractAddress: "0x2c9d4c30c0f098ca893efe613a71fa0ef2558757",
-  stargateNFTContractAddress: "0xa08a499fe59267caacb2162cdacf832f99ad50e7",
-  nodeManagementContractAddress: "0xbad9a873c13874855369f128f59eeb220463e477",
+  vevoteContractAddress: "0x3f5e298caea8843e88d5e1c4f34c7c79387b9ec6",
+  vechainNodesContractAddress: "0x7c10f29f2270e9a5665ef91de1c1b865cccee021",
+  stargateNFTContractAddress: "0x9a9cdf72a9abf5373af81ea8ae30ae88bec2416b",
+  nodeManagementContractAddress: "0x8842b4dbbe87373004b382241c79d5872c537270",
   nodeUrl: "https://testnet.vechain.org",
   network: {
     id: "testnet",
@@ -42,5 +42,8 @@ const config: AppConfig = {
   ipfsPinningService: "https://api.gateway-proxy.vechain.org/api/v1/pinning/pinFileToIPFS",
   ipfsFetchingService: "https://api.gateway-proxy.vechain.org/ipfs",
   indexerUrl: "https://indexer.testnet.vechain.org/api/v1",
+  WCProjectId: "542d5caba6ac73d527683a5b84b636fb",
+  mixPanelToken: "bbf0da6a4dcd75432a35e01af6a75d8a",
+  discourseBaseUrl: "https://vechain.discourse.group/t/",
 };
 export default config;

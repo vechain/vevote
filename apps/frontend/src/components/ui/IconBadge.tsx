@@ -1,34 +1,28 @@
 import { TagProps, Tag, TagLeftIcon } from "@chakra-ui/react";
 import { useMemo } from "react";
-import { FiEdit2 } from "react-icons/fi";
-import { IoMdTime } from "react-icons/io";
-import { MdOutlineHowToVote } from "react-icons/md";
-import { HiOutlineCheckCircle } from "react-icons/hi2";
-import { BiCheckDouble } from "react-icons/bi";
-import { FaRegCircleXmark } from "react-icons/fa6";
-import { RiDeleteBin6Line } from "react-icons/ri";
 import { useI18nContext } from "@/i18n/i18n-react";
+import { ClockIcon, EditIcon, VoteIcon, CheckCircleIcon, CheckDoubleIcon, CancelIcon, CircleXIcon } from "@/icons";
 
 export const IconBadge = ({ variant, ...rest }: Omit<TagProps, "children">) => {
   const { LL } = useI18nContext();
   const IconElement = useMemo(() => {
     switch (variant) {
       case "draft":
-        return FiEdit2;
+        return EditIcon;
       case "upcoming":
-        return IoMdTime;
+        return ClockIcon;
       case "voting":
-        return MdOutlineHowToVote;
+        return VoteIcon;
       case "approved":
-        return HiOutlineCheckCircle;
+        return CheckCircleIcon;
       case "executed":
-        return BiCheckDouble;
+        return CheckDoubleIcon;
       case "canceled":
-        return RiDeleteBin6Line;
+        return CancelIcon;
       case "rejected":
-        return FaRegCircleXmark;
+        return CircleXIcon;
       default:
-        return FiEdit2;
+        return EditIcon;
     }
   }, [variant]);
 
@@ -55,7 +49,7 @@ export const IconBadge = ({ variant, ...rest }: Omit<TagProps, "children">) => {
 
   return (
     <Tag variant={variant} {...rest}>
-      <TagLeftIcon as={IconElement} />
+      <TagLeftIcon as={IconElement} width={{ base: 3, md: 5 }} height={{ base: 3, md: 5 }} />
       {text}
     </Tag>
   );

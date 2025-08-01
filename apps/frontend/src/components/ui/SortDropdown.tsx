@@ -10,13 +10,11 @@ import {
 } from "@chakra-ui/react";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { Dispatch, SetStateAction } from "react";
-import { BsSortDown } from "react-icons/bs";
+import { SortDescIcon } from "@/icons";
 
 export enum Sort {
   Newest = "newest",
   Oldest = "oldest",
-  MostParticipant = "most_participant",
-  LeastParticipant = "least_participant",
 }
 
 export const SortDropdown = ({
@@ -27,8 +25,8 @@ export const SortDropdown = ({
   const { LL } = useI18nContext();
   return (
     <Menu>
-      <MenuButton as={Button} variant={"secondary"} size={"icon"} {...restProps}>
-        <Icon as={BsSortDown} />
+      <MenuButton as={Button} variant={"secondary"} size={{ base: "md", md: "icon" }} flexShrink={0} {...restProps}>
+        <Icon as={SortDescIcon} />
       </MenuButton>
       <MenuList>
         <MenuOptionGroup defaultValue={sort} onChange={value => setSort(value as Sort)}>
@@ -37,12 +35,6 @@ export const SortDropdown = ({
           </MenuItemOption>
           <MenuItemOption iconPlacement={"end"} value={Sort.Oldest}>
             {LL.filters.sort.oldest()}
-          </MenuItemOption>
-          <MenuItemOption iconPlacement={"end"} value={Sort.MostParticipant}>
-            {LL.filters.sort.most_participant()}
-          </MenuItemOption>
-          <MenuItemOption iconPlacement={"end"} value={Sort.LeastParticipant}>
-            {LL.filters.sort.least_participant()}
           </MenuItemOption>
         </MenuOptionGroup>
       </MenuList>

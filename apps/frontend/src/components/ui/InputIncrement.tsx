@@ -1,8 +1,7 @@
-import { Button, defineStyle, InputProps } from "@chakra-ui/react";
+import { Button, defineStyle, Icon, InputProps } from "@chakra-ui/react";
 import { InputWithIcon } from "./InputWithIcon";
 import { forwardRef } from "react";
-import { GoPlus } from "react-icons/go";
-import { LuMinus } from "react-icons/lu";
+import { MinusIcon, PlusIcon } from "@/icons";
 
 type InputIncrementProps = InputProps & {
   onIncrement: () => void;
@@ -20,13 +19,17 @@ const buttonStyle = defineStyle({
 export const InputIncrement = forwardRef<HTMLInputElement, InputIncrementProps>(
   ({ onDecrement, onIncrement, isMaxDisable, isMinDisable, ...props }, ref) => {
     return (
-      <InputWithIcon borderWidth={"1px"} paddingX={2} width={"180px"}>
+      <InputWithIcon
+        borderWidth={"1px"}
+        transition={"width 0.2s ease-in-out "}
+        paddingX={2}
+        width={{ base: "full", sm: "180px" }}>
         <Button isDisabled={isMinDisable} {...buttonStyle} onClick={onDecrement}>
-          <LuMinus size={24} />
+          <Icon as={MinusIcon} />
         </Button>
         <InputWithIcon.Input ref={ref} borderWidth={"0"} textAlign={"center"} type="number" flex={1} {...props} />
         <Button isDisabled={isMaxDisable} {...buttonStyle} onClick={onIncrement}>
-          <GoPlus size={24} />
+          <Icon as={PlusIcon} />
         </Button>
       </InputWithIcon>
     );

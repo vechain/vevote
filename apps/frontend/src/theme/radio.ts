@@ -10,6 +10,8 @@ const baseStyle = definePartsStyle({
       borderColor: "primary.500",
       backgroundColor: "primary.500",
     },
+    width: { base: "16px", md: "20px" },
+    height: { base: "16px", md: "20px" },
   },
 });
 

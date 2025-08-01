@@ -39,9 +39,24 @@ library Settings {
 
   /**
    * @notice Emitted when the VTHO generation end timestamp is updated
-   * @param vthoGenerationEndTimestamp The new VTHO generation end timestamp
+   * @param oldVthoGenerationEndTimestamp The old VTHO generation end timestamp
+   * @param newVthoGenerationEndTimestamp The new VTHO generation end timestamp
    */
-  event VthoGenerationEndTimestampSet(uint48 vthoGenerationEndTimestamp);
+  event VthoGenerationEndTimestampSet(uint48 oldVthoGenerationEndTimestamp, uint48 newVthoGenerationEndTimestamp);
+
+  /**
+   * @notice Emitted when a whitelist entry is added
+   * @param owner The address of the whitelist entry
+   * @param tokenId The token ID of the whitelist entry
+   * @param levelId The level ID of the whitelist entry
+   */
+  event WhitelistEntryAdded(address owner, uint256 tokenId, uint8 levelId);
+
+  /**
+   * @notice Emitted when a whitelist entry is removed
+   * @param owner The address of the whitelist entry
+   */
+  event WhitelistEntryRemoved(address owner);
 
   // ------------------ Setters ------------------ //
 
@@ -101,8 +116,61 @@ library Settings {
     DataTypes.StargateNFTStorage storage $,
     uint48 _vthoGenerationEndTimestamp
   ) external {
+    uint48 currentVthoGenerationEndTimestamp = $.vthoGenerationEndTimestamp;
     $.vthoGenerationEndTimestamp = _vthoGenerationEndTimestamp;
 
-    emit VthoGenerationEndTimestampSet(_vthoGenerationEndTimestamp);
+    emit VthoGenerationEndTimestampSet(currentVthoGenerationEndTimestamp, _vthoGenerationEndTimestamp);
+  }
+
+  /// @notice Adds a whitelist entry
+  /// @param _owner - The address of the owner of the whitelist entry
+  /// @param _tokenId - The token ID of the whitelist entry
+  /// @param _levelId - The level ID of the whitelist entry
+  /// Emits a {IStargateNFT.WhitelistEntryAdded} event
+  function addWhitelistEntry(
+    DataTypes.StargateNFTStorage storage $,
+    address _owner,
+    uint256 _tokenId,
+    uint8 _levelId
+  ) external {
+    if (_owner == address(0)) {
+      revert Errors.AddressCannotBeZero();
+    }
+
+    if (_tokenId == 0 || _levelId == 0) {
+      revert Errors.ValueCannotBeZero();
+    }
+
+    // TokenId must be lesser than contract currentTokenId
+    if (_tokenId >= $.currentTokenId) {
+      revert Errors.InvalidValue(_tokenId);
+    }
+
+    // LevelId must exist
+    if (_levelId > $.MAX_LEVEL_ID) {
+      revert Errors.LevelNotFound(_levelId);
+    }
+
+    // Add the whitelist entry
+    $.whitelistEntries[_owner] = DataTypes.WhitelistEntry({ tokenId: _tokenId, levelId: _levelId });
+
+    emit WhitelistEntryAdded(_owner, _tokenId, _levelId);
+  }
+
+  /// @notice Removes a whitelist entry
+  /// @param _owner - The address of the owner of the whitelist entry
+  /// Emits a {IStargateNFT.WhitelistEntryRemoved} event
+  function removeWhitelistEntry(DataTypes.StargateNFTStorage storage $, address _owner) external {
+    if (_owner == address(0)) {
+      revert Errors.AddressCannotBeZero();
+    }
+
+    DataTypes.WhitelistEntry memory entry = $.whitelistEntries[_owner];
+    if (entry.tokenId == 0 && entry.levelId == 0) {
+      revert Errors.WhitelistEntryNotFound(_owner);
+    }
+
+    delete $.whitelistEntries[_owner];
+    emit WhitelistEntryRemoved(_owner);
   }
 }

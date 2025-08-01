@@ -18,6 +18,9 @@ export type AppConfig = {
   ipfsPinningService: string;
   ipfsFetchingService: string;
   indexerUrl: string;
+  WCProjectId: string;
+  mixPanelToken?: string;
+  discourseBaseUrl: string;
 };
 
 export const getConfig = (env?: EnvConfig): AppConfig => {

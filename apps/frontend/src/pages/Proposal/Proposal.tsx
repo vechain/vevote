@@ -1,32 +1,29 @@
-import { ProposalNavbar } from "@/components/navbar/Navbar";
 import { PageContainer } from "@/components/PageContainer";
-import { ProposalDetailsCards } from "@/components/proposal/ProposalDetailsCards";
-import { ProposalInfoBox } from "@/components/proposal/ProposalInfoBox";
-import { ProposalInfos } from "@/components/proposal/ProposalInfos";
 import { ProposalProvider } from "@/components/proposal/ProposalProvider";
-import { VotingSection } from "@/components/proposal/VotingSection";
-import { useI18nContext } from "@/i18n/i18n-react";
-import { Box, Button, Flex, Image, Link, Text } from "@chakra-ui/react";
-import { useMemo } from "react";
-import { IoArrowBack, IoArrowForward } from "react-icons/io5";
-import { useParams } from "react-router";
-import { MdOutlineHowToVote } from "react-icons/md";
-import { FiCheckSquare } from "react-icons/fi";
-import { DeleteEditProposal } from "@/components/proposal/DeleteEditProposal";
-import { CancelEditProposal } from "@/components/proposal/CancelEditProposal";
-import { useWallet } from "@vechain/vechain-kit";
-import { BuyANode } from "@/components/proposal/BuyANode";
-import { useCreateProposal } from "../CreateProposal/CreateProposalProvider";
-import { sanitizeImageUrl } from "@/utils/proposals/helpers";
+import { SingleProposalSkeleton } from "@/components/ui/SingleProposalSkeleton";
 import { useProposalEvents } from "@/hooks/useProposalEvent";
-import { ProposalCardType } from "@/types/proposal";
-import { useHasVoted } from "@/hooks/useCastVote";
+import { useI18nContext } from "@/i18n/i18n-react";
+import { Box, Flex, Heading, Stack, Text, useBreakpointValue, VStack } from "@chakra-ui/react";
+import { useWallet } from "@vechain/vechain-kit";
+import { useEffect, useMemo } from "react";
+import { useNavigate, useParams } from "react-router";
+import { useCreateProposal } from "../CreateProposal/CreateProposalProvider";
+import { Routes } from "@/types/routes";
+import { BuyNodeCta } from "./components/BuyNodeCta";
+import { ProposalHeader } from "./components/ProposalHeader";
+import { DescriptionSection } from "./components/DescriptionSection";
+import { VotingAndTimeline } from "./components/VotingAndTimeline/VotingAndTimeline";
+import { ProposalStatus } from "@/types/proposal";
+import { CanceledProposal } from "./components/CanceledProposal";
+import { Navbar } from "@/components/navbar/Navbar";
 
 export const Proposal = () => {
   const { LL } = useI18nContext();
   const { draftProposal } = useCreateProposal();
   const { account } = useWallet();
   const params = useParams();
+  const navigate = useNavigate();
+  const isMobile = useBreakpointValue({ base: true, md: false });
 
   const proposalId = useMemo(() => {
     if (params.proposalId !== "draft") return params.proposalId;
@@ -40,89 +37,60 @@ export const Proposal = () => {
     return proposalData;
   }, [draftProposal, params.proposalId, proposalData]);
 
-  return (
-    <>
-      <ProposalNavbar>
-        <Flex alignItems={"center"} gap={6} width={"full"}>
-          <Button as={Link} gap={2} alignItems={"center"} href="/" variant={"secondary"}>
-            <IoArrowBack />
-            {LL.back()}
-          </Button>
-          <Text display={"flex"} fontSize={"14px"} color={"primary.200"} alignItems={"center"} gap={1}>
-            {LL.homepage()} <IoArrowForward /> {LL.proposal.title()}
-          </Text>
-          {account?.address && <ProposalNavbarActions proposal={proposal} />}
-        </Flex>
-      </ProposalNavbar>
+  const isCanceled = useMemo(() => proposal?.status === ProposalStatus.CANCELED, [proposal?.status]);
 
-      {!proposal ? (
-        <Box>{"Proposal not found"}</Box>
-      ) : (
-        <ProposalProvider proposal={proposal}>
-          <PageContainer paddingTop={"200px"}>
-            {isLoading ? (
-              <Box>{"Loading"}</Box>
-            ) : (
-              <>
-                <Image
-                  src={sanitizeImageUrl(proposal.headerImage?.url)}
-                  borderRadius={16}
-                  alt="Proposal Header"
-                  width={"100%"}
-                  aspectRatio={"5/2"}
-                  objectFit={"cover"}
-                />
-                <PageContainer.Header flexDirection={"column"} gap={10} alignItems={"start"}>
-                  <ProposalInfos />
-                  <ProposalDetailsCards />
-                  <ProposalInfoBox />
-                </PageContainer.Header>
-                {proposal.status !== "canceled" && <VotingSection />}
-                <BuyANode />
-              </>
-            )}
+  useEffect(() => {
+    if (params.proposalId === "draft" && !account?.address) navigate(Routes.HOME);
+  }, [account?.address, navigate, params.proposalId]);
+
+  if (isLoading) {
+    return (
+      <ProposalProvider proposal={proposal}>
+        <Box bg={"white"}>
+          <Navbar />
+          <PageContainer bg={"white"} pt={{ base: 24, md: 32 }} pb={10}>
+            <SingleProposalSkeleton />
           </PageContainer>
-        </ProposalProvider>
-      )}
-    </>
-  );
-};
+        </Box>
+      </ProposalProvider>
+    );
+  }
 
-//todo: get from provider
-const isAdmin = true;
-const isExecutor = false;
-const isVoter = false;
-
-const ProposalNavbarActions = ({ proposal }: { proposal: ProposalCardType | undefined }) => {
-  const { LL } = useI18nContext();
-  const onVote = () => {
-    console.log("Vote");
-  };
-
-  const { hasVoted } = useHasVoted({ proposalId: proposal?.id || "" });
+  if (!proposal || proposal.id === "default") {
+    navigate(`${Routes.HOME}?proposalNotFound=true`);
+    return null;
+  }
 
   return (
-    <Flex alignItems={"center"} gap={2} marginLeft={"auto"}>
-      {isAdmin && ["draft"].includes(proposal?.status || "") && <DeleteEditProposal />}
-
-      {isAdmin && ["upcoming", "voting"].includes(proposal?.status || "") && <CancelEditProposal />}
-
-      {isExecutor && proposal?.status === "approved" && (
-        <Button variant={"feedback"}>{LL.proposal.mark_as_executed()}</Button>
-      )}
-
-      {isVoter &&
-        (hasVoted ? (
-          <Button variant={"feedback"}>
-            {LL.voted()}
-            <FiCheckSquare />
-          </Button>
-        ) : (
-          <Button onClick={onVote}>
-            <MdOutlineHowToVote />
-            {LL.vote()}
-          </Button>
-        ))}
-    </Flex>
+    <ProposalProvider proposal={proposal}>
+      <Box bg={"white"}>
+        <Navbar />
+        <PageContainer bg={"white"} pt={{ base: 24, md: 32 }} pb={10}>
+          <VStack gap={10} w={"full"} alignItems={"stretch"}>
+            <Flex gap={1} alignItems={"center"} fontSize={"14px"} fontWeight={500}>
+              <Text color={"gray.600"} onClick={() => navigate(Routes.HOME)} cursor={"pointer"}>
+                {LL.homepage()}
+              </Text>
+              <Text color={"gray.400"}>{"→"}</Text>
+              <Text color={"gray.600"}>{LL.proposal.title()}</Text>
+            </Flex>
+            <Stack direction={{ base: "column", md: "row" }} w={"full"} gap={{ base: 10, md: 12 }}>
+              <VStack gap={10} align="stretch" flex={2}>
+                <ProposalHeader />
+                <Heading fontWeight={500} color={"gray.800"} lineHeight={"1.33"}>
+                  {proposal.title}
+                </Heading>
+                {!isMobile && <DescriptionSection />}
+              </VStack>
+              <VStack gap={10} align="stretch" flex={1}>
+                {!isCanceled ? <VotingAndTimeline /> : <CanceledProposal />}
+                {isMobile && <DescriptionSection />}
+              </VStack>
+            </Stack>
+            <BuyNodeCta />
+          </VStack>
+        </PageContainer>
+      </Box>
+    </ProposalProvider>
   );
 };

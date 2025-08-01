@@ -1,7 +1,9 @@
 import { useI18nContext } from "@/i18n/i18n-react";
-import { Box, Flex, Heading, Image } from "@chakra-ui/react";
-import { PropsWithChildren } from "react";
+import { Box, Flex, Heading, Icon, Image, Link, Text } from "@chakra-ui/react";
 import { Navbar } from "./Navbar";
+import { ArrowLinkIcon } from "@/icons";
+import { stargateButtonStyle } from "@/theme/stargate";
+import { ResourcesLinks, VeVoteLinks } from "@/types/terms";
 
 export const ProposalsHeader = () => {
   return (
@@ -11,55 +13,65 @@ export const ProposalsHeader = () => {
     </>
   );
 };
-
 export const Banner = () => {
   const { LL } = useI18nContext();
   return (
-    <Box padding={20} bg={"primary.700"}>
+    <Box
+      paddingX={{ base: 6, md: 20 }}
+      paddingY={10}
+      bgImage={{ base: "/images/banner-bg-mobile.webp", md: "/images/banner-bg.webp" }}
+      bgSize={"cover"}
+      bgPosition={"top"}
+      bgRepeat={"no-repeat"}
+      bgAttachment={"fixed"}
+      height={{ base: "auto", md: "580px", lg: "680px" }}
+      overflow={"hidden"}>
       <Flex
         alignItems={"center"}
-        gap={20}
-        paddingTop={10}
-        maxWidth={"fit-content"}
-        marginX={"auto"}
-        overflow={"hidden"}>
-        <Image src="/svgs/illust.svg" alt="VeVote Logo" width={80} height={80} objectFit={"cover"} />
-        <Flex flexDirection={"column"} color={"white"} gap={10}>
-          <Box>
-            <TopHeading>{LL.header.official()}</TopHeading>
+        justifyContent={"center"}
+        paddingTop={{ base: 16, md: 10, lg: 0 }}
+        maxWidth={{ base: "full", lg: "1440px" }}
+        marginX={"auto"}>
+        <Flex
+          flexDirection={"column"}
+          gap={{ base: 10, md: 16 }}
+          color={"white"}
+          minWidth={{ base: "full", md: "350px", lg: "450px" }}>
+          <Flex flexDirection={"column"} gap={{ base: 4, md: 6 }}>
             <Heading
-              bgGradient={"linear-gradient(180deg, #A897EC 0%, #FFF 100%)"}
-              bgClip={"text"}
-              textFillColor={"transparent"}
-              fontSize={"48px"}
-              fontWeight={500}>
-              {LL.header.blockchain()}
+              as="h1"
+              fontSize={{ base: "24px", md: "36px", lg: "48px" }}
+              color={"gray.50"}
+              maxWidth={{ base: "200px", md: "full" }}>
+              {LL.header.title()}
             </Heading>
-            <TopHeading>{LL.header.voting_platform()}</TopHeading>
-          </Box>
-          <Flex gap={12} alignItems={"center"}>
-            <BottomHeading>{LL.header.immutable()}</BottomHeading>
-            <BottomHeading>{LL.header.transparent()}</BottomHeading>
-            <BottomHeading>{LL.header.decentralized()}</BottomHeading>
+            <Text fontSize={{ md: "20px", lg: "24px" }} fontWeight={300}>
+              {LL.header.description()}
+            </Text>
+          </Flex>
+          <Flex gap={{ base: 4, md: 6 }} flexDirection={{ base: "column", lg: "row" }} alignItems={"center"}>
+            <Link {...stargateButtonStyle} href={VeVoteLinks.VEVOTE_DOCS} isExternal>
+              {LL.header.how_to_vote()} <Icon as={ArrowLinkIcon} />
+            </Link>
+            <Link {...stargateButtonStyle} href={ResourcesLinks.STARGATE} isExternal>
+              {LL.header.how_to_get_voting_power()}
+              <Icon as={ArrowLinkIcon} />
+            </Link>
           </Flex>
         </Flex>
+        <Image
+          display={{ base: "none", md: "block" }}
+          src="/images/bemo.webp"
+          alt="bemo"
+          width={{ md: "320px", lg: "420px" }}
+          height={{ md: "520px", lg: "720px" }}
+          objectFit={"cover"}
+          flexShrink={1}
+          transform={{ md: "translateY(80px)", lg: "translateY(100px)" }}
+          fetchPriority="high"
+          loading="eager"
+        />
       </Flex>
     </Box>
-  );
-};
-
-const BottomHeading = ({ children }: PropsWithChildren) => {
-  return (
-    <Heading fontSize={"32px"} fontWeight={400} color={"primary.300"}>
-      {children}
-    </Heading>
-  );
-};
-
-const TopHeading = ({ children }: PropsWithChildren) => {
-  return (
-    <Heading fontSize={"48px"} fontWeight={300}>
-      {children}
-    </Heading>
   );
 };

@@ -4,52 +4,67 @@ import {
   Heading,
   Icon,
   ModalCloseButton,
-  ModalContent,
   ModalHeader,
   ModalOverlay,
   ModalProps,
   Text,
 } from "@chakra-ui/react";
-import { IconType } from "react-icons/lib";
+import { SVGProps } from "react";
+import { BaseModalContent } from "./BaseModalContent";
 
-export const ModalSkeleton = ({ children, ...props }: ModalProps) => {
+export const ModalSkeleton = ({
+  children,
+  showCloseButton = true,
+  ...props
+}: ModalProps & { showCloseButton?: boolean }) => {
   return (
     <BaseModal isCentered {...props}>
       <ModalOverlay />
-      <ModalContent>
-        <ModalCloseButton />
+      <BaseModalContent>
+        {showCloseButton && <ModalCloseButton onClick={props.onClose} />}
         {children}
-      </ModalContent>
+      </BaseModalContent>
     </BaseModal>
   );
 };
 
 type MessageModalProps = Omit<ModalProps, "variant"> & {
-  icon: IconType;
+  icon: (props: SVGProps<SVGSVGElement>) => JSX.Element;
   title?: string;
   iconColor?: ColorProps["color"];
 };
-
 export const MessageModal = ({ children, title, icon, iconColor = "primary.500", ...props }: MessageModalProps) => {
   return (
     <BaseModal isCentered {...props}>
       <ModalOverlay />
-      <ModalContent gap={2}>
+      <BaseModalContent gap={2} maxWidth={{ md: "480px" }}>
         <ModalHeader textAlign={"center"} display={"flex"} flexDirection={"column"} alignItems={"center"}>
-          <Icon color={iconColor} size={"xl"} as={icon} paddingBottom={6} />
-          <Text fontSize={20} color={"gray.600"} fontWeight={600}>
+          <Icon color={iconColor} boxSize={{ base: 14, md: 16 }} as={icon} paddingBottom={6} />
+          <Text fontSize={{ base: 16, md: 20 }} color={"gray.600"} fontWeight={600}>
             {title}
           </Text>
         </ModalHeader>
         {children}
-      </ModalContent>
+      </BaseModalContent>
     </BaseModal>
   );
 };
 
-export const ModalTitle = ({ title, icon }: { title: string; icon?: IconType }) => {
+export const ModalTitle = ({
+  title,
+  icon,
+}: {
+  title: string;
+  icon?: (props: SVGProps<SVGSVGElement>) => JSX.Element;
+}) => {
   return (
-    <Heading fontSize={20} fontWeight={600} color={"primary.600"} display={"flex"} alignItems={"center"} gap={2}>
+    <Heading
+      fontSize={{ base: 16, md: 20 }}
+      fontWeight={600}
+      color={"primary.600"}
+      display={"flex"}
+      alignItems={"center"}
+      gap={2}>
       {icon && <Icon as={icon} color={"primary.600"} />}
       {title}
     </Heading>

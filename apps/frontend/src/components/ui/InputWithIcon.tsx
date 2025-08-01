@@ -1,5 +1,4 @@
 import {
-  Icon,
   Input,
   InputAddonProps,
   InputGroup,
@@ -8,13 +7,11 @@ import {
   InputProps,
   InputRightAddon,
 } from "@chakra-ui/react";
-import { As } from "@chakra-ui/system";
 import { forwardRef } from "react";
 
 const InputWithIcon = (props: InputGroupProps) => {
   return (
     <InputGroup
-      width={"full"}
       borderRadius={"8px"}
       borderWidth={"1px"}
       borderColor={"gray.200"}
@@ -28,26 +25,14 @@ const InputWithIcon = (props: InputGroupProps) => {
 
 const InputWithIconIcon = ({
   iconPosition = "left",
-  as,
-  size,
   ...props
 }: InputAddonProps & {
   iconPosition: "left" | "right";
-  as: As;
-  size: "xs" | "sm" | "md" | "lg" | "xl";
 }) => {
   if (iconPosition === "left") {
-    return (
-      <InputLeftAddon borderWidth={"0"} _groupInvalid={{ borderWidth: "0px", boxShadow: "none" }} {...props}>
-        <Icon as={as} size={size} />
-      </InputLeftAddon>
-    );
+    return <InputLeftAddon borderWidth={"0"} _groupInvalid={{ borderWidth: "0px", boxShadow: "none" }} {...props} />;
   }
-  return (
-    <InputRightAddon borderWidth={"0"} _groupInvalid={{ borderWidth: "0px", boxShadow: "none" }} {...props}>
-      <Icon as={as} size={size} />
-    </InputRightAddon>
-  );
+  return <InputRightAddon borderWidth={"0"} _groupInvalid={{ borderWidth: "0px", boxShadow: "none" }} {...props} />;
 };
 
 const InputWithIconInput = forwardRef<HTMLInputElement, InputProps>((props, ref) => {

@@ -5,13 +5,14 @@ const { definePartsStyle, defineMultiStyleConfig } = createMultiStyleConfigHelpe
 
 const baseStyle = definePartsStyle({
   container: {
-    padding: "0 12px",
+    padding: { base: "0 8px", md: "0 12px" },
     height: "32px",
     borderRadius: "8px",
     fontWeight: "500",
     fontFamily: "Inter, sans-serif",
     lineHeight: "24px",
     textTransform: "none",
+    fontSize: { base: "12px", md: "14px" },
   },
 });
 

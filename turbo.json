@@ -8,7 +8,9 @@
     "IS_TEST_COVERAGE",
     "NEXT_DEVNET_URL",
     "TESTNET_STAGING_MNEMONIC",
-    "PUBLIC_VECHAIN_EXPLORER_URL"
+    "PUBLIC_VECHAIN_EXPLORER_URL",
+    "CONTRACT_TO_UPGRADE",
+    "CONTRACT_VERSION"
   ],
   "pipeline": {
     "build": {
@@ -112,7 +114,36 @@
       "dependsOn": ["^deploy:mainnet"]
     },
     "deploy:galactica-test": {
-      "dependsOn": ["^deploy:galactica-test"]
+      "dependsOn": ["@repo/config#check-or-generate-local-config"]
+    },
+    "deploy:release": {
+      "dependsOn": ["@repo/config#check-or-generate-local-config"]
+    },
+    "deploy:release:testnet-staging": {
+      "dependsOn": ["^deploy:release:testnet-staging"]
+    },
+    "deploy:release:testnet": {
+      "dependsOn": ["^deploy:release:testnet"]
+    },
+    "deploy:release:mainnet": {
+      "dependsOn": ["^deploy:release:mainnet"]
+    },
+    "upgrade:contract": {
+      "dependsOn": ["@repo/config#check-or-generate-local-config"],
+      "outputs": [],
+      "cache": false
+    },
+    "upgrade:contract:local": {
+      "dependsOn": ["upgrade:contract"]
+    },
+    "upgrade:contract:testnet-staging": {
+      "dependsOn": ["upgrade:contract"]
+    },
+    "upgrade:contract:testnet": {
+      "dependsOn": ["upgrade:contract"]
+    },
+    "upgrade:contract:mainnet": {
+      "dependsOn": ["upgrade:contract"]
     },
     "test": {
       "cache": false,

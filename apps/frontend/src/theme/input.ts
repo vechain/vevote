@@ -15,7 +15,7 @@ const smallInput = defineStyle({
 });
 
 const mediumInput = defineStyle({
-  width: "288px",
+  width: "full",
   height: "48px",
   ...paddingInput,
 });

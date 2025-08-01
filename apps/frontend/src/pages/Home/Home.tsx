@@ -4,6 +4,7 @@ import { Heading, Link } from "@chakra-ui/react";
 
 export const Home = () => {
   const { LL } = useI18nContext();
+
   return (
     <PageContainer>
       <PageContainer.Header>

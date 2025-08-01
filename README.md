@@ -1,4 +1,5 @@
-# VeVote Mono Repo
+
+# VeVote Mono Repo [![codecov](https://codecov.io/gh/vechain/vevote/graph/badge.svg?token=MU2ZPZVRMC)](https://codecov.io/gh/vechain/vevote)
 
 VeVote is a decentralized governance platform. This repository serves as the monorepo for the VeVote project, containing all relevant components such as the frontend, smart contracts, and utilities.
 

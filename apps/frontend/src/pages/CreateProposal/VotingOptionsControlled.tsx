@@ -1,16 +1,14 @@
 import { useI18nContext } from "@/i18n/i18n-react";
-import { Button, Flex, FormControl, Input, Text } from "@chakra-ui/react";
+import { DeleteIcon, DragIcon, PlusIcon } from "@/icons";
+import { Button, Flex, FormControl, Icon, Input, Text } from "@chakra-ui/react";
 import { closestCenter, DndContext, DndContextProps, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { arrayMove, SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useCallback, useMemo } from "react";
 import { FieldErrors, useFieldArray, useFormContext } from "react-hook-form";
-import { GoPlus } from "react-icons/go";
-import { RiDeleteBin6Line } from "react-icons/ri";
-import { RxDragHandleDots2 } from "react-icons/rx";
 import { v4 as uuidv4 } from "uuid";
 
-export const VotingOptionsControlled = () => {
+export const VotingOptionsControlled = ({ onDeleteEnd }: { onDeleteEnd?: () => void }) => {
   const { LL } = useI18nContext();
   const { control } = useFormContext();
 
@@ -46,12 +44,19 @@ export const VotingOptionsControlled = () => {
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <SortableContext items={options.map(value => value.id)} strategy={verticalListSortingStrategy}>
           {options.map((value, index) => (
-            <SortableVotingOption key={value.id} id={value.id} index={index} onDelete={() => remove(index)} />
+            <SortableVotingOption
+              key={value.id}
+              id={value.id}
+              index={index}
+              onDelete={() => {
+                remove(index);
+                onDeleteEnd?.();
+              }}
+            />
           ))}
         </SortableContext>
       </DndContext>
-      <Button type="button" variant={"tertiary"} onClick={onAddOption} width={"full"}>
-        <GoPlus size={24} />
+      <Button type="button" variant={"tertiary"} onClick={onAddOption} width={"full"} leftIcon={<Icon as={PlusIcon} />}>
         {LL.proposal.create.add_new_option()}
       </Button>
     </Flex>
@@ -87,7 +92,7 @@ const SortableVotingOption = ({ index, onDelete, id }: { index: number; onDelete
         height={"48px"}
         alignItems={"center"}
         justifyContent={"center"}>
-        <RxDragHandleDots2 style={{ transform: "rotate(90deg)" }} size={24} />
+        <Icon as={DragIcon} />
       </Flex>
       <Flex flexDirection={"column"} alignItems={"start"} gap={2} width={"full"}>
         <Text
@@ -113,7 +118,7 @@ const SortableVotingOption = ({ index, onDelete, id }: { index: number; onDelete
 
           {index > 1 && (
             <Button onClick={onDelete} variant={"tertiary"} size={"fit"} width={"48px"}>
-              <RiDeleteBin6Line size={24} />
+              <Icon as={DeleteIcon} />
             </Button>
           )}
         </Flex>

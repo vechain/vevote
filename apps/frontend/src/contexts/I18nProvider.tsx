@@ -20,9 +20,7 @@ export const createI18nReact = (
   formatters: Record<Locales, Formatters> = {} as Record<Locales, Formatters>,
 ) => {
   const Component: React.FunctionComponent<TypesafeI18nProps<Locales>> = props => {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
     const [locale, setLocale] = useState<Locales>(null as unknown as Locales);
-    // eslint-disable-next-line react-hooks/rules-of-hooks
     const [LL, setLL] = useState<TranslationFunctions>(getFallbackProxy());
 
     const setLocal = (newLocale: Locales): void => {
@@ -36,10 +34,8 @@ export const createI18nReact = (
       );
     };
 
-    // Setup initial locale on build -> english
     !locale && setLocal(props.locale);
 
-    // eslint-disable-next-line react-hooks/rules-of-hooks
     useEffect(() => {
       setLocal(props.locale);
     }, [props.locale]);

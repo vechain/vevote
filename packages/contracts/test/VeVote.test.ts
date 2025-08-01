@@ -39,7 +39,6 @@ describe("VeVote", function () {
       expect(await vevote.getMinVotingDelay()).to.equal(config.INITIAL_MIN_VOTING_DELAY);
       expect(await vevote.getMaxVotingDuration()).to.equal(config.INITIAL_MAX_VOTING_DURATION);
       expect(await vevote.getMinVotingDuration()).to.equal(config.INITIAL_MIN_VOTING_DURATION);
-      expect(await vevote.getMaxChoices()).to.equal(config.INITIAL_MAX_CHOICES);
       expect(await vevote.getNodeManagementContract()).to.equal(await nodeManagement.getAddress());
       expect(await vevote.getStargateNFTContract()).to.equal(await stargateNFT.getAddress());
       expect(await vevote.getMinStakedAmount()).to.equal(config.MIN_VET_STAKE);
@@ -62,7 +61,6 @@ describe("VeVote", function () {
             initialMinVotingDelay: config.INITIAL_MIN_VOTING_DELAY,
             initialMaxVotingDuration: config.INITIAL_MAX_VOTING_DURATION,
             initialMinVotingDuration: config.INITIAL_MIN_VOTING_DURATION,
-            initialMaxChoices: config.INITIAL_MAX_CHOICES,
             nodeManagement: await nodeManagement.getAddress(),
             stargateNFT: await stargateNFT.getAddress(),
             authorityContract: config.AUTHORITY_CONTRACT_ADDRESS,
@@ -75,6 +73,7 @@ describe("VeVote", function () {
             settingsManager: admin.address,
             nodeWeightManager: admin.address,
             executor: admin.address,
+            whitelistAdmin: admin.address,
           },
         ),
       ).to.be.revertedWithCustomError(vevote, "InvalidInitialization");
@@ -84,6 +83,29 @@ describe("VeVote", function () {
       const { vevote } = await getOrDeployContractInstances({ forceDeploy: true });
 
       expect(await vevote.supportsInterface("0x01ffc9a7")).to.equal(true); // ERC165
+    });
+
+    it("Only users with WHITELISTED_ADMIN_ROLE can grant whitelisted role to users", async () => {
+      const { vevote } = await getOrDeployContractInstances({ forceDeploy: true });
+
+      const WHITELISTED_ADMIN_ROLE = await vevote.WHITELIST_ADMIN_ROLE();
+      const DEFAULT_ADMIN_ROLE = await vevote.DEFAULT_ADMIN_ROLE();
+      const [whitelistedAccount, whitelistedAdmin, defaultAdminAccount] = await ethers.getSigners();
+
+      await vevote.grantRole(DEFAULT_ADMIN_ROLE, defaultAdminAccount.address);
+
+      // Default admin should be able to grant WHITELISTED_ADMIN_ROLE
+      await vevote.connect(defaultAdminAccount).grantRole(WHITELISTED_ADMIN_ROLE, whitelistedAdmin.address);
+      expect(await vevote.hasRole(WHITELISTED_ADMIN_ROLE, whitelistedAdmin.address)).to.be.true;
+
+      // Default admin should not be able to grant WHITELISTED_ROLE
+      await expect(
+        vevote.connect(defaultAdminAccount).grantRole(await vevote.WHITELISTED_ROLE(), whitelistedAccount.address),
+      ).to.be.revertedWithCustomError(vevote, "AccessControlUnauthorizedAccount");
+
+      // Whitelisted admin should be able to grant WHITELISTED_ROLE
+      await vevote.connect(whitelistedAdmin).grantRole(await vevote.WHITELISTED_ROLE(), whitelistedAccount.address);
+      expect(await vevote.hasRole(await vevote.WHITELISTED_ROLE(), whitelistedAccount.address)).to.be.true;
     });
   });
 
@@ -153,52 +175,6 @@ describe("VeVote", function () {
       ).to.not.be.reverted;
     });
 
-    it("Maximum choices a user can vote for must be less than or equal to the number of choices", async function () {
-      const { vevote } = await getOrDeployContractInstances({});
-      await expect(
-        createProposal({
-          maxChoices: 4,
-        }),
-      ).to.be.revertedWithCustomError(vevote, "VeVoteInvalidChoiceCount");
-    });
-
-    it("Minimum choices a user can vote for must be greater than maximum", async function () {
-      const { vevote } = await getOrDeployContractInstances({});
-      await expect(
-        createProposal({
-          minChoices: 3,
-          maxChoices: 2,
-        }),
-      ).to.be.revertedWithCustomError(vevote, "VeVoteInvalidSelectionRange");
-    });
-
-    it("Minimum choices a user can vote for must be greater than zero", async function () {
-      const { vevote } = await getOrDeployContractInstances({});
-      await expect(
-        createProposal({
-          minChoices: 0,
-        }),
-      ).to.be.revertedWithCustomError(vevote, "VeVoteInvalidSelectionRange");
-    });
-
-    it("Number of choices must be less that max choices threshold", async function () {
-      const { vevote } = await getOrDeployContractInstances({});
-      await expect(
-        createProposal({
-          maxChoices: 100,
-        }),
-      ).to.be.revertedWithCustomError(vevote, "VeVoteInvalidChoiceCount");
-    });
-
-    it("Should revert if max choices a user can select is greater than max choices threshold", async function () {
-      const { vevote } = await getOrDeployContractInstances({});
-      await expect(
-        createProposal({
-          maxChoices: 33,
-        }),
-      ).to.be.revertedWithCustomError(vevote, "VeVoteInvalidChoiceCount");
-    });
-
     it("Should store the proposer address correctly", async function () {
       const { vevote, whitelistedAccount } = await getOrDeployContractInstances({});
       const tx = await createProposal();
@@ -225,47 +201,9 @@ describe("VeVote", function () {
       expect(await vevote.proposalDeadline(proposalId)).to.equal(200000000 + 10);
     });
 
-    it("Should store the proposal choices correctly", async function () {
-      const { vevote } = await getOrDeployContractInstances({ forceDeploy: true });
-      const tx = await createProposal({
-        choices: [
-          ethers.encodeBytes32String("FOR"),
-          ethers.encodeBytes32String("AGAINST"),
-          ethers.encodeBytes32String("ABSTAIN"),
-        ],
-      });
-      const proposalId = await getProposalIdFromTx(tx);
-      const choices = await vevote.proposalChoices(proposalId);
-
-      expect(choices.length).to.equal(3);
-      expect(ethers.decodeBytes32String(choices[0])).to.equal("FOR");
-      expect(ethers.decodeBytes32String(choices[1])).to.equal("AGAINST");
-      expect(ethers.decodeBytes32String(choices[2])).to.equal("ABSTAIN");
-    });
-
-    it("Should store the minimum and maximum choices correctly", async function () {
-      const { vevote } = await getOrDeployContractInstances({ forceDeploy: true });
-      const tx = await createProposal({
-        minChoices: 1,
-        maxChoices: 2,
-      });
-      const proposalId = await getProposalIdFromTx(tx);
-      const selectionInfo = await vevote.proposalSelectionRange(proposalId);
-      expect(selectionInfo[0]).to.equal(1);
-      expect(selectionInfo[1]).to.equal;
-    });
-
     it("Should emit the ProposalCreated event with correct info", async function () {
       const { vevote, whitelistedAccount } = await getOrDeployContractInstances({ forceDeploy: true });
-      const choices = [
-        ethers.encodeBytes32String("FOR"),
-        ethers.encodeBytes32String("AGAINST"),
-        ethers.encodeBytes32String("ABSTAIN"),
-      ];
       const tx = await createProposal({
-        minChoices: 1,
-        maxChoices: 2,
-        choices,
         description: "bafkreidbrnrrrv3a4iusha5kpodumws4cwlgnrdjrqrr6hbnqu7l5szjte",
         startBlock: 200000000,
         votingPeriod: 10,
@@ -278,23 +216,12 @@ describe("VeVote", function () {
           "bafkreidbrnrrrv3a4iusha5kpodumws4cwlgnrdjrqrr6hbnqu7l5szjte",
           200000000,
           10,
-          choices,
-          2,
-          1,
         );
     });
 
     it("Should return the proposal id", async function () {
       const { vevote, whitelistedAccount } = await getOrDeployContractInstances({ forceDeploy: true });
-      const choices = [
-        ethers.encodeBytes32String("FOR"),
-        ethers.encodeBytes32String("AGAINST"),
-        ethers.encodeBytes32String("ABSTAIN"),
-      ];
       const tx = await createProposal({
-        minChoices: 1,
-        maxChoices: 2,
-        choices,
         description: "bafkreidbrnrrrv3a4iusha5kpodumws4cwlgnrdjrqrr6hbnqu7l5szjte",
         startBlock: 200000000,
         votingPeriod: 10,
@@ -305,24 +232,9 @@ describe("VeVote", function () {
           whitelistedAccount.address,
           200000000,
           10,
-          choices,
           ethers.keccak256(ethers.toUtf8Bytes("bafkreidbrnrrrv3a4iusha5kpodumws4cwlgnrdjrqrr6hbnqu7l5szjte")),
-          2,
-          1,
         ),
       ).to.equal(await getProposalIdFromTx(tx));
-    });
-
-    it("Should be able to set min and max choices to same value, so user can only vote for one choice", async function () {
-      const { vevote } = await getOrDeployContractInstances({ forceDeploy: true });
-      const tx = await createProposal({
-        minChoices: 1,
-        maxChoices: 1,
-      });
-      const proposalId = await getProposalIdFromTx(tx);
-      const selectionInfo = await vevote.proposalSelectionRange(proposalId);
-      expect(selectionInfo[0]).to.equal(1);
-      expect(selectionInfo[1]).to.equal(1);
     });
   });
 
@@ -346,11 +258,14 @@ describe("VeVote", function () {
     });
 
     it("Non admin or proposer cannot cancel", async function () {
-      const { vevote, otherAccount } = await getOrDeployContractInstances({ forceDeploy: true });
-      const tx = await createProposal();
+      const { vevote, whitelistedAccount, admin } = await getOrDeployContractInstances({ forceDeploy: true });
+      await vevote.grantRole(await vevote.WHITELISTED_ROLE(), admin);
+      const tx = await createProposal({
+        proposer: admin,
+      });
       const proposalId = await getProposalIdFromTx(tx);
       expect(await vevote.state(proposalId)).to.equal(0);
-      await expect(vevote.connect(otherAccount).cancel(proposalId)).to.revertedWithCustomError(
+      await expect(vevote.connect(whitelistedAccount).cancel(proposalId)).to.revertedWithCustomError(
         vevote,
         "UnauthorizedAccess",
       );
@@ -534,35 +449,14 @@ describe("VeVote", function () {
       );
     });
 
-    it("Should revert if a user selects a choice that is not in the proposal", async function () {
+    it("Should revert if a user supports a choice that is not a valid type", async function () {
       const { vevote, mjolnirXHolder } = await getOrDeployContractInstances({ forceDeploy: true });
       const tx = await createProposal();
       const proposalId = await getProposalIdFromTx(tx);
       await waitForProposalToStart(proposalId);
-      await expect(
-        vevote.connect(mjolnirXHolder).castVote(proposalId, 10000000, ZeroAddress),
-      ).to.be.revertedWithCustomError(vevote, "InvalidVoteChoice");
-    });
-
-    it("Should revert if a user selects more choices than the maximum allowed", async function () {
-      const { vevote, mjolnirXHolder } = await getOrDeployContractInstances({ forceDeploy: true });
-      const tx = await createProposal();
-      const proposalId = await getProposalIdFromTx(tx);
-      await waitForProposalToStart(proposalId);
-      await expect(vevote.connect(mjolnirXHolder).castVote(proposalId, 7, ZeroAddress)).to.be.revertedWithCustomError(
+      await expect(vevote.connect(mjolnirXHolder).castVote(proposalId, 3, ZeroAddress)).to.be.revertedWithCustomError(
         vevote,
-        "InvalidVoteChoice",
-      );
-    });
-
-    it("Should revert if a user selects less choices than the minimum allowed", async function () {
-      const { vevote, mjolnirXHolder } = await getOrDeployContractInstances({ forceDeploy: true });
-      const tx = await createProposal();
-      const proposalId = await getProposalIdFromTx(tx);
-      await waitForProposalToStart(proposalId);
-      await expect(vevote.connect(mjolnirXHolder).castVote(proposalId, 0, ZeroAddress)).to.be.revertedWithCustomError(
-        vevote,
-        "InvalidVoteChoice",
+        "InvalidVoteType",
       );
     });
 
@@ -704,6 +598,7 @@ describe("VeVote", function () {
         });
 
       // Create another account endorsing same validator node
+      await authorityContractMock.revoke(admin);
       await createValidator(otherAccount, authorityContractMock, admin);
 
       const timepoint = await getCurrentBlockNumber();
@@ -716,12 +611,14 @@ describe("VeVote", function () {
       // Both accounts have a vote weight as they are both endorsers, however only one can vote as they are both endorsing same master node.
       expect(await vevote.getVoteWeightAtTimepoint(otherAccount.address, timepoint, admin.address)).to.equal(500000);
       // Set validator account endorsing same validator node
+      await authorityContractMock.revoke(admin);
       await createValidator(validatorHolder, authorityContractMock, admin);
       expect(await vevote.getVoteWeightAtTimepoint(validatorHolder.address, timepoint, admin.address)).to.equal(500000);
 
       // First user casts vote.
       await expect(vevote.connect(validatorHolder).castVote(proposalId, 1, admin.address)).to.not.be.reverted;
       // Set other account endorsing now
+      await authorityContractMock.revoke(admin);
       await createValidator(otherAccount, authorityContractMock, admin);
       // Should revert as user is not the master node was already ised for voting
       await expect(vevote.connect(otherAccount).castVote(proposalId, 1, admin.address)).to.be.revertedWithCustomError(
@@ -762,28 +659,21 @@ describe("VeVote", function () {
       expect(await vevote.getVoteWeight(flashHolder.address, ZeroAddress)).to.equal(2000);
       expect(await vevote.getVoteWeight(lighteningHolder.address, ZeroAddress)).to.equal(500);
       expect(await vevote.getVoteWeight(dawnHolder.address, ZeroAddress)).to.equal(100);
-
-      //TODO: continue
     });
 
-    it("Should split vote weight evenly between all choices when a user votes", async function () {
-      const { vevote, strengthHolder } = await getOrDeployContractInstances({ forceDeploy: true });
-      const tx = await createProposal();
-      const proposalId = await getProposalIdFromTx(tx);
-      await waitForProposalToStart(proposalId);
+    it("Should return 0 if a user tries to get validator weight when a master address is set to the zero address", async function () {
+      const { vevote, validatorHolder } = await getOrDeployContractInstances({ forceDeploy: true });
+      expect(await vevote.getValidatorVoteWeight(validatorHolder, ZeroAddress)).to.eql(0n);
+    });
 
-      // User owns 1 node with weight 100
-      expect(await vevote.getVoteWeight(strengthHolder.address, ZeroAddress)).to.equal(10000);
+    it("Should return 0 if a user tries to get validator weight when a endorser address is set to the zero address", async function () {
+      const { vevote, admin } = await getOrDeployContractInstances({ forceDeploy: true });
+      expect(await vevote.getValidatorVoteWeight(ZeroAddress, admin.address)).to.eql(0n);
+    });
 
-      // Vote weight should be split evenly between all choices
-      await vevote.connect(strengthHolder).castVote(proposalId, 3, ZeroAddress);
-
-      // Total votes should be 100
-      expect(await vevote.totalVotes(proposalId)).to.equal(10000);
-      // Choice 1 should have 50 votes (scaled by 100)
-      const votes = await vevote.getProposalVotes(proposalId);
-      expect(votes[0].weight).to.equal(5000);
-      expect(votes[1].weight).to.equal(5000);
+    it("Should return correct validator vote weight=", async function () {
+      const { vevote, admin, validatorHolder } = await getOrDeployContractInstances({ forceDeploy: true });
+      expect(await vevote.getValidatorVoteWeight(validatorHolder.address, admin.address)).to.eql(500000n);
     });
 
     it("Should update proposal choice tally correctly when a user votes", async function () {
@@ -798,41 +688,42 @@ describe("VeVote", function () {
       // User owns 1 node with weight 100
       expect(await vevote.getVoteWeight(strengthHolder.address, ZeroAddress)).to.equal(10000);
 
-      // Vote weight should be split evenly between all choices
-      await vevote.connect(strengthHolder).castVote(proposalId, 3, ZeroAddress);
+      // User Vote FOR the proposal
+      await vevote.connect(strengthHolder).castVote(proposalId, 1, ZeroAddress);
 
       // Total votes should be 100
       expect(await vevote.totalVotes(proposalId)).to.equal(10000);
       // Choice 1 should have 50 votes (scaled by 100)
       const votes = await vevote.getProposalVotes(proposalId);
-      expect(votes[0].weight).to.equal(5000);
-      expect(votes[1].weight).to.equal(5000);
-      expect(votes[2].weight).to.equal(0);
 
-      // Another voter votes
-      await vevote.connect(validatorHolder).castVote(proposalId, 2, admin.address);
+      expect(votes[0]).to.equal(0);
+      expect(votes[1]).to.equal(10000);
+      expect(votes[2]).to.equal(0);
+
+      // Another voter votes AGAINST
+      await vevote.connect(validatorHolder).castVote(proposalId, 0, admin.address);
 
       // Choice 1 should have 50 votes (scaled by 100)
       const votes2 = await vevote.getProposalVotes(proposalId);
-      expect(votes2[0].weight).to.equal(5000);
-      expect(votes2[1].weight).to.equal(505000); // validatorHolder put all his weight here
-      expect(votes2[2].weight).to.equal(0);
+      expect(votes2[0]).to.equal(500000); // validatorHolder put all his weight AGAINST
+      expect(votes2[1]).to.equal(10000);
+      expect(votes2[2]).to.equal(0);
 
       const tokenIds = await stargateNFT.idsOwnedBy(dawnHolder.address);
       await nodeManagement.connect(dawnHolder).delegateNode(mjolnirHolder.address, tokenIds[0]);
 
-      await expect(vevote.connect(dawnHolder).castVote(proposalId, 5, ZeroAddress)).to.be.revertedWithCustomError(
+      await expect(vevote.connect(dawnHolder).castVote(proposalId, 1, ZeroAddress)).to.be.revertedWithCustomError(
         vevote,
         "VoterNotEligible",
       );
 
       // Another voter votes
-      await vevote.connect(mjolnirHolder).castVote(proposalId, 5, ZeroAddress); // 150000 + 100
+      await vevote.connect(mjolnirHolder).castVote(proposalId, 1, ZeroAddress); // 150000 + 100
 
       const votes3 = await vevote.getProposalVotes(proposalId);
-      expect(votes3[0].weight).to.equal(80050);
-      expect(votes3[1].weight).to.equal(505000);
-      expect(votes3[2].weight).to.equal(75050);
+      expect(votes3[0]).to.equal(500000);
+      expect(votes3[1]).to.equal(160100); // Latest VOTER puts all his weight FOR
+      expect(votes3[2]).to.equal(0);
     });
 
     it("Has Voted should return true if user has voted", async function () {
@@ -971,6 +862,26 @@ describe("VeVote", function () {
       );
 
       await expect(vevote.connect(admin).execute(proposalId)).to.not.be.reverted;
+
+      expect(await vevote.state(proposalId)).to.equal(5);
+    });
+
+    it("Should be able to pass in comment when executing proposals", async function () {
+      const config = createLocalConfig();
+      config.QUORUM_PERCENTAGE = 0;
+      const { vevote, admin, strengthHolder } = await getOrDeployContractInstances({
+        forceDeploy: true,
+        config,
+      });
+      const tx = await createProposal();
+      const proposalId = await getProposalIdFromTx(tx);
+      await waitForProposalToStart(proposalId);
+      await vevote.connect(strengthHolder).castVote(proposalId, 1, ZeroAddress);
+      await waitForProposalToEnd(proposalId);
+
+      await expect(vevote.connect(admin).executeWithComment(proposalId, "It was executed by me"))
+        .to.emit(vevote, "VeVoteProposalExecuted")
+        .withArgs(proposalId, "It was executed by me");
 
       expect(await vevote.state(proposalId)).to.equal(5);
     });
@@ -1289,6 +1200,42 @@ describe("VeVote", function () {
       expect(await vevote.state(proposalId)).to.equal(3);
     });
 
+    it("Should return DEFEATED if proposal deadline is before current timepoint and if quorom is reached for a given but FOR is not greater than AGAINST", async function () {
+      const config = createLocalConfig();
+      config.INITIAL_MAX_VOTING_DURATION = 100;
+      const { vevote, admin, authorityContractMock, otherAccounts } = await getOrDeployContractInstances({
+        forceDeploy: true,
+        config,
+      });
+      await expect(vevote.connect(admin).updateQuorumNumerator(1)) // Quorom should be 1%
+        .to.emit(vevote, "QuorumNumeratorUpdated")
+        .withArgs(config.QUORUM_PERCENTAGE, 1);
+
+      const endorser1 = otherAccounts[0];
+      const endorser2 = otherAccounts[1];
+      const node1 = otherAccounts[2];
+      const node2 = otherAccounts[3];
+
+      // create two validators
+      await createValidator(endorser1, authorityContractMock, node1);
+      await createValidator(endorser2, authorityContractMock, node2);
+
+      const tx = await createProposal({
+        votingPeriod: 20,
+      });
+      const proposalId = await getProposalIdFromTx(tx);
+
+      await waitForProposalToStart(proposalId);
+
+      await vevote.connect(endorser1).castVote(proposalId, 1, node1.address);
+      expect(await vevote.isQuorumReached(proposalId)).to.eql(false);
+      await vevote.connect(endorser2).castVote(proposalId, 0, node2.address);
+      expect(await vevote.isQuorumReached(proposalId)).to.eql(true);
+
+      await waitForProposalToEnd(proposalId);
+      expect(await vevote.state(proposalId)).to.equal(3);
+    });
+
     it("Should return SUCEEDED if proposal deadline is before current timepoint and quorom is reached", async function () {
       const config = createLocalConfig();
       config.QUORUM_PERCENTAGE = 0;
@@ -1308,7 +1255,7 @@ describe("VeVote", function () {
   });
 
   describe("Proposal Configuration", function () {
-    it("Only admin addresses ca nset min voting delay", async function () {
+    it("Only admin addresses can set min voting delay", async function () {
       const { vevote, admin, otherAccount } = await getOrDeployContractInstances({ forceDeploy: true });
       await expect(vevote.connect(otherAccount).setMinVotingDelay(100)).to.be.revertedWithCustomError(
         vevote,
@@ -1395,35 +1342,6 @@ describe("VeVote", function () {
       await expect(vevote.connect(admin).setMaxVotingDuration(1234))
         .to.emit(vevote, "MaxVotingDurationSet")
         .withArgs(config.INITIAL_MAX_VOTING_DURATION, 1234);
-    });
-
-    it("Only admin addresses can set max choices", async function () {
-      const { vevote, admin, otherAccount } = await getOrDeployContractInstances({ forceDeploy: true });
-      await expect(vevote.connect(otherAccount).setMaxVotingDuration(10)).to.be.revertedWithCustomError(
-        vevote,
-        "AccessControlUnauthorizedAccount",
-      );
-      await expect(vevote.connect(admin).setMaxChoices(10)).to.not.be.reverted;
-
-      expect(await vevote.getMaxChoices()).to.equal(10);
-    });
-
-    it("Max choices cannot be 0", async function () {
-      const { vevote, admin } = await getOrDeployContractInstances({ forceDeploy: true });
-      await expect(vevote.connect(admin).setMaxChoices(0)).to.be.revertedWithCustomError(vevote, "InvalidMaxChoices");
-    });
-
-    it("Max choices cannot be greater than 32", async function () {
-      const { vevote, admin } = await getOrDeployContractInstances({ forceDeploy: true });
-      await expect(vevote.connect(admin).setMaxChoices(33)).to.be.revertedWithCustomError(vevote, "InvalidMaxChoices");
-    });
-
-    it("Should emit an event when max choices is set", async function () {
-      const config = createLocalConfig();
-      const { vevote, admin } = await getOrDeployContractInstances({ forceDeploy: true });
-      await expect(vevote.connect(admin).setMaxChoices(10))
-        .to.emit(vevote, "MaxChoicesSet")
-        .withArgs(config.INITIAL_MAX_CHOICES, 10);
     });
 
     it("Only admin addresses can set min vet stake amount", async function () {

@@ -1,6 +1,9 @@
 import type { BaseTranslation } from "../i18n-types.js";
 
 const en = {
+  left: "Left",
+  by: "by",
+  not_published: "Not published",
   homepage: "Homepage",
   back: "Back",
   start: "Start",
@@ -26,7 +29,9 @@ const en = {
   cancel: "Cancel",
   percentage: "%",
   submit: "Submit",
+  submit_vote: "Submit Vote",
   voting_power: "Voting Power",
+  your_voting_power: "Your voting power",
   voted: "Voted",
   vote: "Vote",
   wallet: "Wallet",
@@ -37,11 +42,13 @@ const en = {
   buy_a_node: "Buy a Node",
   filed_length: "{current:number}/{max:number}",
   upload: "Upload",
+  copied_to_clipboard: "Copied to clipboard",
   file_upload_description:
     "Image size should be 1280x512px (ratio 3:1).\nJPG, PNG or SVG of maximum of {size:number}MB.",
   select_date: "Select date",
   select_time: "Select time",
   maximum: "Maximum",
+  minimum: "Minimum",
   number_option: "Option {index:number}",
   continue: "Continue",
   description: "Description",
@@ -50,9 +57,66 @@ const en = {
   confirm: "Confirm",
   try_again: "Try Again",
   read_full_description: "Read full description",
+  disconnect: "Disconnect",
+  connect_wallet: "Connect Wallet",
+  connect_wallet_to_vote: "Connect your wallet to vote",
+  comment: "Comment",
+  comment_placeholder: "Add a comment to your vote...",
+  migrate: "Migrate",
+  stargate: "StarGate",
+  datepicker: {
+    select_date: "Select date",
+    previous_month: "Previous month",
+    next_month: "Next month",
+    today: "Today",
+    weekdays: {
+      mon: "Mon",
+      tue: "Tue",
+      wed: "Wed",
+      thu: "Thu",
+      fri: "Fri",
+      sat: "Sat",
+      sun: "Sun",
+    },
+    months: {
+      january: "January",
+      february: "February",
+      march: "March",
+      april: "April",
+      may: "May",
+      june: "June",
+      july: "July",
+      august: "August",
+      september: "September",
+      october: "October",
+      november: "November",
+      december: "December",
+    },
+  },
+  timepicker: {
+    select_time: "Select time",
+    select_time_24h: "Select time (UTC)",
+    hours: "Hours",
+    minutes: "Minutes",
+    utc_notice: "All times are in UTC",
+  },
   home: {
     title: "Home",
     go_to_proposals: "Go to proposals",
+  },
+  node_names: {
+    none: "No Node",
+    strength: "Strength",
+    thunder: "Thunder",
+    mjolnir: "Mjolnir",
+    vethorx: "VeThor X",
+    strengthx: "Strength X",
+    thunderx: "Thunder X",
+    mjolnirx: "Mjolnir X",
+    flash: "Flash",
+    lightning: "Lightning",
+    dawn: "Dawn",
+    validator: "Validator",
   },
   field_errors: {
     required: "Required",
@@ -60,15 +124,27 @@ const en = {
     end_before_start: "The end date must be after the start date",
     end_before_today: "The end date must be in the future",
     start_after_today: "The start date must be in the future",
+    end_after_max_duration: "The end date must be within {days:string} days of the start date",
+    failed_load_voters: "Failed to load voters data. Please try again.",
+    descriptions_errors: {
+      placeholders_not_replaced:
+        "Please replace placeholder text with your own content before submitting the proposal.",
+      empty_description: "Description cannot be empty. Please provide content for your proposal.",
+    },
   },
   voting_list: {
     voting_options: "Voting options:",
-    option_to_vote: "option to vote:",
+    option_to_vote: "Select an option to vote:",
+    voting_has_not_started_yet: "Voting has not started yet",
+    please_connect_your_wallet: "Please connect your wallet",
+    you_have_already_voted: "You have already voted",
+    you_dont_have_enough_voting_power: "You don't have enough voting power",
   },
   proposal: {
     title: "Proposal",
     proposed_by: "Proposed by",
     voting_calendar: "Voting calendar",
+    confirm_in_your_wallet: "Confirm in your wallet...",
     who_can_vote: "Who can vote",
     vechain_foundation: "VeChain Foundation",
     node_holders: "Node holders with voting power will be able to vote on this proposal.",
@@ -79,6 +155,10 @@ const en = {
     buy_another_node: "Buy another node to increase your voting power on future proposals.",
     buy_a_node:
       "Voting is only possible for Node holders. Buy a node to vote on future proposals or increase your voting power.",
+    vote_success: {
+      title: "Vote submitted!",
+      description: "Your vote was submitted successfully.",
+    },
     cancel_proposal: {
       title: "Cancel proposal",
       description:
@@ -86,23 +166,30 @@ const en = {
       reason: "Reason",
       reason_placeholder: "Write the reason for cancellation...",
     },
+    execute_proposal: {
+      title: "Mark as Executed",
+      description:
+        "If the actions of the proposal have already been executed, you can mark this approved proposal as executed for the voters to know.",
+      label: "Execution / Transaction details",
+      link_placeholder: "Insert link with the proof of the execution",
+    },
     delete_proposal: {
       title: "Delete proposal",
       description:
         "If you delete this draft, all the information of the proposal will not be possible to recover anymore.",
       confirmation: "Are you sure you want to delete it?",
       no_go_back: "No, go back",
-      yes_delete: "Yes, Delete Proposal",
+      yes_delete: "Yes, Delete",
     },
     info_box: {
       info: {
         title: "Minimum participation",
         description:
-          "A minimum of 30% participation must be reached to validate the voting of the proposal and get approval.",
+          "A minimum of {quorum:number}% participation must be reached to validate the voting of the proposal and get approval.",
       },
       approved: {
         title: "Minimum participation reached",
-        description: "The voting participation reached the minimum required of 30% to get approval.",
+        description: "The voting participation reached the minimum required of {quorum:number}% to get approval.",
       },
       executed: {
         title: "Proposal Approved and Executed",
@@ -110,7 +197,8 @@ const en = {
       },
       "min-not-reached": {
         title: "Minimum participation not reached",
-        description: "The voting participation didn’t reached the minimum required of 30% to get approval.",
+        description:
+          "The voting participation didn’t reached the minimum required of {quorum:number}% to get approval.",
       },
       rejected: {
         title: "Proposal Rejected",
@@ -122,9 +210,20 @@ const en = {
       },
     },
     voting_power: {
+      get_more_voting_power: "Get more Voting Power",
+      get_voting_power: "Get Voting Power",
       title: "Voting Power",
-      calculation: "Your voting power was calculated at the time of the snapshot {snapshot:string}.",
-      total_voting_power: "Total voting power",
+
+      calculation: "Your Voting Power was calculated at the time of the snapshot {snapshot:string}.",
+      total_voting_power: "Total Voting Power",
+      warnings: {
+        zero_voting_power: "The connected wallet has no Voting Power",
+        legacy_node: "You have legacy nodes that haven’t been migrated yet.  Migrate to get more Voting Power.",
+        delegated: {
+          title: "Your Voting Power is delegated",
+          description: "Your Voting Power is delegated to another node",
+        },
+      },
     },
     voters_table: {
       filters: {
@@ -168,10 +267,14 @@ const en = {
       },
       details_form: {
         title: "Title",
-        title_placeholder: "What’s the proposal title?",
+        title_placeholder: "What's the proposal title?",
         description: "Description",
         description_placeholder: "Add a description...",
         header_image: "Header image",
+        discourse_url: "Discourse url",
+        discourse_topic: "Discourse Topic",
+        discourse_topic_placeholder: "your-topic-name",
+        discourse_topic_help: "Enter the topic name from your VeChain Discourse discussion",
         voting_calendar: "Voting calendar",
       },
       setup_form: {
@@ -181,26 +284,12 @@ const en = {
         voting_question_subtitle: "This question should provide exact context to the voting options:",
         voting_question_placeholder: "Write the question...",
         voting_limit: "Voting limit",
-        voting_limit_subtitle: "Define the maximum amount of options allowed per voter:",
+        voting_limit_subtitle: "Define the minimum and maximum amount of options allowed per voter:",
         voting_options: "Voting options",
         voting_choice_subtitle: "The “single choice” voting type only allows the voter to select:",
         voting_options_subtitle: "Add between 2 and 30 options to vote:",
         add_new_option: "Add new option",
         voting_option_placeholder: "Write the voting option...",
-        voting_types: {
-          single_choice: {
-            title: "Single choice",
-            subtitle: "Yes / No / Abstain",
-          },
-          single_option: {
-            title: "Single choice",
-            subtitle: "Voter can select 1 of multiple options",
-          },
-          multi_options: {
-            title: "Multiple choice",
-            subtitle: "Voter can select 1 or more options",
-          },
-        },
       },
       summary_form: {
         main_details: {
@@ -211,11 +300,9 @@ const en = {
           title: "Voting setup",
           question: "Question",
           type: "Type",
-          maximum: "Maximum - {limit:number} options",
+          limit: "Minimum {min:number} options - Maximum {limit:number} options",
           types: {
-            SINGLE_CHOICE: "Single choice - Yes / No / Abstain",
-            SINGLE_OPTION: "Single choice - Multiple voting options",
-            MULTIPLE_OPTIONS: "Multiple choice - Multiple voting options",
+            SINGLE_CHOICE: "Single choice - For / Against / Abstain",
           },
         },
         publish_proposal: "Publish Proposal",
@@ -228,6 +315,40 @@ const en = {
         publish_success_description: "The proposal has been successfully publish and can now be seen publicly.",
       },
     },
+    go_to_stargate: "Go to Stargate",
+    proposal_not_found: "Proposal not found",
+    proposal_not_found_description:
+      "The proposal you're looking for doesn't exist or may have been removed. It's possible the URL is incorrect or the proposal has been deleted.",
+    back_to_proposals: "Back to Proposals",
+    try_again: "Try Again",
+    starts_in: "Starts in",
+    ends_in: "Ends in",
+    timeline: "Timeline",
+    timeline_created: "Created",
+    proposal_canceled: "Proposal Canceled",
+    proposal_canceled_description: "The proposal was canceled by VeChain or the proposer by the following reason:",
+    no_reason_provided: "No reason provided",
+    unknown_error: "Unknown error",
+    failed_to_execute_proposal: "Failed to execute proposal",
+    proposal_approved_and_executed: "Proposal Approved and Executed",
+    the_voting_approved_the_proposal_and_the_actions_have_been_executed:
+      "The voting approved the proposal and the actions have been executed.",
+    see_details: "See details",
+    proposal_rejected: "Proposal Rejected",
+    the_proposal_didnt_get_enough_votes_in_favor_to_get_approval:
+      "The proposal didn't get enough votes in favor to get approval.",
+    minimum_participation_not_reached: "Minimum participation not reached",
+    the_voting_participation_didnt_reached_the_minimum_required_of_30_to_get_approval:
+      "The voting participation didn't reached the minimum required of 30% to get approval.",
+    a_minimum_of_30_participation_must_be_reached_to_validate_the_voting_of_the_proposal_and_get_approval:
+      "A minimum of 30% participation must be reached to validate the voting of the proposal and get approval.",
+    vote_submission_failed: "Vote submission failed",
+    vote_submitted_successfully: "Vote submitted successfully!",
+    submit_your_vote: "Submit your Vote",
+    vote_cannot_be_changed: "Your vote cannot be changed once submitted.",
+    waiting_wallet_confirmation: "Waiting wallet confirmation...",
+    confirm_vote: "Confirm vote",
+    you_voted: "You voted",
   },
   proposals: {
     title: "Proposals",
@@ -249,6 +370,7 @@ const en = {
     rejected: "Rejected",
   },
   filters: {
+    title: "Filters",
     sort: {
       newest: "Newest",
       oldest: "Oldest",
@@ -257,19 +379,34 @@ const en = {
     },
   },
   header: {
-    official: "Official",
-    blockchain: "VeChainThor Blockchain",
-    voting_platform: "voting platform",
-    immutable: "Immutable.",
-    transparent: "Transparent.",
-    decentralized: "Decentralized.",
+    title: "VeChainThor Voting Platform",
+    description: "Vote to shape the future of VeChainThor",
+    how_to_vote: "How to Vote",
+    how_to_get_voting_power: "How to get Voting Power",
+  },
+  stargate_warning: {
+    title: "Stargate Node Migration Required",
+    description: "You have 1 or more non-migrated nodes. Please migrate them as soon as possible to continue voting.",
+    migration_link: "https://app.stargate.vechain.org/",
+    ongoing_proposal_warning:
+      "If a proposal has already started, you will not be able to vote on it even after migration. Only future proposals will be available for voting.",
+    confirmation_instruction: "If you want to continue anyway, write this text: agree-with-this",
+    confirmation_error: "Please type exactly 'agree-with-this' to continue",
   },
   footer: {
+    version: "v1.0.0",
     all_right: "All Rights Reserved © Vechain Foundation San Marino S.r.l.",
     legal: {
+      title: "Legal",
       terms_of_service: "Terms of Service",
       privacy_policy: "Privacy Policy",
       cookies_policy: "Cookies Policy",
+    },
+    resources: {
+      title: "Resources",
+      docs: "Documentation",
+      stargate: "StarGate",
+      support: "Support",
     },
   },
 } satisfies BaseTranslation;

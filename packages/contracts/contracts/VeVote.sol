@@ -21,7 +21,6 @@ import { VeVoteVoteLogic } from "./governance/libraries/VeVoteVoteLogic.sol";
 import { VeVoteProposalLogic } from "./governance/libraries/VeVoteProposalLogic.sol";
 import { VeVoteStorageTypes } from "./governance/libraries/VeVoteStorageTypes.sol";
 import { VeVoteConfigurator } from "./governance/libraries/VeVoteConfigurator.sol";
-import { VechainNodesDataTypes } from "./libraries/VechainNodesDataTypes.sol";
 import { INodeManagement } from "./interfaces/INodeManagement.sol";
 import { IStargateNFT } from "./interfaces/IStargateNFT.sol";
 import { IAuthority } from "./interfaces/IAuthority.sol";
@@ -31,7 +30,7 @@ import "@openzeppelin/contracts/utils/introspection/IERC165.sol";
 
 /**
  * @title VeVote Governance Contract
- * @notice Upgradeable multi-choice voting system for VeChain governance using Stargate NFTs and validator eligibility.
+ * @notice Upgradeable single-choice voting system for VeChain governance using Stargate NFTs and validator eligibility.
  * @dev
  * ## Governance Participation
  * - Only two categories of users can vote:
@@ -42,8 +41,7 @@ import "@openzeppelin/contracts/utils/introspection/IERC165.sol";
  *      as verified via the `Authority` contract, are eligible to participate.
  *
  * ## Voting Model
- * - Supports multi-choice voting using 32-bit bitmask encoding.
- * - Proposals specify `minSelection` and `maxSelection` constraints for voting flexibility.
+ * - Supports standard governance voting options - AGAINST, FOR, ABSTAIN.
  *
  * ## Role-Based Access Control
  * - `DEFAULT_ADMIN_ROLE`: Full administrative privileges.
@@ -68,7 +66,9 @@ import "@openzeppelin/contracts/utils/introspection/IERC165.sol";
 contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgradeable {
   /// @notice The role that can upgrade the contract
   bytes32 public constant UPGRADER_ROLE = keccak256("UPGRADER_ROLE");
-  /// @notice The role that can create proposals
+  /// @notice The role that can grant the `WHITELISTED_ROLE`
+  bytes32 public constant WHITELIST_ADMIN_ROLE = keccak256("WHITELIST_ADMIN_ROLE");
+  /// @notice The role that create proposals
   bytes32 public constant WHITELISTED_ROLE = keccak256("WHITELISTED_ROLE");
   /// @notice The role that can execute proposals
   bytes32 public constant EXECUTOR_ROLE = keccak256("EXECUTOR_ROLE");
@@ -97,6 +97,9 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
     VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
     VeVoteQuorumLogic.updateQuorumNumerator($, data.quorumPercentage);
 
+    // Set WHITELIST_ADMIN_ROLE as the admin for WHITELISTED_ROLE
+    _setRoleAdmin(WHITELISTED_ROLE, WHITELIST_ADMIN_ROLE);
+
     // Validate and set the VeVote roles
     require(address(rolesData.admin) != address(0), "VeVote: Admin address cannot be zero");
     _grantRole(DEFAULT_ADMIN_ROLE, rolesData.admin);
@@ -104,6 +107,7 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
     _grantRole(SETTINGS_MANAGER_ROLE, rolesData.settingsManager);
     _grantRole(NODE_WEIGHT_MANAGER_ROLE, rolesData.nodeWeightManager);
     _grantRole(EXECUTOR_ROLE, rolesData.executor);
+    _grantRole(WHITELIST_ADMIN_ROLE, rolesData.whitelistAdmin);
 
     // Set the whitelist roles
     uint256 whitelistLength = rolesData.whitelist.length;
@@ -124,21 +128,9 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
     address proposer,
     uint48 startBlock,
     uint48 voteDuration,
-    bytes32[] memory choices,
-    bytes32 descriptionHash,
-    uint8 maxSelection,
-    uint8 minSelection
+    bytes32 descriptionHash
   ) external pure returns (uint256) {
-    return
-      VeVoteProposalLogic.hashProposal(
-        proposer,
-        startBlock,
-        voteDuration,
-        choices,
-        descriptionHash,
-        maxSelection,
-        minSelection
-      );
+    return VeVoteProposalLogic.hashProposal(proposer, startBlock, voteDuration, descriptionHash);
   }
 
   /**
@@ -168,27 +160,11 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
   /**
    * @inheritdoc IVeVote
    */
-  function proposalChoices(uint256 proposalId) external view returns (bytes32[] memory) {
-    VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
-    return VeVoteProposalLogic.proposalChoices($, proposalId);
-  }
-
-  /**
-   * @inheritdoc IVeVote
-   */
-  function proposalSelectionRange(uint256 proposalId) external view returns (uint8, uint8) {
-    VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
-    return VeVoteProposalLogic.proposalSelectionRange($, proposalId);
-  }
-
-  /**
-   * @inheritdoc IVeVote
-   */
   function getProposalVotes(
     uint256 proposalId
-  ) external view returns (VeVoteTypes.ProposalVoteResult[] memory results) {
+  ) external view returns (uint256 againstVotes, uint256 forVotes, uint256 abstainVotes) {
     VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
-    return VeVoteVoteLogic.getProposalVotes($, proposalId);
+    return VeVoteVoteLogic.proposalVotes($, proposalId);
   }
 
   /**
@@ -233,6 +209,14 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
   function getNodeVoteWeight(uint256 nodeId) external view returns (uint256) {
     VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
     return VeVoteVoteLogic.getNodeVoteWeight($, nodeId);
+  }
+
+  /**
+   * @inheritdoc IVeVote
+   */
+  function getValidatorVoteWeight(address endorser, address masterAddress) external view returns (uint256) {
+    VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
+    return VeVoteVoteLogic.getValidatorVoteWeight($, endorser, masterAddress);
   }
 
   /**
@@ -304,14 +288,6 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
   function getMaxVotingDuration() external view returns (uint48) {
     VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
     return VeVoteConfigurator.getMaxVotingDuration($);
-  }
-
-  /**
-   * @inheritdoc IVeVote
-   */
-  function getMaxChoices() external view returns (uint8) {
-    VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
-    return VeVoteConfigurator.getMaxChoices($);
   }
 
   /**
@@ -391,13 +367,10 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
   function propose(
     string calldata description,
     uint48 startBlock,
-    uint48 voteDuration,
-    bytes32[] calldata choices,
-    uint8 maxSelection,
-    uint8 minSelection
+    uint48 voteDuration
   ) external onlyRole(WHITELISTED_ROLE) returns (uint256) {
     VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
-    return VeVoteProposalLogic.propose($, description, startBlock, voteDuration, choices, maxSelection, minSelection);
+    return VeVoteProposalLogic.propose($, description, startBlock, voteDuration);
   }
 
   /**
@@ -408,7 +381,6 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
     return
       VeVoteProposalLogic.cancel(
         $,
-        hasRole(WHITELISTED_ROLE, _msgSender()),
         hasRole(DEFAULT_ADMIN_ROLE, _msgSender()),
         proposalId,
         ""
@@ -423,7 +395,6 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
     return
       VeVoteProposalLogic.cancel(
         $,
-        hasRole(WHITELISTED_ROLE, _msgSender()),
         hasRole(DEFAULT_ADMIN_ROLE, _msgSender()),
         proposalId,
         reason
@@ -435,15 +406,26 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
    */
   function execute(uint256 proposalId) external onlyRole(EXECUTOR_ROLE) returns (uint256) {
     VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
-    return VeVoteProposalLogic.execute($, proposalId);
+    return VeVoteProposalLogic.execute($, proposalId, "");
   }
 
   /**
    * @inheritdoc IVeVote
    */
-  function castVote(uint256 proposalId, uint32 choices, address masterAddress) external {
+  function executeWithComment(
+    uint256 proposalId,
+    string memory comment
+  ) external onlyRole(EXECUTOR_ROLE) returns (uint256) {
     VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
-    VeVoteVoteLogic.castVote($, proposalId, choices, "", masterAddress);
+    return VeVoteProposalLogic.execute($, proposalId, comment);
+  }
+
+  /**
+   * @inheritdoc IVeVote
+   */
+  function castVote(uint256 proposalId, uint8 support, address masterAddress) external {
+    VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
+    VeVoteVoteLogic.castVote($, proposalId, support, "", masterAddress);
   }
 
   /**
@@ -451,12 +433,12 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
    */
   function castVoteWithReason(
     uint256 proposalId,
-    uint32 choices,
+    uint8 support,
     string calldata reason,
     address masterAddress
   ) external {
     VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
-    VeVoteVoteLogic.castVote($, proposalId, choices, reason, masterAddress);
+    VeVoteVoteLogic.castVote($, proposalId, support, reason, masterAddress);
   }
 
   /**
@@ -481,14 +463,6 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
   function setMaxVotingDuration(uint48 newMaxVotingDuration) external onlyRole(SETTINGS_MANAGER_ROLE) {
     VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
     VeVoteConfigurator.setMaxVotingDuration($, newMaxVotingDuration);
-  }
-
-  /**
-   * @inheritdoc IVeVote
-   */
-  function setMaxChoices(uint8 newMaxChoices) external onlyRole(SETTINGS_MANAGER_ROLE) {
-    VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
-    VeVoteConfigurator.setMaxChoices($, newMaxChoices);
   }
 
   /**

@@ -206,7 +206,6 @@ export const getOrDeployContractInstances = async ({ forceDeploy = false, config
         initialMinVotingDelay: config.INITIAL_MIN_VOTING_DELAY,
         initialMaxVotingDuration: config.INITIAL_MAX_VOTING_DURATION,
         initialMinVotingDuration: config.INITIAL_MIN_VOTING_DURATION,
-        initialMaxChoices: config.INITIAL_MAX_CHOICES,
         nodeManagement: await nodeManagement.getAddress(),
         stargateNFT: await stargateNFT.getAddress(),
         authorityContract: await authorityContractMock.getAddress(),
@@ -219,6 +218,7 @@ export const getOrDeployContractInstances = async ({ forceDeploy = false, config
         settingsManager: admin.address,
         nodeWeightManager: admin.address,
         executor: admin.address,
+        whitelistAdmin: admin.address,
       },
     ],
     {

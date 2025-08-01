@@ -1,21 +1,23 @@
-import { createMultiStyleConfigHelpers } from "@chakra-ui/react";
+import { createMultiStyleConfigHelpers, defineStyle } from "@chakra-ui/react";
 import { modalAnatomy } from "@chakra-ui/anatomy";
 
 const { definePartsStyle, defineMultiStyleConfig } = createMultiStyleConfigHelpers(modalAnatomy.keys);
 
 const resetModalItemsStyle = {
-  color: { color: "primary.900" },
-  padding: { padding: "0" },
+  color: defineStyle({ color: "primary.900" }),
+  padding: defineStyle({
+    padding: 0,
+  }),
 };
 
 const defaultVariant = definePartsStyle({
   dialog: {
-    padding: "40px",
+    padding: { base: "24px", md: "40px" },
     bg: "white",
     borderRadius: "16px",
     display: "flex",
     flexDirection: "column",
-    gap: "32px",
+    gap: { base: "24px", md: "32px" },
     boxShadow: "0px 2px 6px 0px rgba(0, 0, 0, 0.07)",
   },
   overlay: {
@@ -23,12 +25,16 @@ const defaultVariant = definePartsStyle({
     background: "rgba(23, 13, 69, 0.65)",
   },
   header: {
+    ...resetModalItemsStyle.padding,
     fontSize: "30px",
     fontWeight: "600",
     color: "primary.500",
   },
   closeButton: resetModalItemsStyle.color,
-  body: resetModalItemsStyle.color,
+  body: {
+    ...resetModalItemsStyle.padding,
+    ...resetModalItemsStyle.color,
+  },
   footer: resetModalItemsStyle.color,
 });
 
@@ -38,8 +44,8 @@ export const modalTheme = defineMultiStyleConfig({
   sizes: {
     default: {
       dialog: {
-        padding: "40px",
-        maxWidth: "480px",
+        padding: { base: "24px", md: "40px" },
+        maxWidth: { base: "327px", md: "480px" },
       },
       header: resetModalItemsStyle.padding,
       body: resetModalItemsStyle.padding,

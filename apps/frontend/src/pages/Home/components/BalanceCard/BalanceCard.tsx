@@ -1,8 +1,7 @@
 import { Card, CardBody, HStack, Image, Text } from "@chakra-ui/react";
-import { useVeVoteBalance } from "@/hooks/useVeVoteBalance";
 
 export const BalanceCard = () => {
-  const { balance } = useVeVoteBalance();
+  const balance = 0; // Placeholder - hook removed
   return (
     <Card>
       <CardBody>

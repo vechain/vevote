@@ -1,30 +1,31 @@
 import { FileUploadChild } from "@/components/ui/FileUploadChild";
 import { useI18nContext } from "@/i18n/i18n-react";
+import { ArrowDownIcon, ArrowRightIcon, CalendarIcon, ClockIcon } from "@/icons";
+import { SingleChoiceEnum } from "@/types/proposal";
 import { ZodFile } from "@/utils/zod";
-import { Flex, Grid, GridItem, Heading, Text } from "@chakra-ui/react";
+import { Flex, Heading, Icon, Text } from "@chakra-ui/react";
 import { PropsWithChildren, useMemo } from "react";
-import { GoArrowRight } from "react-icons/go";
-import { CiCalendar, CiClock1 } from "react-icons/ci";
 import dayjs from "dayjs";
-import { BaseOption, VotingChoices, VotingEnum } from "@/types/proposal";
-import { getTimeZone } from "@/utils/timezone";
+import utc from "dayjs/plugin/utc";
+
+dayjs.extend(utc);
 
 const SummaryCard = ({ title, children }: PropsWithChildren<{ title: string }>) => {
   return (
     <Flex
       width={"full"}
-      padding={6}
+      padding={{ base: 4, md: 6 }}
       borderRadius={24}
       flexDirection={"column"}
       alignItems={"start"}
-      gap={6}
+      gap={{ base: 4, md: 6 }}
       backgroundColor={"gray.100"}>
-      <Heading fontSize={20} fontWeight={600} color={"gray.600"}>
+      <Heading fontSize={{ base: 16, md: 20 }} fontWeight={600} color={"gray.600"}>
         {title}
       </Heading>
       <Flex
         width={"full"}
-        padding={10}
+        padding={{ base: 6, md: 10 }}
         borderRadius={12}
         alignItems={"start"}
         flexDirection={"column"}
@@ -38,71 +39,73 @@ const SummaryCard = ({ title, children }: PropsWithChildren<{ title: string }>) 
 
 const BaseItem = ({ label, value, lineClamp }: { label: string; value: string; lineClamp?: number }) => {
   return (
-    <Grid gap={3} templateColumns="repeat(4, 1fr)" width={"full"}>
-      <GridItem colSpan={1}>
-        <Text fontWeight={500} color={"gray.800"}>
-          {label}
-        </Text>
-      </GridItem>
-      <GridItem colSpan={3}>
-        <Text
-          color={"gray.600"}
-          width={"full"}
-          overflow={"hidden"}
-          textOverflow={"ellipsis"}
-          whiteSpace={lineClamp ? "wrap" : "nowrap"}
-          noOfLines={lineClamp}>
-          {value}
-        </Text>
-      </GridItem>
-    </Grid>
+    <Flex gap={{ base: 3, md: 0 }} flexDirection={{ base: "column", md: "row" }} width={"full"}>
+      <Text
+        width={{ base: "full", md: "25%" }}
+        pr={3}
+        fontSize={{ base: 14, md: 16 }}
+        fontWeight={500}
+        color={"gray.800"}>
+        {label}
+      </Text>
+
+      <Text
+        fontSize={{ base: 14, md: 16 }}
+        color={"gray.600"}
+        width={{ base: "full", md: "75%" }}
+        overflow={"hidden"}
+        textOverflow={"ellipsis"}
+        whiteSpace={lineClamp ? "wrap" : "nowrap"}
+        noOfLines={lineClamp}>
+        {value}
+      </Text>
+    </Flex>
   );
 };
 
 const ImageItem = ({ label, value }: { label: string; value?: ZodFile }) => {
   return (
-    <Grid gap={3} templateColumns="repeat(4, 1fr)" width={"full"}>
-      <GridItem colSpan={1}>
-        <Text fontWeight={500} color={"gray.800"}>
-          {label}
-        </Text>
-      </GridItem>
-      <GridItem colSpan={3}>
-        <FileUploadChild value={value} />
-      </GridItem>
-    </Grid>
+    <Flex gap={{ base: 3, md: 0 }} flexDirection={{ base: "column", md: "row" }} width={"full"}>
+      <Text
+        width={{ base: "full", md: "25%" }}
+        pr={3}
+        fontSize={{ base: 14, md: 16 }}
+        fontWeight={500}
+        color={"gray.800"}>
+        {label}
+      </Text>
+
+      <FileUploadChild value={value} />
+    </Flex>
   );
 };
 
 const CalendarItem = ({ label, startDate, endDate }: { label: string; startDate?: Date; endDate?: Date }) => {
   const { LL } = useI18nContext();
 
-  const timeZone = useMemo(() => {
-    return getTimeZone();
-  }, []);
-
   return (
-    <Grid gap={3} templateColumns="repeat(4, 1fr)" width={"full"}>
-      <GridItem colSpan={1}>
-        <Text fontWeight={500} color={"gray.800"}>
+    <Flex gap={{ base: 3, md: 0 }} flexDirection={{ base: "column", md: "row" }} width={"full"}>
+      <Flex width={{ base: "full", md: "25%" }} pr={3} flexDirection={"column"}>
+        <Text fontSize={{ base: 14, md: 16 }} fontWeight={500} color={"gray.800"}>
           {label}
         </Text>
         <Text paddingTop={2} color={"gray.600"} fontSize={14}>
-          {timeZone}
+          UTC
         </Text>
-      </GridItem>
-      <GridItem colSpan={3} display={"flex"} alignItems={"center"} gap={"24px"}>
+      </Flex>
+      <Flex flexDirection={{ base: "column", md: "row" }} alignItems={{ base: "start", md: "center" }} gap={"24px"}>
         <ShowDetailsDateItemChild date={startDate} label={LL.start()} />
-        <GoArrowRight />
+        <Icon hideBelow={"md"} as={ArrowRightIcon} />
+        <Icon hideFrom={"md"} as={ArrowDownIcon} />
         <ShowDetailsDateItemChild date={endDate} label={LL.end()} />
-      </GridItem>
-    </Grid>
+      </Flex>
+    </Flex>
   );
 };
 
 const ShowDetailsDateItemChild = ({ date, label }: { date?: Date; label: string }) => {
   const onlyDate = useMemo(() => dayjs(date).format("DD/MM/YYYY"), [date]);
-  const onlyTime = useMemo(() => dayjs(date).format("hh:mm A"), [date]);
+  const onlyTime = useMemo(() => dayjs(date).utc().format("HH:mm") + " UTC", [date]);
   return (
     <Flex
       flexDirection={"column"}
@@ -116,13 +119,13 @@ const ShowDetailsDateItemChild = ({ date, label }: { date?: Date; label: string 
         {label}
       </Text>
       <Flex alignItems={"center"} gap={"12px"}>
-        <CiCalendar color={"#AAAFB6"} />
+        <Icon as={CalendarIcon} color={"gray.400"} width={4} height={4} />
         <Text color={"gray.600"} fontSize={"14px"}>
           {onlyDate}
         </Text>
       </Flex>
       <Flex alignItems={"center"} gap={"12px"}>
-        <CiClock1 color={"#AAAFB6"} />
+        <Icon as={ClockIcon} color={"gray.400"} width={4} height={4} />
         <Text color={"gray.600"} fontSize={"14px"}>
           {onlyTime}
         </Text>
@@ -133,38 +136,31 @@ const ShowDetailsDateItemChild = ({ date, label }: { date?: Date; label: string 
 
 type OptionsItemProps = {
   label: string;
-  votingType: VotingEnum;
-  votingOptions: VotingChoices["votingOptions"];
+  votingOptions: SingleChoiceEnum[];
 };
 
-const OptionsItem = ({ votingOptions, votingType, label }: OptionsItemProps) => {
-  const { LL } = useI18nContext();
+const OptionsItem = ({ votingOptions, label }: OptionsItemProps) => {
   return (
-    <Grid gap={3} templateColumns="repeat(4, 1fr)" width={"full"}>
-      <GridItem colSpan={1}>
-        <Text fontWeight={500} color={"gray.800"}>
-          {label}
-        </Text>
-      </GridItem>
-      <GridItem colSpan={3}>
-        {votingType === VotingEnum.SINGLE_CHOICE && (
-          <Text color={"gray.600"} width={"full"} overflow={"hidden"} textOverflow={"ellipsis"} whiteSpace={"nowrap"}>
-            {votingOptions.join(" / ")}
-          </Text>
-        )}
-        {(votingType === VotingEnum.MULTIPLE_OPTIONS || votingType === VotingEnum.SINGLE_OPTION) &&
-          (votingOptions as BaseOption[]).map((value, id) => {
-            return (
-              <Flex key={value.id} flexDirection={"column"} alignItems={"start"}>
-                <Text color={"gray.500"} fontSize={14}>
-                  {LL.number_option({ index: id + 1 })}
-                </Text>
-                <Text color={"gray.600"}>{value.value}</Text>
-              </Flex>
-            );
-          })}
-      </GridItem>
-    </Grid>
+    <Flex gap={{ base: 3, md: 0 }} flexDirection={{ base: "column", md: "row" }} width={"full"}>
+      <Text
+        width={{ base: "full", md: "25%" }}
+        pr={3}
+        fontSize={{ base: 14, md: 16 }}
+        fontWeight={500}
+        color={"gray.800"}>
+        {label}
+      </Text>
+
+      <Text
+        width={{ base: "full", md: "75%" }}
+        fontSize={{ base: 14, md: 16 }}
+        color={"gray.600"}
+        overflow={"hidden"}
+        textOverflow={"ellipsis"}
+        whiteSpace={"nowrap"}>
+        {votingOptions.join(" / ")}
+      </Text>
+    </Flex>
   );
 };
 

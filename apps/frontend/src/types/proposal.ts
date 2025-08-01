@@ -1,58 +1,61 @@
 import { ProposalDetails } from "@/pages/CreateProposal/CreateProposalProvider";
+import { VotesCastResult } from "./votes";
 
 export enum CreateProposalStep {
   VOTING_DETAILS,
-  VOTING_SETUP,
   VOTING_SUMMARY,
 }
 
-export enum VotingEnum {
-  SINGLE_CHOICE = "SINGLE_CHOICE",
-  SINGLE_OPTION = "SINGLE_OPTION",
-  MULTIPLE_OPTIONS = "MULTIPLE_OPTIONS",
-}
-
 export enum SingleChoiceEnum {
-  YES = "Yes",
-  NO = "No",
+  AGAINST = "Against",
+  FOR = "For",
   ABSTAIN = "Abstain",
 }
 
-export type SingleChoiceOptions = {
-  votingType: VotingEnum.SINGLE_CHOICE;
-  votingOptions: SingleChoiceEnum[];
-};
+export enum ProposalStatus {
+  DRAFT = "draft",
+  UPCOMING = "upcoming",
+  VOTING = "voting",
+  APPROVED = "approved",
+  EXECUTED = "executed",
+  CANCELED = "canceled",
+  REJECTED = "rejected",
+  MIN_NOT_REACHED = "min-not-reached",
+}
 
-export type BaseOption = {
-  id: string;
-  value: string;
-};
-
-export type CustomChoiceOptions =
-  | {
-      votingType: VotingEnum.SINGLE_OPTION;
-      votingOptions: BaseOption[];
-    }
-  | {
-      votingType: VotingEnum.MULTIPLE_OPTIONS;
-      votingOptions: BaseOption[];
-    };
-
-export type VotingChoices = SingleChoiceOptions | CustomChoiceOptions;
-
-export type ProposalStatus =
-  | "draft"
-  | "upcoming"
-  | "voting"
-  | "approved"
-  | "executed"
-  | "canceled"
-  | "rejected"
-  | "min-not-reached";
+export type FilterStatuses = Omit<ProposalStatus, "min-not-reached">;
 
 export type ProposalCardType = ProposalDetails & {
   id: string;
   status: ProposalStatus;
   proposer: string;
   createdAt: Date;
+  reason?: string;
+  results?: VotesCastResult[];
+  executedProposalLink?: string;
+  canceledDate?: Date;
+  executedDate?: Date;
 };
+
+export type ProposalEvent = {
+  proposalId: string;
+  proposer: string;
+  description: string;
+  startTime: string;
+  voteDuration: string;
+  canceller?: string;
+  reason?: string;
+  executedProposalLink?: string;
+  canceledTime?: string;
+  executedTime?: string;
+  createdTime?: string;
+};
+
+export enum ProposalState {
+  PENDING,
+  ACTIVE,
+  CANCELED,
+  DEFEATED,
+  SUCCEEDED,
+  EXECUTED,
+}

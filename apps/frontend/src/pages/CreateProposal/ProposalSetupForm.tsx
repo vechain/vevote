@@ -1,24 +1,15 @@
 import { FormSkeleton } from "@/components/ui/FormSkeleton";
 import { Label } from "@/components/ui/Label";
 import { useI18nContext } from "@/i18n/i18n-react";
-import {
-  ProposalMultipleOptionSchema,
-  ProposalSetupSchema,
-  proposalSetupSchema,
-  ProposalSingleChoiceSchema,
-  QUESTION_MAX_CHAR,
-} from "@/schema/createProposalSchema";
-import { CreateProposalStep, VotingEnum } from "@/types/proposal";
-import { Box, Button, Flex, FormControl, Input, Text } from "@chakra-ui/react";
+import { ProposalSetupSchema, proposalSetupSchema, QUESTION_MAX_CHAR } from "@/schema/createProposalSchema";
+import { CreateProposalStep } from "@/types/proposal";
+import { Box, Button, Flex, FormControl, Icon, Input, Text } from "@chakra-ui/react";
 import { useCallback, useMemo } from "react";
-import { IoArrowBack, IoArrowForward } from "react-icons/io5";
-import { VotingTypeSelectControlled } from "./controllers/VotingTypeSelectControlled";
 import { CreateFormWrapper } from "./CreateFormWrapper";
-import { defaultSingleChoice, useCreateProposal } from "./CreateProposalProvider";
+import { useCreateProposal } from "./CreateProposalProvider";
 import { InputMessage } from "@/components/ui/InputMessage";
-import { useFormContext } from "react-hook-form";
-import { InputLimitControlled } from "./controllers/InputLimitControlled";
-import { VotingOptionsControlled } from "./VotingOptionsControlled";
+import { ArrowLeftIcon, ArrowRightIcon } from "@/icons";
+import { voteOptions } from "@/constants";
 
 export const ProposalSetupForm = () => {
   const { proposalDetails, setStep, setProposalDetails } = useCreateProposal();
@@ -37,46 +28,56 @@ export const ProposalSetupForm = () => {
   return (
     <FormSkeleton schema={proposalSetupSchema} defaultValues={defaultValues} onSubmit={onSubmit}>
       {({ errors, register, watch }) => {
-        const { votingQuestion, votingType, votingOptions } = watch();
-        const nextDisabled = votingOptions.filter(Boolean).length < 2;
+        const { votingQuestion } = watch();
+        const nextDisabled = false;
 
         return (
-          <CreateFormWrapper>
-            <FormControl isInvalid={Boolean(errors.votingType)}>
-              <Label label={LLSetupForm.voting_type()} />
-              <Label.Subtitle label={LLSetupForm.voting_type_subtitle()} />
-              <VotingTypeSelectControlled />
-            </FormControl>
+          <>
+            <CreateFormWrapper>
+              <FormControl isInvalid={Boolean(errors.votingQuestion)}>
+                <Label label={LLSetupForm.voting_question()} />
+                <Label.Subtitle label={LLSetupForm.voting_question_subtitle()} />
+                <Input
+                  width={"full"}
+                  placeholder={LLSetupForm.voting_question_placeholder()}
+                  {...register("votingQuestion")}
+                />
+                <InputMessage
+                  error={errors.votingQuestion?.message}
+                  message={LL.filed_length({ current: (votingQuestion ?? "").length, max: QUESTION_MAX_CHAR })}
+                />
+              </FormControl>
 
-            <FormControl isInvalid={Boolean(errors.votingQuestion)}>
-              <Label label={LLSetupForm.voting_question()} />
-              <Label.Subtitle label={LLSetupForm.voting_question_subtitle()} />
-              <Input
-                width={"full"}
-                placeholder={LLSetupForm.voting_question_placeholder()}
-                {...register("votingQuestion")}
-              />
-              <InputMessage
-                error={errors.votingQuestion?.message}
-                message={LL.filed_length({ current: (votingQuestion ?? "").length, max: QUESTION_MAX_CHAR })}
-              />
-            </FormControl>
+              <SingleChoiceFields />
 
-            {votingType === VotingEnum.SINGLE_CHOICE && <SingleChoiceFields />}
-            {votingType === VotingEnum.SINGLE_OPTION && <SingleOptionsFields />}
-            {votingType === VotingEnum.MULTIPLE_OPTIONS && <MultipleOptionFields />}
-
-            <Flex justifyContent={"space-between"}>
-              <Button variant={"secondary"} onClick={() => setStep(CreateProposalStep.VOTING_DETAILS)}>
-                <IoArrowBack />
+              <Flex justifyContent={"space-between"} hideBelow={"md"}>
+                <Button
+                  variant={"secondary"}
+                  onClick={() => setStep(CreateProposalStep.VOTING_DETAILS)}
+                  leftIcon={<Icon as={ArrowLeftIcon} />}>
+                  {LL.back()}
+                </Button>
+                <Button type="submit" isDisabled={nextDisabled} rightIcon={<Icon as={ArrowRightIcon} />}>
+                  {LL.next()}
+                </Button>
+              </Flex>
+            </CreateFormWrapper>
+            <Flex
+              hideFrom={"md"}
+              width={"full"}
+              mx={"auto"}
+              px={6}
+              py={4}
+              bgColor={{ base: "white" }}
+              justifyContent={"space-between"}>
+              <Button variant={"secondary"} disabled leftIcon={<Icon as={ArrowLeftIcon} />}>
                 {LL.back()}
               </Button>
-              <Button type="submit" isDisabled={nextDisabled}>
+              <Button type="submit" rightIcon={<Icon as={ArrowRightIcon} />}>
                 {LL.next()}
-                <IoArrowForward />
               </Button>
             </Flex>
-          </CreateFormWrapper>
+          </>
         );
       }}
     </FormSkeleton>
@@ -86,64 +87,26 @@ export const ProposalSetupForm = () => {
 const SingleChoiceFields = () => {
   const { LL } = useI18nContext();
   const LLSetupForm = LL.proposal.create.setup_form;
-  const {
-    formState: { errors },
-  } = useFormContext<ProposalSingleChoiceSchema>();
   return (
     <>
-      <FormControl isInvalid={Boolean(errors?.votingOptions)}>
+      <FormControl>
         <Label label={LLSetupForm.voting_options()} />
         <Label.Subtitle label={LLSetupForm.voting_choice_subtitle()} />
         <Flex flexDirection={"column"} gap={2}>
-          {defaultSingleChoice.map(choice => (
+          {voteOptions.map(choice => (
             <Box
-              padding={6}
+              padding={{ base: 4, md: 6 }}
               key={choice}
               borderRadius={12}
               borderWidth={2}
               borderColor={"gray.200"}
               background={"gray.100"}>
-              <Text fontSize={18} fontWeight={600} color={"gray.400"}>
+              <Text fontSize={{ base: 14, md: 18 }} fontWeight={600} color={"gray.400"}>
                 {choice}
               </Text>
             </Box>
           ))}
         </Flex>
-      </FormControl>
-    </>
-  );
-};
-
-const SingleOptionsFields = () => {
-  const { LL } = useI18nContext();
-  const LLSetupForm = LL.proposal.create.setup_form;
-  return (
-    <FormControl>
-      <Label label={LLSetupForm.voting_options()} />
-      <Label.Subtitle label={LLSetupForm.voting_options_subtitle()} />
-      <VotingOptionsControlled />
-    </FormControl>
-  );
-};
-
-const MultipleOptionFields = () => {
-  const { LL } = useI18nContext();
-  const LLSetupForm = LL.proposal.create.setup_form;
-  const {
-    formState: { errors },
-  } = useFormContext<ProposalMultipleOptionSchema>();
-  return (
-    <>
-      <FormControl isInvalid={Boolean(errors?.votingLimit)}>
-        <Label label={LLSetupForm.voting_limit()} />
-        <Label.Subtitle label={LLSetupForm.voting_limit_subtitle()} />
-        <Label fontSize={16} label={LL.maximum()} />
-        <InputLimitControlled />
-      </FormControl>
-      <FormControl>
-        <Label label={LLSetupForm.voting_options()} />
-        <Label.Subtitle label={LLSetupForm.voting_options_subtitle()} />
-        <VotingOptionsControlled />
       </FormControl>
     </>
   );

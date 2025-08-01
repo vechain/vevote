@@ -1,6 +1,6 @@
 import { Button, Flex, Icon, Text } from "@chakra-ui/react";
 import { useI18nContext } from "@/i18n/i18n-react";
-import { MdArrowDownward } from "react-icons/md";
+import { ArrowDownIcon } from "@/icons";
 
 type PaginationProps = {
   current: number;
@@ -14,7 +14,11 @@ export const Pagination = ({ current, total, onShowMore, text }: PaginationProps
   return (
     <Flex justifyContent={"flex-start"} alignItems={"center"} marginTop={"24px"} columnGap={"16px"}>
       {current < total && (
-        <Button rightIcon={<Icon as={MdArrowDownward} size={"sm"} />} variant={"secondary"} onClick={onShowMore}>
+        <Button
+          rightIcon={<Icon as={ArrowDownIcon} />}
+          variant={"tertiary"}
+          onClick={onShowMore}
+          size={{ base: "md", md: "lg" }}>
           {LL.show_more()}
         </Button>
       )}

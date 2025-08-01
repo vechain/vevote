@@ -27,7 +27,6 @@ library Levels {
    * @notice Emitted when a token level is updated
    * @param levelId The ID of the level that was updated
    * @param name The new name of the level
-   * @param isActive The new active status
    * @param isX The new X status
    * @param maturityBlocks The new maturity period in blocks
    * @param scaledRewardFactor The new scaled reward multiplier
@@ -36,7 +35,6 @@ library Levels {
   event LevelUpdated(
     uint8 indexed levelId,
     string name,
-    bool isActive,
     bool isX,
     uint64 maturityBlocks,
     uint64 scaledRewardFactor,
@@ -98,7 +96,6 @@ library Levels {
     emit LevelUpdated(
       _levelAndSupply.level.id,
       _levelAndSupply.level.name,
-      _levelAndSupply.level.isActive,
       _levelAndSupply.level.isX,
       _levelAndSupply.level.maturityBlocks,
       _levelAndSupply.level.scaledRewardFactor,
@@ -111,7 +108,6 @@ library Levels {
   /// @notice Updates a token level
   /// @param _levelId - The ID of the level to update
   /// @param _name - The name of the level
-  /// @param _isActive - Whether the level is active
   /// @param _isX - Whether the level is an X level
   /// @param _maturityBlocks - The number of blocks before the level can earn rewards
   /// @param _scaledRewardFactor - The scaled reward multiplier for the level
@@ -128,21 +124,12 @@ library Levels {
     DataTypes.StargateNFTStorage storage $,
     uint8 _levelId,
     string memory _name,
-    bool _isActive,
     bool _isX,
     uint64 _maturityBlocks,
     uint64 _scaledRewardFactor,
     uint256 _vetAmountRequiredToStake
   ) external {
-    _updateLevel($, _levelId, _name, _isActive, _isX, _maturityBlocks, _scaledRewardFactor, _vetAmountRequiredToStake);
-  }
-
-  /// @notice Toggles the active status of a token level
-  /// @param _levelId - The ID of the level to toggle
-  /// @dev Only the LEVEL_OPERATOR_ROLE can call this function
-  /// Emits a {IStargateNFT.LevelUpdated} event
-  function toggleLevelIsActive(DataTypes.StargateNFTStorage storage $, uint8 _levelId) external {
-    _toggleLevelIsActive($, _levelId);
+    _updateLevel($, _levelId, _name, _isX, _maturityBlocks, _scaledRewardFactor, _vetAmountRequiredToStake);
   }
 
   /// @notice Updates the cap for a token level
@@ -218,11 +205,6 @@ library Levels {
     uint8 _levelId,
     uint48 _blockNumber
   ) external view returns (uint208) {
-    // Validate level exists
-    if (!_levelExists($, $.levels[_levelId].id)) {
-      revert Errors.LevelNotFound(_levelId);
-    }
-
     return _getCirculatingSupplyAtBlock($, _levelId, _blockNumber);
   }
 
@@ -261,7 +243,6 @@ library Levels {
     DataTypes.StargateNFTStorage storage $,
     uint8 _levelId,
     string memory _name,
-    bool _isActive,
     bool _isX,
     uint64 _maturityBlocks,
     uint64 _scaledRewardFactor,
@@ -273,7 +254,6 @@ library Levels {
     }
 
     $.levels[_levelId].name = _name;
-    $.levels[_levelId].isActive = _isActive;
     $.levels[_levelId].isX = _isX;
     $.levels[_levelId].maturityBlocks = _maturityBlocks;
     $.levels[_levelId].scaledRewardFactor = _scaledRewardFactor;
@@ -282,35 +262,7 @@ library Levels {
     // Validate level fields
     _validateLevel($.levels[_levelId]);
 
-    emit LevelUpdated(
-      _levelId,
-      _name,
-      _isActive,
-      _isX,
-      _maturityBlocks,
-      _scaledRewardFactor,
-      _vetAmountRequiredToStake
-    );
-  }
-
-  /// @dev See {toggleLevelIsActive}
-  function _toggleLevelIsActive(DataTypes.StargateNFTStorage storage $, uint8 _levelId) internal {
-    // Validate level exists
-    if (!_levelExists($, $.levels[_levelId].id)) {
-      revert Errors.LevelNotFound(_levelId);
-    }
-
-    $.levels[_levelId].isActive = !$.levels[_levelId].isActive;
-
-    emit LevelUpdated(
-      _levelId,
-      $.levels[_levelId].name,
-      $.levels[_levelId].isActive,
-      $.levels[_levelId].isX,
-      $.levels[_levelId].maturityBlocks,
-      $.levels[_levelId].scaledRewardFactor,
-      $.levels[_levelId].vetAmountRequiredToStake
-    );
+    emit LevelUpdated(_levelId, _name, _isX, _maturityBlocks, _scaledRewardFactor, _vetAmountRequiredToStake);
   }
 
   /// @dev See {updateLevelCap}
@@ -371,6 +323,14 @@ library Levels {
     uint8 _levelId,
     uint48 _blockNumber
   ) internal view returns (uint208) {
+    if (!_levelExists($, $.levels[_levelId].id)) {
+      revert Errors.LevelNotFound(_levelId);
+    }
+
+    if (_blockNumber > Clock._clock()) {
+      revert Errors.BlockInFuture();
+    }
+
     return $.circulatingSupply[_levelId].upperLookupRecent(_blockNumber);
   }
 
@@ -378,7 +338,6 @@ library Levels {
   /// @param _levelId The ID of the level spec to check
   /// @return true if the level spec exists, false otherwise
   function _levelExists(DataTypes.StargateNFTStorage storage $, uint8 _levelId) internal view returns (bool) {
-    // Level exists if it has a non-empty name
     return _levelId > 0 && _levelId <= $.MAX_LEVEL_ID;
   }
 

@@ -1,8 +1,12 @@
+import "quill/dist/quill.core.css";
+import "@fontsource-variable/inter";
+import "@fontsource-variable/rubik";
+import "./index.css";
+
 import { getConfig } from "@repo/config";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import { WalletConnectOptions } from "@vechain/dapp-kit-react";
 import { VeChainKitProvider } from "@vechain/vechain-kit";
-import "quill/dist/quill.core.css";
 import React, { PropsWithChildren, useEffect, useState } from "react";
 import ReactDOM from "react-dom/client";
 import { localStorageDetector, navigatorDetector } from "typesafe-i18n/detectors";
@@ -13,16 +17,18 @@ import { Locales } from "./i18n/i18n-types";
 import { detectLocale } from "./i18n/i18n-util";
 import { loadLocaleAsync } from "./i18n/i18n-util.async";
 import { loadLocale } from "./i18n/i18n-util.sync";
-import "./index.css";
 import { CreateProposalProvider } from "./pages/CreateProposal/CreateProposalProvider.tsx";
 import { persister, queryClient } from "./utils/queryClient.ts";
+import { UserProvider } from "./contexts/UserProvider.tsx";
+import { MixPanelProvider } from "./contexts/MixPanelProvider.tsx";
 
 loadLocale("en");
 
 const config = getConfig(import.meta.env.VITE_APP_ENV);
+const PROJECT_ID = config.WCProjectId || "";
 
 const walletConnectOptions: WalletConnectOptions = {
-  projectId: "a0b855ceaf109dbc8426479a4c3d38d8",
+  projectId: PROJECT_ID,
   metadata: {
     name: "Sample VeChain dApp",
     description: "A sample VeChain dApp",
@@ -49,6 +55,10 @@ const Providers = ({ children }: PropsWithChildren) => {
             delegatorUrl: "https://sponsor-testnet.vechain.energy/by/283",
             delegateAllTransactions: true,
           }}
+          loginMethods={[
+            // { method: "vechain", gridColumn: 4 },
+            { method: "dappkit", gridColumn: 4 },
+          ]}
           dappKit={{
             allowedWallets: ["veworld", "wallet-connect", "sync2"],
             walletConnectOptions: {
@@ -60,9 +70,13 @@ const Providers = ({ children }: PropsWithChildren) => {
           network={{
             type: config.network.type,
           }}>
-          <ThemeProvider>
-            <CreateProposalProvider>{children}</CreateProposalProvider>
-          </ThemeProvider>
+          <MixPanelProvider>
+            <ThemeProvider>
+              <UserProvider>
+                <CreateProposalProvider>{children}</CreateProposalProvider>
+              </UserProvider>
+            </ThemeProvider>
+          </MixPanelProvider>
         </VeChainKitProvider>
       </PersistQueryClientProvider>
     </I18nProvider>

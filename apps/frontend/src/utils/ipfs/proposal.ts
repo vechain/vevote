@@ -3,10 +3,17 @@ import { IpfsDetails } from "@/types/ipfs";
 import { getConfig } from "@repo/config";
 import axios from "axios";
 import { uploadBlobToIPFS } from "../ipfs";
+import { getFullDiscourseUrl } from "../discourse";
 
 const IPFS_FETCHING_SERVICE = getConfig(import.meta.env.VITE_APP_ENV).ipfsFetchingService;
 
-export const uploadProposalToIpfs = async ({ title, description, votingQuestion, headerImage }: ProposalDetails) => {
+export const uploadProposalToIpfs = async ({
+  title,
+  description,
+  votingQuestion,
+  headerImage,
+  discourseUrl,
+}: ProposalDetails) => {
   let headerImageUrl = null;
 
   if (headerImage?.source) {
@@ -18,12 +25,15 @@ export const uploadProposalToIpfs = async ({ title, description, votingQuestion,
     title,
     shortDescription: votingQuestion,
     markdownDescription: description,
-    headerImage: {
-      type: headerImage?.type,
-      name: headerImage?.name,
-      size: headerImage?.size,
-      url: headerImageUrl,
-    },
+    headerImage: headerImage
+      ? {
+          type: headerImage.type,
+          name: headerImage.name,
+          size: headerImage.size,
+          url: headerImageUrl,
+        }
+      : undefined,
+    discourseUrl: getFullDiscourseUrl(discourseUrl || ""),
   };
 
   try {
@@ -35,7 +45,7 @@ export const uploadProposalToIpfs = async ({ title, description, votingQuestion,
   }
 };
 
-export const getProposalsFromIpfs = async (proposalCID: string): Promise<IpfsDetails> => {
+export const getProposalsFromIpfs = async (proposalCID?: string): Promise<IpfsDetails> => {
   const res = await axios.get(`${IPFS_FETCHING_SERVICE}/${proposalCID}`);
   if (res.status !== 200) throw new Error("ipfs failed");
   return { ipfsHash: proposalCID, ...res.data };

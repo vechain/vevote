@@ -1,18 +1,22 @@
 import { IndexerRoutes } from "@/types/indexer";
-import { VotedChoices, VotedResult } from "@/types/votes";
+import { VotedResult } from "@/types/votes";
 import { getConfig } from "@repo/config";
 import { VeVote__factory } from "@repo/contracts";
 import axios from "axios";
-import { executeCall, getEventMethods } from "../contract";
-import { getAllEvents } from "@vechain/vechain-kit";
+import { executeCall } from "../contract";
+import { getAllEventLogs, ThorClient } from "@vechain/vechain-kit";
 
 const indexerUrl = getConfig(import.meta.env.VITE_APP_ENV).indexerUrl;
 const contractAddress = getConfig(import.meta.env.VITE_APP_ENV).vevoteContractAddress;
 const contractInterface = VeVote__factory.createInterface();
 const nodeUrl = getConfig(import.meta.env.VITE_APP_ENV).nodeUrl;
 
+type DecodedVoteCastEvent = [string, bigint, 0 | 1 | 2, bigint, string, bigint[], string];
+
 export const getHasVoted = async (proposalId?: string, address?: string) => {
   if (!proposalId || !address) return false;
+  if (proposalId === "draft") return false;
+
   try {
     const hasVoted = await executeCall({
       contractAddress,
@@ -31,57 +35,58 @@ export const getHasVoted = async (proposalId?: string, address?: string) => {
   }
 };
 
-export const getVotedChoices = async (thor: Connex.Thor, proposalId?: string, address?: string) => {
-  if (!proposalId || !address) return { votedChoices: undefined };
+export const getVoteCastResults = async (
+  thor: ThorClient,
+  { address, proposalIds }: { proposalIds?: string[]; address?: string },
+) => {
+  if (!thor) {
+    return { votes: undefined };
+  }
 
   try {
-    const [voteCastEvent] = getEventMethods({
-      contractInterface,
-      methods: ["VoteCast"],
-    });
+    const eventAbi = thor.contracts.load(contractAddress, VeVote__factory.abi).getEventAbi("VoteCast");
 
-    const topics = voteCastEvent.encode({
-      address,
-      proposalId,
-    });
+    const topicsArray = proposalIds?.map(p =>
+      eventAbi.encodeFilterTopicsNoNull({
+        voter: address,
+        proposalId: p,
+      }),
+    );
 
-    const filterCriteria = [
-      {
-        address: contractAddress,
-        topic0: voteCastEvent.signature,
-        topic1: topics[1] ?? undefined,
-        topic2: topics[2] ?? undefined,
-      },
-    ];
+    const filterCriteria =
+      topicsArray?.map(topics => ({
+        criteria: {
+          address: contractAddress,
+          topic0: eventAbi.signatureHash,
+          topic1: topics?.[1],
+          topic2: topics?.[2],
+        },
+        eventAbi,
+      })) || [];
 
-    const events: Connex.Thor.Filter.Row<"event", object>[] = await getAllEvents({ thor, nodeUrl, filterCriteria });
-    //TODO: use sdk once vechain-kit is compatible
-    // const events = subscriptions.getEventSubscriptionUrl(nodeUrl)
+    const events = await getAllEventLogs({ thor, nodeUrl, filterCriteria });
 
-    const decodedProposalEvents = events.map(event => {
-      switch (event.topics[0]) {
-        case voteCastEvent.signature: {
-          const decoded = voteCastEvent.decode(event.data, event.topics);
+    const votedEvents = events.map(event => {
+      const [voter, proposalId, choice, weight, reason, stargateNFTs, validator] =
+        event.decodedData as DecodedVoteCastEvent;
 
-          const votedChoices = {
-            proposalId: decoded.proposalId as string,
-            voter: decoded.voter as string,
-            choices: Number(decoded.choices).toString(2).split("").reverse(),
-          };
+      const votes = {
+        proposalId: proposalId.toString(),
+        voter,
+        choice,
+        weight: weight.toString(),
+        reason,
+        stargateNFTs: stargateNFTs.map(nft => nft.toString()),
+        validator,
+        date: new Date(event.meta.blockTimestamp * 1000),
+        transactionId: event.meta.txID,
+      };
 
-          return votedChoices;
-        }
-
-        default: {
-          throw new Error("Unknown event");
-        }
-      }
+      return votes;
     });
 
     return {
-      votedChoices: decodedProposalEvents.filter(
-        event => event.proposalId === proposalId && event.voter === address,
-      )[0] as VotedChoices,
+      votes: votedEvents,
     };
   } catch (error) {
     console.error(error);
@@ -89,7 +94,7 @@ export const getVotedChoices = async (thor: Connex.Thor, proposalId?: string, ad
   }
 };
 
-export const getVotesResults = async (proposalId?: string, size?: number, page?: number) => {
+export const getIndexerVoteResults = async (proposalId?: string, size?: number, page?: number) => {
   if (!proposalId) return { results: undefined };
 
   try {

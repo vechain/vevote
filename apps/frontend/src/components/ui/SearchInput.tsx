@@ -1,13 +1,18 @@
 import { Button, defineStyle, Icon, InputProps } from "@chakra-ui/react";
-import { IoIosClose, IoIosSearch } from "react-icons/io";
 import { InputWithIcon } from "./InputWithIcon";
 import { forwardRef } from "react";
+import { CloseIcon, SearchIcon } from "@/icons";
 
 type SearchInputProps = InputProps & {
   onClear?: () => void;
 };
 
 const buttonStyle = defineStyle({
+  position: "absolute",
+  right: "0",
+  top: "50%",
+  transform: "translateY(-50%)",
+  bottom: "0",
   variant: "ghost",
   minWidth: "40px",
   _focus: { boxShadow: "none" },
@@ -18,12 +23,22 @@ const buttonStyle = defineStyle({
 
 export const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(({ onClear, value, ...props }, ref) => {
   return (
-    <InputWithIcon backgroundColor={"white"} width={"222px"}>
-      <InputWithIcon.Icon iconPosition="left" as={IoIosSearch} size={"md"} />
-      <InputWithIcon.Input ref={ref} paddingLeft={0} value={value} {...props} />
+    <InputWithIcon backgroundColor={"white"} position={"relative"} flex={1} minWidth="0">
+      <InputWithIcon.Icon iconPosition="left">
+        <Icon as={SearchIcon} width={4} height={4} />
+      </InputWithIcon.Icon>
+      <InputWithIcon.Input
+        paddingInlineEnd={0}
+        minWidth="0"
+        ref={ref}
+        paddingLeft={0}
+        value={value}
+        size={{ base: "none", md: "md" }}
+        {...props}
+      />
       {value && onClear && (
-        <Button {...buttonStyle} onClick={onClear}>
-          <Icon size={"md"} as={IoIosClose} />
+        <Button {...buttonStyle} _hover={{ bg: "white" }} onClick={onClear} size={{ base: "sm", md: "md" }}>
+          <Icon as={CloseIcon} width={4} height={4} />
         </Button>
       )}
     </InputWithIcon>

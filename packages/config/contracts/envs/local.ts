@@ -11,7 +11,6 @@ export function createLocalConfig() {
     INITIAL_MIN_VOTING_DELAY: 1, // 1 block
     INITIAL_MAX_VOTING_DURATION: 10, // 10 blocks
     INITIAL_MIN_VOTING_DURATION: 1, // 1 block
-    INITIAL_MAX_CHOICES: 32, // 32 choices
     MIN_VET_STAKE: 10000000000000000000000n, // Dawn
   });
 }

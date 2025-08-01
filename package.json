@@ -20,6 +20,14 @@
     "contracts:deploy:galactica-test": "dotenv -v VITE_APP_ENV=galactica-test -- turbo run deploy:galactica-test --filter=contracts",
     "contracts:deploy:testnet": "dotenv -v VITE_APP_ENV=testnet -- turbo run deploy:testnet --filter=@repo/contracts",
     "contracts:deploy:mainnet": "dotenv -v VITE_APP_ENV=mainnet -- turbo run deploy:mainnet --filter=@repo/contracts",
+    "contracts:release:deploy": "dotenv -v VITE_APP_ENV=local -- turbo run deploy:release --filter=@repo/contracts",
+    "contracts:release:deploy:testnet-staging": "dotenv -v VITE_APP_ENV=testnet-staging -- turbo run deploy:release:testnet-staging --filter=contracts",
+    "contracts:release:deploy:testnet": "dotenv -v VITE_APP_ENV=testnet -- turbo run deploy:release:testnet --filter=@repo/contracts",
+    "contracts:release:deploy:mainnet": "dotenv -v VITE_APP_ENV=mainnet -- turbo run deploy:release:mainnet --filter=@repo/contracts",
+    "contracts:upgrade": "dotenv -v VITE_APP_ENV=local -- yarn workspace @repo/contracts ts-node scripts/upgrades/select-and-upgrade.ts",
+    "contracts:upgrade:testnet-staging": "dotenv -v VITE_APP_ENV=testnet-staging -- yarn workspace @repo/contracts ts-node scripts/upgrades/select-and-upgrade.ts",
+    "contracts:upgrade:testnet": "dotenv -v VITE_APP_ENV=testnet -- yarn workspace @repo/contracts ts-node scripts/upgrades/select-and-upgrade.ts",
+    "contracts:upgrade:mainnet": "dotenv -v VITE_APP_ENV=mainnet -- yarn workspace @repo/contracts ts-node scripts/upgrades/select-and-upgrade.ts",
     "contracts:test": "dotenv -v VITE_APP_ENV=local -- turbo run test:hardhat --filter=contracts",
     "contracts:test:thor-solo": "dotenv -v VITE_APP_ENV=local -- turbo run test:thor-solo --filter=contracts",
     "test:coverage:solidity": "dotenv -v VITE_APP_ENV=local -v IS_TEST_COVERAGE=true -e .env.example turbo run test:coverage:solidity",
@@ -29,7 +37,8 @@
     "solo-clean": "make solo-clean",
     "prepare": "husky install",
     "fe:dev": "yarn workspace frontend dev",
-    "fe:build": "yarn workspace frontend build"
+    "fe:build": "yarn workspace frontend build",
+    "i18n:generate": "yarn workspace frontend typesafe-i18n"
   },
   "devDependencies": {
     "prettier": "^3.2.5",

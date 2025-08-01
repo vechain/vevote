@@ -1,20 +1,19 @@
 // SPDX-License-Identifier: MIT
 
-//  8b           d8       8b           d8                            
-//  `8b         d8'       `8b         d8'           ,d               
-//   `8b       d8'         `8b       d8'            88               
-//    `8b     d8' ,adPPYba, `8b     d8' ,adPPYba, MM88MMM ,adPPYba,  
-//     `8b   d8' a8P   _d88  `8b   d8' a8"     "8a  88   a8P_____88  
-//      `8b d8'  8PP  "PP""   `8b d8'  8b       d8  88   8PP"""""""  
-//       `888'   "8b,   ,aa    `888'   "8a,   ,a8"  88,  "8b,   ,aa  
-//        `8'     `"Ybbd8"'     `8'     `"YbbdP"'   "Y888 `"Ybbd8"'  
+//  8b           d8       8b           d8
+//  `8b         d8'       `8b         d8'           ,d
+//   `8b       d8'         `8b       d8'            88
+//    `8b     d8' ,adPPYba, `8b     d8' ,adPPYba, MM88MMM ,adPPYba,
+//     `8b   d8' a8P   _d88  `8b   d8' a8"     "8a  88   a8P_____88
+//      `8b d8'  8PP  "PP""   `8b d8'  8b       d8  88   8PP"""""""
+//       `888'   "8b,   ,aa    `888'   "8a,   ,a8"  88,  "8b,   ,aa
+//        `8'     `"Ybbd8"'     `8'     `"YbbdP"'   "Y888 `"Ybbd8"'
 
 pragma solidity 0.8.20;
 
 import { VeVoteStorageTypes } from "./libraries/VeVoteStorageTypes.sol";
 import { VeVoteClockLogic } from "./libraries/VeVoteClockLogic.sol";
 import { VeVoteTypes } from "./libraries/VeVoteTypes.sol";
-import { VechainNodesDataTypes } from "../libraries/VechainNodesDataTypes.sol";
 import "@openzeppelin/contracts/utils/math/SafeCast.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/utils/structs/Checkpoints.sol";
@@ -58,7 +57,6 @@ contract VeVoteStorage is Initializable {
     $.minVotingDelay = initializationData.initialMinVotingDelay;
     $.minVotingDuration = initializationData.initialMinVotingDuration;
     $.maxVotingDuration = initializationData.initialMaxVotingDuration;
-    $.maxChoices = initializationData.initialMaxChoices;
 
     // Initialize vote normalization base (min stake)
     require(initializationData.initialMinStakedAmount > 0, "VeVote: min stake must be > 0");

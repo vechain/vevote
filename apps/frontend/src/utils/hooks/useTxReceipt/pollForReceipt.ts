@@ -1,39 +1,44 @@
+import { ThorClient } from "@vechain/vechain-kit";
+import { TransactionReceipt } from "@vechain/sdk-network";
+
 /**
  * Poll the chain for a transaction receipt until it is found (or timeout after 3 blocks)
+ * @param thor ThorClient instance
  * @param id Transaction id
  * @param blocksTimeout Number of blocks to wait before timeout
  * @returns  Transaction receipt
  */
 export const pollForReceipt = async (
-  thor: Connex.Thor,
+  thor: ThorClient,
   id?: string,
   blocksTimeout = 3,
-): Promise<Connex.Thor.Transaction.Receipt> => {
+): Promise<TransactionReceipt> => {
   // uncomment to debug unknown status modal
   // throw new Error("debug unknown modal")
 
-  if (!id) throw new Error("No transaction id provided")
+  if (!id) throw new Error("No transaction id provided");
 
-  const transaction = thor.transaction(id)
-  let receipt
+  let receipt: TransactionReceipt | null = null;
 
   //Query the transaction until it has a receipt
-  //Timeout after 3 blocks
+  //Timeout after blocksTimeout attempts
   for (let i = 0; i < blocksTimeout; i++) {
-    receipt = await transaction.getReceipt()
-    if (receipt) {
-      break
+    try {
+      receipt = await thor.transactions.getTransactionReceipt(id);
+      if (receipt) {
+        break;
+      }
+    } catch (error) {
+      // Transaction might not be mined yet, continue polling
     }
-    await thor.ticker().next()
+    
+    // Wait for next block - simple delay instead of ticker
+    await new Promise(resolve => setTimeout(resolve, 10000)); // 10 second delay
   }
 
   if (!receipt) {
-    throw new Error("Transaction receipt not found")
+    throw new Error("Transaction receipt not found after timeout");
   }
 
-  const transactionData = await transaction.get()
-
-  if (!transactionData) throw Error("Failed to get TX data")
-
-  return receipt
-}
+  return receipt;
+};

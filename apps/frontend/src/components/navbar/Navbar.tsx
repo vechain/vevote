@@ -1,86 +1,67 @@
-import { useShowNavbar } from "@/hooks/useShowNavbar";
-import { Box, BoxProps, Flex, FlexProps, Image, useBreakpointValue } from "@chakra-ui/react";
-import { DAppKitWalletButton } from "@vechain/vechain-kit";
-import { PropsWithChildren, useMemo } from "react";
+import { VotingPowerModal } from "@/components/proposal/VotingPowerModal";
+import { ConnectButton } from "@/components/ui/ConnectButton";
+import { VoteLogo } from "@/components/ui/VoteLogo";
+import { useUser } from "@/contexts/UserProvider";
+import { Box, Container, defineStyle, Flex } from "@chakra-ui/react";
+import { useWallet } from "@vechain/vechain-kit";
+import { Link } from "react-router-dom";
+import { useMemo } from "react";
+import { useProposal } from "@/components/proposal/ProposalProvider";
+import { DeleteEditProposal } from "./components/DeleteEditProposal";
+import { CancelProposal } from "./components/CancelProposal";
+import { ExecuteModal } from "./components/ExecuteModal";
 
-const NavbarContainer = ({ children, ...restProps }: BoxProps) => {
+export const bgHeaderStyle = defineStyle({
+  bgImage: { base: "/images/banner-bg-mobile.webp", md: "/images/banner-bg.webp" },
+  bgSize: "cover",
+  bgPosition: "top",
+  bgRepeat: "no-repeat",
+  bgAttachment: "fixed",
+  borderBottom: "1px solid rgba(255, 255, 255, 0.2)",
+});
+
+export const Navbar = () => {
+  const { connection } = useWallet();
   return (
-    <Box
-      transition={"all 0.3s"}
-      paddingX={20}
-      paddingY={1}
-      position={"fixed"}
-      top={0}
-      left={0}
-      right={0}
-      zIndex={100}
-      {...restProps}>
-      {children}
+    <Box {...bgHeaderStyle} position="fixed" top="0" width="100%" zIndex={1000}>
+      <Container maxWidth={"1440px"} marginX={"auto"}>
+        <Flex justifyContent={"space-between"} alignItems={"center"} gap={6} paddingY={4} paddingX={{ base: 4, md: 4 }}>
+          <Link to="/">
+            <VoteLogo width={{ base: 16, md: 20 }} />
+          </Link>
+
+          <Flex alignItems={"center"} gap={{ base: 3, md: 6 }}>
+            {connection.isConnected && !connection.isLoading && <ProposalNavbarActions />}
+            {connection.isConnected && !connection.isLoading && <VotingPowerModal />}
+            <ConnectButton />
+          </Flex>
+        </Flex>
+      </Container>
     </Box>
   );
 };
 
-const NavbarInnerContainer = ({ children, ...restProps }: FlexProps) => {
+const ProposalNavbarActions = () => {
+  const { proposal } = useProposal();
+  const { isExecutor, isWhitelisted } = useUser();
+
+  const canCancel = useMemo(
+    () => isWhitelisted && ["upcoming"].includes(proposal?.status || ""),
+    [isWhitelisted, proposal?.status],
+  );
+
+  const canEditDraft = useMemo(
+    () => isWhitelisted && ["draft"].includes(proposal?.status || ""),
+    [isWhitelisted, proposal?.status],
+  );
+
+  if (!proposal || proposal.id === "default") return null;
+
   return (
-    <Flex
-      transition={"all 0.3s"}
-      borderRadius={3}
-      maxWidth={"1440px"}
-      marginX={"auto"}
-      justifyContent={"space-between"}
-      alignItems={"center"}
-      gap={6}
-      {...restProps}>
-      {children}
-      <DAppKitWalletButton
-        style={{ whiteSpace: "nowrap" }}
-        mobile={useBreakpointValue({
-          base: true,
-          md: false,
-        })}
-      />
+    <Flex alignItems={"center"} gap={2} marginLeft={"auto"}>
+      {canEditDraft && <DeleteEditProposal />}
+      {canCancel && <CancelProposal proposalId={proposal?.id} />}
+      {isExecutor && proposal?.status === "approved" && <ExecuteModal proposalId={proposal?.id} />}
     </Flex>
-  );
-};
-
-export const Navbar = () => {
-  const { showBackground } = useShowNavbar();
-
-  return (
-    <NavbarContainer>
-      <NavbarInnerContainer
-        backdropBlur={!showBackground ? "md" : "none"}
-        bgColor={!showBackground ? "rgba(38, 20, 112, 0.65)" : "transparent"}
-        paddingX={6}
-        paddingY={4}>
-        <Image src="/images/vevote_logo.png" alt="VeVote Logo" width={40} height={8} objectFit={"cover"} />
-      </NavbarInnerContainer>
-    </NavbarContainer>
-  );
-};
-
-//todo: get from provider
-const isAdmin = true;
-
-export const ProposalNavbar = ({ children }: PropsWithChildren) => {
-  const { showBackground } = useShowNavbar();
-
-  const bgVariant = useMemo(() => {
-    if (!showBackground) {
-      return isAdmin
-        ? "rgba(38, 20, 112, 0.75)"
-        : "linear-gradient(102deg, rgba(38, 20, 112, 0.75) 0%, rgba(38, 20, 112, 0.75) 100%)";
-    } else {
-      return isAdmin ? "primary.800" : "linear-gradient(102deg, #351C9B 0%, #4324C6 100%)";
-    }
-  }, [showBackground]);
-  return (
-    <NavbarContainer
-      bg={bgVariant}
-      paddingX={showBackground ? 20 : 6}
-      paddingY={showBackground ? 10 : 6}
-      backdropBlur={!showBackground ? "md" : "none"}>
-      <NavbarInnerContainer>{children}</NavbarInnerContainer>
-    </NavbarContainer>
   );
 };
