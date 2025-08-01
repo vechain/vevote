@@ -1,9 +1,4 @@
-import {
-  getProposals,
-  PaginatedProposalsResult,
-  PaginationOptions,
-  SESSION_KEY,
-} from "@/utils/proposals/optimizedQueries";
+import { getProposals, PaginatedProposalsResult, PaginationOptions } from "@/utils/proposals/optimizedQueries";
 import { thorClient } from "@/utils/thorClient";
 import { useInfiniteQuery } from "@tanstack/react-query";
 
@@ -11,7 +6,7 @@ export const useProposalsEvents = (options: PaginationOptions = {}) => {
   const thor = thorClient;
 
   const { data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage, error } = useInfiniteQuery({
-    queryKey: ["infiniteProposals", SESSION_KEY, options],
+    queryKey: ["infiniteProposals", options],
     queryFn: async ({ pageParam }): Promise<PaginatedProposalsResult> =>
       await getProposals(thor, { ...options, cursor: pageParam as string }),
     getNextPageParam: (lastPage: PaginatedProposalsResult) => lastPage.nextCursor,
