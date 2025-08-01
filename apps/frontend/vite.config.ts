@@ -12,33 +12,20 @@ export default defineConfig(({ mode }) => {
       commonjsOptions: {
         transformMixedEsModules: true,
       },
-      minify: 'terser',
-      terserOptions: {
-        compress: {
-          drop_console: true,
-          drop_debugger: true,
-          pure_funcs: ['console.log', 'console.info', 'console.debug'],
-          passes: 2
-        },
-        mangle: {
-          safari10: true
-        }
-      },
       rollupOptions: {
         output: {
           manualChunks: {
             // Vendor chunks for optimal caching
-            'react-vendor': ['react', 'react-dom', 'react-router-dom'],
-            'chakra-vendor': ['@chakra-ui/react', '@emotion/react', '@emotion/styled'],
-            'vechain-vendor': ['@vechain/dapp-kit-react', '@vechain/vechain-kit'],
-            'query-vendor': ['@tanstack/react-query']
-          }
-        }
+            "react-vendor": ["react", "react-dom", "react-router-dom"],
+            "chakra-vendor": ["@chakra-ui/react", "@emotion/react", "@emotion/styled"],
+            "vechain-vendor": ["@vechain/dapp-kit-react", "@vechain/vechain-kit"],
+            "query-vendor": ["@tanstack/react-query"],
+          },
+        },
       },
-      target: 'es2020',
+      target: "es2020",
       cssCodeSplit: true,
-      sourcemap: false,
-      chunkSizeWarningLimit: 1000
+      chunkSizeWarningLimit: 1000,
     },
     preview: {
       port: 5001,
