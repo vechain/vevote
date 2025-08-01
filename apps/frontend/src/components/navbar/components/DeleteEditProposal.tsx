@@ -1,6 +1,6 @@
 import { useI18nContext } from "@/i18n/i18n-react";
 import { Button, Icon, ModalBody, ModalFooter, Text, useDisclosure } from "@chakra-ui/react";
-import { MessageModal } from "../../../../../components/ui/ModalSkeleton";
+import { MessageModal } from "../../ui/ModalSkeleton";
 import { useCallback } from "react";
 import { DEFAULT_PROPOSAL, useCreateProposal } from "@/pages/CreateProposal/CreateProposalProvider";
 import { useDraftProposal } from "@/hooks/useDraftProposal";
