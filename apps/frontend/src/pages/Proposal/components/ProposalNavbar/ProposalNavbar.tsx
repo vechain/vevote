@@ -46,7 +46,7 @@ export const ProposalNavbar = () => {
 
         <Flex alignItems={"center"} gap={{ base: 3, md: 6 }}>
           <ProposalNavbarActions />
-          {connection.isConnected && <VotingPowerModal />}
+          {connection.isConnected && !connection.isLoading && <VotingPowerModal />}
           <ConnectButton />
         </Flex>
       </Flex>

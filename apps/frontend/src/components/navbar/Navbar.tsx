@@ -33,10 +33,12 @@ export const NavbarInnerContainer = ({ children, ...restProps }: FlexProps) => {
       gap={6}
       {...restProps}>
       {children}
-      <Flex alignItems={"center"} gap={{ base: 3, md: 6 }}>
-        {connection.isConnected && <VotingPowerModal />}
-        <ConnectButton bg={"primary.700"} />
-      </Flex>
+      {!connection.isLoading && (
+        <Flex alignItems={"center"} gap={{ base: 3, md: 6 }}>
+          {connection.isConnected && <VotingPowerModal />}
+          <ConnectButton bg={"primary.700"} />
+        </Flex>
+      )}
     </Flex>
   );
 };

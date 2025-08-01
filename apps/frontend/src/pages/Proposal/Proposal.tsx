@@ -17,7 +17,7 @@ import { VotingAndTimeline } from "./components/VotingAndTimeline/VotingAndTimel
 import { ProposalStatus } from "@/types/proposal";
 import { CanceledProposal } from "./components/CanceledProposal";
 
-export const Proposal = () => {
+export const ProposalContent = () => {
   const { LL } = useI18nContext();
   const { draftProposal } = useCreateProposal();
   const { account } = useWallet();
@@ -44,55 +44,49 @@ export const Proposal = () => {
   }, [account?.address, navigate, params.proposalId]);
 
   if (isLoading) {
-    return (
-      <Box bg={"white"} pt={{ base: 24, md: 32 }}>
-        <ProposalNavbar />
-        <PageContainer>
-          <SingleProposalSkeleton />
-        </PageContainer>
-      </Box>
-    );
+    return <SingleProposalSkeleton />;
   }
 
   if (!proposal) {
-    return (
-      <Box bg={"white"}>
-        <ProposalNavbar />
-        <Box>{LL.proposal.proposal_not_found()}</Box>
-      </Box>
-    );
+    return <Box>{LL.proposal.proposal_not_found()}</Box>;
   }
 
   return (
     <ProposalProvider proposal={proposal}>
-      <Box bg={"white"}>
-        <ProposalNavbar />
-        <PageContainer bg={"white"} pt={{ base: 24, md: 32 }} pb={10}>
-          <VStack gap={10} w={"full"} alignItems={"stretch"}>
-            <Flex gap={1} alignItems={"center"} fontSize={"14px"} fontWeight={500}>
-              <Text color={"gray.600"} onClick={() => navigate(Routes.HOME)} cursor={"pointer"}>
-                {LL.homepage()}
-              </Text>
-              <Text color={"gray.400"}>{"→"}</Text>
-              <Text color={"gray.600"}>{LL.proposal.title()}</Text>
-            </Flex>
-            <Stack direction={{ base: "column", md: "row" }} w={"full"} gap={{ base: 10, md: 12 }}>
-              <VStack gap={10} align="stretch" flex={2}>
-                <ProposalHeader />
-                <Heading fontWeight={500} color={"gray.800"} lineHeight={"1.33"}>
-                  {proposal.title}
-                </Heading>
-                {!isMobile && <DescriptionSection />}
-              </VStack>
-              <VStack gap={10} align="stretch" flex={1}>
-                {!isCanceled ? <VotingAndTimeline /> : <CanceledProposal />}
-                {isMobile && <DescriptionSection />}
-              </VStack>
-            </Stack>
-            <BuyNodeCta />
+      <VStack gap={10} w={"full"} alignItems={"stretch"}>
+        <Flex gap={1} alignItems={"center"} fontSize={"14px"} fontWeight={500}>
+          <Text color={"gray.600"} onClick={() => navigate(Routes.HOME)} cursor={"pointer"}>
+            {LL.homepage()}
+          </Text>
+          <Text color={"gray.400"}>{"→"}</Text>
+          <Text color={"gray.600"}>{LL.proposal.title()}</Text>
+        </Flex>
+        <Stack direction={{ base: "column", md: "row" }} w={"full"} gap={{ base: 10, md: 12 }}>
+          <VStack gap={10} align="stretch" flex={2}>
+            <ProposalHeader />
+            <Heading fontWeight={500} color={"gray.800"} lineHeight={"1.33"}>
+              {proposal.title}
+            </Heading>
+            {!isMobile && <DescriptionSection />}
           </VStack>
-        </PageContainer>
-      </Box>
+          <VStack gap={10} align="stretch" flex={1}>
+            {!isCanceled ? <VotingAndTimeline /> : <CanceledProposal />}
+            {isMobile && <DescriptionSection />}
+          </VStack>
+        </Stack>
+        <BuyNodeCta />
+      </VStack>
     </ProposalProvider>
+  );
+};
+
+export const Proposal = () => {
+  return (
+    <Box bg={"white"}>
+      <ProposalNavbar />
+      <PageContainer bg={"white"} pt={{ base: 24, md: 32 }} pb={10}>
+        <ProposalContent />
+      </PageContainer>
+    </Box>
   );
 };

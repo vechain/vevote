@@ -10,6 +10,7 @@ import {
   Link,
   ModalBody,
   ModalHeader,
+  Spinner,
   Text,
   useBreakpointValue,
   useDisclosure,
@@ -33,7 +34,7 @@ const EXPLORER_URL = getConfig(import.meta.env.VITE_APP_ENV).network.explorerUrl
 export const VotingPowerModal = () => {
   const { LL } = useI18nContext();
   const { isOpen, onClose, onOpen } = useDisclosure();
-  const { groupedNodes } = useNodes();
+  const { groupedNodes, isLoading } = useNodes();
   const { allNodes } = useAllUserNodes();
   const { isDelegator } = useIsDelegator();
   const isMobile = useBreakpointValue({ base: true, md: false });
@@ -58,7 +59,11 @@ export const VotingPowerModal = () => {
   return (
     <>
       <Button onClick={onOpen} leftIcon={<Icon as={VotingPowerIcon} boxSize={5} />} size={{ base: "md", md: "lg" }}>
-        {totalVotingPower || (isMobile ? "0" : LL.proposal.voting_power.get_voting_power())}
+        {isLoading ? (
+          <Spinner size="sm" />
+        ) : (
+          totalVotingPower || (isMobile ? "0" : LL.proposal.voting_power.get_voting_power())
+        )}
       </Button>
       <ModalSkeleton isOpen={isOpen} onClose={onClose}>
         <ModalHeader>

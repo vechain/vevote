@@ -1,6 +1,6 @@
 import { useI18nContext } from "@/i18n/i18n-react";
 import { WalletIcon } from "@/icons";
-import { Avatar, Button, ButtonProps, Icon, Text } from "@chakra-ui/react";
+import { Avatar, Button, ButtonProps, Flex, Icon, Text } from "@chakra-ui/react";
 import { useAccountModal, useConnectModal, useWallet } from "@vechain/vechain-kit";
 
 export const ConnectButton = ({ text, ...props }: ButtonProps & { text?: string }) => {
@@ -10,6 +10,7 @@ export const ConnectButton = ({ text, ...props }: ButtonProps & { text?: string 
   const { open: openConnectModal } = useConnectModal();
   const { open: openAccountModal } = useAccountModal();
 
+  if (connection.isLoading) return <Flex height={12} />;
   if (!connection.isConnected)
     return (
       <StyledButton leftIcon={<Icon as={WalletIcon} />} onClick={openConnectModal} {...props}>
