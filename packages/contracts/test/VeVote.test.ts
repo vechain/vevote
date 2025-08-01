@@ -258,11 +258,14 @@ describe("VeVote", function () {
     });
 
     it("Non admin or proposer cannot cancel", async function () {
-      const { vevote, otherAccount } = await getOrDeployContractInstances({ forceDeploy: true });
-      const tx = await createProposal();
+      const { vevote, whitelistedAccount, admin } = await getOrDeployContractInstances({ forceDeploy: true });
+      await vevote.grantRole(await vevote.WHITELISTED_ROLE(), admin);
+      const tx = await createProposal({
+        proposer: admin,
+      });
       const proposalId = await getProposalIdFromTx(tx);
       expect(await vevote.state(proposalId)).to.equal(0);
-      await expect(vevote.connect(otherAccount).cancel(proposalId)).to.revertedWithCustomError(
+      await expect(vevote.connect(whitelistedAccount).cancel(proposalId)).to.revertedWithCustomError(
         vevote,
         "UnauthorizedAccess",
       );
