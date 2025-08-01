@@ -12,6 +12,20 @@ export default defineConfig(({ mode }) => {
       commonjsOptions: {
         transformMixedEsModules: true,
       },
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            // Vendor chunks for optimal caching
+            "react-vendor": ["react", "react-dom", "react-router-dom"],
+            "chakra-vendor": ["@chakra-ui/react", "@emotion/react", "@emotion/styled"],
+            "vechain-vendor": ["@vechain/dapp-kit-react", "@vechain/vechain-kit"],
+            "query-vendor": ["@tanstack/react-query"],
+          },
+        },
+      },
+      target: "es2020",
+      cssCodeSplit: true,
+      chunkSizeWarningLimit: 1000,
     },
     preview: {
       port: 5001,

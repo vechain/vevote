@@ -19,7 +19,7 @@ export const Banner = () => {
     <Box
       paddingX={{ base: 6, md: 20 }}
       paddingY={10}
-      bgImage={{ base: "/images/banner-bg-mobile.png", md: "/images/banner-bg.png" }}
+      bgImage={{ base: "/images/banner-bg-mobile.webp", md: "/images/banner-bg.webp" }}
       bgSize={"cover"}
       bgPosition={"top"}
       bgRepeat={"no-repeat"}
@@ -61,13 +61,15 @@ export const Banner = () => {
         </Flex>
         <Image
           display={{ base: "none", md: "block" }}
-          src="/images/bemo.png"
+          src="/images/bemo.webp"
           alt="bemo"
           width={{ md: "320px", lg: "420px" }}
           height={{ md: "520px", lg: "720px" }}
           objectFit={"cover"}
           flexShrink={1}
           transform={{ md: "translateY(80px)", lg: "translateY(100px)" }}
+          fetchPriority="high"
+          loading="eager"
         />
       </Flex>
     </Box>

@@ -53,7 +53,7 @@ export const Proposals = () => {
   return (
     <>
       <ProposalsHeader />
-      <PageContainer bg={"gray.50"}>
+      <PageContainer bg={"gray.50"} maxWidth={{ base: "100%", md: "60%" }}>
         <PageContainer.Header
           flexDirection={{ base: "column", md: "row" }}
           gap={{ base: 6, md: 0 }}
