@@ -15,7 +15,6 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview --mode=development",
     "purge": "yarn clean; rm -rf node_modules",
-    "sirvus": "sirv dist --port 3000",
     "test": "vitest",
     "typesafe-i18n": "typesafe-i18n"
   },
