@@ -17,13 +17,12 @@ import {
 } from "@chakra-ui/react";
 import { useState, useMemo, useCallback } from "react";
 import { SingleChoiceEnum } from "@/types/proposal";
-import { defaultSingleChoice } from "@/pages/CreateProposal/CreateProposalProvider";
 import { VoteIcon, CheckIcon, VotingPowerIcon, ArrowLinkIcon, CircleXIcon } from "@/icons";
 import { useNodes } from "@/hooks/useUserQueries";
 import { useCastVote } from "@/hooks/useCastVote";
 import { useProposal } from "@/components/proposal/ProposalProvider";
 import { trackEvent, MixPanelEvent } from "@/utils/mixpanel/utilsMixpanel";
-import { IconByVote, ColorByVote } from "../../../../../../../constants";
+import { IconByVote, ColorByVote, voteOptions } from "@/constants";
 import { getIndexFromSingleChoice } from "@/utils/proposals/helpers";
 import { getConfig } from "@repo/config";
 import { ModalSkeleton } from "@/components/ui/ModalSkeleton";
@@ -231,7 +230,7 @@ export const SubmitVoteModal = ({ submitVoteModal }: { submitVoteModal: UseDiscl
         <VStack spacing={6} align="stretch">
           {/* Vote Options */}
           <VStack spacing={3} align="stretch">
-            {defaultSingleChoice.map((option: SingleChoiceEnum) => {
+            {voteOptions.map((option: SingleChoiceEnum) => {
               const isSelected = selectedOption === option;
               const icon = IconByVote[option];
               const color = ColorByVote[option];

@@ -4,7 +4,8 @@
 // import { Button, Flex, Radio, Text } from "@chakra-ui/react";
 // import { useMemo } from "react";
 // import { Controller, useFormContext } from "react-hook-form";
-// import { defaultMultiOptionsChoice, defaultSingleChoice } from "../CreateProposalProvider";
+// import { defaultMultiOptionsChoice } from "../CreateProposalProvider";
+// import { voteOptions } from "@/constants";
 
 // export const VotingTypeSelectControlled = () => {
 //   const { LL } = useI18nContext();
@@ -46,7 +47,7 @@
 //                   selected={value}
 //                   onClick={() => {
 //                     onChange(t.kind);
-//                     if (t.kind === VotingEnum.SINGLE_CHOICE) setValue("votingOptions", defaultSingleChoice);
+//                     if (t.kind === VotingEnum.SINGLE_CHOICE) setValue("votingOptions", voteOptions);
 //                     if (t.kind !== VotingEnum.SINGLE_CHOICE) setValue("votingOptions", defaultMultiOptionsChoice);
 //                   }}
 //                   key={i}

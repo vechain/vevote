@@ -1,6 +1,6 @@
 import { useDraftProposal } from "@/hooks/useDraftProposal";
 import { usePerAddressDraftStorage } from "@/hooks/usePerAddressDraftStorage";
-import { CreateProposalStep, ProposalCardType, SingleChoiceEnum } from "@/types/proposal";
+import { CreateProposalStep, ProposalCardType } from "@/types/proposal";
 import { DEFAULT_DESCRIPTION_TEMPLATE } from "@/utils/template/descriptionTemplate";
 import { ZodFile } from "@/utils/zod";
 import { useWallet } from "@vechain/vechain-kit";
@@ -16,8 +16,6 @@ import {
   useMemo,
   useState,
 } from "react";
-
-export const defaultSingleChoice = [SingleChoiceEnum.FOR, SingleChoiceEnum.AGAINST, SingleChoiceEnum.ABSTAIN];
 
 export type ProposalDescription = Op;
 

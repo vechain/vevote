@@ -1,17 +1,16 @@
 import { Flex, Icon, Text, Box } from "@chakra-ui/react";
 import { VoteIcon } from "@/icons";
 import { useProposal } from "@/components/proposal/ProposalProvider";
-import { defaultSingleChoice } from "@/pages/CreateProposal/CreateProposalProvider";
 import { useMemo } from "react";
 import { ResultsInfo } from "./components/ResultsInfo";
 import { useIndexerVoteResults } from "@/hooks/useCastVote";
 import { AllVotersModal } from "./components/AllVotersModal/AllVotersModal";
 import { ProposalStatus, SingleChoiceEnum } from "@/types/proposal";
-import { ColorByVote, IconByVote } from "@/constants";
+import { ColorByVote, IconByVote, voteOptions } from "@/constants";
 
 export const ResultsSection = () => {
   const { proposal } = useProposal();
-  const { results } = useIndexerVoteResults({ proposalId: proposal.id, size: defaultSingleChoice.length });
+  const { results } = useIndexerVoteResults({ proposalId: proposal.id, size: voteOptions.length });
 
   const votePercentages = useMemo(() => {
     const abstainVotes = results?.data?.find(result => result.support === "ABSTAIN")?.totalWeight ?? 0;
@@ -51,7 +50,7 @@ export const ResultsSection = () => {
 
         {/* Vote percentages */}
         <Flex gap={6} alignItems={"center"}>
-          {defaultSingleChoice.map(option => (
+          {voteOptions.map(option => (
             <Flex key={option} alignItems={"center"} gap={2}>
               <Icon
                 as={IconByVote[option]}
