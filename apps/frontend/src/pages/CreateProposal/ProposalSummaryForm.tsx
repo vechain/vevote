@@ -2,7 +2,7 @@ import { useI18nContext } from "@/i18n/i18n-react";
 import { CreateProposalStep } from "@/types/proposal";
 import { Button, Flex, Icon } from "@chakra-ui/react";
 import { CreateFormWrapper } from "./CreateFormWrapper";
-import { defaultSingleChoice, useCreateProposal } from "./CreateProposalProvider";
+import { useCreateProposal } from "./CreateProposalProvider";
 import { PublishButton } from "./PublishButton";
 import { SummaryCard } from "./SummaryCard";
 import { ArrowLeftIcon, EyeIcon } from "@/icons";
@@ -44,23 +44,10 @@ export const ProposalSummaryForm = () => {
           />
         </SummaryCard>
 
-        <SummaryCard title={LL.proposal.create.summary_form.voting_setup.title()}>
-          <SummaryCard.BaseItem
-            label={LL.proposal.create.summary_form.voting_setup.question()}
-            value={proposalDetails.votingQuestion}
-            lineClamp={3}
-          />
-
-          <SummaryCard.OptionsItem
-            label={LL.proposal.create.setup_form.voting_options()}
-            votingOptions={defaultSingleChoice}
-          />
-        </SummaryCard>
-
         <Flex gap={4} marginTop={20} hideBelow={"md"}>
           <Button
             variant={"secondary"}
-            onClick={() => setStep(CreateProposalStep.VOTING_SETUP)}
+            onClick={() => setStep(CreateProposalStep.VOTING_DETAILS)}
             leftIcon={<Icon as={ArrowLeftIcon} />}>
             {LL.back()}
           </Button>
@@ -87,7 +74,7 @@ export const ProposalSummaryForm = () => {
         <Flex flexDirection={"row"} justifyContent={"space-between"}>
           <Button
             variant={"secondary"}
-            onClick={() => setStep(CreateProposalStep.VOTING_SETUP)}
+            onClick={() => setStep(CreateProposalStep.VOTING_DETAILS)}
             leftIcon={<Icon as={ArrowLeftIcon} />}>
             {LL.back()}
           </Button>

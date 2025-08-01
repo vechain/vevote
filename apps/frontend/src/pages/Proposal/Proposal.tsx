@@ -3,7 +3,7 @@ import { ProposalProvider } from "@/components/proposal/ProposalProvider";
 import { SingleProposalSkeleton } from "@/components/ui/SingleProposalSkeleton";
 import { useProposalEvents } from "@/hooks/useProposalEvent";
 import { useI18nContext } from "@/i18n/i18n-react";
-import { Box, Flex, Stack, Text, useBreakpointValue, VStack } from "@chakra-ui/react";
+import { Box, Flex, Heading, Stack, Text, useBreakpointValue, VStack } from "@chakra-ui/react";
 import { useWallet } from "@vechain/vechain-kit";
 import { useEffect, useMemo } from "react";
 import { useNavigate, useParams } from "react-router";
@@ -79,9 +79,9 @@ export const Proposal = () => {
             <Stack direction={{ base: "column", md: "row" }} w={"full"} gap={{ base: 10, md: 12 }}>
               <VStack gap={10} align="stretch" flex={2}>
                 <ProposalHeader />
-                <Text fontSize={{ base: "20px", md: "24px" }} fontWeight={500} color={"gray.800"} lineHeight={"1.33"}>
+                <Heading fontWeight={500} color={"gray.800"} lineHeight={"1.33"}>
                   {proposal.title}
-                </Text>
+                </Heading>
                 {!isMobile && <DescriptionSection />}
               </VStack>
               <VStack gap={10} align="stretch" flex={1}>

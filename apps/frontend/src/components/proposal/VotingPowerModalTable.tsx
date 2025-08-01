@@ -1,6 +1,6 @@
 import { useI18nContext } from "@/i18n/i18n-react";
 import { NodeItem } from "@/types/user";
-import { Flex, Text } from "@chakra-ui/react";
+import { Flex, HStack, Text } from "@chakra-ui/react";
 
 type VotingPowerModalTableProps = {
   nodesList: NodeItem[];
@@ -25,7 +25,8 @@ const NodesHeader = () => {
       justifyContent={"space-between"}
       fontSize={{ base: 12, md: 14 }}
       fontWeight={600}
-      color={"gray.500"}>
+      color={"gray.500"}
+      pr={5}>
       <Text>{LL.node()}</Text>
       <Text>{LL.proposal.voting_power.title()}</Text>
     </Flex>
@@ -34,26 +35,30 @@ const NodesHeader = () => {
 
 const NodesList = ({ nodesList }: { nodesList: NodeItem[] }) => {
   const shouldScroll = nodesList.length > 8;
-  
+
   return (
-    <Flex 
-      flexDirection={"column"} 
-      borderBottomWidth={1} 
+    <Flex
+      flexDirection={"column"}
+      borderBottomWidth={1}
       borderColor={"gray.200"}
-      maxHeight={shouldScroll ? "288px" : "none"}
+      maxHeight={shouldScroll ? "200px" : "none"}
       overflowY={shouldScroll ? "auto" : "visible"}
-    >
-      {nodesList.map(({ multiplier, nodeName, votingPower }, index) => (
+      pr={5}>
+      {nodesList.map(({ multiplier, nodeName, votingPower, count }, index) => (
         <Flex
           key={index}
           alignItems={"center"}
           color={"gray.600"}
           paddingY={1.5}
           gap={8}
+          justifyContent={"space-between"}
           fontSize={{ base: 14, md: 16 }}>
-          <Text minWidth={"30px"}>{`${multiplier}x`}</Text>
-          <Text flex={1}>{nodeName}</Text>
-          <Text>{votingPower}</Text>
+          <HStack>
+            <Text>{count}</Text>
+            <Text>{nodeName}</Text>
+            <Text>{`(${multiplier}x)`}</Text>
+          </HStack>
+          <Text>{votingPower.toString()}</Text>
         </Flex>
       ))}
     </Flex>
@@ -70,7 +75,8 @@ const NodesFooter = ({ totalVotingPower }: { totalVotingPower: number }) => {
       fontWeight={600}
       alignItems={"center"}
       justifyContent={"space-between"}
-      fontSize={{ base: 14, md: 16 }}>
+      fontSize={{ base: 14, md: 16 }}
+      pr={5}>
       <Text>{LL.proposal.voting_power.total_voting_power()}</Text>
       <Text>{totalVotingPower}</Text>
     </Flex>

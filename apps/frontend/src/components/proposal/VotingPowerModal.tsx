@@ -26,25 +26,27 @@ import {
 } from "./VotingPowerWarnings";
 import { ResourcesLinks } from "@/types/terms";
 import { getConfig } from "@repo/config";
+import { GroupedExtendedStargateNode, NodeItem } from "@/types/user";
 
 const EXPLORER_URL = getConfig(import.meta.env.VITE_APP_ENV).network.explorerUrl;
 
 export const VotingPowerModal = () => {
   const { LL } = useI18nContext();
   const { isOpen, onClose, onOpen } = useDisclosure();
-  const { nodes } = useNodes();
+  const { groupedNodes } = useNodes();
   const { allNodes } = useAllUserNodes();
   const { isDelegator } = useIsDelegator();
   const isMobile = useBreakpointValue({ base: true, md: false });
 
-  const nodesList = useMemo(
+  const nodesList: NodeItem[] = useMemo(
     () =>
-      nodes.map(node => ({
+      groupedNodes.map((node: GroupedExtendedStargateNode) => ({
         multiplier: Number(node.multiplier) / 100,
         nodeName: LL.node_names[node.nodeName](),
         votingPower: Number(node.votingPower) / 100,
+        count: node.count,
       })),
-    [LL.node_names, nodes],
+    [LL.node_names, groupedNodes],
   );
 
   const totalVotingPower = useMemo(() => nodesList.reduce((acc, node) => acc + node.votingPower, 0), [nodesList]);

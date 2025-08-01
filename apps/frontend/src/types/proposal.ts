@@ -3,7 +3,6 @@ import { VotesCastResult } from "./votes";
 
 export enum CreateProposalStep {
   VOTING_DETAILS,
-  VOTING_SETUP,
   VOTING_SUMMARY,
 }
 

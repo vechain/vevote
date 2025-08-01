@@ -2,6 +2,7 @@ export type NodeItem = {
   multiplier: number;
   nodeName: string;
   votingPower: number;
+  count: number;
 };
 
 export enum UserRoles {
@@ -42,6 +43,10 @@ export type ExtendedStargateNode = StargateNode & {
   votingPower: bigint;
   multiplier: bigint;
   nodeName: NodeStrengthLevel;
+};
+
+export type GroupedExtendedStargateNode = ExtendedStargateNode & {
+  count: number;
 };
 
 export enum NodeStrengthLevel {
