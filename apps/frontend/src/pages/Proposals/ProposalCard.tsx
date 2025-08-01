@@ -74,7 +74,8 @@ const TopBar = ({ title, proposer, discourseUrl }: { title: string; proposer: st
   return (
     <Flex
       width={"100%"}
-      flexDirection={"column"}
+      justifyContent={{ base: "flex-start", md: "space-between" }}
+      flexDirection={{ base: "column", md: "row" }}
       gap={6}
       alignItems={"start"}
       paddingBottom={4}

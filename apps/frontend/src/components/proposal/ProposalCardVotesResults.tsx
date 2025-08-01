@@ -1,10 +1,9 @@
-import { useI18nContext } from "@/i18n/i18n-react";
-import { AbstainIcon, ThumbsDownIcon, ThumbsUpIcon } from "@/icons";
 import { SingleChoiceEnum } from "@/types/proposal";
 import { VotesCastResult } from "@/types/votes";
 import { getSingleChoiceFromIndex } from "@/utils/proposals/helpers";
-import { Flex, FlexProps, Icon, Text } from "@chakra-ui/react";
+import { Flex, Icon, Text } from "@chakra-ui/react";
 import { useCallback, useMemo } from "react";
+import { IconByVote, ColorByVote } from "@/constants";
 
 export const ProposalCardVotesResults = ({ results }: { proposalId: string; results: VotesCastResult[] }) => {
   const totalPerVotes = useMemo(() => {
@@ -19,83 +18,78 @@ export const ProposalCardVotesResults = ({ results }: { proposalId: string; resu
           const choice = getSingleChoiceFromIndex(vote.choice);
           switch (choice) {
             case SingleChoiceEnum.FOR:
-              acc.for += weight;
+              acc[SingleChoiceEnum.FOR] += weight;
               break;
             case SingleChoiceEnum.AGAINST:
-              acc.against += weight;
+              acc[SingleChoiceEnum.AGAINST] += weight;
               break;
             case SingleChoiceEnum.ABSTAIN:
-              acc.abstain += weight;
+              acc[SingleChoiceEnum.ABSTAIN] += weight;
               break;
           }
           return acc;
         },
         {
-          for: 0,
-          against: 0,
-          abstain: 0,
+          [SingleChoiceEnum.FOR]: 0,
+          [SingleChoiceEnum.AGAINST]: 0,
+          [SingleChoiceEnum.ABSTAIN]: 0,
         },
-      ) || { for: 0, against: 0, abstain: 0 }
+      ) || { [SingleChoiceEnum.FOR]: 0, [SingleChoiceEnum.AGAINST]: 0, [SingleChoiceEnum.ABSTAIN]: 0 }
     );
   }, [results]);
 
   const proposalVotesPercentage = useMemo(() => {
     return {
-      for: Number(((proposalVotes.for / totalPerVotes) * 100 || 0).toFixed()),
-      against: Number(((proposalVotes.against / totalPerVotes) * 100 || 0).toFixed()),
-      abstain: Number(((proposalVotes.abstain / totalPerVotes) * 100 || 0).toFixed()),
+      [SingleChoiceEnum.FOR]: Number(((proposalVotes[SingleChoiceEnum.FOR] / totalPerVotes) * 100 || 0).toFixed()),
+      [SingleChoiceEnum.AGAINST]: Number(
+        ((proposalVotes[SingleChoiceEnum.AGAINST] / totalPerVotes) * 100 || 0).toFixed(),
+      ),
+      [SingleChoiceEnum.ABSTAIN]: Number(
+        ((proposalVotes[SingleChoiceEnum.ABSTAIN] / totalPerVotes) * 100 || 0).toFixed(),
+      ),
     };
   }, [proposalVotes, totalPerVotes]);
 
   const isMostVoted = useCallback(
     (voteCount: number) => {
       if (voteCount === 0) return false;
-      const highestVoteCount = Math.max(proposalVotes.for, proposalVotes.against, proposalVotes.abstain);
+      const highestVoteCount = Math.max(
+        proposalVotes[SingleChoiceEnum.FOR],
+        proposalVotes[SingleChoiceEnum.AGAINST],
+        proposalVotes[SingleChoiceEnum.ABSTAIN],
+      );
       return voteCount === highestVoteCount;
     },
-    [proposalVotes.abstain, proposalVotes.against, proposalVotes.for],
+    [proposalVotes],
   );
 
   return (
-    <Flex alignItems={"center"} gap={4}>
-      <VoteBadge isMostVoted={isMostVoted(proposalVotes.for)} icon={ThumbsUpIcon} votes={proposalVotesPercentage.for} />
-      <VoteBadge
-        isMostVoted={isMostVoted(proposalVotes.abstain)}
-        icon={AbstainIcon}
-        votes={proposalVotesPercentage.abstain}
-      />
-      <VoteBadge
-        isMostVoted={isMostVoted(proposalVotes.against)}
-        icon={ThumbsDownIcon}
-        votes={proposalVotesPercentage.against}
-      />
-    </Flex>
-  );
-};
-
-const VoteBadge = ({
-  isMostVoted,
-  icon,
-  votes,
-  ...restProps
-}: FlexProps & {
-  isMostVoted?: boolean;
-  icon: (props: React.SVGProps<SVGSVGElement>) => JSX.Element;
-  votes: number;
-}) => {
-  const { LL } = useI18nContext();
-  return (
-    <Flex
-      padding={2}
-      alignItems={"center"}
-      gap={2}
-      borderRadius={"6px"}
-      bg={isMostVoted ? "gray.100" : "transparent"}
-      color={isMostVoted ? "primary.500" : "gray.600"}
-      fontWeight={isMostVoted ? "bold" : "normal"}
-      {...restProps}>
-      <Icon as={icon} boxSize={{ base: 4, md: 6 }} />
-      <Text fontSize={{ base: "14px", md: "16px" }}>{`${votes}${LL.percentage()}`}</Text>
+    <Flex gap={{ base: 3, md: 6 }} alignItems={"center"}>
+      {Object.keys(proposalVotesPercentage).map(option => {
+        const mostVoted = isMostVoted(proposalVotes[option as keyof typeof proposalVotes]);
+        const percentage = proposalVotesPercentage[option as keyof typeof proposalVotesPercentage];
+        const color = ColorByVote[option as keyof typeof ColorByVote];
+        return (
+          <Flex
+            key={option}
+            alignItems={"center"}
+            gap={2}
+            padding={2}
+            borderRadius={"xl"}
+            border={mostVoted ? "2px solid" : "none"}
+            borderColor={mostVoted ? color : undefined}>
+            <Icon
+              as={IconByVote[option as keyof typeof IconByVote]}
+              width={4}
+              height={4}
+              color={mostVoted ? color : "gray.500"}
+            />
+            <Text fontSize={{ base: "14px", md: "16px" }} color={"gray.600"}>
+              {percentage.toFixed(2)}%
+            </Text>
+          </Flex>
+        );
+      })}
     </Flex>
   );
 };

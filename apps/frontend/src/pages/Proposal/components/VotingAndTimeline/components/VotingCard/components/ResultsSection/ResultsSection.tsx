@@ -2,19 +2,14 @@ import { Flex, Icon, Text, Box } from "@chakra-ui/react";
 import { VoteIcon } from "@/icons";
 import { useProposal } from "@/components/proposal/ProposalProvider";
 import { defaultSingleChoice } from "@/pages/CreateProposal/CreateProposalProvider";
-import { ThumbsUpIcon } from "@/icons/ThumbsUpIcon";
-import { AbstainIcon } from "@/icons/AbstainIcon";
-import { ThumbsDownIcon } from "@/icons/ThumbsDownIcon";
 import { useMemo } from "react";
 import { ResultsInfo } from "./components/ResultsInfo";
 import { useIndexerVoteResults } from "@/hooks/useCastVote";
 import { AllVotersModal } from "./components/AllVotersModal/AllVotersModal";
-import { ProposalStatus } from "@/types/proposal";
+import { ProposalStatus, SingleChoiceEnum } from "@/types/proposal";
+import { ColorByVote, IconByVote } from "@/constants";
 
 export const ResultsSection = () => {
-  const voteOptions = ["for", "abstain", "against"];
-  const colors = ["green.500", "orange.300", "red.600"];
-  const icons = [ThumbsUpIcon, AbstainIcon, ThumbsDownIcon];
   const { proposal } = useProposal();
   const { results } = useIndexerVoteResults({ proposalId: proposal.id, size: defaultSingleChoice.length });
 
@@ -26,9 +21,9 @@ export const ResultsSection = () => {
     const totalVotes = abstainVotes + forVotes + againstVotes;
 
     return {
-      abstain: totalVotes ? (abstainVotes / totalVotes) * 100 : 0,
-      for: totalVotes ? (forVotes / totalVotes) * 100 : 0,
-      against: totalVotes ? (againstVotes / totalVotes) * 100 : 0,
+      [SingleChoiceEnum.ABSTAIN]: totalVotes ? (abstainVotes / totalVotes) * 100 : 0,
+      [SingleChoiceEnum.FOR]: totalVotes ? (forVotes / totalVotes) * 100 : 0,
+      [SingleChoiceEnum.AGAINST]: totalVotes ? (againstVotes / totalVotes) * 100 : 0,
     };
   }, [results]);
 
@@ -49,18 +44,23 @@ export const ResultsSection = () => {
       <Flex flexDirection={"column"} gap={4}>
         {/* Progress bar */}
         <Flex height={"8px"} borderRadius={8} overflow={"hidden"} backgroundColor={"gray.200"}>
-          <Box flex={votePercentages.for} backgroundColor={colors[0]} />
-          <Box flex={votePercentages.abstain} backgroundColor={colors[1]} />
-          <Box flex={votePercentages.against} backgroundColor={colors[2]} />
+          <Box flex={votePercentages[SingleChoiceEnum.FOR]} backgroundColor={ColorByVote.For} />
+          <Box flex={votePercentages[SingleChoiceEnum.ABSTAIN]} backgroundColor={ColorByVote.Abstain} />
+          <Box flex={votePercentages[SingleChoiceEnum.AGAINST]} backgroundColor={ColorByVote.Against} />
         </Flex>
 
         {/* Vote percentages */}
         <Flex gap={6} alignItems={"center"}>
-          {voteOptions.map((option, index) => (
+          {defaultSingleChoice.map(option => (
             <Flex key={option} alignItems={"center"} gap={2}>
-              <Icon as={icons[index]} width={4} height={4} color={isGreyIcon ? "gray.500" : colors[index]} />
+              <Icon
+                as={IconByVote[option]}
+                width={4}
+                height={4}
+                color={isGreyIcon ? "gray.500" : ColorByVote[option]}
+              />
               <Text fontSize={{ base: "14px", md: "16px" }} color={"gray.600"}>
-                {votePercentages[option as keyof typeof votePercentages].toFixed(2)}%
+                {votePercentages[option].toFixed(2)}%
               </Text>
             </Flex>
           ))}

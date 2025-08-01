@@ -7,7 +7,7 @@ export const ColorByVote = {
   [SingleChoiceEnum.ABSTAIN]: "orange.400",
 };
 export const IconByVote = {
-  [SingleChoiceEnum.AGAINST]: <ThumbsDownIcon width={"20px"} height={"20px"} />,
-  [SingleChoiceEnum.FOR]: <ThumbsUpIcon width={"20px"} height={"20px"} />,
-  [SingleChoiceEnum.ABSTAIN]: <AbstainIcon width={"20px"} height={"20px"} />,
+  [SingleChoiceEnum.AGAINST]: ThumbsDownIcon,
+  [SingleChoiceEnum.FOR]: ThumbsUpIcon,
+  [SingleChoiceEnum.ABSTAIN]: AbstainIcon,
 };

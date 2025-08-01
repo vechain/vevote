@@ -23,7 +23,7 @@ import { useNodes } from "@/hooks/useUserQueries";
 import { useCastVote } from "@/hooks/useCastVote";
 import { useProposal } from "@/components/proposal/ProposalProvider";
 import { trackEvent, MixPanelEvent } from "@/utils/mixpanel/utilsMixpanel";
-import { IconByVote, ColorByVote } from "../constants";
+import { IconByVote, ColorByVote } from "../../../../../../../constants";
 import { getIndexFromSingleChoice } from "@/utils/proposals/helpers";
 import { getConfig } from "@repo/config";
 import { ModalSkeleton } from "@/components/ui/ModalSkeleton";
@@ -147,7 +147,7 @@ export const SubmitVoteModal = ({ submitVoteModal }: { submitVoteModal: UseDiscl
   }
 
   if (isSuccess) {
-    const selectedIcon = selectedOption ? IconByVote[selectedOption] : null;
+    const selectedIcon = selectedOption ? IconByVote[selectedOption] : undefined;
     const selectedColor = selectedOption ? ColorByVote[selectedOption] : "gray.500";
 
     return (
@@ -167,7 +167,7 @@ export const SubmitVoteModal = ({ submitVoteModal }: { submitVoteModal: UseDiscl
               {selectedOption && (
                 <Box p={3} borderRadius="lg" border="2px solid" borderColor={selectedColor} bg="white" w="fit-content">
                   <HStack spacing={2} align="center">
-                    <Icon as={() => selectedIcon} color={selectedColor} boxSize={5} />
+                    <Icon as={selectedIcon} color={selectedColor} boxSize={5} />
                     <Text fontSize="sm" fontWeight="semibold" color={selectedColor}>
                       {selectedOption}
                     </Text>
@@ -261,7 +261,7 @@ export const SubmitVoteModal = ({ submitVoteModal }: { submitVoteModal: UseDiscl
                   cursor="pointer">
                   <HStack justify="space-between" align="center">
                     <HStack spacing={3}>
-                      <Icon as={() => icon} color={color} boxSize={5} />
+                      <Icon as={icon} color={color} boxSize={5} />
                       <Text fontSize="md" fontWeight={isSelected ? 600 : 500} color={color}>
                         {option}
                       </Text>
