@@ -48,7 +48,8 @@ export const ProposalContent = () => {
   }
 
   if (!proposal) {
-    return <Box>{LL.proposal.proposal_not_found()}</Box>;
+    navigate(`${Routes.HOME}?proposalNotFound=true`);
+    return null;
   }
 
   return (

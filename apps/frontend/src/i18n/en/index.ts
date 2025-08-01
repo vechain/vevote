@@ -317,6 +317,10 @@ const en = {
     },
     go_to_stargate: "Go to Stargate",
     proposal_not_found: "Proposal not found",
+    proposal_not_found_description:
+      "The proposal you're looking for doesn't exist or may have been removed. It's possible the URL is incorrect or the proposal has been deleted.",
+    back_to_proposals: "Back to Proposals",
+    try_again: "Try Again",
     starts_in: "Starts in",
     ends_in: "Ends in",
     timeline: "Timeline",
