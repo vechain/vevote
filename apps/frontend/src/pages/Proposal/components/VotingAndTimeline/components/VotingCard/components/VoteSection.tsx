@@ -7,7 +7,7 @@ import { useWallet } from "@vechain/vechain-kit";
 import { getConfig } from "@repo/config";
 import { useCallback, useMemo } from "react";
 import { useNodes } from "@/hooks/useUserQueries";
-import { IconByVote, ColorByVote } from "../constants";
+import { IconByVote, ColorByVote } from "@/constants";
 import { MixPanelEvent, trackEvent } from "@/utils/mixpanel/utilsMixpanel";
 import { useI18nContext } from "@/i18n/i18n-react";
 
@@ -73,7 +73,7 @@ export const VoteSection = ({ submitVoteModal }: { submitVoteModal: UseDisclosur
             padding={{ base: "4px 8px", md: "8px 12px" }}
             backgroundColor={"white"}
             borderColor={voteColor}>
-            {voteIcon}
+            <Icon as={voteIcon} width={4} height={4} />
             <Text fontSize={{ base: "xs", md: "sm" }} fontWeight={600} color={voteColor}>
               {vote}
             </Text>

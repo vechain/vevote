@@ -1027,6 +1027,18 @@ type RootTranslation = {
      */
     proposal_not_found: string;
     /**
+     * T​h​e​ ​p​r​o​p​o​s​a​l​ ​y​o​u​'​r​e​ ​l​o​o​k​i​n​g​ ​f​o​r​ ​d​o​e​s​n​'​t​ ​e​x​i​s​t​ ​o​r​ ​m​a​y​ ​h​a​v​e​ ​b​e​e​n​ ​r​e​m​o​v​e​d​.​ ​I​t​'​s​ ​p​o​s​s​i​b​l​e​ ​t​h​e​ ​U​R​L​ ​i​s​ ​i​n​c​o​r​r​e​c​t​ ​o​r​ ​t​h​e​ ​p​r​o​p​o​s​a​l​ ​h​a​s​ ​b​e​e​n​ ​d​e​l​e​t​e​d​.
+     */
+    proposal_not_found_description: string;
+    /**
+     * B​a​c​k​ ​t​o​ ​P​r​o​p​o​s​a​l​s
+     */
+    back_to_proposals: string;
+    /**
+     * T​r​y​ ​A​g​a​i​n
+     */
+    try_again: string;
+    /**
      * S​t​a​r​t​s​ ​i​n
      */
     starts_in: string;

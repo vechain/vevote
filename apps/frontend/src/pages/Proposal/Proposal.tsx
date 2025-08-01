@@ -12,10 +12,10 @@ import { Routes } from "@/types/routes";
 import { BuyNodeCta } from "./components/BuyNodeCta";
 import { ProposalHeader } from "./components/ProposalHeader";
 import { DescriptionSection } from "./components/DescriptionSection";
-import { ProposalNavbar } from "./components/ProposalNavbar/ProposalNavbar";
 import { VotingAndTimeline } from "./components/VotingAndTimeline/VotingAndTimeline";
 import { ProposalStatus } from "@/types/proposal";
 import { CanceledProposal } from "./components/CanceledProposal";
+import { Navbar } from "@/components/navbar/Navbar";
 
 export const Proposal = () => {
   const { LL } = useI18nContext();
@@ -45,28 +45,26 @@ export const Proposal = () => {
 
   if (isLoading) {
     return (
-      <Box bg={"white"} pt={{ base: 24, md: 32 }}>
-        <ProposalNavbar />
-        <PageContainer>
-          <SingleProposalSkeleton />
-        </PageContainer>
-      </Box>
+      <ProposalProvider proposal={proposal}>
+        <Box bg={"white"}>
+          <Navbar />
+          <PageContainer bg={"white"} pt={{ base: 24, md: 32 }} pb={10}>
+            <SingleProposalSkeleton />
+          </PageContainer>
+        </Box>
+      </ProposalProvider>
     );
   }
 
-  if (!proposal) {
-    return (
-      <Box bg={"white"}>
-        <ProposalNavbar />
-        <Box>{LL.proposal.proposal_not_found()}</Box>
-      </Box>
-    );
+  if (!proposal || proposal.id === "default") {
+    navigate(`${Routes.HOME}?proposalNotFound=true`);
+    return null;
   }
 
   return (
     <ProposalProvider proposal={proposal}>
       <Box bg={"white"}>
-        <ProposalNavbar />
+        <Navbar />
         <PageContainer bg={"white"} pt={{ base: 24, md: 32 }} pb={10}>
           <VStack gap={10} w={"full"} alignItems={"stretch"}>
             <Flex gap={1} alignItems={"center"} fontSize={"14px"} fontWeight={500}>

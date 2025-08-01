@@ -6,9 +6,10 @@ import { CreateProposalStep } from "@/types/proposal";
 import { Box, Button, Flex, FormControl, Icon, Input, Text } from "@chakra-ui/react";
 import { useCallback, useMemo } from "react";
 import { CreateFormWrapper } from "./CreateFormWrapper";
-import { defaultSingleChoice, useCreateProposal } from "./CreateProposalProvider";
+import { useCreateProposal } from "./CreateProposalProvider";
 import { InputMessage } from "@/components/ui/InputMessage";
 import { ArrowLeftIcon, ArrowRightIcon } from "@/icons";
+import { voteOptions } from "@/constants";
 
 export const ProposalSetupForm = () => {
   const { proposalDetails, setStep, setProposalDetails } = useCreateProposal();
@@ -92,7 +93,7 @@ const SingleChoiceFields = () => {
         <Label label={LLSetupForm.voting_options()} />
         <Label.Subtitle label={LLSetupForm.voting_choice_subtitle()} />
         <Flex flexDirection={"column"} gap={2}>
-          {defaultSingleChoice.map(choice => (
+          {voteOptions.map(choice => (
             <Box
               padding={{ base: 4, md: 6 }}
               key={choice}

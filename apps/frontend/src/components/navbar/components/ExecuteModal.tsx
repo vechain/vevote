@@ -12,13 +12,13 @@ import {
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
-import { MessageModal } from "../../../../../components/ui/ModalSkeleton";
+import { MessageModal } from "../../ui/ModalSkeleton";
 import { CheckDoubleIcon, CheckIcon, LinkIcon } from "@/icons";
-import { FormSkeleton, FormSkeletonProps } from "../../../../../components/ui/FormSkeleton";
+import { FormSkeleton, FormSkeletonProps } from "../../ui/FormSkeleton";
 import { useCallback, useMemo } from "react";
 import { z } from "zod";
-import { Label } from "../../../../../components/ui/Label";
-import { InputMessage } from "../../../../../components/ui/InputMessage";
+import { Label } from "../../ui/Label";
+import { InputMessage } from "../../ui/InputMessage";
 import { useExecuteProposal } from "@/hooks/useExecuteProposal";
 
 export const ExecuteModal = ({ proposalId }: { proposalId: string }) => {

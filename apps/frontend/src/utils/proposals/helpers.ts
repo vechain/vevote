@@ -94,7 +94,6 @@ export const fromEventsToProposals = async (events: ProposalEvent[]): Promise<Fr
         new Date(event.canceledTime || 0),
         new Date(event.executedTime || 0),
       ]);
-      console.log("canceledDate", canceledDate);
       return {
         id: event.proposalId,
         proposer: event.proposer,
