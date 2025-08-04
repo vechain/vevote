@@ -9,12 +9,24 @@ import {
   MenuItem,
   MenuList,
   MenuOptionGroup,
+  MenuDivider,
   Text,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { useI18nContext } from "@/i18n/i18n-react";
-import { Dispatch, SetStateAction, useCallback, useMemo } from "react";
+import { Dispatch, SetStateAction, useCallback, useMemo, useState, useEffect } from "react";
 import { FilterIcon } from "@/icons";
 import { FilterStatuses } from "@/types/proposal";
+
+const DEFAULT_STATUSES: FilterStatuses[] = [
+  "approved",
+  "canceled",
+  "draft",
+  "executed",
+  "rejected",
+  "upcoming",
+  "voting",
+];
 
 export const FiltersDropdown = ({
   statuses,
@@ -25,21 +37,47 @@ export const FiltersDropdown = ({
   setStatuses: Dispatch<SetStateAction<FilterStatuses[]>>;
 }) => {
   const { LL } = useI18nContext();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const [tempStatuses, setTempStatuses] = useState<FilterStatuses[]>(statuses);
+
   const onChangeStatus = useCallback(
     (value: FilterStatuses) => {
-      const values = statuses.includes(value) ? statuses.filter(status => status !== value) : [...statuses, value];
-      setStatuses(values);
+      const values = tempStatuses.includes(value)
+        ? tempStatuses.filter(status => status !== value)
+        : [...tempStatuses, value];
+      setTempStatuses(values);
     },
-    [setStatuses, statuses],
+    [tempStatuses],
   );
+
+  const handleApply = useCallback(() => {
+    setStatuses(tempStatuses);
+    onClose();
+  }, [tempStatuses, setStatuses, onClose]);
+
+  const handleReset = useCallback(() => {
+    setTempStatuses(DEFAULT_STATUSES);
+    setStatuses(DEFAULT_STATUSES);
+    onClose();
+  }, [setStatuses, onClose]);
+
+  const hasChanges = useMemo(() => {
+    return JSON.stringify(tempStatuses.sort()) !== JSON.stringify(statuses.sort());
+  }, [tempStatuses, statuses]);
+
   const options = useMemo(() => {
     return Object.entries(LL.badge).map(opt => ({
       value: opt[0] as FilterStatuses,
       label: opt[1](),
     }));
   }, [LL.badge]);
+
+  useEffect(() => {
+    setTempStatuses(statuses);
+  }, [statuses]);
   return (
-    <Menu>
+    <Menu closeOnSelect={false} isOpen={isOpen} onOpen={onOpen} onClose={onClose}>
       <MenuButton as={Button} variant={"secondary"} size={{ base: "md", md: "lg" }} {...restProps}>
         <Flex alignItems={"center"} gap={2}>
           <Text>{LL.filters.title()}</Text>
@@ -49,7 +87,7 @@ export const FiltersDropdown = ({
       <MenuList>
         <MenuOptionGroup type="checkbox">
           {options.map((option, id) => {
-            const isSelected = statuses.includes(option.value);
+            const isSelected = tempStatuses.includes(option.value);
             return (
               <MenuItem
                 key={id}
@@ -63,6 +101,15 @@ export const FiltersDropdown = ({
             );
           })}
         </MenuOptionGroup>
+        <MenuDivider />
+        <Flex padding={3} gap={2} justifyContent={"space-between"}>
+          <Button size="sm" variant="ghost" onClick={handleReset} color="gray.600" _hover={{ bg: "gray.50" }}>
+            {LL.filters.reset()}
+          </Button>
+          <Button size="sm" variant="solid" colorScheme="primary" onClick={handleApply} isDisabled={!hasChanges}>
+            {LL.filters.apply()}
+          </Button>
+        </Flex>
       </MenuList>
     </Menu>
   );

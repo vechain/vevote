@@ -371,6 +371,8 @@ const en = {
   },
   filters: {
     title: "Filters",
+    apply: "Apply",
+    reset: "Reset",
     sort: {
       newest: "Newest",
       oldest: "Oldest",
