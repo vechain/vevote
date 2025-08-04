@@ -31,7 +31,7 @@ export type ProposalDetails = {
 
 export const DEFAULT_PROPOSAL: ProposalDetails = {
   title: "",
-  description: DEFAULT_DESCRIPTION_TEMPLATE().ops,
+  description: DEFAULT_DESCRIPTION_TEMPLATE.ops,
   votingQuestion: "",
   discourseUrl: "",
 };
@@ -92,7 +92,7 @@ export const CreateProposalProvider = ({ children }: PropsWithChildren) => {
     if (account?.address) {
       setProposalDetails(prev => ({
         ...prev,
-        description: DEFAULT_DESCRIPTION_TEMPLATE(account.address).ops,
+        description: DEFAULT_DESCRIPTION_TEMPLATE.ops,
       }));
     }
   }, [account?.address]);
