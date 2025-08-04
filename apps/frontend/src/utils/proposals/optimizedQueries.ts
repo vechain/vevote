@@ -28,15 +28,17 @@ export const getProposals = async (
   const data = await getProposalsEvents(thor, proposalId);
   const allProposals = data?.proposals || [];
 
-  const { paginatedProposals, hasNextPage, nextCursor } = paginateProposals(allProposals, cursor, pageSize);
-  const enrichedProposals = await enrichProposalsWithData(thor, paginatedProposals);
-  const finalProposals = applyFilters(enrichedProposals, statuses, searchQuery);
+  const enrichedProposals = await enrichProposalsWithData(thor, allProposals);
+
+  const filteredProposals = applyFilters(enrichedProposals, statuses, searchQuery);
+
+  const { paginatedProposals, hasNextPage, nextCursor } = paginateProposals(filteredProposals, cursor, pageSize);
 
   return {
-    proposals: finalProposals,
+    proposals: paginatedProposals,
     nextCursor,
     hasNextPage,
-    totalCount: allProposals.length,
+    totalCount: filteredProposals.length,
   };
 };
 

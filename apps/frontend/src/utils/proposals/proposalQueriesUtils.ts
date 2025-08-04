@@ -6,7 +6,7 @@ import { getProposalsWithState } from "./proposalsQueries";
 import { ThorClient } from "@vechain/vechain-kit";
 import { FilterStatuses, ProposalCardType } from "@/types/proposal";
 
-export const paginateProposals = (proposals: FromEventsToProposalsReturnType, cursor?: string, pageSize = 20) => {
+export const paginateProposals = (proposals: ProposalCardType[], cursor?: string, pageSize = 20) => {
   const startIndex = cursor ? parseInt(cursor) : 0;
   const endIndex = startIndex + pageSize;
   const paginatedProposals = proposals.slice(startIndex, endIndex);
