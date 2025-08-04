@@ -306,8 +306,7 @@ const en = {
           },
         },
         publish_proposal: "Publish Proposal",
-        publish_description:
-          'Please note that once the campaign is published, it can only be edited while on "Draft" state, meaning before the voting calendar starts.',
+        publish_description: "Please note that once the campaign is published, it can't be edited anymore.",
         publish_sub_description: "Are you sure you want to publish this proposal?",
         publish_failed: "Publishing failed",
         publish_failed_description: "The publishing of the proposal couldn’t be completed. Please try again.",

@@ -994,7 +994,7 @@ type RootTranslation = {
 				 */
 				publish_proposal: string
 				/**
-				 * P​l​e​a​s​e​ ​n​o​t​e​ ​t​h​a​t​ ​o​n​c​e​ ​t​h​e​ ​c​a​m​p​a​i​g​n​ ​i​s​ ​p​u​b​l​i​s​h​e​d​,​ ​i​t​ ​c​a​n​ ​o​n​l​y​ ​b​e​ ​e​d​i​t​e​d​ ​w​h​i​l​e​ ​o​n​ ​"​D​r​a​f​t​"​ ​s​t​a​t​e​,​ ​m​e​a​n​i​n​g​ ​b​e​f​o​r​e​ ​t​h​e​ ​v​o​t​i​n​g​ ​c​a​l​e​n​d​a​r​ ​s​t​a​r​t​s​.
+				 * P​l​e​a​s​e​ ​n​o​t​e​ ​t​h​a​t​ ​o​n​c​e​ ​t​h​e​ ​c​a​m​p​a​i​g​n​ ​i​s​ ​p​u​b​l​i​s​h​e​d​,​ ​i​t​ ​c​a​n​'​t​ ​b​e​ ​e​d​i​t​e​d​ ​a​n​y​m​o​r​e​.
 				 */
 				publish_description: string
 				/**
@@ -2282,7 +2282,7 @@ JPG, PNG or SVG of maximum of {size}MB.
 				 */
 				publish_proposal: () => LocalizedString
 				/**
-				 * Please note that once the campaign is published, it can only be edited while on "Draft" state, meaning before the voting calendar starts.
+				 * Please note that once the campaign is published, it can't be edited anymore.
 				 */
 				publish_description: () => LocalizedString
 				/**
