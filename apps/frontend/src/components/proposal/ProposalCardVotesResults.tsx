@@ -1,14 +1,22 @@
-import { SingleChoiceEnum } from "@/types/proposal";
+import { ProposalStatus, SingleChoiceEnum } from "@/types/proposal";
 import { VotesCastResult } from "@/types/votes";
 import { getSingleChoiceFromIndex } from "@/utils/proposals/helpers";
-import { Flex, Icon, Text } from "@chakra-ui/react";
+import { Flex, Icon } from "@chakra-ui/react";
 import { useCallback, useMemo } from "react";
 import { IconByVote, ColorByVote } from "@/constants";
 
-export const ProposalCardVotesResults = ({ results }: { proposalId: string; results: VotesCastResult[] }) => {
+export const ProposalCardVotesResults = ({
+  status,
+  results,
+}: {
+  status: ProposalStatus;
+  results: VotesCastResult[];
+}) => {
   const totalPerVotes = useMemo(() => {
     return results.reduce((sum, result) => sum + (Number(result.weight) ?? 0), 0);
   }, [results]);
+
+  const quorumNotReached = status === ProposalStatus.MIN_NOT_REACHED;
 
   const proposalVotes = useMemo(() => {
     return (
@@ -44,9 +52,6 @@ export const ProposalCardVotesResults = ({ results }: { proposalId: string; resu
       [SingleChoiceEnum.AGAINST]: Number(
         ((proposalVotes[SingleChoiceEnum.AGAINST] / totalPerVotes) * 100 || 0).toFixed(),
       ),
-      [SingleChoiceEnum.ABSTAIN]: Number(
-        ((proposalVotes[SingleChoiceEnum.ABSTAIN] / totalPerVotes) * 100 || 0).toFixed(),
-      ),
     };
   }, [proposalVotes, totalPerVotes]);
 
@@ -64,29 +69,18 @@ export const ProposalCardVotesResults = ({ results }: { proposalId: string; resu
   );
 
   return (
-    <Flex gap={{ base: 3, md: 6 }} alignItems={"center"}>
+    <Flex gap={{ base: 3, md: 3 }} alignItems={"center"}>
       {Object.keys(proposalVotesPercentage).map(option => {
-        const mostVoted = isMostVoted(proposalVotes[option as keyof typeof proposalVotes]);
-        const percentage = proposalVotesPercentage[option as keyof typeof proposalVotesPercentage];
+        const mostVoted = quorumNotReached ? false : isMostVoted(proposalVotes[option as keyof typeof proposalVotes]);
         const color = ColorByVote[option as keyof typeof ColorByVote];
         return (
-          <Flex
-            key={option}
-            alignItems={"center"}
-            gap={2}
-            padding={2}
-            borderRadius={"xl"}
-            border={mostVoted ? "2px solid" : "none"}
-            borderColor={mostVoted ? color : undefined}>
+          <Flex key={option} alignItems={"center"} padding={2}>
             <Icon
               as={IconByVote[option as keyof typeof IconByVote]}
               width={4}
               height={4}
-              color={mostVoted ? color : "gray.500"}
+              color={mostVoted ? color : "gray.300"}
             />
-            <Text fontSize={{ base: "14px", md: "16px" }} color={"gray.600"}>
-              {percentage.toFixed(2)}%
-            </Text>
           </Flex>
         );
       })}
