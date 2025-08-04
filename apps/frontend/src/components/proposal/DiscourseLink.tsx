@@ -6,7 +6,6 @@ export const DiscourseLink = ({ src }: { src: string }) => {
     <Link
       href={src}
       isExternal
-      color="blue.500"
       fontSize="sm"
       _hover={{ textDecoration: "underline" }}
       onClick={e => e.stopPropagation()}>

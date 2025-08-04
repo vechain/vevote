@@ -8,19 +8,14 @@ export const BuyNodeCta = () => {
 
   return (
     <HStack
-      alignItems={{ base: "flex-start", md: "center" }}
+      alignItems="flex-start"
       gap={4}
       backgroundColor={"gray.100"}
       padding={"16px"}
       borderRadius={12}
       width={"100%"}>
       <Icon as={CircleInfoIcon} width={5} height={5} color={"gray.600"} marginTop={"2px"} />
-      <Stack
-        direction={{ base: "column", md: "row" }}
-        alignItems={{ base: "flex-start", md: "center" }}
-        justifyContent={"space-between"}
-        gap={4}
-        width={"100%"}>
+      <Stack direction="column" alignItems="flex-start" justifyContent={"space-between"} gap={4} width={"100%"}>
         <Flex flexDirection={"column"} gap={2.5} flex={1}>
           <Text fontSize={"14px"} fontWeight={500} color={"gray.600"} lineHeight={"1.43"}>
             {LL.proposal.buy_another_node()}

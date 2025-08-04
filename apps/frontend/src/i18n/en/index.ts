@@ -368,6 +368,7 @@ const en = {
     executed: "Executed",
     canceled: "Canceled",
     rejected: "Rejected",
+    min_not_reached: "Quorum not reached",
   },
   filters: {
     title: "Filters",
