@@ -7,8 +7,10 @@ import { useIndexerVoteResults } from "@/hooks/useCastVote";
 import { AllVotersModal } from "./components/AllVotersModal/AllVotersModal";
 import { ProposalStatus, SingleChoiceEnum } from "@/types/proposal";
 import { ColorByVote, IconByVote, voteOptions } from "@/constants";
+import { useI18nContext } from "@/i18n/i18n-react";
 
 export const ResultsSection = () => {
+  const { LL } = useI18nContext();
   const { proposal } = useProposal();
   const { results } = useIndexerVoteResults({ proposalId: proposal.id, size: voteOptions.length });
 
@@ -34,7 +36,7 @@ export const ResultsSection = () => {
         <Flex alignItems={"center"} gap={3}>
           <Icon as={VoteIcon} width={5} height={5} color={"primary.700"} />
           <Text fontWeight={600} color={"primary.700"} fontSize={{ base: "14px", md: "16px" }}>
-            Results
+            {LL.results()}
           </Text>
         </Flex>
         <AllVotersModal />

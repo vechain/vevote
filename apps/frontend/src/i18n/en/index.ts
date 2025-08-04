@@ -51,6 +51,7 @@ const en = {
   minimum: "Minimum",
   number_option: "Option {index:number}",
   continue: "Continue",
+  results: "Results",
   description: "Description",
   preview: "Preview",
   close: "Close",

@@ -215,6 +215,10 @@ type RootTranslation = {
 	 */
 	'continue': string
 	/**
+	 * R​e​s​u​l​t​s
+	 */
+	results: string
+	/**
 	 * D​e​s​c​r​i​p​t​i​o​n
 	 */
 	description: string
@@ -1512,6 +1516,10 @@ JPG, PNG or SVG of maximum of {size}MB.
 	 * Continue
 	 */
 	'continue': () => LocalizedString
+	/**
+	 * Results
+	 */
+	results: () => LocalizedString
 	/**
 	 * Description
 	 */
