@@ -7,9 +7,10 @@ type PaginationProps = {
   total: number;
   onShowMore?: () => void;
   text: string;
+  loading?: boolean;
 };
 
-export const Pagination = ({ current, total, onShowMore, text }: PaginationProps) => {
+export const Pagination = ({ current, total, onShowMore, text, loading }: PaginationProps) => {
   const { LL } = useI18nContext();
   return (
     <Flex justifyContent={"flex-start"} alignItems={"center"} marginTop={"24px"} columnGap={"16px"}>
@@ -18,7 +19,8 @@ export const Pagination = ({ current, total, onShowMore, text }: PaginationProps
           rightIcon={<Icon as={ArrowDownIcon} />}
           variant={"tertiary"}
           onClick={onShowMore}
-          size={{ base: "md", md: "lg" }}>
+          size={{ base: "md", md: "lg" }}
+          isLoading={loading}>
           {LL.show_more()}
         </Button>
       )}

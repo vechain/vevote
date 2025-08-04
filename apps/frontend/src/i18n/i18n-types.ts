@@ -1203,6 +1203,14 @@ type RootTranslation = {
 		 * F​i​l​t​e​r​s
 		 */
 		title: string
+		/**
+		 * A​p​p​l​y
+		 */
+		apply: string
+		/**
+		 * R​e​s​e​t
+		 */
+		reset: string
 		sort: {
 			/**
 			 * N​e​w​e​s​t
@@ -2487,6 +2495,14 @@ JPG, PNG or SVG of maximum of {size}MB.
 		 * Filters
 		 */
 		title: () => LocalizedString
+		/**
+		 * Apply
+		 */
+		apply: () => LocalizedString
+		/**
+		 * Reset
+		 */
+		reset: () => LocalizedString
 		sort: {
 			/**
 			 * Newest

@@ -62,6 +62,7 @@ export const getProposalsEvents = async (
       thor,
       nodeUrl,
       filterCriteria,
+      order: "desc",
     });
 
     const decodedCreateProposalEvents = events

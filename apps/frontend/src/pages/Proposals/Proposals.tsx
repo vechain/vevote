@@ -6,17 +6,17 @@ import { Pagination } from "@/components/ui/Pagination";
 import { ProposalsListSkeleton } from "@/components/ui/ProposalsListSkeleton";
 import { SearchInput } from "@/components/ui/SearchInput";
 import { useUser } from "@/contexts/UserProvider";
-import { useProposalsEvents } from "@/hooks/useProposalsEvents";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { CircleInfoIcon } from "@/icons";
-import { FilterStatuses, ProposalCardType } from "@/types/proposal";
+import { ProposalCardType } from "@/types/proposal";
 import { areAddressesEqual } from "@/utils/address";
-import { filterStatus } from "@/utils/proposals/helpers";
 import { Flex, Heading, Icon, Text } from "@chakra-ui/react";
 import { useWallet } from "@vechain/vechain-kit";
-import { PropsWithChildren, useMemo, useState } from "react";
+import { PropsWithChildren, useMemo } from "react";
 import { useCreateProposal } from "../CreateProposal/CreateProposalProvider";
 import { ProposalCard } from "./ProposalCard";
+import { useProposalsEvents } from "@/hooks/useProposalsEvents";
+import { useProposalsUrlParams } from "@/hooks/useProposalsUrlParams";
 
 const ITEMS_PER_PAGE = 6;
 
@@ -27,28 +27,18 @@ export const Proposals = () => {
   const { account } = useWallet();
 
   const { draftProposal } = useCreateProposal();
-  const [searchValue, setSearchValue] = useState("");
-  const [statuses, setStatuses] = useState<FilterStatuses[]>([
-    "approved",
-    "canceled",
-    "draft",
-    "executed",
-    "rejected",
-    "upcoming",
-    "voting",
-  ]);
+  const { searchValue, searchInput, setSearchInput, clearSearch, statuses, setStatuses } = useProposalsUrlParams();
 
-  const { proposals, loading } = useProposalsEvents();
+  const { proposals, loading, loadingMore, hasNextPage, fetchNextPage, totalCount } = useProposalsEvents({
+    statuses,
+    searchQuery: searchValue,
+    pageSize: ITEMS_PER_PAGE,
+  });
 
   const filteredProposals = useMemo(() => {
-    const searchLower = searchValue.toLowerCase();
     const isDraftProposal = draftProposal && areAddressesEqual(draftProposal?.proposer, account?.address);
-    const filteredProposals = proposals
-      .filter(({ title }) => title.toLowerCase().includes(searchLower))
-      .filter(({ status }) => filterStatus(statuses, status))
-      .reverse();
-    return isDraftProposal ? [draftProposal, ...filteredProposals] : filteredProposals;
-  }, [account?.address, draftProposal, proposals, searchValue, statuses]);
+    return isDraftProposal ? [draftProposal, ...proposals] : proposals;
+  }, [account?.address, draftProposal, proposals]);
 
   const canCreateProposal = useMemo(() => account?.address && isWhitelisted, [account?.address, isWhitelisted]);
 
@@ -78,9 +68,9 @@ export const Proposals = () => {
             minWidth="0"
             overflow="hidden">
             <SearchInput
-              value={searchValue}
-              onChange={e => setSearchValue(e.target.value)}
-              onClear={() => setSearchValue("")}
+              value={searchInput}
+              onChange={e => setSearchInput(e.target.value)}
+              onClear={clearSearch}
               placeholder={LL.proposals.search_placeholder()}
             />
             <FiltersDropdown statuses={statuses} setStatuses={setStatuses} />
@@ -88,17 +78,36 @@ export const Proposals = () => {
           </Flex>
         </PageContainer.Header>
         <PageContainer.Content>
-          <ProposalsPanel proposals={filteredProposals} loading={loading} />
+          <ProposalsPanel
+            proposals={filteredProposals}
+            loading={loading}
+            loadingMore={loadingMore}
+            hasNextPage={hasNextPage}
+            fetchNextPage={fetchNextPage}
+            totalCount={totalCount}
+          />
         </PageContainer.Content>
       </PageContainer>
     </>
   );
 };
 
-const ProposalsPanel = ({ proposals, loading }: { proposals: ProposalCardType[]; loading: boolean }) => {
+const ProposalsPanel = ({
+  proposals,
+  loading,
+  loadingMore,
+  hasNextPage,
+  fetchNextPage,
+  totalCount,
+}: {
+  proposals: ProposalCardType[];
+  loading: boolean;
+  loadingMore: boolean;
+  hasNextPage: boolean;
+  fetchNextPage: () => void;
+  totalCount: number;
+}) => {
   const { LL } = useI18nContext();
-  const [limit, setLimit] = useState<number>(ITEMS_PER_PAGE);
-  const filteredProposals = useMemo(() => proposals.filter((_p, i) => i < limit), [proposals, limit]);
 
   if (loading) {
     return <ProposalsListSkeleton count={ITEMS_PER_PAGE} />;
@@ -107,19 +116,16 @@ const ProposalsPanel = ({ proposals, loading }: { proposals: ProposalCardType[];
   return (
     <>
       <BasePanel>
-        {filteredProposals.length > 0 ? (
-          filteredProposals.map((p, i) => <ProposalCard key={i} {...p} />)
-        ) : (
-          <EmptyPanel />
+        {proposals.length > 0 ? proposals.map((p, i) => <ProposalCard key={p.id || i} {...p} />) : <EmptyPanel />}
+        {hasNextPage && (
+          <Pagination
+            text={LL.proposals.pagination({ current: proposals.length, total: totalCount })}
+            current={proposals.length}
+            total={totalCount}
+            onShowMore={fetchNextPage}
+            loading={loadingMore}
+          />
         )}
-        <Pagination
-          text={LL.proposals.pagination({ current: filteredProposals.length, total: proposals.length })}
-          current={filteredProposals.length}
-          total={proposals.length}
-          onShowMore={() => {
-            setLimit(prev => prev + ITEMS_PER_PAGE);
-          }}
-        />
       </BasePanel>
     </>
   );
