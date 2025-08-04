@@ -3,10 +3,13 @@ import { CircleInfoIcon, CheckCircleIcon, CircleXIcon, AlertTriangleIcon, ArrowL
 import { useProposal } from "@/components/proposal/ProposalProvider";
 import { ProposalStatus } from "@/types/proposal";
 import { useI18nContext } from "@/i18n/i18n-react";
+import { useQuorum } from "@/hooks/useQuorum";
 
 export const ResultsInfo = () => {
   const { proposal } = useProposal();
   const { LL } = useI18nContext();
+
+  const { quorumPercentage } = useQuorum();
 
   if (proposal.status === ProposalStatus.EXECUTED) {
     return (
@@ -82,7 +85,9 @@ export const ResultsInfo = () => {
             {LL.proposal.minimum_participation_not_reached()}
           </Text>
           <Text fontSize={"12px"} color={"red.600"}>
-            {LL.proposal.the_voting_participation_didnt_reached_the_minimum_required_of_30_to_get_approval()}
+            {LL.proposal.the_voting_participation_didnt_reached_the_minimum_required_of_30_to_get_approval({
+              quorum: quorumPercentage || 30,
+            })}
           </Text>
         </Flex>
       </Flex>
@@ -94,7 +99,9 @@ export const ResultsInfo = () => {
       <Flex gap={2} alignItems={"start"}>
         <Icon as={CircleInfoIcon} width={4} height={4} color={"blue.500"} marginTop={"2px"} />
         <Text fontSize={"12px"} color={"blue.700"}>
-          {LL.proposal.a_minimum_of_30_participation_must_be_reached_to_validate_the_voting_of_the_proposal_and_get_approval()}
+          {LL.proposal.a_minimum_of_30_participation_must_be_reached_to_validate_the_voting_of_the_proposal_and_get_approval(
+            { quorum: quorumPercentage || 30 },
+          )}
         </Text>
       </Flex>
     );

@@ -339,9 +339,9 @@ const en = {
       "The proposal didn't get enough votes in favor to get approval.",
     minimum_participation_not_reached: "Minimum participation not reached",
     the_voting_participation_didnt_reached_the_minimum_required_of_30_to_get_approval:
-      "The voting participation didn't reached the minimum required of 30% to get approval.",
+      "The voting participation didn't reached the minimum required of {quorum:number}% to get approval.",
     a_minimum_of_30_participation_must_be_reached_to_validate_the_voting_of_the_proposal_and_get_approval:
-      "A minimum of 30% participation must be reached to validate the voting of the proposal and get approval.",
+      "A minimum of {quorum:number}% participation must be reached to validate the voting of the proposal and get approval.",
     vote_submission_failed: "Vote submission failed",
     vote_submitted_successfully: "Vote submitted successfully!",
     submit_your_vote: "Submit your Vote",
