@@ -43,6 +43,10 @@ export const CustomTimePicker = ({ value, onChange, isDisabled, ...inputProps }:
 
   const displayValue = useMemo(() => (selectedTime ? selectedTime.format("HH:mm") + " UTC" : ""), [selectedTime]);
 
+  const updatedValue = useMemo(() => {
+    return `${selectedHour || "00"}:${selectedMinute || "00"} UTC`;
+  }, [selectedHour, selectedMinute]);
+
   const hours = useMemo(() => {
     const hoursArray = [];
     for (let i = 0; i < 24; i++) {
@@ -221,9 +225,7 @@ export const CustomTimePicker = ({ value, onChange, isDisabled, ...inputProps }:
                 width="100%"
                 textAlign="center">
                 <Text fontSize="md" fontWeight="700" color="primary.600" fontFamily="heading">
-                  {selectedHour && selectedMinute
-                    ? `${selectedHour}:${selectedMinute} UTC`
-                    : displayValue || "--:-- UTC"}
+                  {updatedValue}
                 </Text>
               </Box>
             </VStack>
