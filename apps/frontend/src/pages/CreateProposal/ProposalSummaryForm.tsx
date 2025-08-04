@@ -25,6 +25,11 @@ export const ProposalSummaryForm = () => {
 
           <SummaryCard.BaseItem label={LL.proposal.create.details_form.title()} value={proposalDetails.title} />
           <SummaryCard.BaseItem
+            label={LL.proposal.create.details_form.voting_question()}
+            value={proposalDetails.votingQuestion}
+          />
+
+          <SummaryCard.BaseItem
             label={LL.proposal.create.details_form.description()}
             value={proposalDetails.description.map(op => op.insert).join("")}
             lineClamp={5}

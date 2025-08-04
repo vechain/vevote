@@ -13,15 +13,8 @@ export const proposalDetailsSchema = (delay: number, duration: number) =>
       description: descriptionSchema,
       headerImage: zodFile.optional(),
       discourseUrl: discourseTopic,
+      votingQuestion: z.string().trim().min(1, { message: LL.field_errors.required() }).max(QUESTION_MAX_CHAR),
     })
     .and(zodStartEndDates(delay, duration));
 
 export type ProposalDetailsSchema = z.infer<ReturnType<typeof proposalDetailsSchema>>;
-
-export const proposalSingleChoiceSchema = z.object({
-  votingQuestion: z.string().trim().min(1, { message: LL.field_errors.required() }).max(QUESTION_MAX_CHAR),
-});
-
-export const proposalSetupSchema = proposalSingleChoiceSchema;
-export type ProposalSingleChoiceSchema = z.infer<typeof proposalSingleChoiceSchema>;
-export type ProposalSetupSchema = z.infer<typeof proposalSetupSchema>;

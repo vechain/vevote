@@ -905,16 +905,6 @@ type RootTranslation = {
 				 * V​o​t​i​n​g​ ​c​a​l​e​n​d​a​r
 				 */
 				voting_calendar: string
-			}
-			setup_form: {
-				/**
-				 * V​o​t​i​n​g​ ​t​y​p​e
-				 */
-				voting_type: string
-				/**
-				 * S​e​l​e​c​t​ ​t​h​e​ ​t​y​p​e
-				 */
-				voting_type_subtitle: string
 				/**
 				 * V​o​t​i​n​g​ ​Q​u​e​s​t​i​o​n
 				 */
@@ -927,34 +917,6 @@ type RootTranslation = {
 				 * W​r​i​t​e​ ​t​h​e​ ​q​u​e​s​t​i​o​n​.​.​.
 				 */
 				voting_question_placeholder: string
-				/**
-				 * V​o​t​i​n​g​ ​l​i​m​i​t
-				 */
-				voting_limit: string
-				/**
-				 * D​e​f​i​n​e​ ​t​h​e​ ​m​i​n​i​m​u​m​ ​a​n​d​ ​m​a​x​i​m​u​m​ ​a​m​o​u​n​t​ ​o​f​ ​o​p​t​i​o​n​s​ ​a​l​l​o​w​e​d​ ​p​e​r​ ​v​o​t​e​r​:
-				 */
-				voting_limit_subtitle: string
-				/**
-				 * V​o​t​i​n​g​ ​o​p​t​i​o​n​s
-				 */
-				voting_options: string
-				/**
-				 * T​h​e​ ​“​s​i​n​g​l​e​ ​c​h​o​i​c​e​”​ ​v​o​t​i​n​g​ ​t​y​p​e​ ​o​n​l​y​ ​a​l​l​o​w​s​ ​t​h​e​ ​v​o​t​e​r​ ​t​o​ ​s​e​l​e​c​t​:
-				 */
-				voting_choice_subtitle: string
-				/**
-				 * A​d​d​ ​b​e​t​w​e​e​n​ ​2​ ​a​n​d​ ​3​0​ ​o​p​t​i​o​n​s​ ​t​o​ ​v​o​t​e​:
-				 */
-				voting_options_subtitle: string
-				/**
-				 * A​d​d​ ​n​e​w​ ​o​p​t​i​o​n
-				 */
-				add_new_option: string
-				/**
-				 * W​r​i​t​e​ ​t​h​e​ ​v​o​t​i​n​g​ ​o​p​t​i​o​n​.​.​.
-				 */
-				voting_option_placeholder: string
 			}
 			summary_form: {
 				main_details: {
@@ -2207,16 +2169,6 @@ JPG, PNG or SVG of maximum of {size}MB.
 				 * Voting calendar
 				 */
 				voting_calendar: () => LocalizedString
-			}
-			setup_form: {
-				/**
-				 * Voting type
-				 */
-				voting_type: () => LocalizedString
-				/**
-				 * Select the type
-				 */
-				voting_type_subtitle: () => LocalizedString
 				/**
 				 * Voting Question
 				 */
@@ -2229,34 +2181,6 @@ JPG, PNG or SVG of maximum of {size}MB.
 				 * Write the question...
 				 */
 				voting_question_placeholder: () => LocalizedString
-				/**
-				 * Voting limit
-				 */
-				voting_limit: () => LocalizedString
-				/**
-				 * Define the minimum and maximum amount of options allowed per voter:
-				 */
-				voting_limit_subtitle: () => LocalizedString
-				/**
-				 * Voting options
-				 */
-				voting_options: () => LocalizedString
-				/**
-				 * The “single choice” voting type only allows the voter to select:
-				 */
-				voting_choice_subtitle: () => LocalizedString
-				/**
-				 * Add between 2 and 30 options to vote:
-				 */
-				voting_options_subtitle: () => LocalizedString
-				/**
-				 * Add new option
-				 */
-				add_new_option: () => LocalizedString
-				/**
-				 * Write the voting option...
-				 */
-				voting_option_placeholder: () => LocalizedString
 			}
 			summary_form: {
 				main_details: {

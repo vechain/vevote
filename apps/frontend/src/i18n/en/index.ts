@@ -277,20 +277,9 @@ const en = {
         discourse_topic_placeholder: "your-topic-name",
         discourse_topic_help: "Enter the topic name from your VeChain Discourse discussion",
         voting_calendar: "Voting calendar",
-      },
-      setup_form: {
-        voting_type: "Voting type",
-        voting_type_subtitle: "Select the type",
         voting_question: "Voting Question",
         voting_question_subtitle: "This question should provide exact context to the voting options:",
         voting_question_placeholder: "Write the question...",
-        voting_limit: "Voting limit",
-        voting_limit_subtitle: "Define the minimum and maximum amount of options allowed per voter:",
-        voting_options: "Voting options",
-        voting_choice_subtitle: "The “single choice” voting type only allows the voter to select:",
-        voting_options_subtitle: "Add between 2 and 30 options to vote:",
-        add_new_option: "Add new option",
-        voting_option_placeholder: "Write the voting option...",
       },
       summary_form: {
         main_details: {

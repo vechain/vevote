@@ -10,7 +10,12 @@ import { TextEditorControlled } from "./controllers/TextEditorControlled";
 import { ImageUploadControlled } from "./controllers/ImageUploadControlled";
 import { DateTimeInputControlled } from "./controllers/DateTimeInputControlled";
 import { CreateProposalStep } from "@/types/proposal";
-import { proposalDetailsSchema, ProposalDetailsSchema, TITLE_MAX_CHARS } from "@/schema/createProposalSchema";
+import {
+  proposalDetailsSchema,
+  ProposalDetailsSchema,
+  QUESTION_MAX_CHAR,
+  TITLE_MAX_CHARS,
+} from "@/schema/createProposalSchema";
 import { ArrowLeftIcon, ArrowRightIcon } from "@/icons";
 import { useProposalClock } from "@/hooks/useProposalClock";
 import { getConfig } from "@repo/config";
@@ -53,6 +58,7 @@ export const ProposalDetailsForm = () => {
     <FormSkeleton schema={schema} defaultValues={defaultValues} onSubmit={onSubmit}>
       {({ register, errors, watch }) => {
         const title = watch("title");
+        const votingQuestion = watch("votingQuestion");
         return (
           <>
             <CreateFormWrapper>
@@ -62,6 +68,20 @@ export const ProposalDetailsForm = () => {
                 <InputMessage
                   error={errors.title?.message}
                   message={LL.filed_length({ current: title.length, max: TITLE_MAX_CHARS })}
+                />
+              </FormControl>
+
+              <FormControl isInvalid={Boolean(errors.votingQuestion)}>
+                <Label label={LLDetailsForm.voting_question()} />
+                <Label.Subtitle label={LLDetailsForm.voting_question_subtitle()} />
+                <Input
+                  width={"full"}
+                  placeholder={LLDetailsForm.voting_question_placeholder()}
+                  {...register("votingQuestion")}
+                />
+                <InputMessage
+                  error={errors.votingQuestion?.message}
+                  message={LL.filed_length({ current: (votingQuestion ?? "").length, max: QUESTION_MAX_CHAR })}
                 />
               </FormControl>
 
