@@ -13,7 +13,11 @@ export const ProposalHeader = () => {
   return (
     <Flex flexDirection={"column"} gap={4} width={"full"}>
       {/* Status badge and proposer info row */}
-      <HStack justifyContent={"space-between"} alignItems={{ base: "start", md: "center" }} gap={{ base: 2, md: 4 }}>
+      <HStack
+        justifyContent={"space-between"}
+        alignItems={{ base: "start", md: "center" }}
+        gap={{ base: 2, md: 4 }}
+        wrap={"wrap"}>
         {/* Status badge */}
         <IconBadge variant={proposal.status} />
 
