@@ -1,6 +1,7 @@
 import { FilterStatuses } from "@/types/proposal";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
+import { useDebounce } from "./useDebounce";
 
 const DEFAULT_STATUSES: FilterStatuses[] = [
   "approved",
@@ -29,6 +30,10 @@ export const useProposalsUrlParams = () => {
     return searchParams.get("search") || "";
   }, [searchParams]);
 
+  const [searchInput, setSearchInput] = useState(searchValue);
+
+  const debouncedSearchInput = useDebounce(searchInput, 500);
+
   const statuses = useMemo(() => {
     const statusParam = searchParams.get("statuses");
     if (!statusParam) {
@@ -55,6 +60,14 @@ export const useProposalsUrlParams = () => {
     [setSearchParams],
   );
 
+  const setSearchInputValue = useCallback((value: string) => {
+    setSearchInput(value);
+  }, []);
+
+  const clearSearch = useCallback(() => {
+    setSearchInput("");
+  }, []);
+
   const setStatuses = useCallback(
     (newStatuses: FilterStatuses[]) => {
       setSearchParams(prev => {
@@ -63,7 +76,6 @@ export const useProposalsUrlParams = () => {
           newStatuses.length === DEFAULT_STATUSES.length &&
           newStatuses.every(status => DEFAULT_STATUSES.includes(status))
         ) {
-          // If all default statuses are selected, don't include in URL for cleaner URLs
           newParams.delete("statuses");
         } else if (newStatuses.length > 0) {
           newParams.set("statuses", newStatuses.join(","));
@@ -83,12 +95,22 @@ export const useProposalsUrlParams = () => {
       newParams.delete("statuses");
       return newParams;
     });
+    setSearchInput("");
   }, [setSearchParams]);
+
+  useEffect(() => {
+    if (debouncedSearchInput !== searchValue) {
+      setSearchValue(debouncedSearchInput);
+    }
+  }, [debouncedSearchInput, searchValue, setSearchValue]);
 
   return {
     searchValue,
+    searchInput,
     statuses,
     setSearchValue,
+    setSearchInput: setSearchInputValue,
+    clearSearch,
     setStatuses,
     clearFilters,
   };

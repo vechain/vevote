@@ -12,12 +12,11 @@ import { ProposalCardType } from "@/types/proposal";
 import { areAddressesEqual } from "@/utils/address";
 import { Flex, Heading, Icon, Text } from "@chakra-ui/react";
 import { useWallet } from "@vechain/vechain-kit";
-import { PropsWithChildren, useMemo, useState, useEffect } from "react";
+import { PropsWithChildren, useMemo } from "react";
 import { useCreateProposal } from "../CreateProposal/CreateProposalProvider";
 import { ProposalCard } from "./ProposalCard";
 import { useProposalsEvents } from "@/hooks/useProposalsEvents";
 import { useProposalsUrlParams } from "@/hooks/useProposalsUrlParams";
-import { useDebounce } from "@/hooks/useDebounce";
 
 const ITEMS_PER_PAGE = 6;
 
@@ -28,25 +27,7 @@ export const Proposals = () => {
   const { account } = useWallet();
 
   const { draftProposal } = useCreateProposal();
-  const { searchValue, statuses, setSearchValue, setStatuses } = useProposalsUrlParams();
-  
-  // Local state for immediate UI feedback
-  const [searchInput, setSearchInput] = useState(searchValue);
-  
-  // Debounce the search input before updating URL
-  const debouncedSearchInput = useDebounce(searchInput, 500);
-  
-  // Update URL when debounced value changes
-  useEffect(() => {
-    if (debouncedSearchInput !== searchValue) {
-      setSearchValue(debouncedSearchInput);
-    }
-  }, [debouncedSearchInput, searchValue, setSearchValue]);
-  
-  // Sync local search input with URL parameter when it changes externally
-  useEffect(() => {
-    setSearchInput(searchValue);
-  }, [searchValue]);
+  const { searchValue, searchInput, setSearchInput, clearSearch, statuses, setStatuses } = useProposalsUrlParams();
 
   const { proposals, loading, loadingMore, hasNextPage, fetchNextPage, totalCount } = useProposalsEvents({
     statuses,
@@ -89,7 +70,7 @@ export const Proposals = () => {
             <SearchInput
               value={searchInput}
               onChange={e => setSearchInput(e.target.value)}
-              onClear={() => setSearchInput("")}
+              onClear={clearSearch}
               placeholder={LL.proposals.search_placeholder()}
             />
             <FiltersDropdown statuses={statuses} setStatuses={setStatuses} />

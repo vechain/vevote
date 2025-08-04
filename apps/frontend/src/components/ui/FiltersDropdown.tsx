@@ -1,3 +1,6 @@
+import { useI18nContext } from "@/i18n/i18n-react";
+import { FilterIcon } from "@/icons";
+import { FilterStatuses } from "@/types/proposal";
 import {
   Button,
   Checkbox,
@@ -6,17 +9,14 @@ import {
   Menu,
   MenuButton,
   MenuButtonProps,
+  MenuDivider,
   MenuItem,
   MenuList,
   MenuOptionGroup,
-  MenuDivider,
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
-import { useI18nContext } from "@/i18n/i18n-react";
-import { Dispatch, SetStateAction, useCallback, useMemo, useState, useEffect } from "react";
-import { FilterIcon } from "@/icons";
-import { FilterStatuses } from "@/types/proposal";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 const DEFAULT_STATUSES: FilterStatuses[] = [
   "approved",
@@ -34,7 +34,7 @@ export const FiltersDropdown = ({
   ...restProps
 }: Omit<MenuButtonProps, "children"> & {
   statuses: FilterStatuses[];
-  setStatuses: Dispatch<SetStateAction<FilterStatuses[]>>;
+  setStatuses: (newStatuses: FilterStatuses[]) => void;
 }) => {
   const { LL } = useI18nContext();
   const { isOpen, onOpen, onClose } = useDisclosure();
