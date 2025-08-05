@@ -13,7 +13,7 @@ export const stargateButtonStyle = defineStyle({
   maxHeight: { base: "40px", md: "48px" },
   borderWidth: 1,
   borderColor: "rgba(255, 255, 255, 0.20)",
-  borderRadius: "99px",
+  borderRadius: "0.75rem",
   _hover: {
     textDecoration: "none",
   },

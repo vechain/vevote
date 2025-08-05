@@ -13,6 +13,7 @@ export const ProposalsHeader = () => {
     </>
   );
 };
+
 export const Banner = () => {
   const { LL } = useI18nContext();
   return (
