@@ -13,11 +13,11 @@ export const ProposalsHeader = () => {
     </>
   );
 };
+
 export const Banner = () => {
   const { LL } = useI18nContext();
   return (
     <Box
-      paddingX={{ base: 6, md: 20 }}
       paddingY={10}
       bgImage={{ base: "/images/banner-bg-mobile.webp", md: "/images/banner-bg.webp" }}
       bgSize={"cover"}
@@ -30,7 +30,8 @@ export const Banner = () => {
         alignItems={"center"}
         justifyContent={"center"}
         paddingTop={{ base: 16, md: 10, lg: 0 }}
-        maxWidth={{ base: "full", lg: "1440px" }}
+        maxWidth={{ base: "full", lg: "1024px" }}
+        paddingX={"20px"}
         marginX={"auto"}>
         <Flex
           flexDirection={"column"}

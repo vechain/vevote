@@ -45,7 +45,7 @@ export const IconBadge = ({ variant, ...rest }: Omit<TagProps, "children">) => {
       case "rejected":
         return LL.badge.rejected();
       case "min-not-reached":
-        return LL.badge.min_not_reached();
+        return LL.badge["min-not-reached"]();
       default:
         return LL.badge.draft();
     }

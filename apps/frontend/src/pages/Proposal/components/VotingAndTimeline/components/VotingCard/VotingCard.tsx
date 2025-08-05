@@ -13,8 +13,7 @@ export const VotingCard = () => {
       border={"1px solid"}
       borderColor={"gray.200"}
       borderRadius={16}
-      width={"100%"}
-      minWidth={{ base: "auto", md: "480px" }}>
+      width={"100%"}>
       <CountdownSection />
       <ResultsSection />
       <VoteSection submitVoteModal={submitVoteModal} />

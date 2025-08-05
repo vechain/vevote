@@ -1,4 +1,4 @@
-import { FilterStatuses, ProposalCardType } from "@/types/proposal";
+import { ProposalStatus, ProposalCardType } from "@/types/proposal";
 import { applyFilters, enrichProposalsWithData, paginateProposals } from "@/utils/proposals/proposalQueriesUtils";
 import { getProposalsEvents } from "@/utils/proposals/proposalsQueries";
 import { ThorClient } from "@vechain/vechain-kit";
@@ -7,7 +7,7 @@ export const SESSION_KEY = Math.random().toString(36);
 
 interface PaginationOptions {
   pageSize?: number;
-  statuses?: FilterStatuses[];
+  statuses?: ProposalStatus[];
   searchQuery?: string;
 }
 
