@@ -24,8 +24,8 @@ export const Navbar = () => {
   const { connection } = useWallet();
   return (
     <Box {...bgHeaderStyle} position="fixed" top="0" width="100%" zIndex={1000}>
-      <Container maxWidth={"1440px"} marginX={"auto"}>
-        <Flex justifyContent={"space-between"} alignItems={"center"} gap={6} paddingY={4} paddingX={{ base: 4, md: 4 }}>
+      <Container maxWidth={"1024px"} marginX={"auto"} paddingX={0}>
+        <Flex justifyContent={"space-between"} alignItems={"center"} gap={6} paddingY={4} paddingX={{ base: 4, md: 0 }}>
           <Link to="/">
             <VoteLogo width={{ base: 16, md: 20 }} />
           </Link>

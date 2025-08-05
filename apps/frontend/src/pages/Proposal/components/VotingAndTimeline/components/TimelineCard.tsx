@@ -61,8 +61,7 @@ export const TimelineCard = () => {
       border={"1px solid"}
       borderColor={"gray.200"}
       borderRadius={16}
-      width={"100%"}
-      minWidth={{ base: "auto", md: "480px" }}>
+      width={"100%"}>
       <Flex flexDirection={"column"} gap={6} padding={{ base: "16px", md: "24px" }}>
         {/* Header */}
         <Flex alignItems={"center"} gap={3}>

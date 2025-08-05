@@ -30,7 +30,7 @@ export const Banner = () => {
         alignItems={"center"}
         justifyContent={"center"}
         paddingTop={{ base: 16, md: 10, lg: 0 }}
-        maxWidth={{ base: "full", lg: "1440px" }}
+        maxWidth={{ base: "full", lg: "1024px" }}
         marginX={"auto"}>
         <Flex
           flexDirection={"column"}

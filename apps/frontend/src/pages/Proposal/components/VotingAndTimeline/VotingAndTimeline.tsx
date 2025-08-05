@@ -49,7 +49,7 @@ export const VotingAndTimeline = () => {
         </>
       )}
       {!isMobile && (
-        <VStack gap={6}>
+        <VStack gap={6} minWidth={{ base: "auto", md: "380px" }}>
           <VotingCard />
           <TimelineCard />
         </VStack>
