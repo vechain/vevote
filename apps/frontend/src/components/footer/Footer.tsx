@@ -14,8 +14,8 @@ export const Footer = () => {
       direction={"column"}
       gap={6}
       alignItems={"center"}
-      paddingTop={{ base: 10, md: 12 }}
-      paddingBottom={{ base: 16, md: 16 }}
+      paddingTop={{ base: 12, md: 10 }}
+      paddingBottom={{ base: 20, md: 14 }}
       bgColor={"stargate.black"}
       position={"relative"}
       borderTop={"1px solid #ffffff33"}>
@@ -26,7 +26,7 @@ export const Footer = () => {
         justifyContent={"center"}
         alignItems={"center"}>
         <Flex direction={"column"} gap={{ base: 2, md: 3 }} alignItems={"center"} shrink={0}>
-          <VoteLogo height={{ base: "24px", md: "32px" }} />
+          <VoteLogo height={{ base: "20px", md: "24px" }} />
           <Text fontSize={"14px"} fontWeight={400} color={"stargate.gray"}>
             {LL.footer.version()}
           </Text>
