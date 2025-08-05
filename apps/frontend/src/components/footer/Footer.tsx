@@ -1,6 +1,6 @@
 import { useI18nContext } from "@/i18n/i18n-react";
 import { LegalLinks, ResourcesLinks, VeVoteLinks } from "@/types/terms";
-import { Flex, Heading, Link, Text } from "@chakra-ui/react";
+import { Flex, Link, Text } from "@chakra-ui/react";
 import { PropsWithChildren } from "react";
 import { VoteLogo } from "../ui/VoteLogo";
 
@@ -14,18 +14,21 @@ export const Footer = () => {
       direction={"column"}
       gap={6}
       alignItems={"center"}
-      paddingX={{ base: 6, md: 44 }}
-      paddingY={{ base: 10, md: 20 }}
-      bgColor={"gray.800"}>
+      paddingTop={{ base: 10, md: 12 }}
+      paddingBottom={{ base: 16, md: 16 }}
+      bgColor={"#0B0C10"}
+      position={"relative"}
+      borderTop={"1px solid #ffffff33"}>
       <Flex
         width={"100%"}
         flexDirection={{ base: "column", md: "row" }}
-        gap={10}
-        justifyContent={"space-between"}
+        gap={{ base: 8, md: 40 }}
+        justifyContent={"center"}
+        paddingX={8}
         alignItems={"center"}>
-        <Flex direction={"column"} gap={{ base: 2, md: 3 }} alignItems={"center"}>
+        <Flex direction={"column"} gap={{ base: 2, md: 3 }} alignItems={"center"} shrink={0}>
           <VoteLogo height={{ base: "24px", md: "32px" }} />
-          <Text fontSize={"12px"} fontWeight={400} color={"gray.300"} fontFamily={"Rubik"}>
+          <Text fontSize={"14px"} fontWeight={400} color={"#4A5568"}>
             {LL.footer.version()}
           </Text>
         </Flex>
@@ -40,12 +43,14 @@ const AllRight = () => {
   const { LL } = useI18nContext();
   return (
     <Text
-      color={"gray.300"}
-      fontFamily={"Rubik"}
+      color={"#4A5568"}
       fontSize={"12px"}
       fontWeight={400}
       textAlign={"center"}
-      transform={"translateY(10px)"}>
+      position={"absolute"}
+      bottom={2}
+      left={0}
+      right={0}>
       {LL.footer.all_right()}
     </Text>
   );
@@ -54,22 +59,18 @@ const AllRight = () => {
 const DocLinks = () => {
   const { LL } = useI18nContext();
   return (
-    <Flex gap={{ base: 12, md: 10 }} alignItems={"start"} alignSelf={{ base: "start", md: "center" }}>
-      <Flex flexDirection={"column"} alignItems={"start"} gap={4}>
+    <Flex gap={{ base: 12, md: 10 }} alignItems={"start"} alignSelf={{ base: "start", md: "center" }} shrink={0}>
+      <Flex flexDirection={"column"} alignItems={"start"} gap={3}>
         <FooterLabel>{LL.footer.legal.title()}</FooterLabel>
-        <Flex flexDirection={"column"} alignItems={"start"} gap={3}>
-          <FooterLink href={LegalLinks.PRIVACY_POLICY}>{LL.footer.legal.privacy_policy()}</FooterLink>
-          <FooterLink href={LegalLinks.TERMS_OF_SERVICE}>{LL.footer.legal.terms_of_service()}</FooterLink>
-          <FooterLink href={LegalLinks.COOKIES_POLICY}>{LL.footer.legal.cookies_policy()}</FooterLink>
-        </Flex>
+        <FooterLink href={LegalLinks.PRIVACY_POLICY}>{LL.footer.legal.privacy_policy()}</FooterLink>
+        <FooterLink href={LegalLinks.TERMS_OF_SERVICE}>{LL.footer.legal.terms_of_service()}</FooterLink>
+        <FooterLink href={LegalLinks.COOKIES_POLICY}>{LL.footer.legal.cookies_policy()}</FooterLink>
       </Flex>
-      <Flex flexDirection={"column"} alignItems={"start"} gap={4}>
+      <Flex flexDirection={"column"} alignItems={"start"} gap={3}>
         <FooterLabel>{LL.footer.resources.title()}</FooterLabel>
-        <Flex flexDirection={"column"} alignItems={"start"} gap={3}>
-          <FooterLink href={VeVoteLinks.VEVOTE_DOCS}>{LL.footer.resources.docs()}</FooterLink>
-          <FooterLink href={ResourcesLinks.STARGATE}>{LL.footer.resources.stargate()}</FooterLink>
-          <FooterLink href={VeVoteLinks.SUPPORT}>{LL.footer.resources.support()}</FooterLink>
-        </Flex>
+        <FooterLink href={VeVoteLinks.VEVOTE_DOCS}>{LL.footer.resources.docs()}</FooterLink>
+        <FooterLink href={ResourcesLinks.STARGATE}>{LL.footer.resources.stargate()}</FooterLink>
+        <FooterLink href={VeVoteLinks.SUPPORT}>{LL.footer.resources.support()}</FooterLink>
       </Flex>
     </Flex>
   );
@@ -77,14 +78,9 @@ const DocLinks = () => {
 
 const FooterLabel = ({ children }: PropsWithChildren) => {
   return (
-    <Heading
-      as="h3"
-      fontSize={{ base: "14px", md: "18px" }}
-      color={"white"}
-      fontWeight={600}
-      textTransform={"uppercase"}>
+    <Text color={"#ffffffeb"} fontWeight={600} textTransform={"uppercase"}>
       {children}
-    </Heading>
+    </Text>
   );
 };
 
@@ -93,9 +89,10 @@ const FooterLink = ({ href, children }: PropsWithChildren<{ href: string }>) => 
     <Link
       href={href}
       isExternal
-      fontSize={{ base: "12px", md: "14px" }}
-      color={"gray.300"}
-      _hover={{ textDecoration: "none" }}>
+      color={"#4A5568"}
+      _hover={{ textDecoration: "none" }}
+      fontSize={"16px"}
+      whiteSpace={"nowrap"}>
       {children}
     </Link>
   );

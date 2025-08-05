@@ -1,5 +1,5 @@
 @font-face {
-  font-family: "Inter Variable";
+  font-family: "Geist Variable";
   font-display: swap;
 }
 
@@ -10,7 +10,7 @@
 
 body {
   margin: 0;
-  font-family: "Inter Variable", "Inter", sans-serif;
+  font-family: "Geist Variable", "Geist", sans-serif;
 }
 
 h1,
@@ -50,7 +50,7 @@ h6 {
 }
 
 .ql-container.ql-snow [data-placeholder]:before {
-  font-family: "Inter", sans-serif;
+  font-family: "Geist", sans-serif;
 }
 
 .ql-picker-options {

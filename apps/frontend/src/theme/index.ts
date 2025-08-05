@@ -81,7 +81,7 @@ export const colors = {
 };
 
 export const fonts = {
-  body: `"Inter", sans-serif`,
+  body: `"Geist", sans-serif`,
   heading: `"Rubik", sans-serif`,
 };
 
