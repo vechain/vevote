@@ -4,7 +4,7 @@ import { filterStatus, FromEventsToProposalsReturnType, mergeIpfsDetails } from 
 import { getVoteCastResults } from "./votedQueries";
 import { getProposalsWithState } from "./proposalsQueries";
 import { ThorClient } from "@vechain/vechain-kit";
-import { FilterStatuses, ProposalCardType } from "@/types/proposal";
+import { ProposalStatus, ProposalCardType } from "@/types/proposal";
 
 export const paginateProposals = (proposals: ProposalCardType[], cursor?: string, pageSize = 20) => {
   const startIndex = cursor ? parseInt(cursor) : 0;
@@ -33,7 +33,7 @@ export const enrichProposalsWithData = async (thor: ThorClient, proposals: FromE
   return await getProposalsWithState(merged);
 };
 
-export const applyFilters = (proposals: ProposalCardType[], statuses?: FilterStatuses[], searchQuery?: string) => {
+export const applyFilters = (proposals: ProposalCardType[], statuses?: ProposalStatus[], searchQuery?: string) => {
   let filtered = proposals;
 
   if (statuses && statuses.length > 0) {

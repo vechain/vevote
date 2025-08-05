@@ -1,11 +1,4 @@
-import {
-  FilterStatuses,
-  ProposalCardType,
-  ProposalEvent,
-  ProposalState,
-  ProposalStatus,
-  SingleChoiceEnum,
-} from "@/types/proposal";
+import { ProposalStatus, ProposalCardType, ProposalEvent, ProposalState, SingleChoiceEnum } from "@/types/proposal";
 import dayjs from "dayjs";
 import { Delta } from "quill";
 import { IpfsDetails } from "@/types/ipfs";
@@ -78,8 +71,7 @@ export const getSingleChoiceFromIndex = (index: 0 | 1 | 2): SingleChoiceEnum => 
   }
 };
 
-export const filterStatus = (statuses: FilterStatuses[], status: ProposalStatus): boolean => {
-  if (status === "min-not-reached") return statuses.includes("rejected");
+export const filterStatus = (statuses: ProposalStatus[], status: ProposalStatus): boolean => {
   return statuses.includes(status);
 };
 

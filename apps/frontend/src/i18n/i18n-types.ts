@@ -1204,7 +1204,7 @@ type RootTranslation = {
 		/**
 		 * Q​u​o​r​u​m​ ​n​o​t​ ​r​e​a​c​h​e​d
 		 */
-		min_not_reached: string
+		'min-not-reached': string
 	}
 	filters: {
 		/**
@@ -2504,7 +2504,7 @@ JPG, PNG or SVG of maximum of {size}MB.
 		/**
 		 * Quorum not reached
 		 */
-		min_not_reached: () => LocalizedString
+		'min-not-reached': () => LocalizedString
 	}
 	filters: {
 		/**
