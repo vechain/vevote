@@ -145,6 +145,12 @@
     "upgrade:contract:mainnet": {
       "dependsOn": ["upgrade:contract"]
     },
+    "simulation": {
+      "cache": false
+    },
+    "simulation:staging": {
+      "cache": false
+    },
     "test": {
       "cache": false,
       "dependsOn": ["^compile", "@repo/config#check-or-generate-local-config", "test:hardhat"]
