@@ -85,9 +85,9 @@ export const Proposal = () => {
               <VStack gap={10} align="stretch" flex={1}>
                 {!isCanceled ? <VotingAndTimeline /> : <CanceledProposal />}
                 {isMobile && <DescriptionSection />}
+                <BuyNodeCta />
               </VStack>
             </Stack>
-            <BuyNodeCta />
           </VStack>
         </PageContainer>
       </Box>

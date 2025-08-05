@@ -12,7 +12,6 @@ import {
   ModalHeader,
   Spinner,
   Text,
-  useBreakpointValue,
   useDisclosure,
 } from "@chakra-ui/react";
 import { useWallet } from "@vechain/vechain-kit";
@@ -37,7 +36,6 @@ export const VotingPowerModal = () => {
   const { groupedNodes, isLoading } = useNodes();
   const { allNodes } = useAllUserNodes();
   const { isDelegator } = useIsDelegator();
-  const isMobile = useBreakpointValue({ base: true, md: false });
 
   const nodesList: NodeItem[] = useMemo(
     () =>
@@ -59,11 +57,7 @@ export const VotingPowerModal = () => {
   return (
     <>
       <Button onClick={onOpen} leftIcon={<Icon as={VotingPowerIcon} boxSize={5} />} size={{ base: "md", md: "lg" }}>
-        {isLoading ? (
-          <Spinner size="sm" />
-        ) : (
-          totalVotingPower || (isMobile ? "0" : LL.proposal.voting_power.get_voting_power())
-        )}
+        {isLoading ? <Spinner size="sm" /> : totalVotingPower || "0"}
       </Button>
       <ModalSkeleton isOpen={isOpen} onClose={onClose}>
         <ModalHeader>

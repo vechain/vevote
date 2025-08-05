@@ -74,9 +74,9 @@ const TopBar = ({ title, proposer, discourseUrl }: { title: string; proposer: st
   return (
     <Flex
       width={"100%"}
-      justifyContent={{ base: "flex-start", md: "space-between" }}
-      flexDirection={{ base: "column", md: "row" }}
-      gap={6}
+      justifyContent={"space-between"}
+      flexDirection={"column"}
+      gap={3}
       alignItems={"start"}
       paddingBottom={4}
       borderBottomWidth={"1px"}
@@ -104,35 +104,21 @@ const BottomBar = ({
   startDate,
   endDate,
   status,
-  id,
   results,
 }: Pick<ProposalCardType, "endDate" | "startDate" | "status" | "id" | "results">) => {
   const { LL } = useI18nContext();
-  const variant = useMemo(() => {
-    switch (status) {
-      case "min-not-reached":
-        return "rejected";
-      default:
-        return status;
-    }
-  }, [status]);
 
   const showDate = useMemo(() => {
     return status === ProposalStatus.UPCOMING || status === ProposalStatus.VOTING;
   }, [status]);
 
   const showResults = useMemo(() => {
-    return ["voting", "approved", "executed", "rejected"].includes(variant);
-  }, [variant]);
+    return ["voting", "approved", "executed", "rejected"].includes(status);
+  }, [status]);
   return (
-    <Flex
-      width={"100%"}
-      justifyContent={"space-between"}
-      alignItems={{ base: "start", md: "center" }}
-      flexDirection={{ base: "column", md: "row" }}
-      gap={4}>
-      <Flex gap={4} alignItems={"center"} width={"fit-content"}>
-        <IconBadge variant={variant} />
+    <Flex width={"100%"} justifyContent={"space-between"} alignItems={"flex-start"} flexDirection={"row"} gap={4}>
+      <Flex gap={4} alignItems={"center"} width={"fit-content"} wrap={"wrap"}>
+        <IconBadge variant={status} />
         {status === ProposalStatus.DRAFT && (
           <Text color={"gray.500"} fontSize={{ base: "12px", md: "14px" }}>
             {LL.not_published()}
@@ -140,7 +126,7 @@ const BottomBar = ({
         )}
         {showDate && <DateItem startDate={startDate} endDate={endDate} status={status} />}
       </Flex>
-      {showResults && <ProposalCardVotesResults proposalId={id} results={results || []} />}
+      {showResults && <ProposalCardVotesResults status={status} results={results || []} />}
     </Flex>
   );
 };

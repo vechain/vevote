@@ -1201,6 +1201,10 @@ type RootTranslation = {
 		 * R​e​j​e​c​t​e​d
 		 */
 		rejected: string
+		/**
+		 * Q​u​o​r​u​m​ ​n​o​t​ ​r​e​a​c​h​e​d
+		 */
+		min_not_reached: string
 	}
 	filters: {
 		/**
@@ -2497,6 +2501,10 @@ JPG, PNG or SVG of maximum of {size}MB.
 		 * Rejected
 		 */
 		rejected: () => LocalizedString
+		/**
+		 * Quorum not reached
+		 */
+		min_not_reached: () => LocalizedString
 	}
 	filters: {
 		/**

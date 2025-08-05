@@ -83,13 +83,14 @@ export const CountdownSection = () => {
     [proposal.status, proposal.startDate, proposal.endDate],
   );
 
-  const { days, hours, minutes, seconds } = splitDateDifference(date);
+  const { days, hours, minutes } = splitDateDifference(date);
 
   if (!isValidStatus) return null;
 
   return (
     <Flex
-      flexDirection={"column"}
+      flexDirection={{ base: "column", md: "row" }}
+      justifyContent={{ base: "center", md: "space-between" }}
       gap={4}
       padding={{ base: "16px", md: "24px" }}
       borderBottom={"1px solid"}
@@ -107,7 +108,6 @@ export const CountdownSection = () => {
         <CountdownBox value={days} label="days" />
         <CountdownBox value={hours} label="hours" />
         <CountdownBox value={minutes} label="minutes" />
-        <CountdownBox value={seconds} label="seconds" />
       </Flex>
     </Flex>
   );
