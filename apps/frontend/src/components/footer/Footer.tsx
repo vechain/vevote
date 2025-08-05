@@ -20,11 +20,10 @@ export const Footer = () => {
       position={"relative"}
       borderTop={"1px solid #ffffff33"}>
       <Flex
-        width={"100%"}
+        width={"fit-content"}
         flexDirection={{ base: "column", md: "row" }}
         gap={{ base: 8, md: 40 }}
         justifyContent={"center"}
-        paddingX={8}
         alignItems={"center"}>
         <Flex direction={"column"} gap={{ base: 2, md: 3 }} alignItems={"center"} shrink={0}>
           <VoteLogo height={{ base: "24px", md: "32px" }} />
@@ -59,18 +58,21 @@ const AllRight = () => {
 const DocLinks = () => {
   const { LL } = useI18nContext();
   return (
-    <Flex gap={{ base: 12, md: 10 }} alignItems={"start"} alignSelf={{ base: "start", md: "center" }} shrink={0}>
-      <Flex flexDirection={"column"} alignItems={"start"} gap={3}>
+    <Flex gap={{ base: 5, md: 10 }} alignItems={"start"} w={"fit-content"} alignSelf={{ base: "start", md: "center" }}>
+      <Flex flexDirection={"column"} alignItems={"start"} gap={3} maxWidth={{ base: "90px", md: "fit-content" }}>
         <FooterLabel>{LL.footer.legal.title()}</FooterLabel>
         <FooterLink href={LegalLinks.PRIVACY_POLICY}>{LL.footer.legal.privacy_policy()}</FooterLink>
         <FooterLink href={LegalLinks.TERMS_OF_SERVICE}>{LL.footer.legal.terms_of_service()}</FooterLink>
         <FooterLink href={LegalLinks.COOKIES_POLICY}>{LL.footer.legal.cookies_policy()}</FooterLink>
       </Flex>
-      <Flex flexDirection={"column"} alignItems={"start"} gap={3}>
-        <FooterLabel>{LL.footer.resources.title()}</FooterLabel>
+      <Flex flexDirection={"column"} alignItems={"start"} gap={3} maxWidth={{ base: "90px", md: "fit-content" }}>
+        <FooterLabel>{LL.footer.resources.support()}</FooterLabel>
         <FooterLink href={VeVoteLinks.VEVOTE_DOCS}>{LL.footer.resources.docs()}</FooterLink>
-        <FooterLink href={ResourcesLinks.STARGATE}>{LL.footer.resources.stargate()}</FooterLink>
         <FooterLink href={VeVoteLinks.SUPPORT}>{LL.footer.resources.support()}</FooterLink>
+      </Flex>
+      <Flex flexDirection={"column"} alignItems={"start"} gap={3} maxWidth={{ base: "90px", md: "fit-content" }}>
+        <FooterLabel>{LL.footer.resources.title()}</FooterLabel>
+        <FooterLink href={ResourcesLinks.STARGATE}>{LL.footer.resources.stargate()}</FooterLink>
       </Flex>
     </Flex>
   );
@@ -86,13 +88,7 @@ const FooterLabel = ({ children }: PropsWithChildren) => {
 
 const FooterLink = ({ href, children }: PropsWithChildren<{ href: string }>) => {
   return (
-    <Link
-      href={href}
-      isExternal
-      color={"#4A5568"}
-      _hover={{ textDecoration: "none" }}
-      fontSize={"16px"}
-      whiteSpace={"nowrap"}>
+    <Link href={href} isExternal color={"#4A5568"} _hover={{ textDecoration: "none" }} fontSize={"16px"}>
       {children}
     </Link>
   );

@@ -1311,7 +1311,7 @@ type RootTranslation = {
 			 */
 			title: string
 			/**
-			 * D​o​c​u​m​e​n​t​a​t​i​o​n
+			 * D​o​c​s
 			 */
 			docs: string
 			/**
@@ -2607,7 +2607,7 @@ JPG, PNG or SVG of maximum of {size}MB.
 			 */
 			title: () => LocalizedString
 			/**
-			 * Documentation
+			 * Docs
 			 */
 			docs: () => LocalizedString
 			/**

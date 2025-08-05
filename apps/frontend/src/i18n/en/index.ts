@@ -406,7 +406,7 @@ const en = {
     },
     resources: {
       title: "Resources",
-      docs: "Documentation",
+      docs: "Docs",
       stargate: "StarGate",
       support: "Support",
     },
