@@ -23,7 +23,7 @@ export const Proposal = () => {
   const { account } = useWallet();
   const params = useParams();
   const navigate = useNavigate();
-  const isMobile = useBreakpointValue({ base: true, md: false });
+  const isMobile = useBreakpointValue({ base: true, lg: false });
 
   const proposalId = useMemo(() => {
     if (params.proposalId !== "draft") return params.proposalId;
@@ -74,7 +74,7 @@ export const Proposal = () => {
               <Text color={"gray.400"}>{"→"}</Text>
               <Text color={"gray.600"}>{LL.proposal.title()}</Text>
             </Flex>
-            <Stack direction={{ base: "column", md: "row" }} w={"full"} gap={{ base: 10, md: 12 }}>
+            <Stack direction={{ base: "column", lg: "row" }} w={"full"} gap={{ base: 10, md: 12 }}>
               <VStack gap={10} align="stretch" flex={2}>
                 <ProposalHeader />
                 <Heading

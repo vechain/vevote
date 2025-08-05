@@ -6,7 +6,7 @@ import { useI18nContext } from "@/i18n/i18n-react";
 
 export const VotingAndTimeline = () => {
   const { LL } = useI18nContext();
-  const isMobile = useBreakpointValue({ base: true, md: false });
+  const isMobile = useBreakpointValue({ base: true, lg: false });
   const [activeTab, setActiveTab] = useState<"voting" | "timeline">("voting");
 
   return (
