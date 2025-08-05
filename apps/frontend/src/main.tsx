@@ -70,7 +70,7 @@ const Providers = ({ children }: PropsWithChildren) => {
           legalDocuments={{
             privacyPolicy: [{ url: LegalLinks.PRIVACY_POLICY, required: true, version: 1 }],
             termsAndConditions: [{ url: LegalLinks.TERMS_OF_SERVICE, required: true, version: 1 }],
-            cookiePolicy: [{ url: LegalLinks.COOKIES_POLICY, required: false, version: 1 }],
+            cookiePolicy: [{ url: LegalLinks.COOKIES_POLICY, required: true, version: 1 }],
           }}>
           <MixPanelProvider>
             <ThemeProvider>
