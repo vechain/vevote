@@ -9,7 +9,6 @@ import { useUser } from "@/contexts/UserProvider";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { CircleInfoIcon } from "@/icons";
 import { ProposalCardType } from "@/types/proposal";
-import { areAddressesEqual } from "@/utils/address";
 import { Flex, Heading, Icon, Text } from "@chakra-ui/react";
 import { useWallet } from "@vechain/vechain-kit";
 import { PropsWithChildren, useMemo } from "react";
@@ -33,12 +32,8 @@ export const Proposals = () => {
     statuses,
     searchQuery: searchValue,
     pageSize: ITEMS_PER_PAGE,
+    draftProposal,
   });
-
-  const filteredProposals = useMemo(() => {
-    const isDraftProposal = draftProposal && areAddressesEqual(draftProposal?.proposer, account?.address);
-    return isDraftProposal ? [draftProposal, ...proposals] : proposals;
-  }, [account?.address, draftProposal, proposals]);
 
   const canCreateProposal = useMemo(() => account?.address && isWhitelisted, [account?.address, isWhitelisted]);
 
@@ -79,7 +74,7 @@ export const Proposals = () => {
         </PageContainer.Header>
         <PageContainer.Content>
           <ProposalsPanel
-            proposals={filteredProposals}
+            proposals={proposals}
             loading={loading}
             loadingMore={loadingMore}
             hasNextPage={hasNextPage}
