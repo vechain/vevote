@@ -16,7 +16,7 @@ export const Footer = () => {
       alignItems={"center"}
       paddingTop={{ base: 10, md: 12 }}
       paddingBottom={{ base: 16, md: 16 }}
-      bgColor={"#0B0C10"}
+      bgColor={"stargate.black"}
       position={"relative"}
       borderTop={"1px solid #ffffff33"}>
       <Flex
@@ -27,7 +27,7 @@ export const Footer = () => {
         alignItems={"center"}>
         <Flex direction={"column"} gap={{ base: 2, md: 3 }} alignItems={"center"} shrink={0}>
           <VoteLogo height={{ base: "24px", md: "32px" }} />
-          <Text fontSize={"14px"} fontWeight={400} color={"#4A5568"}>
+          <Text fontSize={"14px"} fontWeight={400} color={"stargate.gray"}>
             {LL.footer.version()}
           </Text>
         </Flex>
@@ -42,7 +42,7 @@ const AllRight = () => {
   const { LL } = useI18nContext();
   return (
     <Text
-      color={"#4A5568"}
+      color={"stargate.gray"}
       fontSize={"12px"}
       fontWeight={400}
       textAlign={"center"}
@@ -80,7 +80,7 @@ const DocLinks = () => {
 
 const FooterLabel = ({ children }: PropsWithChildren) => {
   return (
-    <Text color={"#ffffffeb"} fontWeight={600} textTransform={"uppercase"}>
+    <Text color={"stargate.white"} fontWeight={600} textTransform={"uppercase"}>
       {children}
     </Text>
   );
@@ -88,7 +88,7 @@ const FooterLabel = ({ children }: PropsWithChildren) => {
 
 const FooterLink = ({ href, children }: PropsWithChildren<{ href: string }>) => {
   return (
-    <Link href={href} isExternal color={"#4A5568"} _hover={{ textDecoration: "none" }} fontSize={"16px"}>
+    <Link href={href} isExternal color={"stargate.gray"} _hover={{ textDecoration: "none" }} fontSize={"16px"}>
       {children}
     </Link>
   );
