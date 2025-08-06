@@ -1,6 +1,7 @@
 import { Sort } from "@/components/ui/SortDropdown";
 import { useVoteCastResults } from "@/hooks/useCastVote";
 import { useVotersNodes } from "@/hooks/useUserQueries";
+import { useI18nContext } from "@/i18n/i18n-react";
 import { VoteItem } from "@/pages/Proposal/components/VotingAndTimeline/components/VotingCard/components/ResultsSection/components/AllVotersModal/components/VotersTable";
 import { NodeStrengthLevel } from "@/types/user";
 import { getSingleChoiceFromIndex } from "@/utils/proposals/helpers";
@@ -24,6 +25,8 @@ export const useVotersData = ({
   page?: number;
   pageSize?: number;
 }) => {
+  const { LL } = useI18nContext();
+
   const {
     votes: votedInfo,
     isLoading: isVotesLoading,
@@ -48,7 +51,7 @@ export const useVotersData = ({
           return {
             date: vote.date,
             voter: vote.voter,
-            node: nodeInfo?.name || "Unknown",
+            node: LL.node_names[nodeInfo?.name || "none"](),
             nodeId: node,
             votingPower: nodeInfo?.votingPower || 0,
             votedOption: getSingleChoiceFromIndex(vote.choice),
@@ -57,7 +60,7 @@ export const useVotersData = ({
         });
       })
       .flat();
-  }, [votedInfo, nodes]);
+  }, [votedInfo, nodes, LL.node_names]);
 
   const filterOptions = useMemo(() => {
     const optionsSet = new Set<string>();
