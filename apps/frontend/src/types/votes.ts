@@ -18,12 +18,14 @@ export type Pagination = {
   hasNext: boolean;
 };
 
+export type VotedResultData = VotedBaseData & {
+  support: "ABSTAIN" | "AGAINST" | "FOR";
+  totalWeight: number;
+  totalVoters: number;
+};
+
 export type VotedResult = {
-  data: (VotedBaseData & {
-    support: "ABSTAIN" | "AGAINST" | "FOR";
-    totalWeight: number;
-    totalVoters: number;
-  })[];
+  data: VotedResultData[];
   pagination: Pagination;
 };
 

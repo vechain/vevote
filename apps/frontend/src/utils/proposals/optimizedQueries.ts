@@ -28,7 +28,7 @@ export const getProposals = async (
   const data = await getProposalsEvents(thor, proposalId);
   const allProposals = data?.proposals || [];
 
-  const enrichedProposals = await enrichProposalsWithData(thor, allProposals);
+  const enrichedProposals = await enrichProposalsWithData(allProposals);
 
   const filteredProposals = applyFilters(enrichedProposals, statuses, searchQuery);
 

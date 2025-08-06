@@ -1,9 +1,7 @@
 import { IpfsDetails } from "@/types/ipfs";
 import { getProposalsFromIpfs } from "../ipfs/proposal";
 import { filterStatus, FromEventsToProposalsReturnType, mergeIpfsDetails } from "./helpers";
-import { getVoteCastResults } from "./votedQueries";
 import { getProposalsWithState } from "./proposalsQueries";
-import { ThorClient } from "@vechain/vechain-kit";
 import { ProposalStatus, ProposalCardType } from "@/types/proposal";
 
 export const paginateProposals = (proposals: ProposalCardType[], cursor?: string, pageSize = 20) => {
@@ -16,18 +14,13 @@ export const paginateProposals = (proposals: ProposalCardType[], cursor?: string
   return { paginatedProposals, hasNextPage, nextCursor };
 };
 
-export const enrichProposalsWithData = async (thor: ThorClient, proposals: FromEventsToProposalsReturnType) => {
-  const { votes } = await getVoteCastResults(thor, {
-    proposalIds: proposals.map(p => p.id),
-  });
-
+export const enrichProposalsWithData = async (proposals: FromEventsToProposalsReturnType) => {
   const ipfsFetches = proposals.map(p => getProposalsFromIpfs(p.ipfsHash));
   const ipfsDetails: IpfsDetails[] = await Promise.all(ipfsFetches);
 
   const mergedWithIpfs = mergeIpfsDetails(ipfsDetails, proposals);
   const merged = mergedWithIpfs?.map(p => ({
     ...p,
-    results: votes?.filter(v => v.proposalId === p.id),
   }));
 
   return await getProposalsWithState(merged);
