@@ -2,7 +2,7 @@ import { defineConfig } from "../defineConfig";
 export function createMainnetConfig() {
   return defineConfig({
     VITE_APP_ENV: "mainnet",
-    CONTRACTS_ADMIN_ADDRESS: "0xf077b491b355E64048cE21E3A6Fc4751eEeA77fa",
+    CONTRACTS_ADMIN_ADDRESS: "0x6b27a8cf77eAA257286e11506845044f894be917",
     STARGATE_CONTRACT_ADDRESS: "0x1856c533ac2d94340aaa8544d35a5c1d4a21dee7", // The contract address of the VeChainNodes contract on mainnet,
     NODE_MANAGEMENT_CONTRACT_ADDRESS: "0xB0EF9D89C6b49CbA6BBF86Bf2FDf0Eee4968c6AB", // The contract address of the NodeManagement contract on mainnet
     AUTHORITY_CONTRACT_ADDRESS: "0x0000000000000000000000417574686f72697479", // The contract address of the builtin Authority contract on mainnet
