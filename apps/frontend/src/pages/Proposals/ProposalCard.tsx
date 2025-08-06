@@ -2,13 +2,16 @@ import { DiscourseLink } from "@/components/proposal/DiscourseLink";
 import { ProposalCardVotesResults } from "@/components/proposal/ProposalCardVotesResults";
 import { Avatar } from "@/components/ui/Avatar";
 import { IconBadge } from "@/components/ui/IconBadge";
+import { ColorByVote } from "@/constants";
+import { IconByVote } from "@/constants";
+import { useHasVoted, useVoteByProposalId } from "@/hooks/useCastVote";
 import { useFormatDate } from "@/hooks/useFormatDate";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { ProposalCardType, ProposalStatus } from "@/types/proposal";
 import { formatAddress } from "@/utils/address";
 import { MixPanelEvent, trackEvent } from "@/utils/mixpanel/utilsMixpanel";
 import { getPicassoImgSrc } from "@/utils/picasso";
-import { Flex, Text } from "@chakra-ui/react";
+import { Flex, HStack, Icon, Text, Stack } from "@chakra-ui/react";
 import { useGetAvatarOfAddress } from "@vechain/vechain-kit";
 import { useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
@@ -58,18 +61,34 @@ export const ProposalCard = ({
       gap={6}
       alignItems={"start"}
       flexDirection={"column"}>
-      <TopBar title={title} proposer={proposer} discourseUrl={discourseUrl} />
+      <TopBar title={title} proposer={proposer} discourseUrl={discourseUrl} id={id} />
       <BottomBar status={status} endDate={endDate} startDate={startDate} id={id} results={results} />
     </Flex>
   );
 };
 
-const TopBar = ({ title, proposer, discourseUrl }: { title: string; proposer: string; discourseUrl?: string }) => {
+const TopBar = ({
+  title,
+  proposer,
+  discourseUrl,
+  id,
+}: {
+  title: string;
+  proposer: string;
+  discourseUrl?: string;
+  id: string;
+}) => {
   const { LL } = useI18nContext();
 
   const { data: avatar } = useGetAvatarOfAddress(proposer || "");
 
   const imageUrl = useMemo(() => avatar || getPicassoImgSrc(proposer || ""), [avatar, proposer]);
+
+  const { hasVoted } = useHasVoted({ proposalId: id || "" });
+  const { vote } = useVoteByProposalId({ proposalId: id || "", enabled: hasVoted });
+
+  const voteIcon = IconByVote[vote];
+  const voteColor = ColorByVote[vote];
 
   return (
     <Flex
@@ -84,18 +103,42 @@ const TopBar = ({ title, proposer, discourseUrl }: { title: string; proposer: st
       <Text color={"gray.600"} fontSize={{ md: "20px" }} fontWeight={600}>
         {title}
       </Text>
-      <Flex alignItems={"center"} gap={4}>
-        <Flex alignItems={"center"} gap={2} borderRightWidth={"1px"} borderColor={"gray.100"} paddingRight={4}>
-          <Text fontSize={{ base: "14px", md: "16px" }} color={"gray.500"}>
-            {LL.by()}
-          </Text>
-          <Text fontSize={{ base: "14px", md: "16px" }} color={"gray.800"}>
-            {formatAddress(proposer)}
-          </Text>
-          <Avatar src={imageUrl} bg="gray.200" borderRadius="full" boxSize={6} />
+      <Stack
+        direction={{ base: "column", md: "row" }}
+        gap={4}
+        width={"full"}
+        justifyContent={{ base: "flex-start", md: "space-between" }}>
+        <Flex alignItems={"center"} gap={4}>
+          <Flex alignItems={"center"} gap={2} borderRightWidth={"1px"} borderColor={"gray.100"} paddingRight={4}>
+            <Text fontSize={{ base: "14px", md: "16px" }} color={"gray.500"}>
+              {LL.by()}
+            </Text>
+            <Text fontSize={{ base: "14px", md: "16px" }} color={"gray.800"}>
+              {formatAddress(proposer)}
+            </Text>
+            <Avatar src={imageUrl} bg="gray.200" borderRadius="full" boxSize={6} />
+          </Flex>
+          {discourseUrl && <DiscourseLink src={discourseUrl} />}
         </Flex>
-        {discourseUrl && <DiscourseLink src={discourseUrl} />}
-      </Flex>
+        {hasVoted && (
+          <HStack gap={4}>
+            <Text fontSize={"sm"} fontWeight={500} color={"gray.600"}>
+              {LL.proposal.you_voted()}
+            </Text>
+            <HStack
+              borderRadius={8}
+              border={"2px solid"}
+              padding={{ base: "4px 8px", md: "8px 12px" }}
+              backgroundColor={"white"}
+              borderColor={voteColor}>
+              <Icon as={voteIcon} width={4} height={4} />
+              <Text fontSize={{ base: "xs", md: "sm" }} fontWeight={600} color={voteColor}>
+                {vote}
+              </Text>
+            </HStack>
+          </HStack>
+        )}
+      </Stack>
     </Flex>
   );
 };
@@ -116,8 +159,14 @@ const BottomBar = ({
     return ["voting", "approved", "executed", "rejected"].includes(status);
   }, [status]);
   return (
-    <Flex width={"100%"} justifyContent={"space-between"} alignItems={"flex-start"} flexDirection={"row"} gap={4}>
-      <Flex gap={4} alignItems={"center"} width={"fit-content"} wrap={"wrap"}>
+    <Flex
+      width={"100%"}
+      justifyContent={"space-between"}
+      alignItems={"flex-start"}
+      flexDirection={"row"}
+      gap={4}
+      wrap={"wrap"}>
+      <Flex gap={4} alignItems={"center"} width={"fit-content"}>
         <IconBadge variant={status} />
         {status === ProposalStatus.DRAFT && (
           <Text color={"gray.500"} fontSize={{ base: "12px", md: "14px" }}>
