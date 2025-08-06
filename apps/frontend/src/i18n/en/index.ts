@@ -127,7 +127,7 @@ const en = {
     end_before_today: "The end date must be in the future",
     start_after_today: "The start date must be in the future",
     end_after_max_duration: "The end date must be within {days:string} days of the start date",
-    failed_load_voters: "Failed to load voters data. Please try again.",
+    failed_load_voters: "No voters found matching your search criteria.",
     descriptions_errors: {
       placeholders_not_replaced:
         "Please replace placeholder text with your own content before submitting the proposal.",
