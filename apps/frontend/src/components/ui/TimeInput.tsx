@@ -9,11 +9,7 @@ export const TimeInput = (props: InputProps) => {
       <InputWithIcon.Icon iconPosition="left">
         <Icon as={ClockIcon} width={4} height={4} color={"gray.500"} />
       </InputWithIcon.Icon>
-      <CustomTimePicker
-        value={props.defaultValue as string}
-        onChange={props.onChange}
-        isDisabled={props.isDisabled}
-      />
+      <CustomTimePicker value={props.defaultValue as string} onChange={props.onChange} isDisabled={props.isDisabled} />
     </InputWithIcon>
   );
 };
