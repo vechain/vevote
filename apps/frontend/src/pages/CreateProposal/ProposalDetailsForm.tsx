@@ -58,7 +58,12 @@ export const ProposalDetailsForm = () => {
             <CreateFormWrapper>
               <FormControl isInvalid={Boolean(errors.title)}>
                 <Label label={LLDetailsForm.title()} />
-                <Input width={"full"} placeholder={LLDetailsForm.title_placeholder()} {...register("title")} />
+                <Input
+                  width={"full"}
+                  placeholder={LLDetailsForm.title_placeholder()}
+                  {...register("title")}
+                  maxLength={TITLE_MAX_CHARS}
+                />
                 <InputMessage
                   error={errors.title?.message}
                   message={LL.filed_length({ current: title.length, max: TITLE_MAX_CHARS })}
