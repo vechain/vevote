@@ -34,6 +34,8 @@
     "contracts:generate-docs": "dotenv -v VITE_APP_ENV=local -- turbo generate-docs --filter=contracts",
     "contracts:simulation": "dotenv -v VITE_APP_ENV=local -- turbo run simulation --filter=contracts",
     "contracts:simulation:testnet-staging": "dotenv -v VITE_APP_ENV=testnet-staging -- turbo run simulation:staging --filter=contracts",
+    "contracts:verify:testnet": "dotenv -v VITE_APP_ENV=testnet -- yarn workspace @repo/contracts ts-node scripts/verify/verify-entrypoint.ts",
+    "contracts:verify:mainnet": "dotenv -v VITE_APP_ENV=mainnet -- yarn workspace @repo/contracts ts-node scripts/verify/verify-entrypoint.ts",
     "solo-up": "make solo-up",
     "solo-down": "make solo-down",
     "solo-clean": "make solo-clean",

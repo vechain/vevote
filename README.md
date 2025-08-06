@@ -1,4 +1,3 @@
-
 # VeVote Mono Repo [![codecov](https://codecov.io/gh/vechain/vevote/graph/badge.svg?token=MU2ZPZVRMC)](https://codecov.io/gh/vechain/vevote)
 
 VeVote is a decentralized governance platform. This repository serves as the monorepo for the VeVote project, containing all relevant components such as the frontend, smart contracts, and utilities.
@@ -111,7 +110,8 @@ yarn contracts:deploy:mainnet
 ```bash
 yarn dev:mainnet
 ```
-_____
+
+---
 
 ## 🧪 Smart Contract Development
 
@@ -129,9 +129,9 @@ yarn contracts:compile
 
 > ✅ This must be run from the root directory. It compiles contracts using Hardhat and generates:
 >
-> * ABI files (for the frontend)
-> * TypeChain TypeScript bindings
-> * Bytecode and metadata artifacts
+> - ABI files (for the frontend)
+> - TypeChain TypeScript bindings
+> - Bytecode and metadata artifacts
 
 ---
 
@@ -197,3 +197,21 @@ yarn contracts:deploy:mainnet
 > 💡 If you need to force a redeploy locally, clear the addresses in `packages/config/local.ts` and re-run `yarn dev`.
 
 ---
+
+### Verify contracts (Optional)
+
+Optionally verify your smart contracts on Sourcify. This allows 3rd parties to view and independently verify all of the following:
+
+- Source code
+- Metadata
+- Contract ABI
+- Contract Bytecode
+- Contract transaction ID
+
+After deploying `SimpleStorage`, the console will print the address of the deployed contract. You can verify the contract on [sourcify.eth](https://repo.sourcify.dev/select-contract/):
+
+```bash
+yarn contracts:verify:mainnet <contract-address> <contract-name>
+```
+
+Read more about the verification process in the [packages/contracts/scripts/verify/README.md](packages/contracts/scripts/verify/README.md) file.
