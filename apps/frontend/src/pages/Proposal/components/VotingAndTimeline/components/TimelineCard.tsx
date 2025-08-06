@@ -29,8 +29,6 @@ export const TimelineCard = () => {
       : TimelineItemStatus.COMPLETED;
   }, [proposal.status]);
 
-  console.log("proposal.executedDate", proposal.executedDate);
-
   const timelineItems = useMemo(
     () => [
       {
