@@ -177,8 +177,13 @@ export const fromStringToUint256 = (str: string) => {
   return HexUInt.of("0x" + hexString).toString();
 };
 
-export const getVetDomainOrAddress = async (address: string) => {
+export const getVetDomainOrAddresses = async (addresses: string[]) => {
   const thor = ThorClient.at(nodeUrl);
-  const domain = await vnsUtils.lookupAddress(thor, address);
-  return domain || address;
+  const domains = await vnsUtils.lookupAddresses(thor, addresses);
+  return domains.map((domain, index) => {
+    return {
+      address: addresses[index],
+      domain,
+    };
+  });
 };

@@ -47,7 +47,7 @@ export const useVotersData = ({
           const nodeInfo = nodes.find(n => n.id === node);
           return {
             date: vote.date,
-            address: vote.voter.domain || vote.voter.address,
+            voter: vote.voter,
             node: nodeInfo?.name || "Unknown",
             nodeId: node,
             votingPower: nodeInfo?.votingPower || 0,
@@ -81,7 +81,7 @@ export const useVotersData = ({
     const filtered = votes.reduce((acc: VoteItem[], vote) => {
       if (node && node !== DEFAULT_FILTER && vote.node !== node) return acc;
       if (selectedOption && selectedOption !== DEFAULT_FILTER && vote.votedOption !== selectedOption) return acc;
-      if (searchQuery && !vote.address.toLowerCase().includes(searchQuery.toLowerCase())) return acc;
+      if (searchQuery && !vote.voter.address.toLowerCase().includes(searchQuery.toLowerCase())) return acc;
 
       acc.push(vote);
       return acc;

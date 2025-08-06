@@ -13,7 +13,10 @@ const VECHAIN_EXPLORER_URL = getConfig(import.meta.env.VITE_APP_ENV).network.exp
 
 export type VoteItem = {
   date: Date;
-  address: string;
+  voter: {
+    address: string;
+    domain?: string;
+  };
   node: string;
   nodeId: string;
   votingPower: number;
@@ -39,18 +42,17 @@ const BaseCell = ({ value }: { value: string }) => {
   );
 };
 
-const AddressCell = ({ value }: { value?: string }) => {
-  const displayValue = value?.startsWith("0x") ? formatAddress(value) : value;
+const AddressCell = ({ voter }: { voter: VoteItem["voter"] }) => {
   return (
     <CopyLink
       isExternal
-      textToCopy={value}
+      textToCopy={voter?.address}
       color={"primary.500"}
       fontSize={12}
       fontWeight={500}
-      href={`${VECHAIN_EXPLORER_URL}/account/${value}`}
+      href={`${VECHAIN_EXPLORER_URL}/accounts/${voter?.address}`}
       w={"84px"}>
-      {displayValue}
+      {voter?.domain || formatAddress(voter?.address || "")}
     </CopyLink>
   );
 };
@@ -125,8 +127,8 @@ export const VotersTable = ({ data }: VotersTableProps) => {
       header: () => <TableHeader label={LL.proposal.voters_table.header.date()} />,
       id: "DATE",
     }),
-    columnHelper.accessor("address", {
-      cell: data => <AddressCell value={data.getValue()} />,
+    columnHelper.accessor("voter", {
+      cell: data => <AddressCell voter={data.getValue()} />,
       header: () => <TableHeader label={LL.proposal.voters_table.header.address()} />,
       id: "ADDRESS",
     }),
