@@ -1,6 +1,7 @@
 import { Sort } from "@/components/ui/SortDropdown";
 import { useVoteCastResults } from "@/hooks/useCastVote";
 import { useVotersNodes } from "@/hooks/useUserQueries";
+import { useI18nContext } from "@/i18n/i18n-react";
 import { VoteItem } from "@/pages/Proposal/components/VotingAndTimeline/components/VotingCard/components/ResultsSection/components/AllVotersModal/components/VotersTable";
 import { NodeStrengthLevel } from "@/types/user";
 import { getSingleChoiceFromIndex } from "@/utils/proposals/helpers";
@@ -24,6 +25,8 @@ export const useVotersData = ({
   page?: number;
   pageSize?: number;
 }) => {
+  const { LL } = useI18nContext();
+
   const {
     votes: votedInfo,
     isLoading: isVotesLoading,
@@ -47,8 +50,8 @@ export const useVotersData = ({
           const nodeInfo = nodes.find(n => n.id === node);
           return {
             date: vote.date,
-            address: vote.voter,
-            node: nodeInfo?.name || "Unknown",
+            voter: vote.voter,
+            node: LL.node_names[nodeInfo?.name || "none"](),
             nodeId: node,
             votingPower: nodeInfo?.votingPower || 0,
             votedOption: getSingleChoiceFromIndex(vote.choice),
@@ -57,7 +60,7 @@ export const useVotersData = ({
         });
       })
       .flat();
-  }, [votedInfo, nodes]);
+  }, [votedInfo, nodes, LL.node_names]);
 
   const filterOptions = useMemo(() => {
     const optionsSet = new Set<string>();
@@ -81,7 +84,7 @@ export const useVotersData = ({
     const filtered = votes.reduce((acc: VoteItem[], vote) => {
       if (node && node !== DEFAULT_FILTER && vote.node !== node) return acc;
       if (selectedOption && selectedOption !== DEFAULT_FILTER && vote.votedOption !== selectedOption) return acc;
-      if (searchQuery && !vote.address.toLowerCase().includes(searchQuery.toLowerCase())) return acc;
+      if (searchQuery && !vote.voter.address.toLowerCase().includes(searchQuery.toLowerCase())) return acc;
 
       acc.push(vote);
       return acc;
@@ -117,7 +120,8 @@ export const useVotersData = ({
   return {
     votes: paginationData.votes,
     pagination: paginationData.pagination,
-    allVotes: filteredVotes, // Keep all filtered votes for backward compatibility
+    allVotes: filteredVotes,
+    originalVotes: votes,
     filterOptions,
     nodeOptions,
     isLoading: isVotesLoading || isNodesLoading,

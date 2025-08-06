@@ -4,6 +4,10 @@ import { Delta } from "quill";
 import { IpfsDetails } from "@/types/ipfs";
 import { HexUInt } from "@vechain/sdk-core";
 import { thorClient } from "../thorClient";
+import { ThorClient, vnsUtils } from "@vechain/sdk-network";
+import { getConfig } from "@repo/config";
+
+const nodeUrl = getConfig(import.meta.env.VITE_APP_ENV).nodeUrl;
 
 const AVERAGE_BLOCK_TIME = 10; // in seconds
 
@@ -171,4 +175,15 @@ export const getDateFromBlock = async (blockNumber: number): Promise<Date> => {
 export const fromStringToUint256 = (str: string) => {
   const hexString = BigInt(str).toString(16);
   return HexUInt.of("0x" + hexString).toString();
+};
+
+export const getVetDomainOrAddresses = async (addresses: string[]) => {
+  const thor = ThorClient.at(nodeUrl);
+  const domains = await vnsUtils.lookupAddresses(thor, addresses);
+  return domains.map((domain, index) => {
+    return {
+      address: addresses[index],
+      domain,
+    };
+  });
 };
