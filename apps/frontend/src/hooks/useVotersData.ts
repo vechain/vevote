@@ -47,7 +47,7 @@ export const useVotersData = ({
           const nodeInfo = nodes.find(n => n.id === node);
           return {
             date: vote.date,
-            address: vote.voter,
+            address: vote.voter.domain || vote.voter.address,
             node: nodeInfo?.name || "Unknown",
             nodeId: node,
             votingPower: nodeInfo?.votingPower || 0,

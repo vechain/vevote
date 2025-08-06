@@ -39,7 +39,8 @@ const BaseCell = ({ value }: { value: string }) => {
   );
 };
 
-const AddressCell = ({ value }: { value: string }) => {
+const AddressCell = ({ value }: { value?: string }) => {
+  const displayValue = value?.startsWith("0x") ? formatAddress(value) : value;
   return (
     <CopyLink
       isExternal
@@ -49,7 +50,7 @@ const AddressCell = ({ value }: { value: string }) => {
       fontWeight={500}
       href={`${VECHAIN_EXPLORER_URL}/account/${value}`}
       w={"84px"}>
-      {formatAddress(value)}
+      {displayValue}
     </CopyLink>
   );
 };
