@@ -1,5 +1,5 @@
 import { CheckIcon } from "@/icons";
-import { Button, Flex, Icon, Menu, MenuButton, MenuButtonProps, MenuItem, MenuList, Portal, Text } from "@chakra-ui/react";
+import { Button, Flex, Icon, Menu, MenuButton, MenuButtonProps, MenuItem, MenuList, Text } from "@chakra-ui/react";
 import { SVGProps } from "react";
 
 type Option = string | undefined;
@@ -22,11 +22,7 @@ export const VotingBaseDropdown = <T extends Option>({
   renderValue?: (value: T) => any;
 }) => {
   return (
-    <Menu 
-      strategy="fixed" 
-      placement="bottom-start"
-      gutter={4}
-    >
+    <Menu strategy="fixed" placement="auto" gutter={4} flip={true} preventOverflow={true}>
       <MenuButton
         as={Button}
         variant={"secondary"}
@@ -49,7 +45,7 @@ export const VotingBaseDropdown = <T extends Option>({
           <Icon as={icon} boxSize={5} />
         </Flex>
       </MenuButton>
-      <MenuList zIndex={10000}>
+      <MenuList zIndex={10000} maxHeight="300px" overflowY="auto" boxShadow="0 4px 12px 0 rgba(0, 0, 0, 0.15)">
         {options.map((value, id) => (
           <MenuItem
             key={id}
