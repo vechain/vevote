@@ -40,6 +40,7 @@ export const VotersFiltersPanel = ({
 
   const handleSearchChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
+      e.stopPropagation();
       onSearchChange(e.target.value);
     },
     [onSearchChange],
@@ -74,12 +75,20 @@ export const VotersFiltersPanel = ({
 
   return (
     <Flex gap={4} alignItems={"center"} pt={8} width={"full"} flexDirection={{ base: "column", md: "row" }}>
-      <SearchInput
-        size={"sm"}
-        placeholder={LL.proposal.voters_table.filters.search_by_address()}
-        value={searchQuery}
-        onChange={handleSearchChange}
-      />
+      <div
+        onClick={(e) => e.stopPropagation()}
+        onMouseDown={(e) => e.stopPropagation()}
+        onKeyDown={(e) => e.stopPropagation()}
+        style={{ flex: 1, minWidth: 0 }}
+      >
+        <SearchInput
+          size={"sm"}
+          placeholder={LL.proposal.voters_table.filters.search_by_address()}
+          value={searchQuery}
+          onChange={handleSearchChange}
+          onFocus={(e) => e.stopPropagation()}
+        />
+      </div>
 
       <Flex gap={{ base: 3, md: 4 }} width={{ base: "full", md: "fit-content" }}>
         <VotingBaseDropdown
@@ -97,6 +106,7 @@ export const VotersFiltersPanel = ({
           selectedOption={node}
           onChange={handleNodeChange}
           icon={NodeIcon}
+          usePortal={true}
         />
 
         <VotingBaseDropdown

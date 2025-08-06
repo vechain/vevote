@@ -25,7 +25,7 @@ export const AllVotersModal = () => {
 
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
 
-  const { votes, pagination, filterOptions, nodeOptions, isLoading, error } = useVotersData({
+  const { votes, pagination, filterOptions, nodeOptions, isLoading, error, originalVotes } = useVotersData({
     proposalId: proposal.id,
     filters: {
       selectedOption,
@@ -61,7 +61,7 @@ export const AllVotersModal = () => {
     setCurrentPage(page);
   }, []);
 
-  if (votes.length === 0) return null;
+  if (originalVotes.length === 0) return null;
 
   return (
     <>
@@ -95,7 +95,13 @@ export const AllVotersModal = () => {
               {LL.field_errors.failed_load_voters()}
             </Alert>
           )}
-          {!isLoading && !error && <VotersTable data={votes} />}
+          {!isLoading && !error && votes.length === 0 && (
+            <Alert status="info">
+              <AlertIcon />
+              No voters found matching your search criteria.
+            </Alert>
+          )}
+          {!isLoading && !error && votes.length > 0 && <VotersTable data={votes} />}
         </ModalBody>
         {!isLoading && !error && pagination && pagination.totalPages > 1 && (
           <TablePagination

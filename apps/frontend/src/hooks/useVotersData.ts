@@ -117,7 +117,8 @@ export const useVotersData = ({
   return {
     votes: paginationData.votes,
     pagination: paginationData.pagination,
-    allVotes: filteredVotes, // Keep all filtered votes for backward compatibility
+    allVotes: filteredVotes,
+    originalVotes: votes,
     filterOptions,
     nodeOptions,
     isLoading: isVotesLoading || isNodesLoading,

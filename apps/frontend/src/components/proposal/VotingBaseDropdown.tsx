@@ -1,5 +1,5 @@
 import { CheckIcon } from "@/icons";
-import { Button, Flex, Icon, Menu, MenuButton, MenuButtonProps, MenuItem, MenuList, Text } from "@chakra-ui/react";
+import { Button, Flex, Icon, Menu, MenuButton, MenuButtonProps, MenuItem, MenuList, Portal, Text } from "@chakra-ui/react";
 import { SVGProps } from "react";
 
 type Option = string | undefined;
@@ -11,6 +11,7 @@ export const VotingBaseDropdown = <T extends Option>({
   label,
   icon,
   renderValue,
+  usePortal = false,
   ...restProps
 }: Omit<MenuButtonProps, "children" | "onChange"> & {
   icon: (props: SVGProps<SVGSVGElement>) => JSX.Element;
@@ -18,11 +19,16 @@ export const VotingBaseDropdown = <T extends Option>({
   options: T[];
   selectedOption: T;
   onChange?: (value: T) => void;
+  usePortal?: boolean;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   renderValue?: (value: T) => any;
 }) => {
   return (
-    <Menu>
+    <Menu 
+      strategy={usePortal ? "fixed" : "absolute"} 
+      placement="bottom-start"
+      gutter={4}
+    >
       <MenuButton
         as={Button}
         variant={"secondary"}
@@ -45,7 +51,7 @@ export const VotingBaseDropdown = <T extends Option>({
           <Icon as={icon} boxSize={5} />
         </Flex>
       </MenuButton>
-      <MenuList>
+      <MenuList zIndex={usePortal ? 10000 : undefined}>
         {options.map((value, id) => (
           <MenuItem
             key={id}
