@@ -1,7 +1,6 @@
 import { ProposalStatus, SingleChoiceEnum } from "@/types/proposal";
-import { VotesCastResult } from "@/types/votes";
-import { getSingleChoiceFromIndex } from "@/utils/proposals/helpers";
-import { Flex, Icon } from "@chakra-ui/react";
+import { VotedResultData } from "@/types/votes";
+import { Flex, Icon, Text } from "@chakra-ui/react";
 import { useCallback, useMemo } from "react";
 import { IconByVote, ColorByVote } from "@/constants";
 
@@ -10,10 +9,10 @@ export const ProposalCardVotesResults = ({
   results,
 }: {
   status: ProposalStatus;
-  results: VotesCastResult[];
+  results: VotedResultData[];
 }) => {
   const totalPerVotes = useMemo(() => {
-    return results.reduce((sum, result) => sum + (Number(result.weight) ?? 0), 0);
+    return results.reduce((sum, result) => sum + (Number(result.totalWeight) ?? 0), 0);
   }, [results]);
 
   const quorumNotReached = status === ProposalStatus.MIN_NOT_REACHED;
@@ -22,8 +21,8 @@ export const ProposalCardVotesResults = ({
     return (
       results?.reduce(
         (acc, vote) => {
-          const weight = Number(vote.weight);
-          const choice = getSingleChoiceFromIndex(vote.choice);
+          const weight = Number(vote.totalWeight);
+          const choice = SingleChoiceEnum[vote.support];
           switch (choice) {
             case SingleChoiceEnum.FOR:
               acc[SingleChoiceEnum.FOR] += weight;
@@ -52,6 +51,9 @@ export const ProposalCardVotesResults = ({
       [SingleChoiceEnum.AGAINST]: Number(
         ((proposalVotes[SingleChoiceEnum.AGAINST] / totalPerVotes) * 100 || 0).toFixed(),
       ),
+      [SingleChoiceEnum.ABSTAIN]: Number(
+        ((proposalVotes[SingleChoiceEnum.ABSTAIN] / totalPerVotes) * 100 || 0).toFixed(),
+      ),
     };
   }, [proposalVotes, totalPerVotes]);
 
@@ -72,15 +74,22 @@ export const ProposalCardVotesResults = ({
     <Flex gap={3} alignItems={"center"}>
       {Object.keys(proposalVotesPercentage).map(option => {
         const mostVoted = quorumNotReached ? false : isMostVoted(proposalVotes[option as keyof typeof proposalVotes]);
+        const percentage = proposalVotesPercentage[option as keyof typeof proposalVotesPercentage];
         const color = ColorByVote[option as keyof typeof ColorByVote];
         return (
-          <Flex key={option} alignItems={"center"} padding={2}>
+          <Flex key={option} alignItems={"center"} gap={2}>
             <Icon
               as={IconByVote[option as keyof typeof IconByVote]}
               width={4}
               height={4}
-              color={mostVoted ? color : "gray.300"}
+              color={mostVoted ? color : "gray.500"}
             />
+            <Text
+              fontSize={{ base: "14px", md: "16px" }}
+              color={mostVoted ? color : undefined}
+              fontWeight={mostVoted ? "500" : "300"}>
+              {percentage.toFixed(2)}%
+            </Text>
           </Flex>
         );
       })}

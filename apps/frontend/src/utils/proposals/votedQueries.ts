@@ -102,7 +102,7 @@ export const getIndexerVoteResults = async (proposalId?: string, size?: number, 
       params: {
         proposalId,
         page: page || 0,
-        size: size || 20,
+        size: size || undefined,
         direction: "DESC",
       },
     });
