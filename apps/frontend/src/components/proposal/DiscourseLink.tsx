@@ -1,5 +1,5 @@
 import { DiscourseIcon } from "@/icons";
-import { Link } from "@chakra-ui/react";
+import { Icon, Link } from "@chakra-ui/react";
 
 export const DiscourseLink = ({ src }: { src: string }) => {
   return (
@@ -9,7 +9,7 @@ export const DiscourseLink = ({ src }: { src: string }) => {
       fontSize="sm"
       _hover={{ textDecoration: "underline" }}
       onClick={e => e.stopPropagation()}>
-      <DiscourseIcon />
+      <Icon as={DiscourseIcon} color="primary.700" />
     </Link>
   );
 };
