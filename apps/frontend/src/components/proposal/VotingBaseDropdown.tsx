@@ -22,7 +22,7 @@ export const VotingBaseDropdown = <T extends Option>({
   renderValue?: (value: T) => any;
 }) => {
   return (
-    <Menu strategy="fixed" placement="auto" gutter={4} flip={true} preventOverflow={true}>
+    <Menu strategy="fixed" placement="bottom-end" gutter={4} preventOverflow={true}>
       <MenuButton
         as={Button}
         variant={"secondary"}

@@ -406,7 +406,7 @@ type RootTranslation = {
 	}
 	node_names: {
 		/**
-		 * A​d​m​i​n
+		 * n​o​t​ ​d​e​f​i​n​e​d
 		 */
 		none: string
 		/**
@@ -1724,7 +1724,7 @@ JPG, PNG or SVG of maximum of {size}MB.
 	}
 	node_names: {
 		/**
-		 * Admin
+		 * not defined
 		 */
 		none: () => LocalizedString
 		/**
