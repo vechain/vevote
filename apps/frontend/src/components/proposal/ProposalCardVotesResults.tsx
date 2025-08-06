@@ -1,6 +1,5 @@
 import { ProposalStatus, SingleChoiceEnum } from "@/types/proposal";
-import { VotesCastResult } from "@/types/votes";
-import { getSingleChoiceFromIndex } from "@/utils/proposals/helpers";
+import { VotedResultData } from "@/types/votes";
 import { Flex, Icon, Text } from "@chakra-ui/react";
 import { useCallback, useMemo } from "react";
 import { IconByVote, ColorByVote } from "@/constants";
@@ -10,10 +9,10 @@ export const ProposalCardVotesResults = ({
   results,
 }: {
   status: ProposalStatus;
-  results: VotesCastResult[];
+  results: VotedResultData[];
 }) => {
   const totalPerVotes = useMemo(() => {
-    return results.reduce((sum, result) => sum + (Number(result.weight) ?? 0), 0);
+    return results.reduce((sum, result) => sum + (Number(result.totalWeight) ?? 0), 0);
   }, [results]);
 
   const quorumNotReached = status === ProposalStatus.MIN_NOT_REACHED;
@@ -22,8 +21,8 @@ export const ProposalCardVotesResults = ({
     return (
       results?.reduce(
         (acc, vote) => {
-          const weight = Number(vote.weight);
-          const choice = getSingleChoiceFromIndex(vote.choice);
+          const weight = Number(vote.totalWeight);
+          const choice = SingleChoiceEnum[vote.support];
           switch (choice) {
             case SingleChoiceEnum.FOR:
               acc[SingleChoiceEnum.FOR] += weight;

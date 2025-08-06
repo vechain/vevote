@@ -4,10 +4,11 @@ import { Avatar } from "@/components/ui/Avatar";
 import { IconBadge } from "@/components/ui/IconBadge";
 import { ColorByVote } from "@/constants";
 import { IconByVote } from "@/constants";
-import { useHasVoted, useVoteByProposalId } from "@/hooks/useCastVote";
+import { useHasVoted, useIndexerVoteResults, useVoteByProposalId } from "@/hooks/useCastVote";
 import { useFormatDate } from "@/hooks/useFormatDate";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { ProposalCardType, ProposalStatus } from "@/types/proposal";
+import { VotedResultData } from "@/types/votes";
 import { formatAddress } from "@/utils/address";
 import { MixPanelEvent, trackEvent } from "@/utils/mixpanel/utilsMixpanel";
 import { getPicassoImgSrc } from "@/utils/picasso";
@@ -16,16 +17,8 @@ import { useGetAvatarOfAddress } from "@vechain/vechain-kit";
 import { useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 
-export const ProposalCard = ({
-  status,
-  title,
-  endDate,
-  startDate,
-  id,
-  proposer,
-  results,
-  discourseUrl,
-}: ProposalCardType) => {
+export const ProposalCard = ({ status, title, endDate, startDate, id, proposer, discourseUrl }: ProposalCardType) => {
+  const { results, isLoading: isLoadingResults } = useIndexerVoteResults({ proposalId: id });
   const navigate = useNavigate();
 
   const onClick = useCallback(() => {
@@ -62,7 +55,14 @@ export const ProposalCard = ({
       alignItems={"start"}
       flexDirection={"column"}>
       <TopBar title={title} proposer={proposer} discourseUrl={discourseUrl} id={id} />
-      <BottomBar status={status} endDate={endDate} startDate={startDate} id={id} results={results} />
+      <BottomBar
+        status={status}
+        endDate={endDate}
+        startDate={startDate}
+        id={id}
+        isLoadingResults={isLoadingResults}
+        results={results?.data || []}
+      />
     </Flex>
   );
 };
@@ -148,7 +148,11 @@ const BottomBar = ({
   endDate,
   status,
   results,
-}: Pick<ProposalCardType, "endDate" | "startDate" | "status" | "id" | "results">) => {
+  isLoadingResults,
+}: Pick<ProposalCardType, "endDate" | "startDate" | "status" | "id"> & {
+  isLoadingResults: boolean;
+  results: VotedResultData[];
+}) => {
   const { LL } = useI18nContext();
 
   const showDate = useMemo(() => {
@@ -156,8 +160,9 @@ const BottomBar = ({
   }, [status]);
 
   const showResults = useMemo(() => {
-    return ["voting", "approved", "executed", "rejected"].includes(status);
-  }, [status]);
+    return !isLoadingResults && ["voting", "approved", "executed", "rejected"].includes(status);
+  }, [status, isLoadingResults]);
+
   return (
     <Flex
       width={"100%"}
