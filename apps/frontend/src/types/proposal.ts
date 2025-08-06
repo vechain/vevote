@@ -1,8 +1,8 @@
 import { ProposalDetails } from "@/pages/CreateProposal/CreateProposalProvider";
+import { VotesCastResult } from "./votes";
 
 export enum CreateProposalStep {
   VOTING_DETAILS,
-  VOTING_SETUP,
   VOTING_SUMMARY,
 }
 
@@ -12,15 +12,16 @@ export enum SingleChoiceEnum {
   ABSTAIN = "Abstain",
 }
 
-export type ProposalStatus =
-  | "draft"
-  | "upcoming"
-  | "voting"
-  | "approved"
-  | "executed"
-  | "canceled"
-  | "rejected"
-  | "min-not-reached";
+export enum ProposalStatus {
+  DRAFT = "draft",
+  UPCOMING = "upcoming",
+  VOTING = "voting",
+  APPROVED = "approved",
+  EXECUTED = "executed",
+  CANCELED = "canceled",
+  REJECTED = "rejected",
+  MIN_NOT_REACHED = "min-not-reached",
+}
 
 export type ProposalCardType = ProposalDetails & {
   id: string;
@@ -28,7 +29,10 @@ export type ProposalCardType = ProposalDetails & {
   proposer: string;
   createdAt: Date;
   reason?: string;
+  results?: VotesCastResult[];
   executedProposalLink?: string;
+  canceledDate?: Date;
+  executedDate?: Date;
 };
 
 export type ProposalEvent = {
@@ -40,6 +44,9 @@ export type ProposalEvent = {
   canceller?: string;
   reason?: string;
   executedProposalLink?: string;
+  canceledTime?: string;
+  executedTime?: string;
+  createdTime?: string;
 };
 
 export enum ProposalState {

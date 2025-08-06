@@ -1,23 +1,30 @@
-import { getProposalsFromIpfs } from "@/utils/ipfs/proposal";
-import { mergeIpfsDetails } from "@/utils/proposals/helpers";
-import { getProposalsEvents, getProposalsWithState } from "@/utils/proposals/proposalsQueries";
+import { ProposalCardType } from "@/types/proposal";
+import { getProposals } from "@/utils/proposals/optimizedQueries";
+import { thorClient } from "@/utils/thorClient";
 import { useQuery } from "@tanstack/react-query";
-import { ThorClient, useThor } from "@vechain/vechain-kit";
 
-const getSingleProposal = async (thor: ThorClient, proposalId?: string) => {
-  const data = await getProposalsEvents(thor, proposalId);
-  const proposalData = await getProposalsFromIpfs(data?.proposals?.[0].ipfsHash);
-  return await getProposalsWithState(mergeIpfsDetails([proposalData], data?.proposals));
-};
+export const useProposalEvent = (proposalId?: string) => {
+  const thor = thorClient;
 
-export const useProposalEvents = ({ proposalId }: { proposalId?: string }) => {
-  const thor = useThor();
-
-  const { data, error, isLoading } = useQuery({
-    queryKey: ["getSingleProposal", proposalId],
-    queryFn: async () => await getSingleProposal(thor, proposalId),
+  const {
+    data: proposal,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["proposalEvent", proposalId],
+    queryFn: async (): Promise<ProposalCardType | null> => {
+      if (!proposalId) return null;
+      const result = await getProposals(thor, { pageSize: 1000 }, proposalId);
+      return result.proposals.find(p => p.id === proposalId) || null;
+    },
     enabled: !!thor && !!proposalId,
+    staleTime: 30 * 1000,
+    gcTime: 10 * 60 * 1000,
   });
 
-  return { proposal: data?.[0], error, isLoading };
+  return {
+    proposal,
+    loading: isLoading,
+    error,
+  };
 };

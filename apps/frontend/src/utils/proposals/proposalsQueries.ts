@@ -62,9 +62,10 @@ export const getProposalsEvents = async (
       thor,
       nodeUrl,
       filterCriteria,
+      order: "desc",
     });
 
-    const decodedProposalEvents = events
+    const decodedCreateProposalEvents = events
       .map(event => {
         const eventSignature = event.topics[0];
 
@@ -89,6 +90,7 @@ export const getProposalsEvents = async (
             choices,
             maxSelection: Number(maxSelection),
             minSelection: Number(minSelection),
+            createdTime: event.meta.blockTimestamp * 1000,
           };
         }
 
@@ -109,6 +111,7 @@ export const getProposalsEvents = async (
             proposalId: proposalIdEvent.toString(),
             canceller,
             reason: reason || "",
+            canceledTime: event.meta.blockTimestamp * 1000,
           };
         }
 
@@ -128,6 +131,7 @@ export const getProposalsEvents = async (
           return {
             proposalId: proposalIdEvent.toString(),
             executedProposalLink,
+            executedTime: event.meta.blockTimestamp * 1000,
           };
         }
 
@@ -135,7 +139,7 @@ export const getProposalsEvents = async (
       })
       .filter(Boolean);
 
-    const mergedProposals: ProposalEvent[] = decodedProposalEvents
+    const mergedProposals: ProposalEvent[] = decodedCreateProposalEvents
       .map(proposal => {
         const canceledProposal = decodedCanceledProposals.find(
           canceled => canceled?.proposalId === proposal?.proposalId,
@@ -147,8 +151,15 @@ export const getProposalsEvents = async (
 
         return {
           ...proposal,
-          ...(canceledProposal && { canceller: canceledProposal.canceller, reason: canceledProposal.reason }),
-          ...(executedProposal && { executedProposalLink: executedProposal.executedProposalLink }),
+          ...(canceledProposal && {
+            canceller: canceledProposal.canceller,
+            reason: canceledProposal.reason,
+            canceledTime: canceledProposal.canceledTime,
+          }),
+          ...(executedProposal && {
+            executedProposalLink: executedProposal.executedProposalLink,
+            executedTime: executedProposal.executedTime,
+          }),
         };
       })
       .filter(Boolean) as ProposalEvent[];

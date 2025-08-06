@@ -21,6 +21,8 @@ export const IconBadge = ({ variant, ...rest }: Omit<TagProps, "children">) => {
         return CancelIcon;
       case "rejected":
         return CircleXIcon;
+      case "min-not-reached":
+        return CircleXIcon;
       default:
         return EditIcon;
     }
@@ -42,13 +44,15 @@ export const IconBadge = ({ variant, ...rest }: Omit<TagProps, "children">) => {
         return LL.badge.canceled();
       case "rejected":
         return LL.badge.rejected();
+      case "min-not-reached":
+        return LL.badge["min-not-reached"]();
       default:
         return LL.badge.draft();
     }
   }, [variant, LL]);
 
   return (
-    <Tag variant={variant} {...rest}>
+    <Tag variant={variant === "min-not-reached" ? "rejected" : variant} {...rest}>
       <TagLeftIcon as={IconElement} width={{ base: 3, md: 5 }} height={{ base: 3, md: 5 }} />
       {text}
     </Tag>

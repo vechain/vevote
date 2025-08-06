@@ -1,7 +1,8 @@
+import { ExtendedStargateNode, GroupedExtendedStargateNode, NodeStrengthLevel } from "@/types/user";
 import {
   getAllUsersNodes,
   getAMN,
-  getNodesName,
+  getNodesNameAndPower,
   getUserNodes,
   getUserRoles,
   isNodeDelegator,
@@ -9,14 +10,43 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { useWallet } from "@vechain/vechain-kit";
 
+const getValidatorNode = (votingPower: bigint): ExtendedStargateNode => {
+  return {
+    votingPower,
+    nodeName: NodeStrengthLevel.Validator,
+    levelId: 0,
+    mintedAtBlock: BigInt(0),
+    tokenId: BigInt(0),
+    vetAmountStaked: BigInt(0),
+    lastVthoClaimTimestamp: 0,
+    multiplier: BigInt(100),
+  };
+};
+
 const getNodes = async ({ address }: { address: string }) => {
   try {
     const { data } = await getAMN(address);
     const masterNode = data?.nodeMaster;
+    const masterNodeVotingPower = data?.votingPower || BigInt(500000);
 
     const r = await getUserNodes({ address });
+    const nodes = masterNode ? [getValidatorNode(masterNodeVotingPower), ...(r?.nodes || [])] : r?.nodes || [];
+
+    // group nodes by levelId and add a property count, return the array of nodes with the count property
+    const groupedNodes = nodes.reduce((acc, node) => {
+      const existingNode = acc.find((n: GroupedExtendedStargateNode) => n.levelId === node.levelId);
+      if (existingNode) {
+        existingNode.count = (existingNode.count || 0) + 1;
+        existingNode.votingPower = existingNode.votingPower + node.votingPower;
+      } else {
+        acc.push({ ...node, count: 1 });
+      }
+      return acc;
+    }, [] as GroupedExtendedStargateNode[]);
+
     return {
-      nodes: r?.nodes || [],
+      groupedNodes,
+      nodes,
       masterNode,
     };
   } catch (error) {
@@ -35,6 +65,7 @@ export const useNodes = () => {
   });
 
   return {
+    groupedNodes: data?.groupedNodes || [],
     nodes: data?.nodes || [],
     masterNode: data?.masterNode,
     isLoading,
@@ -61,7 +92,7 @@ export const useUserRoles = () => {
 export const useVotersNodes = ({ nodeIds }: { nodeIds: string[] }) => {
   const { data, error, isLoading } = useQuery({
     queryKey: ["votersNodes", nodeIds],
-    queryFn: async () => await getNodesName({ nodeIds }),
+    queryFn: async () => await getNodesNameAndPower({ nodeIds }),
   });
 
   return {

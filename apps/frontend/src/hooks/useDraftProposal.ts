@@ -1,5 +1,5 @@
 import { ProposalDetails } from "@/pages/CreateProposal/CreateProposalProvider";
-import { ProposalCardType } from "@/types/proposal";
+import { ProposalCardType, ProposalStatus } from "@/types/proposal";
 import { base64ToBlob } from "@/utils/file";
 import dayjs from "dayjs";
 
@@ -10,19 +10,22 @@ export const useDraftProposal = () => {
   ): ProposalDetails => {
     if (!draftProposal) return defaultProposal;
 
-    const blob = base64ToBlob(draftProposal.headerImage?.url, draftProposal.headerImage?.type);
+    const imageUrl = draftProposal.headerImage?.url;
+    const blob = imageUrl ? base64ToBlob(imageUrl, draftProposal.headerImage?.type) : undefined;
 
     return {
       ...draftProposal,
       startDate: dayjs(draftProposal.startDate).toDate(),
       endDate: dayjs(draftProposal.endDate).toDate(),
-      headerImage: {
-        name: draftProposal.headerImage?.name || "",
-        size: draftProposal.headerImage?.size || 0,
-        type: draftProposal.headerImage?.type || "",
-        url: draftProposal.headerImage?.url || "",
-        source: blob,
-      },
+      headerImage: imageUrl
+        ? {
+            name: draftProposal.headerImage?.name || "",
+            size: draftProposal.headerImage?.size || 0,
+            type: draftProposal.headerImage?.type || "",
+            url: imageUrl,
+            source: blob,
+          }
+        : undefined,
     };
   };
 
@@ -30,16 +33,18 @@ export const useDraftProposal = () => {
     let base64Url = "";
     const blob = proposalDetails.headerImage?.source;
 
-    base64Url = await new Promise<string>((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = e => resolve(e.target?.result as string);
-      reader.onerror = reject;
-      reader.readAsDataURL(blob);
-    });
+    base64Url = blob
+      ? await new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = e => resolve(e.target?.result as string);
+          reader.onerror = reject;
+          reader.readAsDataURL(blob);
+        })
+      : "";
 
     const draft: ProposalCardType = {
       ...proposalDetails,
-      status: "draft",
+      status: ProposalStatus.DRAFT,
       id: "draft",
       proposer,
       createdAt: new Date(),

@@ -70,12 +70,12 @@ library VeVoteProposalLogic {
   /**
    * @dev Emitted when a proposal is canceled.
    */
-  event ProposalCanceled(uint256 proposalId, address canceller, string reason);
+  event ProposalCanceled(uint256 indexed proposalId, address canceller, string reason);
 
   /**
    * @dev Emitted when a proposal is executed.
    */
-  event VeVoteProposalExecuted(uint256 proposalId, string comment);
+  event VeVoteProposalExecuted(uint256 indexed proposalId, string comment);
 
   // ------------------------------- Functions -------------------------------
   // ------------------------------- Setter Functions -------------------------------
@@ -119,20 +119,18 @@ library VeVoteProposalLogic {
    * @notice Cancels a proposal.
    * @dev Allows the proposer or an admin to cancel a proposal before execution.
    * @param self The storage reference for the VeVoteStorage.
-   * @param whitelisted Flag indicating if the caller is whitelisted.
    * @param admin Flag indicating if the caller is an admin.
    * @param proposalId The ID of the proposal to cancel.
    * @return The proposal ID.
    */
   function cancel(
     VeVoteStorageTypes.VeVoteStorage storage self,
-    bool whitelisted,
     bool admin,
     uint256 proposalId,
     string memory reason
   ) external returns (uint256) {
-    // Ensure only a whitelisted address or the contract admin can cancel a proposal
-    if (!admin && !whitelisted) {
+    // Ensure only the proposer or the contract admin can cancel a proposal
+    if (self.proposals[proposalId].proposer != msg.sender && !admin) {
       revert UnauthorizedAccess(msg.sender);
     }
 

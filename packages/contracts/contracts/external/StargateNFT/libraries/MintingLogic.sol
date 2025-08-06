@@ -44,6 +44,12 @@ library MintingLogic {
   /// @notice Emitted when an NFT is burned
   event TokenBurned(address indexed owner, uint8 indexed levelId, uint256 tokenId, uint256 vetAmountStaked);
 
+  /**
+   * @notice Emitted when a whitelist entry is removed
+   * @param owner The address of the whitelist entry
+   */
+  event WhitelistEntryRemoved(address owner);
+
   // ------------------ Setters ------------------ //
 
   /// @notice Stakes VET and mints an NFT
@@ -82,7 +88,13 @@ library MintingLogic {
   /// @notice Migrates a token from the legacy nodes contract to StargateNFT, preserving the tokenId
   /// @param _tokenId The ID of the token to migrate
   function migrate(DataTypes.StargateNFTStorage storage $, uint256 _tokenId) external {
-    return _migrate($, _tokenId);
+    // If caller is whitelisted and _tokenId matches the whitelist entry, migrate from whitelist
+    if ($.whitelistEntries[msg.sender].tokenId == _tokenId) {
+      _migrateFromWhitelist($, _tokenId);
+    } else {
+      // Migrate the token
+      _migrate($, _tokenId);
+    }
   }
 
   /// @notice Migrates a token from the legacy nodes contract to StargateNFT, and calls the
@@ -91,8 +103,13 @@ library MintingLogic {
   /// @param _tokenId The ID of the token to migrate
   /// @param _autorenew Whether the token should be delegated forever
   function migrateAndDelegate(DataTypes.StargateNFTStorage storage $, uint256 _tokenId, bool _autorenew) external {
-    // Migrate the token
-    _migrate($, _tokenId);
+    // If caller is whitelisted and _tokenId matches the whitelist entry, migrate from whitelist
+    if ($.whitelistEntries[msg.sender].tokenId == _tokenId) {
+      _migrateFromWhitelist($, _tokenId);
+    } else {
+      // Migrate the token
+      _migrate($, _tokenId);
+    }
 
     // Check if the owner changed in the migration process, if yes revert
     // (Eg: receiver is a smart contract with onERC721Received() fallback that transfers the NFT)
@@ -205,6 +222,11 @@ library MintingLogic {
   /// @dev Internal function used by {migrate} and {migrateAndDelegate}
   /// @dev Refer to the migration strategy written at the top of the file
   function _migrate(DataTypes.StargateNFTStorage storage $, uint256 _tokenId) internal {
+    // Validate tokenId is not 0
+    if (_tokenId == 0) {
+      revert Errors.ValueCannotBeZero();
+    }
+
     // Validate token is not migrated yet
     // - if token level ID is not 0, it already exists on StargateNFT
     // - if token owner is 0, it does not exist in legacy nodes contract - burned or not minted
@@ -270,5 +292,79 @@ library MintingLogic {
 
     // solhint-disable-next-line reentrancy -  Allow emitting event after callback
     emit TokenMinted(msg.sender, level, true, _tokenId, msg.value);
+  }
+
+  /// @dev Internal function used by {migrateAndDelegate}
+  function _migrateFromWhitelist(DataTypes.StargateNFTStorage storage $, uint256 _tokenId) internal {
+    // Validate tokenId is not 0
+    if (_tokenId == 0) {
+      revert Errors.ValueCannotBeZero();
+    }
+
+    // Validate tokenId eligibility
+    // - if tokenId does not match the whitelist entry
+    // - if token level ID is not 0, it already exists on StargateNFT
+    // If any of these conditions are true, revert
+    if ($.whitelistEntries[msg.sender].tokenId != _tokenId || $.tokens[_tokenId].levelId != 0) {
+      revert Errors.TokenNotEligible(_tokenId);
+    }
+
+    // Get legacy token metadata
+    // slither-disable-next-line unused-return -- Intentional truncation
+    (address owner, , , , , , ) = $.legacyNodes.getMetadata(_tokenId);
+
+    // Validate legacy token metadata
+    // - if the token was downgraded, owner will be the caller
+    // - if the token was burned, owner will be the zero address
+    // Any other case, revert
+    if (owner != msg.sender && owner != address(0)) {
+      revert Errors.NotOwner(_tokenId, msg.sender, owner);
+    }
+
+    // Validate msg.value is the exact amount required for the level
+    uint8 levelId = $.whitelistEntries[msg.sender].levelId;
+    uint256 vetAmountRequiredToStake = Levels._getLevel($, levelId).vetAmountRequiredToStake;
+    if (msg.value != vetAmountRequiredToStake) {
+      revert Errors.VetAmountMismatch(levelId, vetAmountRequiredToStake, msg.value);
+    }
+
+    // Update the circulating supply and the cap
+    Levels._incrementLevelCirculatingSupply($, levelId);
+    $.cap[levelId]++;
+
+    // Update tokens mapping
+    $.tokens[_tokenId] = DataTypes.Token({
+      tokenId: _tokenId,
+      levelId: levelId,
+      mintedAtBlock: Clock._clock(),
+      vetAmountStaked: msg.value,
+      lastVthoClaimTimestamp: Clock._timestamp()
+    });
+
+    // Update the maturity period end block
+    // Note: maturity period is not applied to migrated tokens
+    $.maturityPeriodEndBlock[_tokenId] = Clock._clock();
+
+    // Delete the whitelist entry
+    delete $.whitelistEntries[msg.sender];
+
+    // If the owner was not the zero address, ie the token was not burned, burn it
+    if (owner != address(0)) {
+      $.legacyNodes.downgradeTo(_tokenId, 0);
+    }
+
+    // Call the mint callback on the main contract to mint the NFT
+    IStargateNFT(address(this))._safeMintCallback(msg.sender, _tokenId);
+
+    // Verify after
+    // - if the token level ID on StargateNFT is zero, ie minting failed
+    // - if the token owner on legacy nodes contract is not the address zero, ie token was not burned
+    if ($.tokens[_tokenId].levelId == 0 || $.legacyNodes.idToOwner(_tokenId) != address(0)) {
+      revert Errors.TokenMigrationFailed(_tokenId);
+    }
+
+    // solhint-disable-next-line reentrancy - Allow emitting event after callback
+    emit WhitelistEntryRemoved(msg.sender);
+    emit TokenMinted(msg.sender, levelId, true, _tokenId, msg.value);
   }
 }

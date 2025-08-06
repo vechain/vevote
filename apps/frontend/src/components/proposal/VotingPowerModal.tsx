@@ -2,7 +2,18 @@ import { useAllUserNodes, useIsDelegator, useNodes } from "@/hooks/useUserQuerie
 import { useI18nContext } from "@/i18n/i18n-react";
 import { VotingPowerIcon } from "@/icons";
 import { formatAddress } from "@/utils/address";
-import { Button, Flex, Icon, Link, ModalBody, ModalHeader, Text, useDisclosure } from "@chakra-ui/react";
+import {
+  Button,
+  Flex,
+  HStack,
+  Icon,
+  Link,
+  ModalBody,
+  ModalHeader,
+  Spinner,
+  Text,
+  useDisclosure,
+} from "@chakra-ui/react";
 import { useWallet } from "@vechain/vechain-kit";
 import { useMemo } from "react";
 import { CopyLink } from "../ui/CopyLink";
@@ -15,24 +26,26 @@ import {
 } from "./VotingPowerWarnings";
 import { ResourcesLinks } from "@/types/terms";
 import { getConfig } from "@repo/config";
+import { GroupedExtendedStargateNode, NodeItem } from "@/types/user";
 
 const EXPLORER_URL = getConfig(import.meta.env.VITE_APP_ENV).network.explorerUrl;
 
 export const VotingPowerModal = () => {
   const { LL } = useI18nContext();
   const { isOpen, onClose, onOpen } = useDisclosure();
-  const { nodes } = useNodes();
+  const { groupedNodes, isLoading } = useNodes();
   const { allNodes } = useAllUserNodes();
   const { isDelegator } = useIsDelegator();
 
-  const nodesList = useMemo(
+  const nodesList: NodeItem[] = useMemo(
     () =>
-      nodes.map(node => ({
+      groupedNodes.map((node: GroupedExtendedStargateNode) => ({
         multiplier: Number(node.multiplier) / 100,
         nodeName: LL.node_names[node.nodeName](),
         votingPower: Number(node.votingPower) / 100,
+        count: node.count,
       })),
-    [LL.node_names, nodes],
+    [LL.node_names, groupedNodes],
   );
 
   const totalVotingPower = useMemo(() => nodesList.reduce((acc, node) => acc + node.votingPower, 0), [nodesList]);
@@ -44,7 +57,7 @@ export const VotingPowerModal = () => {
   return (
     <>
       <Button onClick={onOpen} leftIcon={<Icon as={VotingPowerIcon} boxSize={5} />} size={{ base: "md", md: "lg" }}>
-        {totalVotingPower || LL.proposal.voting_power.get_voting_power()}
+        {isLoading ? <Spinner size="sm" /> : totalVotingPower || "0"}
       </Button>
       <ModalSkeleton isOpen={isOpen} onClose={onClose}>
         <ModalHeader>
@@ -80,8 +93,10 @@ const VotingWallet = () => {
   const { LL } = useI18nContext();
 
   return (
-    <Text display={"inline-flex"} alignItems={"center"} gap={2} color={"gray.600"}>
-      {`${LL.wallet()}:`}
+    <HStack>
+      <Text display={"inline-flex"} alignItems={"center"} gap={2} color={"gray.600"}>
+        {`${LL.wallet()}:`}
+      </Text>
       <CopyLink
         href={`${EXPLORER_URL}/accounts/${account?.address}`}
         isExternal
@@ -90,6 +105,6 @@ const VotingWallet = () => {
         fontWeight={500}>
         {formatAddress(account?.address || "")}
       </CopyLink>
-    </Text>
+    </HStack>
   );
 };

@@ -55,7 +55,7 @@
     "axios": "^1.8.2",
     "chai": "^4.2.0",
     "dotenv": "^16.3.1",
-    "form-data": "^4.0.0",
+    "form-data": "^4.0.4",
     "fs": "^0.0.1-security",
     "hardhat": "^2.19.1",
     "hardhat-contract-sizer": "^2.10.0",

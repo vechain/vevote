@@ -116,7 +116,7 @@ const TextEditor = forwardRef<Quill, EditorProps>(
       quillInstance.current?.enable(!readOnly);
     }, [readOnly]);
 
-    return <Box ref={containerRef} data-error={isError} />;
+    return <Box ref={containerRef} data-error={isError} w={"full"} />;
   },
 );
 

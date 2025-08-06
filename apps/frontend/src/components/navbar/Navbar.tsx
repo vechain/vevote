@@ -1,51 +1,18 @@
+import { VotingPowerModal } from "@/components/proposal/VotingPowerModal";
+import { ConnectButton } from "@/components/ui/ConnectButton";
+import { VoteLogo } from "@/components/ui/VoteLogo";
 import { useUser } from "@/contexts/UserProvider";
-import { useShowNavbar } from "@/hooks/useShowNavbar";
-import { Box, BoxProps, defineStyle, Flex, FlexProps, Link } from "@chakra-ui/react";
-import { PropsWithChildren, useMemo } from "react";
-import { ConnectButton } from "../ui/ConnectButton";
-import { VotingPowerModal } from "../proposal/VotingPowerModal";
+import { Box, Container, defineStyle, Flex } from "@chakra-ui/react";
 import { useWallet } from "@vechain/vechain-kit";
-import { VoteLogo } from "../ui/VoteLogo";
+import { Link } from "react-router-dom";
+import { useMemo } from "react";
+import { useProposal } from "@/components/proposal/ProposalProvider";
+import { DeleteEditProposal } from "./components/DeleteEditProposal";
+import { CancelProposal } from "./components/CancelProposal";
+import { ExecuteModal } from "./components/ExecuteModal";
 
-const NavbarContainer = ({ children, ...restProps }: BoxProps) => {
-  return (
-    <Box
-      transition={"all 0.3s"}
-      paddingX={{ base: 6, md: 20 }}
-      position={"fixed"}
-      top={0}
-      left={0}
-      right={0}
-      zIndex={100}
-      {...restProps}>
-      {children}
-    </Box>
-  );
-};
-
-const NavbarInnerContainer = ({ children, ...restProps }: FlexProps) => {
-  const { connection } = useWallet();
-  return (
-    <Flex
-      transition={"all 0.3s"}
-      borderRadius={12}
-      maxWidth={"1440px"}
-      marginX={"auto"}
-      justifyContent={"space-between"}
-      alignItems={"center"}
-      gap={6}
-      {...restProps}>
-      {children}
-      <Flex alignItems={"center"} gap={{ base: 3, md: 6 }}>
-        {connection.isConnected && <VotingPowerModal />}
-        <ConnectButton bg={"primary.700"} />
-      </Flex>
-    </Flex>
-  );
-};
-
-const bgHeaderStyle = defineStyle({
-  bgImage: { base: "/images/banner-bg-mobile.png", md: "/images/banner-bg.png" },
+export const bgHeaderStyle = defineStyle({
+  bgImage: { base: "/images/banner-bg-mobile.webp", md: "/images/banner-bg.webp" },
   bgSize: "cover",
   bgPosition: "top",
   bgRepeat: "no-repeat",
@@ -54,38 +21,47 @@ const bgHeaderStyle = defineStyle({
 });
 
 export const Navbar = () => {
+  const { connection } = useWallet();
   return (
-    <NavbarContainer {...bgHeaderStyle}>
-      <NavbarInnerContainer paddingY={{ base: 2, md: 4 }}>
-        <Link href="/" display="flex" alignItems="center">
-          <VoteLogo height={{ base: "24px", md: "60px" }} />
-        </Link>
-      </NavbarInnerContainer>
-    </NavbarContainer>
+    <Box {...bgHeaderStyle} position="fixed" top="0" width="100%" zIndex={1000}>
+      <Container maxWidth={"1024px"} marginX={"auto"} paddingX={"20px"}>
+        <Flex justifyContent={"space-between"} alignItems={"center"} gap={6} paddingY={4}>
+          <Link to="/">
+            <VoteLogo width={{ base: 16, md: 20 }} />
+          </Link>
+
+          <Flex alignItems={"center"} gap={{ base: 3, md: 6 }}>
+            {connection.isConnected && !connection.isLoading && <ProposalNavbarActions />}
+            {connection.isConnected && !connection.isLoading && <VotingPowerModal />}
+            <ConnectButton />
+          </Flex>
+        </Flex>
+      </Container>
+    </Box>
   );
 };
 
-export const ProposalNavbar = ({ children }: PropsWithChildren) => {
-  const { showBackground } = useShowNavbar();
+const ProposalNavbarActions = () => {
+  const { proposal } = useProposal();
+  const { isExecutor, isWhitelisted } = useUser();
 
-  const { isAdmin } = useUser();
+  const canCancel = useMemo(
+    () => isWhitelisted && ["upcoming"].includes(proposal?.status || ""),
+    [isWhitelisted, proposal?.status],
+  );
 
-  const bgVariant = useMemo(() => {
-    if (!showBackground) {
-      return isAdmin
-        ? "rgba(38, 20, 112, 0.75)"
-        : "linear-gradient(102deg, rgba(38, 20, 112, 0.75) 0%, rgba(38, 20, 112, 0.75) 100%)";
-    } else {
-      return isAdmin ? "primary.800" : "linear-gradient(102deg, #351C9B 0%, #4324C6 100%)";
-    }
-  }, [showBackground, isAdmin]);
+  const canEditDraft = useMemo(
+    () => isWhitelisted && ["draft"].includes(proposal?.status || ""),
+    [isWhitelisted, proposal?.status],
+  );
+
+  if (!proposal || proposal.id === "default") return null;
+
   return (
-    <NavbarContainer
-      bg={bgVariant}
-      paddingX={{ base: 4, md: showBackground ? 20 : 6 }}
-      paddingY={{ base: 6, md: showBackground ? 10 : 6 }}
-      backdropBlur={!showBackground ? "md" : "none"}>
-      <NavbarInnerContainer>{children}</NavbarInnerContainer>
-    </NavbarContainer>
+    <Flex alignItems={"center"} gap={2} marginLeft={"auto"}>
+      {canEditDraft && <DeleteEditProposal />}
+      {canCancel && <CancelProposal proposalId={proposal?.id} />}
+      {isExecutor && proposal?.status === "approved" && <ExecuteModal proposalId={proposal?.id} />}
+    </Flex>
   );
 };

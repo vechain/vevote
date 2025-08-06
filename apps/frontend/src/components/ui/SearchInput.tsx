@@ -33,7 +33,7 @@ export const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(({ onC
         ref={ref}
         paddingLeft={0}
         value={value}
-        size={{ base: "sm", md: "md" }}
+        size={{ base: "none", md: "md" }}
         {...props}
       />
       {value && onClear && (

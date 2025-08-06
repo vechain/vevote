@@ -54,6 +54,20 @@ import { Levels } from "./libraries/Levels.sol";
 /// the hardfork will happen. For this reason the contract will be paused a few hours before the hardfork, and unpaused after we will know the exact timestamp,
 /// to avoid any potential wrong vtho generation end timestamp and rewards calculation.
 /// @dev This contract is UUPS upgradable and AccessControl protected.
+///
+/// ===================== VERSION 2 ===================== //
+/// Storage changes:
+/// - Added a new whitelistEntries mapping to the StargateNFTStorage
+///
+/// Other changes:
+/// - New initializeV2 function to the StargateNFT contract, for initializing the whitelist entries
+/// - New WHITELISTER_ROLE, for adding and removing whitelist entries
+/// - New getWhitelistEntry function, for getting a whitelist entry
+/// - Settings library: New addWhitelistEntry function, for adding (and updating) a whitelist entry
+/// - Settings library: New removeWhitelistEntry function, for removing a whitelist entry
+/// - MintingLogic library: New internal function _migrateFromWhitelist, called by migrate and migrateAndDelegate,
+/// for migrating a token if it's on the whitelist
+
 contract StargateNFT is
   AccessControlUpgradeable,
   ERC721Upgradeable,
@@ -68,6 +82,7 @@ contract StargateNFT is
   bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
   bytes32 public constant LEVEL_OPERATOR_ROLE = keccak256("LEVEL_OPERATOR_ROLE");
   bytes32 public constant MANAGER_ROLE = keccak256("MANAGER_ROLE");
+  bytes32 public constant WHITELISTER_ROLE = keccak256("WHITELISTER_ROLE");
 
   /// @custom:oz-upgrades-unsafe-allow constructor
   constructor() {
@@ -89,7 +104,7 @@ contract StargateNFT is
   /// @notice Returns the version of the contract, manually updated with each upgrade
   /// @return version - the version of the contract
   function version() public pure returns (uint256) {
-    return 1;
+    return 2;
   }
 
   /// @notice Initializes the contract
@@ -155,6 +170,17 @@ contract StargateNFT is
     $.baseTokenURI = _initParams.baseTokenURI;
   }
 
+  /// @notice Initializes the contract v2
+  function initializeV2(
+    DataTypes.WhitelistEntryInit[] memory _whitelistEntries
+  ) external onlyRole(UPGRADER_ROLE) reinitializer(2) {
+    // Populate the whitelist entries
+    for (uint256 i; i < _whitelistEntries.length; i++) {
+      DataTypes.WhitelistEntryInit memory entry = _whitelistEntries[i];
+      Settings.addWhitelistEntry(_getStargateNFTStorage(), entry.owner, entry.tokenId, entry.levelId);
+    }
+  }
+
   // ---------- Authorizers ---------- //
 
   /// @notice Authorizes the upgrade of the contract
@@ -212,6 +238,24 @@ contract StargateNFT is
   /// Emits a {IStargateNFT.LevelCapUpdated} event
   function addLevel(DataTypes.LevelAndSupply memory _levelAndSupply) public onlyRole(LEVEL_OPERATOR_ROLE) {
     Levels.addLevel(_getStargateNFTStorage(), _levelAndSupply);
+  }
+
+  /// @notice Adds a whitelist entry
+  /// @param _owner - The address of the owner of the whitelist entry
+  /// @param _tokenId - The token ID of the whitelist entry
+  /// @param _levelId - The level ID of the whitelist entry
+  /// @dev Only the WHITELISTER_ROLE can call this function
+  /// Emits a {IStargateNFT.WhitelistEntryAdded} event
+  function addWhitelistEntry(address _owner, uint256 _tokenId, uint8 _levelId) public onlyRole(WHITELISTER_ROLE) {
+    Settings.addWhitelistEntry(_getStargateNFTStorage(), _owner, _tokenId, _levelId);
+  }
+
+  /// @notice Removes a whitelist entry
+  /// @param _owner - The address of the owner of the whitelist entry
+  /// @dev Only the WHITELISTER_ROLE can call this function
+  /// Emits a {IStargateNFT.WhitelistEntryRemoved} event
+  function removeWhitelistEntry(address _owner) public onlyRole(WHITELISTER_ROLE) {
+    Settings.removeWhitelistEntry(_getStargateNFTStorage(), _owner);
   }
 
   /// @notice Updates a token level
@@ -551,6 +595,16 @@ contract StargateNFT is
     DataTypes.StargateNFTStorage storage $ = _getStargateNFTStorage();
 
     return Token.isUnderMaturityPeriod($, _tokenId);
+  }
+
+  /// @notice Returns the whitelist entry for a given address
+  /// @param _owner The address to get the whitelist entry for
+  /// @return tokenId The token ID
+  /// @return levelId The level ID
+  function getWhitelistEntry(address _owner) external view returns (uint256 tokenId, uint8 levelId) {
+    DataTypes.StargateNFTStorage storage $ = _getStargateNFTStorage();
+
+    return ($.whitelistEntries[_owner].tokenId, $.whitelistEntries[_owner].levelId);
   }
 
   /// @notice Returns true if the NFT is transferable, false otherwise

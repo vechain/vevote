@@ -338,7 +338,6 @@ library Levels {
   /// @param _levelId The ID of the level spec to check
   /// @return true if the level spec exists, false otherwise
   function _levelExists(DataTypes.StargateNFTStorage storage $, uint8 _levelId) internal view returns (bool) {
-    // Level exists if it has a non-empty name
     return _levelId > 0 && _levelId <= $.MAX_LEVEL_ID;
   }
 

@@ -1,9 +1,16 @@
-@import url("https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap");
+@font-face {
+  font-family: "Geist Variable";
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Rubik Variable";
+  font-display: swap;
+}
 
 body {
   margin: 0;
-  font-family: "Inter", sans-serif;
+  font-family: "Geist Variable", "Geist", sans-serif;
 }
 
 h1,
@@ -12,7 +19,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: "Rubik Variable", sans-serif;
+  font-family: "Rubik Variable", "Rubik", sans-serif;
 }
 
 .ql-toolbar.ql-snow {
@@ -43,7 +50,7 @@ h6 {
 }
 
 .ql-container.ql-snow [data-placeholder]:before {
-  font-family: "Inter", sans-serif;
+  font-family: "Geist", sans-serif;
 }
 
 .ql-picker-options {
@@ -58,7 +65,7 @@ h6 {
 }
 
 .ql-editor .ql-size-large {
-  font-size: 25px;
+  font-size: 22px;
 }
 
 .ql-toolbar.ql-snow .ql-bold,

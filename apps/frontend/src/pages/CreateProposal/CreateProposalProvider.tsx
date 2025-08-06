@@ -1,6 +1,6 @@
 import { useDraftProposal } from "@/hooks/useDraftProposal";
 import { usePerAddressDraftStorage } from "@/hooks/usePerAddressDraftStorage";
-import { CreateProposalStep, ProposalCardType, SingleChoiceEnum } from "@/types/proposal";
+import { CreateProposalStep, ProposalCardType } from "@/types/proposal";
 import { DEFAULT_DESCRIPTION_TEMPLATE } from "@/utils/template/descriptionTemplate";
 import { ZodFile } from "@/utils/zod";
 import { useWallet } from "@vechain/vechain-kit";
@@ -17,8 +17,6 @@ import {
   useState,
 } from "react";
 
-export const defaultSingleChoice = [SingleChoiceEnum.FOR, SingleChoiceEnum.AGAINST, SingleChoiceEnum.ABSTAIN];
-
 export type ProposalDescription = Op;
 
 export type ProposalDetails = {
@@ -28,12 +26,14 @@ export type ProposalDetails = {
   startDate?: Date;
   endDate?: Date;
   votingQuestion: string;
+  discourseUrl?: string;
 };
 
 export const DEFAULT_PROPOSAL: ProposalDetails = {
   title: "",
-  description: DEFAULT_DESCRIPTION_TEMPLATE().ops,
+  description: DEFAULT_DESCRIPTION_TEMPLATE.ops,
   votingQuestion: "",
+  discourseUrl: "",
 };
 
 export type CreateProposalContextType = {
@@ -92,7 +92,7 @@ export const CreateProposalProvider = ({ children }: PropsWithChildren) => {
     if (account?.address) {
       setProposalDetails(prev => ({
         ...prev,
-        description: DEFAULT_DESCRIPTION_TEMPLATE(account.address).ops,
+        description: DEFAULT_DESCRIPTION_TEMPLATE.ops,
       }));
     }
   }, [account?.address]);

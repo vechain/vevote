@@ -381,7 +381,6 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
     return
       VeVoteProposalLogic.cancel(
         $,
-        hasRole(WHITELISTED_ROLE, _msgSender()),
         hasRole(DEFAULT_ADMIN_ROLE, _msgSender()),
         proposalId,
         ""
@@ -396,7 +395,6 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
     return
       VeVoteProposalLogic.cancel(
         $,
-        hasRole(WHITELISTED_ROLE, _msgSender()),
         hasRole(DEFAULT_ADMIN_ROLE, _msgSender()),
         proposalId,
         reason

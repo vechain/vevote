@@ -1,16 +1,27 @@
 import { useI18nContext } from "@/i18n/i18n-react";
 import { WalletIcon } from "@/icons";
-import { formatAddress } from "@/utils/address";
-import { Button, ButtonProps, Icon, Text } from "@chakra-ui/react";
+import { Avatar, Button, ButtonProps, Flex, Icon, Text } from "@chakra-ui/react";
 import { useAccountModal, useConnectModal, useWallet } from "@vechain/vechain-kit";
+import { useEffect, useState } from "react";
 
 export const ConnectButton = ({ text, ...props }: ButtonProps & { text?: string }) => {
   const { connection, account } = useWallet();
+  const [canRender, setCanRender] = useState(false);
 
   const { LL } = useI18nContext();
   const { open: openConnectModal } = useConnectModal();
   const { open: openAccountModal } = useAccountModal();
 
+  // add a rendering debouncer to avoid flickering
+  useEffect(() => {
+    if (!connection.isLoading) {
+      setTimeout(() => {
+        setCanRender(true);
+      }, 100);
+    }
+  }, [connection.isLoading]);
+
+  if (connection.isLoading || !canRender) return <Flex height={12} width={8} />;
   if (!connection.isConnected)
     return (
       <StyledButton leftIcon={<Icon as={WalletIcon} />} onClick={openConnectModal} {...props}>
@@ -18,15 +29,14 @@ export const ConnectButton = ({ text, ...props }: ButtonProps & { text?: string 
       </StyledButton>
     );
   return (
-    <StyledButton
-      {...props}
-      bg={"white"}
-      color={"gray.600"}
-      _hover={{ bg: "gray.200" }}
+    <Avatar
+      size="sm"
+      src={account?.image}
+      bg="gray.200"
+      borderRadius="full"
       onClick={openAccountModal}
-      leftIcon={<Icon as={WalletIcon} />}>
-      <Text display={{ base: "none", md: "block" }}>{formatAddress(account?.address || "")}</Text>
-    </StyledButton>
+      cursor="pointer"
+    />
   );
 };
 

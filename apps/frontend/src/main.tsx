@@ -1,8 +1,12 @@
+import "quill/dist/quill.core.css";
+import "@fontsource-variable/inter";
+import "@fontsource-variable/rubik";
+import "./index.css";
+
 import { getConfig } from "@repo/config";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import { WalletConnectOptions } from "@vechain/dapp-kit-react";
 import { VeChainKitProvider } from "@vechain/vechain-kit";
-import "quill/dist/quill.core.css";
 import React, { PropsWithChildren, useEffect, useState } from "react";
 import ReactDOM from "react-dom/client";
 import { localStorageDetector, navigatorDetector } from "typesafe-i18n/detectors";
@@ -13,11 +17,11 @@ import { Locales } from "./i18n/i18n-types";
 import { detectLocale } from "./i18n/i18n-util";
 import { loadLocaleAsync } from "./i18n/i18n-util.async";
 import { loadLocale } from "./i18n/i18n-util.sync";
-import "./index.css";
 import { CreateProposalProvider } from "./pages/CreateProposal/CreateProposalProvider.tsx";
 import { persister, queryClient } from "./utils/queryClient.ts";
 import { UserProvider } from "./contexts/UserProvider.tsx";
 import { MixPanelProvider } from "./contexts/MixPanelProvider.tsx";
+import { LegalLinks } from "./types/terms.ts";
 
 loadLocale("en");
 
@@ -48,10 +52,6 @@ const Providers = ({ children }: PropsWithChildren) => {
     <I18nProvider locale={locale}>
       <PersistQueryClientProvider client={queryClient} persistOptions={{ persister }}>
         <VeChainKitProvider
-          feeDelegation={{
-            delegatorUrl: "https://sponsor-testnet.vechain.energy/by/283",
-            delegateAllTransactions: true,
-          }}
           loginMethods={[
             // { method: "vechain", gridColumn: 4 },
             { method: "dappkit", gridColumn: 4 },
@@ -66,6 +66,11 @@ const Providers = ({ children }: PropsWithChildren) => {
           language="en"
           network={{
             type: config.network.type,
+          }}
+          legalDocuments={{
+            privacyPolicy: [{ url: LegalLinks.PRIVACY_POLICY, required: true, version: 1 }],
+            termsAndConditions: [{ url: LegalLinks.TERMS_OF_SERVICE, required: true, version: 1 }],
+            cookiePolicy: [{ url: LegalLinks.COOKIES_POLICY, required: true, version: 1 }],
           }}>
           <MixPanelProvider>
             <ThemeProvider>
