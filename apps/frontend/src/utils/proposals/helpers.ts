@@ -87,7 +87,7 @@ export const fromEventsToProposals = async (events: ProposalEvent[]): Promise<Fr
         getDateFromBlock(Number(event.startTime)),
         getDateFromBlock(Number(event.startTime) + Number(event.voteDuration)),
         new Date(event.canceledTime || 0),
-        new Date(event.executedTime || 0),
+        event.executedTime ? new Date(event.executedTime) : undefined,
       ]);
       return {
         id: event.proposalId,

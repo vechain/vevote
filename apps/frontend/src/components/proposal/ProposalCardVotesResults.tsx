@@ -69,7 +69,7 @@ export const ProposalCardVotesResults = ({
   );
 
   return (
-    <Flex gap={{ base: 3, md: 3 }} alignItems={"center"}>
+    <Flex gap={3} alignItems={"center"}>
       {Object.keys(proposalVotesPercentage).map(option => {
         const mostVoted = quorumNotReached ? false : isMostVoted(proposalVotes[option as keyof typeof proposalVotes]);
         const color = ColorByVote[option as keyof typeof ColorByVote];

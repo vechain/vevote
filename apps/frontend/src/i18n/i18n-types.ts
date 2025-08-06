@@ -58,6 +58,10 @@ type RootTranslation = {
 	 */
 	finished: string
 	/**
+	 * E​x​e​c​u​t​e​d
+	 */
+	executed: string
+	/**
 	 * S​h​o​w​ ​m​o​r​e
 	 */
 	show_more: string
@@ -1375,6 +1379,10 @@ export type TranslationFunctions = {
 	 * Finished
 	 */
 	finished: () => LocalizedString
+	/**
+	 * Executed
+	 */
+	executed: () => LocalizedString
 	/**
 	 * Show more
 	 */
