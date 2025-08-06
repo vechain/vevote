@@ -12,7 +12,7 @@ import { useI18nContext } from "@/i18n/i18n-react";
 export const ResultsSection = () => {
   const { LL } = useI18nContext();
   const { proposal } = useProposal();
-  const { results } = useIndexerVoteResults({ proposalId: proposal.id, size: voteOptions.length });
+  const { results } = useIndexerVoteResults({ proposalId: proposal.id });
 
   const votePercentages = useMemo(() => {
     const abstainVotes = results?.data?.find(result => result.support === "ABSTAIN")?.totalWeight ?? 0;

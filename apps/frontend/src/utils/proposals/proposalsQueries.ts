@@ -40,14 +40,14 @@ export const getProposalsEvents = async (
         },
         eventAbi: proposalCreatedAbi,
       },
-      {
-        criteria: {
-          address: contractAddress,
-          topic0: proposalExecutedAbi.signatureHash,
-          topic1: proposalId ? proposalExecutedAbi.encodeFilterTopicsNoNull({ proposalId })[1] : undefined,
-        },
-        eventAbi: proposalExecutedAbi,
-      },
+      // {
+      //   criteria: {
+      //     address: contractAddress,
+      //     topic0: proposalExecutedAbi.signatureHash,
+      //     topic1: proposalId ? proposalExecutedAbi.encodeFilterTopicsNoNull({ proposalId })[1] : undefined,
+      //   },
+      //   eventAbi: proposalExecutedAbi,
+      // },
       {
         criteria: {
           address: contractAddress,
