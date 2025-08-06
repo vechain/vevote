@@ -8,7 +8,6 @@ import { useHasVoted, useIndexerVoteResults, useVoteByProposalId } from "@/hooks
 import { useFormatDate } from "@/hooks/useFormatDate";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { ProposalCardType, ProposalStatus } from "@/types/proposal";
-import { VotedResultData } from "@/types/votes";
 import { formatAddress } from "@/utils/address";
 import { MixPanelEvent, trackEvent } from "@/utils/mixpanel/utilsMixpanel";
 import { getPicassoImgSrc } from "@/utils/picasso";
@@ -18,7 +17,6 @@ import { useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 
 export const ProposalCard = ({ status, title, endDate, startDate, id, proposer, discourseUrl }: ProposalCardType) => {
-  const { results, isLoading: isLoadingResults } = useIndexerVoteResults({ proposalId: id });
   const navigate = useNavigate();
 
   const onClick = useCallback(() => {
@@ -55,14 +53,7 @@ export const ProposalCard = ({ status, title, endDate, startDate, id, proposer, 
       alignItems={"start"}
       flexDirection={"column"}>
       <TopBar title={title} proposer={proposer} discourseUrl={discourseUrl} id={id} />
-      <BottomBar
-        status={status}
-        endDate={endDate}
-        startDate={startDate}
-        id={id}
-        isLoadingResults={isLoadingResults}
-        results={results?.data || []}
-      />
+      <BottomBar status={status} endDate={endDate} startDate={startDate} id={id} />
     </Flex>
   );
 };
@@ -144,16 +135,13 @@ const TopBar = ({
 };
 
 const BottomBar = ({
+  id,
   startDate,
   endDate,
   status,
-  results,
-  isLoadingResults,
-}: Pick<ProposalCardType, "endDate" | "startDate" | "status" | "id"> & {
-  isLoadingResults: boolean;
-  results: VotedResultData[];
-}) => {
+}: Pick<ProposalCardType, "endDate" | "startDate" | "status" | "id">) => {
   const { LL } = useI18nContext();
+  const { results, isLoading: isLoadingResults } = useIndexerVoteResults({ proposalId: id });
 
   const showDate = useMemo(() => {
     return status === ProposalStatus.UPCOMING || status === ProposalStatus.VOTING;
@@ -180,7 +168,7 @@ const BottomBar = ({
         )}
         {showDate && <DateItem startDate={startDate} endDate={endDate} status={status} />}
       </Flex>
-      {showResults && <ProposalCardVotesResults status={status} results={results || []} />}
+      {showResults && <ProposalCardVotesResults status={status} results={results?.data || []} />}
     </Flex>
   );
 };
