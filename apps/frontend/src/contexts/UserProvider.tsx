@@ -1,4 +1,5 @@
 import { useUserRoles } from "@/hooks/useUserQueries";
+import { useVechainDomain, useWallet } from "@vechain/vechain-kit";
 import { createContext, useContext, useMemo } from "react";
 
 const DEFAULT_ROLES = {
@@ -17,6 +18,7 @@ type UserContextProps = {
   isSettingsManager: boolean;
   isUpgrader: boolean;
   isWhitelisted: boolean;
+  displayAddress?: string;
 };
 
 export const UserContext = createContext<UserContextProps>({
@@ -25,10 +27,12 @@ export const UserContext = createContext<UserContextProps>({
 
 export const UserProvider = (props: React.PropsWithChildren) => {
   const { roles } = useUserRoles();
+  const { account } = useWallet();
+  const { data } = useVechainDomain(account?.address ?? "");
 
-  const ctxValue = useMemo(() => {
-    return { ...(roles ?? DEFAULT_ROLES) };
-  }, [roles]);
+  const ctxValue: UserContextProps = useMemo(() => {
+    return { ...(roles ?? DEFAULT_ROLES), displayAddress: data?.domain || account?.address };
+  }, [account?.address, data?.domain, roles]);
 
   return <UserContext.Provider value={ctxValue}>{props.children}</UserContext.Provider>;
 };

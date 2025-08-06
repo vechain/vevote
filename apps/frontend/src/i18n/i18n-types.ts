@@ -406,7 +406,7 @@ type RootTranslation = {
 	}
 	node_names: {
 		/**
-		 * N​o​ ​N​o​d​e
+		 * n​o​t​ ​d​e​f​i​n​e​d
 		 */
 		none: string
 		/**
@@ -485,7 +485,7 @@ type RootTranslation = {
 		 */
 		end_after_max_duration: RequiredParams<'days'>
 		/**
-		 * F​a​i​l​e​d​ ​t​o​ ​l​o​a​d​ ​v​o​t​e​r​s​ ​d​a​t​a​.​ ​P​l​e​a​s​e​ ​t​r​y​ ​a​g​a​i​n​.
+		 * N​o​ ​v​o​t​e​r​s​ ​f​o​u​n​d​ ​m​a​t​c​h​i​n​g​ ​y​o​u​r​ ​s​e​a​r​c​h​ ​c​r​i​t​e​r​i​a​.
 		 */
 		failed_load_voters: string
 		descriptions_errors: {
@@ -1728,7 +1728,7 @@ JPG, PNG or SVG of maximum of {size}MB.
 	}
 	node_names: {
 		/**
-		 * No Node
+		 * not defined
 		 */
 		none: () => LocalizedString
 		/**
@@ -1806,7 +1806,7 @@ JPG, PNG or SVG of maximum of {size}MB.
 		 */
 		end_after_max_duration: (arg: { days: string }) => LocalizedString
 		/**
-		 * Failed to load voters data. Please try again.
+		 * No voters found matching your search criteria.
 		 */
 		failed_load_voters: () => LocalizedString
 		descriptions_errors: {

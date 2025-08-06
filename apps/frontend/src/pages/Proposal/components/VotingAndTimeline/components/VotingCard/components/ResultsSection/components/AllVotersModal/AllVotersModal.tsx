@@ -1,6 +1,6 @@
 import { useI18nContext } from "@/i18n/i18n-react";
 import { ArrowRightIcon, UserCheckIcon } from "@/icons";
-import { Icon, ModalBody, ModalHeader, useDisclosure, Spinner, Alert, AlertIcon, Flex, Text } from "@chakra-ui/react";
+import { Icon, ModalBody, ModalHeader, useDisclosure, Spinner, Flex, Text } from "@chakra-ui/react";
 import { useCallback, useState } from "react";
 import { useProposal } from "@/components/proposal/ProposalProvider";
 import { VotersFiltersPanel, DEFAULT_FILTER } from "./components/VotersFiltersPanel";
@@ -11,6 +11,7 @@ import { Sort } from "@/components/ui/SortDropdown";
 import { ModalSkeleton, ModalTitle } from "@/components/ui/ModalSkeleton";
 import { TablePagination } from "@/components/ui/TablePagination";
 import { VotersTable } from "./components/VotersTable";
+import { GenericInfoBox } from "@/components/ui/GenericInfoBox";
 
 export const AllVotersModal = () => {
   const { LL } = useI18nContext();
@@ -25,7 +26,7 @@ export const AllVotersModal = () => {
 
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
 
-  const { votes, pagination, filterOptions, nodeOptions, isLoading, error } = useVotersData({
+  const { votes, pagination, filterOptions, nodeOptions, isLoading, error, originalVotes } = useVotersData({
     proposalId: proposal.id,
     filters: {
       selectedOption,
@@ -61,7 +62,7 @@ export const AllVotersModal = () => {
     setCurrentPage(page);
   }, []);
 
-  if (votes.length === 0) return null;
+  if (originalVotes.length === 0) return null;
 
   return (
     <>
@@ -89,13 +90,10 @@ export const AllVotersModal = () => {
         </ModalHeader>
         <ModalBody overflowX={"auto"}>
           {isLoading && <Spinner size="lg" />}
-          {error && (
-            <Alert status="error">
-              <AlertIcon />
-              {LL.field_errors.failed_load_voters()}
-            </Alert>
+          {(error || votes.length === 0) && (
+            <GenericInfoBox variant="info">{LL.field_errors.failed_load_voters()}</GenericInfoBox>
           )}
-          {!isLoading && !error && <VotersTable data={votes} />}
+          {!isLoading && !error && votes.length > 0 && <VotersTable data={votes} />}
         </ModalBody>
         {!isLoading && !error && pagination && pagination.totalPages > 1 && (
           <TablePagination

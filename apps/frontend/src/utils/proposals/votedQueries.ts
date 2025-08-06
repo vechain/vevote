@@ -5,6 +5,7 @@ import { VeVote__factory } from "@repo/contracts";
 import axios from "axios";
 import { executeCall } from "../contract";
 import { getAllEventLogs, ThorClient } from "@vechain/vechain-kit";
+import { getVetDomainOrAddresses } from "./helpers";
 
 const indexerUrl = getConfig(import.meta.env.VITE_APP_ENV).indexerUrl;
 const contractAddress = getConfig(import.meta.env.VITE_APP_ENV).vevoteContractAddress;
@@ -66,13 +67,20 @@ export const getVoteCastResults = async (
 
     const events = await getAllEventLogs({ thor, nodeUrl, filterCriteria });
 
+    const domains = await getVetDomainOrAddresses(events.map(event => event.decodedData?.[0] as string));
+
     const votedEvents = events.map(event => {
       const [voter, proposalId, choice, weight, reason, stargateNFTs, validator] =
         event.decodedData as DecodedVoteCastEvent;
 
+      const domain = domains.find(domain => domain.address === voter)?.domain || undefined;
+
       const votes = {
         proposalId: proposalId.toString(),
-        voter,
+        voter: {
+          address: voter,
+          domain,
+        },
         choice,
         weight: weight.toString(),
         reason,
