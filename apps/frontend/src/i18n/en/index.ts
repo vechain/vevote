@@ -12,6 +12,7 @@ const en = {
   on: "On",
   all: "All",
   finished: "Finished",
+  executed: "Executed",
   show_more: "Show more",
   exit: "Exit",
   next: "Next",

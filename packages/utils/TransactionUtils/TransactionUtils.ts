@@ -80,6 +80,7 @@ export const sendTx = async (
   clauses: TransactionClause[],
   pk: Uint8Array,
   retries: number = 5,
+  gas?: number,
 ) => {
   const signerAddress = Address.ofPrivateKey(pk);
 
@@ -91,7 +92,7 @@ export const sendTx = async (
         console.log(`Attempt ${attempt} of ${actualRetries}: Sending transaction...`);
       }
       // Rebuild the transaction body for each attempt to get fresh gas, nonce, and blockRef.
-      const body: TransactionBody = await buildTxBody(thorClient, clauses, signerAddress, 32);
+      const body: TransactionBody = await buildTxBody(thorClient, clauses, signerAddress, 32, gas);
 
       await signAndSendTx(thorClient, body, pk); // This function signs the body and sends the transaction
       return; // Transaction was successful, exit the function

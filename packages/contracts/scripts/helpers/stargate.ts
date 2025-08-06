@@ -1,7 +1,13 @@
 import { HardhatEthersSigner } from "@nomicfoundation/hardhat-ethers/signers";
 import { ethers, network } from "hardhat";
-import { StargateNFT } from "../../typechain-types";
+import { StargateNFT, StargateNFT__factory } from "../../typechain-types";
 import { ERC20_ABI, VTHO_ADDRESS } from "./constants";
+import { ABIContract, Address, Clause } from "@vechain/sdk-core";
+import { SeedAccount, TestPk } from "./seedAccounts";
+import { TransactionUtils } from "@repo/utils";
+import { ThorClient } from "@vechain/sdk-network";
+import { getConfig } from "@repo/config";
+const thorClient = ThorClient.at(getConfig().nodeUrl);
 
 export interface Level {
   name: string;
@@ -21,7 +27,8 @@ export interface LevelAndSupply {
 
 const BLOCKS_PER_DAY = 6 * 60 * 24;
 
-export enum TokenLevelId { // Extend legacy strengthLevel enum
+export enum TokenLevelId {
+  // Extend legacy strengthLevel enum
   None,
   Strength,
   Thunder,
@@ -48,7 +55,7 @@ export const initialTokenLevels: LevelAndSupply[] = [
       scaledRewardFactor: 150,
       maturityBlocks: BLOCKS_PER_DAY * 30,
     },
-    cap: 872, // 2000 - 1128, TODO: confirm ahead/around deployment time
+    cap: 100000, // 2000 - 1128, TODO: confirm ahead/around deployment time
     circulatingSupply: 0,
   },
   {
@@ -62,7 +69,7 @@ export const initialTokenLevels: LevelAndSupply[] = [
       scaledRewardFactor: 250,
       maturityBlocks: BLOCKS_PER_DAY * 45,
     },
-    cap: 240, // 300 - 60
+    cap: 100000, // 300 - 60
     circulatingSupply: 0,
   },
   {
@@ -76,7 +83,7 @@ export const initialTokenLevels: LevelAndSupply[] = [
       scaledRewardFactor: 350,
       maturityBlocks: BLOCKS_PER_DAY * 60,
     },
-    cap: 10, // 100 - 79
+    cap: 100000, // 100 - 79
     circulatingSupply: 0,
   },
   // Legacy X Levels
@@ -91,7 +98,7 @@ export const initialTokenLevels: LevelAndSupply[] = [
       scaledRewardFactor: 200,
       maturityBlocks: 0,
     },
-    cap: 10, // 800 - 800
+    cap: 100000, // 800 - 800
     circulatingSupply: 0,
   },
   {
@@ -105,7 +112,7 @@ export const initialTokenLevels: LevelAndSupply[] = [
       scaledRewardFactor: 300,
       maturityBlocks: 0,
     },
-    cap: 10, // 862 - 862
+    cap: 100000, // 862 - 862
     circulatingSupply: 0,
   },
   {
@@ -119,7 +126,7 @@ export const initialTokenLevels: LevelAndSupply[] = [
       scaledRewardFactor: 400,
       maturityBlocks: 0,
     },
-    cap: 10, // 179 - 179
+    cap: 11000000, // 179 - 179
     circulatingSupply: 0,
   },
   {
@@ -302,4 +309,31 @@ export const createNodeHolder = async (
   await stargateNFT.connect(account).stake(level, {
     value: vetRequired,
   });
+};
+
+export const chunk = <T>(array: T[], size: number): T[][] =>
+  Array.from({ length: Math.ceil(array.length / size) }, (_v, i) => array.slice(i * size, i * size + size));
+
+export const stake = async (stargateAddress: string, accounts: SeedAccount[]) => {
+  console.log(`Minting Stargate NFTs (excluding X-Nodes)...`);
+
+  const abi = ABIContract.ofAbi(StargateNFT__factory.abi);
+  const stakeFunction = abi.getFunction("stake");
+
+  // Filter out X-Node Levels
+  const nonXTokenLevels = initialTokenLevels.filter(level => !level.level.isX);
+
+  for (let i = 0; i < accounts.length; i++) {
+    const account = accounts[i];
+
+    // Assign levelId from non-X Levels in round-robin fashion
+    const level = nonXTokenLevels[i % nonXTokenLevels.length].level;
+
+    console.log(`Minting NFT for ${account.key.address} with levelId ${level.id} (${level.name})`);
+
+    const clause = Clause.callFunction(Address.of(stargateAddress), stakeFunction, [level.id]);
+
+    // Send transaction signed by this account's private key
+    await TransactionUtils.sendTx(thorClient, [clause], account.key.pk, 5, 3_000_000); // Force gas limit to avoid estimation failures
+  }
 };
