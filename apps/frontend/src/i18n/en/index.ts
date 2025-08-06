@@ -119,6 +119,7 @@ const en = {
     lightning: "Lightning",
     dawn: "Dawn",
     validator: "Validator",
+    inactive_validator: "Validator (inactive)",
   },
   field_errors: {
     required: "Required",

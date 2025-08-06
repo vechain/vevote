@@ -453,6 +453,10 @@ type RootTranslation = {
 		 * V​a​l​i​d​a​t​o​r
 		 */
 		validator: string
+		/**
+		 * V​a​l​i​d​a​t​o​r​ ​(​i​n​a​c​t​i​v​e​)
+		 */
+		inactive_validator: string
 	}
 	field_errors: {
 		/**
@@ -1771,6 +1775,10 @@ JPG, PNG or SVG of maximum of {size}MB.
 		 * Validator
 		 */
 		validator: () => LocalizedString
+		/**
+		 * Validator (inactive)
+		 */
+		inactive_validator: () => LocalizedString
 	}
 	field_errors: {
 		/**

@@ -62,6 +62,7 @@ export enum NodeStrengthLevel {
   Lightning = "lightning",
   Dawn = "dawn",
   Validator = "validator",
+  InactiveValidator = "inactive_validator",
 }
 
 export const NodeStrengthLevels: NodeStrengthLevel[] = [

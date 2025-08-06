@@ -16,7 +16,7 @@ export const ProposalPreview = () => {
   const { proposalDetails } = useCreateProposal();
   const { account } = useWallet();
 
-  const isMobile = useBreakpointValue({ base: true, md: false });
+  const isMobile = useBreakpointValue({ base: true, lg: false });
 
   const proposal = useMemo(
     () =>
@@ -38,10 +38,14 @@ export const ProposalPreview = () => {
     <PreviewWrapper>
       <ProposalProvider proposal={proposal}>
         <VStack gap={10} w={"full"} alignItems={"stretch"} p={{ base: 6, md: 20 }}>
-          <Stack direction={{ base: "column", md: "row" }} w={"full"} gap={{ base: 10, md: 12 }}>
+          <Stack direction={{ base: "column", lg: "row" }} w={"full"} gap={{ base: 10, md: 12 }}>
             <VStack gap={10} align="stretch" flex={2}>
               <ProposalHeader />
-              <Heading fontWeight={500} color={"gray.800"} lineHeight={"1.33"}>
+              <Heading
+                fontWeight={500}
+                color={"gray.700"}
+                lineHeight={"1.33"}
+                fontSize={{ base: "20px", md: "30px" }}>
                 {proposal.title}
               </Heading>
               {!isMobile && <DescriptionSection />}
@@ -49,9 +53,9 @@ export const ProposalPreview = () => {
             <VStack gap={10} align="stretch" flex={1}>
               <VotingAndTimeline />
               {isMobile && <DescriptionSection />}
+              <BuyNodeCta />
             </VStack>
           </Stack>
-          <BuyNodeCta />
         </VStack>
       </ProposalProvider>
     </PreviewWrapper>
