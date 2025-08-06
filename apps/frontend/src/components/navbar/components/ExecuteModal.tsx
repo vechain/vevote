@@ -45,7 +45,7 @@ export const ExecuteModal = ({ proposalId }: { proposalId: string }) => {
         setError("link", { message: errorMessage });
       }
     },
-    [sendTransaction, proposalId, onClose],
+    [sendTransaction, proposalId, onClose, LL.proposal],
   );
 
   return (
