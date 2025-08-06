@@ -30,6 +30,21 @@ export const getTestKey = (index: number): TestPk => {
   };
 };
 
+export const getSeedAccounts = (numAccounts: number, acctOffset: number): SeedAccount[] => {
+  const keys = getTestKeys(numAccounts + acctOffset);
+
+  const seedAccounts: SeedAccount[] = [];
+
+  keys.slice(acctOffset).forEach(key => {
+    seedAccounts.push({
+      key,
+      amount: 0n,
+    });
+  });
+
+  return seedAccounts;
+};
+
 export const getTestKeys = (count: number): TestPk[] => {
   const accounts = [];
   for (let i = 0; i < count; i++) {
@@ -37,18 +52,4 @@ export const getTestKeys = (count: number): TestPk[] => {
   }
 
   return accounts;
-};
-
-/**
- * Generates a random starting balance for an account
- * Lower balances are favoured based on a log scale
- * @param min
- * @param max
- * @returns
- */
-const getRandomStartingBalance = (min: number, max: number): bigint => {
-  const scale = Math.log(max) - Math.log(min);
-  const random = Math.random() ** 6; // Raise to a power to skew towards smaller values.
-  const result = Math.exp(Math.log(min) + scale * random);
-  return VET.of(Math.floor(result)).wei;
 };
