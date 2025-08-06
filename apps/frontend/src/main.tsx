@@ -21,6 +21,7 @@ import { CreateProposalProvider } from "./pages/CreateProposal/CreateProposalPro
 import { persister, queryClient } from "./utils/queryClient.ts";
 import { UserProvider } from "./contexts/UserProvider.tsx";
 import { MixPanelProvider } from "./contexts/MixPanelProvider.tsx";
+import { LegalLinks } from "./types/terms.ts";
 
 loadLocale("en");
 
@@ -51,10 +52,6 @@ const Providers = ({ children }: PropsWithChildren) => {
     <I18nProvider locale={locale}>
       <PersistQueryClientProvider client={queryClient} persistOptions={{ persister }}>
         <VeChainKitProvider
-          feeDelegation={{
-            delegatorUrl: "https://sponsor-testnet.vechain.energy/by/283",
-            delegateAllTransactions: true,
-          }}
           loginMethods={[
             // { method: "vechain", gridColumn: 4 },
             { method: "dappkit", gridColumn: 4 },
@@ -69,6 +66,11 @@ const Providers = ({ children }: PropsWithChildren) => {
           language="en"
           network={{
             type: config.network.type,
+          }}
+          legalDocuments={{
+            privacyPolicy: [{ url: LegalLinks.PRIVACY_POLICY, required: true, version: 1 }],
+            termsAndConditions: [{ url: LegalLinks.TERMS_OF_SERVICE, required: true, version: 1 }],
+            cookiePolicy: [{ url: LegalLinks.COOKIES_POLICY, required: true, version: 1 }],
           }}>
           <MixPanelProvider>
             <ThemeProvider>

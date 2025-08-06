@@ -1,6 +1,6 @@
 import { useI18nContext } from "@/i18n/i18n-react";
 import { FilterIcon } from "@/icons";
-import { FilterStatuses } from "@/types/proposal";
+import { ProposalStatus } from "@/types/proposal";
 import {
   Button,
   Checkbox,
@@ -18,14 +18,15 @@ import {
 } from "@chakra-ui/react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-const DEFAULT_STATUSES: FilterStatuses[] = [
-  "approved",
-  "canceled",
-  "draft",
-  "executed",
-  "rejected",
-  "upcoming",
-  "voting",
+const DEFAULT_STATUSES: ProposalStatus[] = [
+  ProposalStatus.APPROVED,
+  ProposalStatus.CANCELED,
+  ProposalStatus.DRAFT,
+  ProposalStatus.EXECUTED,
+  ProposalStatus.REJECTED,
+  ProposalStatus.UPCOMING,
+  ProposalStatus.VOTING,
+  ProposalStatus.MIN_NOT_REACHED,
 ];
 
 export const FiltersDropdown = ({
@@ -33,16 +34,16 @@ export const FiltersDropdown = ({
   setStatuses,
   ...restProps
 }: Omit<MenuButtonProps, "children"> & {
-  statuses: FilterStatuses[];
-  setStatuses: (newStatuses: FilterStatuses[]) => void;
+  statuses: ProposalStatus[];
+  setStatuses: (newStatuses: ProposalStatus[]) => void;
 }) => {
   const { LL } = useI18nContext();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const [tempStatuses, setTempStatuses] = useState<FilterStatuses[]>(statuses);
+  const [tempStatuses, setTempStatuses] = useState<ProposalStatus[]>(statuses);
 
   const onChangeStatus = useCallback(
-    (value: FilterStatuses) => {
+    (value: ProposalStatus) => {
       const values = tempStatuses.includes(value)
         ? tempStatuses.filter(status => status !== value)
         : [...tempStatuses, value];
@@ -67,10 +68,12 @@ export const FiltersDropdown = ({
   }, [tempStatuses, statuses]);
 
   const options = useMemo(() => {
-    return Object.entries(LL.badge).map(opt => ({
-      value: opt[0] as FilterStatuses,
-      label: opt[1](),
-    }));
+    return Object.entries(LL.badge).map(opt => {
+      return {
+        value: opt[0] as ProposalStatus,
+        label: opt[1](),
+      };
+    });
   }, [LL.badge]);
 
   useEffect(() => {

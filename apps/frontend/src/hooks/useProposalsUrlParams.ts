@@ -1,26 +1,28 @@
-import { FilterStatuses } from "@/types/proposal";
 import { useCallback, useMemo, useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useDebounce } from "./useDebounce";
+import { ProposalStatus } from "@/types/proposal";
 
-const DEFAULT_STATUSES: FilterStatuses[] = [
-  "approved",
-  "canceled",
-  "draft",
-  "executed",
-  "rejected",
-  "upcoming",
-  "voting",
+const DEFAULT_STATUSES: ProposalStatus[] = [
+  ProposalStatus.APPROVED,
+  ProposalStatus.CANCELED,
+  ProposalStatus.DRAFT,
+  ProposalStatus.EXECUTED,
+  ProposalStatus.REJECTED,
+  ProposalStatus.UPCOMING,
+  ProposalStatus.VOTING,
+  ProposalStatus.MIN_NOT_REACHED,
 ];
 
-const VALID_STATUSES: FilterStatuses[] = [
-  "approved",
-  "canceled",
-  "draft",
-  "executed",
-  "rejected",
-  "upcoming",
-  "voting",
+const VALID_STATUSES: ProposalStatus[] = [
+  ProposalStatus.APPROVED,
+  ProposalStatus.CANCELED,
+  ProposalStatus.DRAFT,
+  ProposalStatus.EXECUTED,
+  ProposalStatus.REJECTED,
+  ProposalStatus.UPCOMING,
+  ProposalStatus.VOTING,
+  ProposalStatus.MIN_NOT_REACHED,
 ];
 
 export const useProposalsUrlParams = () => {
@@ -40,9 +42,9 @@ export const useProposalsUrlParams = () => {
       return DEFAULT_STATUSES;
     }
 
-    const statusArray = statusParam.split(",").filter(status => VALID_STATUSES.includes(status as FilterStatuses));
+    const statusArray = statusParam.split(",").filter(status => VALID_STATUSES.includes(status as ProposalStatus));
 
-    return statusArray.length > 0 ? statusArray : DEFAULT_STATUSES;
+    return statusArray.length > 0 ? (statusArray as ProposalStatus[]) : DEFAULT_STATUSES;
   }, [searchParams]);
 
   const setSearchValue = useCallback(
@@ -69,7 +71,7 @@ export const useProposalsUrlParams = () => {
   }, []);
 
   const setStatuses = useCallback(
-    (newStatuses: FilterStatuses[]) => {
+    (newStatuses: ProposalStatus[]) => {
       setSearchParams(prev => {
         const newParams = new URLSearchParams(prev);
         if (

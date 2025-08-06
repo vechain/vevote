@@ -23,7 +23,7 @@ export const Proposal = () => {
   const { account } = useWallet();
   const params = useParams();
   const navigate = useNavigate();
-  const isMobile = useBreakpointValue({ base: true, md: false });
+  const isMobile = useBreakpointValue({ base: true, lg: false });
 
   const proposalId = useMemo(() => {
     if (params.proposalId !== "draft") return params.proposalId;
@@ -65,7 +65,7 @@ export const Proposal = () => {
     <ProposalProvider proposal={proposal}>
       <Box bg={"white"}>
         <Navbar />
-        <PageContainer bg={"white"} pt={{ base: 24, md: 32 }} pb={10}>
+        <PageContainer bg={"white"} pt={{ base: 24, md: 32 }} pb={10} variant="constrained">
           <VStack gap={10} w={"full"} alignItems={"stretch"}>
             <Flex gap={1} alignItems={"center"} fontSize={"14px"} fontWeight={500}>
               <Text color={"gray.600"} onClick={() => navigate(Routes.HOME)} cursor={"pointer"}>
@@ -74,10 +74,14 @@ export const Proposal = () => {
               <Text color={"gray.400"}>{"→"}</Text>
               <Text color={"gray.600"}>{LL.proposal.title()}</Text>
             </Flex>
-            <Stack direction={{ base: "column", md: "row" }} w={"full"} gap={{ base: 10, md: 12 }}>
+            <Stack direction={{ base: "column", lg: "row" }} w={"full"} gap={{ base: 10, md: 12 }}>
               <VStack gap={10} align="stretch" flex={2}>
                 <ProposalHeader />
-                <Heading fontWeight={500} color={"gray.800"} lineHeight={"1.33"}>
+                <Heading
+                  fontWeight={500}
+                  color={"gray.700"}
+                  lineHeight={"1.33"}
+                  fontSize={{ base: "20px", md: "30px" }}>
                   {proposal.title}
                 </Heading>
                 {!isMobile && <DescriptionSection />}
