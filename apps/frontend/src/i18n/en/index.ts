@@ -106,7 +106,7 @@ const en = {
     go_to_proposals: "Go to proposals",
   },
   node_names: {
-    none: "No Node",
+    none: "Admin",
     strength: "Strength",
     thunder: "Thunder",
     mjolnir: "Mjolnir",

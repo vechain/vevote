@@ -11,7 +11,6 @@ export const VotingBaseDropdown = <T extends Option>({
   label,
   icon,
   renderValue,
-  usePortal = false,
   ...restProps
 }: Omit<MenuButtonProps, "children" | "onChange"> & {
   icon: (props: SVGProps<SVGSVGElement>) => JSX.Element;
@@ -19,13 +18,12 @@ export const VotingBaseDropdown = <T extends Option>({
   options: T[];
   selectedOption: T;
   onChange?: (value: T) => void;
-  usePortal?: boolean;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   renderValue?: (value: T) => any;
 }) => {
   return (
     <Menu 
-      strategy={usePortal ? "fixed" : "absolute"} 
+      strategy="fixed" 
       placement="bottom-start"
       gutter={4}
     >
@@ -51,7 +49,7 @@ export const VotingBaseDropdown = <T extends Option>({
           <Icon as={icon} boxSize={5} />
         </Flex>
       </MenuButton>
-      <MenuList zIndex={usePortal ? 10000 : undefined}>
+      <MenuList zIndex={10000}>
         {options.map((value, id) => (
           <MenuItem
             key={id}

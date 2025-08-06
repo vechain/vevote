@@ -106,7 +106,6 @@ export const VotersFiltersPanel = ({
           selectedOption={node}
           onChange={handleNodeChange}
           icon={NodeIcon}
-          usePortal={true}
         />
 
         <VotingBaseDropdown
