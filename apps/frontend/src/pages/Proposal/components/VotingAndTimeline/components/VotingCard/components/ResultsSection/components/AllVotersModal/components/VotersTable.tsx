@@ -47,7 +47,8 @@ const AddressCell = ({ value }: { value: string }) => {
       color={"primary.500"}
       fontSize={12}
       fontWeight={500}
-      href={`${VECHAIN_EXPLORER_URL}/account/${value}`}>
+      href={`${VECHAIN_EXPLORER_URL}/account/${value}`}
+      w={"84px"}>
       {formatAddress(value)}
     </CopyLink>
   );
@@ -104,7 +105,7 @@ const TransactionIdCell = ({ value }: { value: string }) => {
       fontSize={12}
       isExternal
       href={`${VECHAIN_EXPLORER_URL}/transactions/${value}`}>
-      {formatAddress(value)}
+      <Text w={"80px"}>{formatAddress(value)}</Text>
       <Icon as={ArrowLinkIcon} width={4} height={4} />
     </Link>
   );
