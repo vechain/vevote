@@ -317,7 +317,7 @@ const en = {
         publish_success_description: "The proposal has been successfully publish and can now be seen publicly.",
       },
     },
-    go_to_stargate: "Go to Stargate",
+    go_to_stargate: "Go to StarGate",
     proposal_not_found: "Proposal not found",
     proposal_not_found_description:
       "The proposal you're looking for doesn't exist or may have been removed. It's possible the URL is incorrect or the proposal has been deleted.",
@@ -390,7 +390,7 @@ const en = {
     how_to_get_voting_power: "How to get Voting Power",
   },
   stargate_warning: {
-    title: "Stargate Node Migration Required",
+    title: "StarGate Node Migration Required",
     description: "You have 1 or more non-migrated nodes. Please migrate them as soon as possible to continue voting.",
     migration_link: "https://app.stargate.vechain.org/",
     ongoing_proposal_warning:

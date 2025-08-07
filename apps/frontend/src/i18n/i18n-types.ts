@@ -1036,7 +1036,7 @@ type RootTranslation = {
 			}
 		}
 		/**
-		 * G​o​ ​t​o​ ​S​t​a​r​g​a​t​e
+		 * G​o​ ​t​o​ ​S​t​a​r​G​a​t​e
 		 */
 		go_to_stargate: string
 		/**
@@ -1270,7 +1270,7 @@ type RootTranslation = {
 	}
 	stargate_warning: {
 		/**
-		 * S​t​a​r​g​a​t​e​ ​N​o​d​e​ ​M​i​g​r​a​t​i​o​n​ ​R​e​q​u​i​r​e​d
+		 * S​t​a​r​G​a​t​e​ ​N​o​d​e​ ​M​i​g​r​a​t​i​o​n​ ​R​e​q​u​i​r​e​d
 		 */
 		title: string
 		/**
@@ -2352,7 +2352,7 @@ JPG, PNG or SVG of maximum of {size}MB.
 			}
 		}
 		/**
-		 * Go to Stargate
+		 * Go to StarGate
 		 */
 		go_to_stargate: () => LocalizedString
 		/**
@@ -2582,7 +2582,7 @@ JPG, PNG or SVG of maximum of {size}MB.
 	}
 	stargate_warning: {
 		/**
-		 * Stargate Node Migration Required
+		 * StarGate Node Migration Required
 		 */
 		title: () => LocalizedString
 		/**
