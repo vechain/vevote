@@ -1,4 +1,4 @@
-import { Button, Flex, Icon, Text } from "@chakra-ui/react";
+import { Button, Flex, Icon, Spinner, Text } from "@chakra-ui/react";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { ArrowDownIcon } from "@/icons";
 
@@ -16,11 +16,11 @@ export const Pagination = ({ current, total, onShowMore, text, loading }: Pagina
     <Flex justifyContent={"flex-start"} alignItems={"center"} marginTop={"24px"} columnGap={"16px"}>
       {current < total && (
         <Button
-          rightIcon={<Icon as={ArrowDownIcon} />}
+          rightIcon={loading ? <Spinner /> : <Icon as={ArrowDownIcon} />}
           variant={"tertiary"}
           onClick={onShowMore}
           size={{ base: "md", md: "lg" }}
-          isLoading={loading}>
+          isDisabled={loading}>
           {LL.show_more()}
         </Button>
       )}

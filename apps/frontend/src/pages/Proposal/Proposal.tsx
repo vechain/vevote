@@ -65,7 +65,7 @@ export const Proposal = () => {
     <ProposalProvider proposal={proposal}>
       <Box bg={"white"}>
         <Navbar />
-        <PageContainer bg={"white"} pt={{ base: 24, md: 32 }} pb={10} variant="constrained">
+        <PageContainer bg={"white"} pt={{ base: 28, md: 32 }} variant="constrained">
           <VStack gap={10} w={"full"} alignItems={"stretch"}>
             <Flex gap={1} alignItems={"center"} fontSize={"14px"} fontWeight={500}>
               <Text color={"gray.600"} onClick={() => navigate(Routes.HOME)} cursor={"pointer"}>
