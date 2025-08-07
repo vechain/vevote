@@ -101,7 +101,7 @@ const TopBar = ({
         justifyContent={{ base: "flex-start", md: "space-between" }}>
         <Flex alignItems={"center"} gap={4}>
           <Flex alignItems={"center"} gap={2} borderRightWidth={"1px"} borderColor={"gray.100"} paddingRight={4}>
-            <Text fontSize={{ base: "14px", md: "16px" }} color={"gray.500"}>
+            <Text fontSize={{ base: "14px", md: "16px" }} color={"gray.600"}>
               {LL.by()}
             </Text>
             <Text fontSize={{ base: "14px", md: "16px" }} color={"gray.800"}>
@@ -189,7 +189,7 @@ const DateItem = ({ startDate, endDate, status }: Pick<ProposalCardType, "endDat
 
   return (
     <Flex alignItems={"center"} gap={2} fontSize={{ base: "12px", md: "14px" }}>
-      <Text color={"gray.500"}>{status === ProposalStatus.UPCOMING ? LL.start() : LL.end()}</Text>
+      <Text color={"gray.600"}>{status === ProposalStatus.UPCOMING ? LL.start() : LL.end()}</Text>
       <Text fontWeight={500} color={"gray.600"}>
         {stringDate}
       </Text>
