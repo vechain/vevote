@@ -63,8 +63,8 @@ export const VotingPowerModal = () => {
         <ModalHeader>
           <ModalTitle title={LL.your_voting_power()} icon={VotingPowerIcon} />
         </ModalHeader>
-        <ModalBody w={"full"}>
-          <Flex flexDirection={"column"} gap={8} w={"full"}>
+        <ModalBody>
+          <Flex flexDirection={"column"} gap={8}>
             <VotingWallet />
             {hasLegacyNodes && <VotingPowerLegacyNodeWarning />}
             {isDelegator && <VotingPowerDelegatedWarning />}
