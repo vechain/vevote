@@ -64,3 +64,9 @@ resource "vercel_deployment" "vevote_frontend_deployment" {
   production = true
   ref        = local.config.tag
 }
+
+resource "vercel_project_domain" "vercel-frontend-domain" {
+  count      = terraform.workspace == "prod" ? 1 : 0
+  project_id = vercel_project.vevote_frontend.id
+  domain     = local.config.domain_name
+}
