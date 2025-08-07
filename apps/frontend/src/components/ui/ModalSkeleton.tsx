@@ -18,7 +18,7 @@ export const ModalSkeleton = ({
   ...props
 }: ModalProps & { showCloseButton?: boolean }) => {
   return (
-    <BaseModal isCentered {...props}>
+    <BaseModal isCentered motionPreset="slideInBottom" {...props}>
       <ModalOverlay />
       <BaseModalContent>
         {showCloseButton && <ModalCloseButton onClick={props.onClose} />}
@@ -35,7 +35,7 @@ type MessageModalProps = Omit<ModalProps, "variant"> & {
 };
 export const MessageModal = ({ children, title, icon, iconColor = "primary.500", ...props }: MessageModalProps) => {
   return (
-    <BaseModal isCentered {...props}>
+    <BaseModal isCentered motionPreset="slideInBottom" {...props}>
       <ModalOverlay />
       <BaseModalContent gap={2} maxWidth={{ md: "480px" }}>
         <ModalHeader textAlign={"center"} display={"flex"} flexDirection={"column"} alignItems={"center"}>
