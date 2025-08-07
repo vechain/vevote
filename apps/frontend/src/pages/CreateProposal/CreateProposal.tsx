@@ -24,7 +24,7 @@ export const CreateProposal = () => {
   return (
     <>
       {!openPreview ? (
-        <PageContainer variant="full" padding={0} gap={0}>
+        <PageContainer variant="full" padding={{ base: 0, md: 0 }} gap={0} paddingTop={{ base: 0, md: 0 }}>
           <CreateProposalNavigation />
           <CreateProposalContent />
         </PageContainer>
