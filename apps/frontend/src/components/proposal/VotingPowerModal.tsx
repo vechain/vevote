@@ -1,7 +1,6 @@
 import { useAllUserNodes, useIsDelegator, useNodes } from "@/hooks/useUserQueries";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { VotingPowerIcon } from "@/icons";
-import { formatAddress } from "@/utils/address";
 import {
   Button,
   Flex,
@@ -28,6 +27,7 @@ import {
 import { ResourcesLinks } from "@/types/terms";
 import { getConfig } from "@repo/config";
 import { GroupedExtendedStargateNode, NodeItem } from "@/types/user";
+import { useVechainDomainOrAddress } from "@/hooks/useVechainDomainOrAddress";
 
 const EXPLORER_URL = getConfig(import.meta.env.VITE_APP_ENV).network.explorerUrl;
 
@@ -94,6 +94,8 @@ const VotingWallet = () => {
   const { account } = useWallet();
   const { LL } = useI18nContext();
 
+  const { addressOrDomain } = useVechainDomainOrAddress(account?.address);
+
   return (
     <HStack>
       <Text display={"inline-flex"} alignItems={"center"} gap={2} color={"gray.600"}>
@@ -105,7 +107,7 @@ const VotingWallet = () => {
         textToCopy={account?.address}
         color={"primary.700"}
         fontWeight={500}>
-        {formatAddress(account?.address || "")}
+        {addressOrDomain}
       </CopyLink>
     </HStack>
   );

@@ -2,17 +2,16 @@ import { DiscourseLink } from "@/components/proposal/DiscourseLink";
 import { ProposalCardVotesResults } from "@/components/proposal/ProposalCardVotesResults";
 import { Avatar } from "@/components/ui/Avatar";
 import { IconBadge } from "@/components/ui/IconBadge";
-import { ColorByVote } from "@/constants";
-import { IconByVote } from "@/constants";
+import { ColorByVote, IconByVote } from "@/constants";
 import { useHasVoted, useIndexerVoteResults, useVoteByProposalId } from "@/hooks/useCastVote";
 import { useFormatDate } from "@/hooks/useFormatDate";
+import { useVechainDomainOrAddress } from "@/hooks/useVechainDomainOrAddress";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { ProposalCardType, ProposalStatus } from "@/types/proposal";
-import { formatAddress } from "@/utils/address";
 import { MixPanelEvent, trackEvent } from "@/utils/mixpanel/utilsMixpanel";
 import { getPicassoImgSrc } from "@/utils/picasso";
-import { Flex, HStack, Icon, Text, Stack } from "@chakra-ui/react";
-import { useGetAvatarOfAddress, useVechainDomain } from "@vechain/vechain-kit";
+import { Flex, HStack, Icon, Stack, Text } from "@chakra-ui/react";
+import { useGetAvatarOfAddress } from "@vechain/vechain-kit";
 import dayjs from "dayjs";
 import { useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
@@ -73,17 +72,12 @@ const TopBar = ({
   const { LL } = useI18nContext();
 
   const { data: avatar } = useGetAvatarOfAddress(proposer || "");
-  const { data: addressOrDomain } = useVechainDomain(proposer);
+  const { addressOrDomain } = useVechainDomainOrAddress(proposer);
 
   const imageUrl = useMemo(() => avatar || getPicassoImgSrc(proposer || ""), [avatar, proposer]);
 
   const { hasVoted } = useHasVoted({ proposalId: id || "" });
   const { vote } = useVoteByProposalId({ proposalId: id || "", enabled: hasVoted });
-
-  const displayAddress = useMemo(() => {
-    if (addressOrDomain?.domain) return addressOrDomain?.domain;
-    return formatAddress(addressOrDomain?.address || "");
-  }, [addressOrDomain?.address, addressOrDomain?.domain]);
 
   const voteIcon = IconByVote[vote];
   const voteColor = ColorByVote[vote];
@@ -112,7 +106,7 @@ const TopBar = ({
               {LL.by()}
             </Text>
             <Text fontSize={{ base: "14px", md: "16px" }} color={"gray.800"}>
-              {displayAddress}
+              {addressOrDomain}
             </Text>
             <Avatar src={imageUrl} bg="gray.200" borderRadius="full" boxSize={6} />
           </Flex>
