@@ -28,7 +28,7 @@ export const Banner = () => {
       overflow={"hidden"}>
       <Flex
         alignItems={"center"}
-        justifyContent={"center"}
+        justifyContent={"space-between"}
         paddingTop={{ base: 16, md: 10, lg: 0 }}
         maxWidth={{ base: "full", lg: "1024px" }}
         paddingX={"20px"}
@@ -38,7 +38,7 @@ export const Banner = () => {
           gap={{ base: 10, md: 16 }}
           color={"white"}
           minWidth={{ base: "full", md: "350px", lg: "450px" }}>
-          <Flex flexDirection={"column"} gap={{ base: 4, md: 6 }}>
+          <Flex flexDirection={"column"} gap={{ base: 4, md: 6 }} maxWidth={"500px"}>
             <Heading
               as="h1"
               fontSize={{ base: "24px", md: "36px", lg: "48px" }}
@@ -58,13 +58,17 @@ export const Banner = () => {
               {LL.header.how_to_get_voting_power()}
               <Icon as={ArrowLinkIcon} />
             </Link>
+            <Link {...stargateButtonStyle} href={ResourcesLinks.STARGATE} isExternal>
+              {LL.learn_how_voting_power()}
+              <Icon as={ArrowLinkIcon} />
+            </Link>
           </Flex>
         </Flex>
         <Image
           display={{ base: "none", md: "block" }}
           src="/images/bemo.webp"
           alt="bemo"
-          width={{ md: "320px", lg: "420px" }}
+          width={{ md: "320px", lg: "320px" }}
           height={{ md: "520px", lg: "720px" }}
           objectFit={"cover"}
           flexShrink={1}

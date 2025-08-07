@@ -1,5 +1,5 @@
 import { createColumnHelper } from "@tanstack/react-table";
-import { defineStyle, Icon, Link, Text } from "@chakra-ui/react";
+import { defineStyle, Icon, Link, Text, TextProps } from "@chakra-ui/react";
 import { formatAddress } from "@/utils/address";
 import { CopyLink } from "@/components/ui/CopyLink";
 import { DataTable } from "@/components/ui/TableSkeleton";
@@ -34,9 +34,9 @@ const TableHeader = ({ label }: { label: string }) => {
   );
 };
 
-const BaseCell = ({ value }: { value: string }) => {
+const BaseCell = ({ value, ...restProps }: TextProps & { value: string }) => {
   return (
-    <Text whiteSpace={"nowrap"} fontSize={12} color={"gray.600"}>
+    <Text whiteSpace={"nowrap"} fontSize={12} color={"gray.600"} {...restProps}>
       {value}
     </Text>
   );
@@ -51,7 +51,7 @@ const AddressCell = ({ voter }: { voter: VoteItem["voter"] }) => {
       fontSize={12}
       fontWeight={500}
       href={`${VECHAIN_EXPLORER_URL}/accounts/${voter?.address}`}
-      w={"84px"}>
+      w={"90px"}>
       {voter?.domain || formatAddress(voter?.address || "")}
     </CopyLink>
   );
@@ -108,7 +108,7 @@ const TransactionIdCell = ({ value }: { value: string }) => {
       fontSize={12}
       isExternal
       href={`${VECHAIN_EXPLORER_URL}/transactions/${value}`}>
-      <Text w={"80px"}>{formatAddress(value)}</Text>
+      <Text w={"86px"}>{formatAddress(value)}</Text>
       <Icon as={ArrowLinkIcon} width={4} height={4} />
     </Link>
   );
