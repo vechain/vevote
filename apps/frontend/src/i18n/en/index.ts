@@ -67,7 +67,7 @@ const en = {
   migrate: "Migrate",
   stargate: "StarGate",
   learn_how_voting_power: "How voting power is obtained",
-  discuss_on_discourse: "Discuss on Discourse",
+  discuss_on_discourse: "Join the discussion on Discourse",
   datepicker: {
     select_date: "Select date",
     previous_month: "Previous month",

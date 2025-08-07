@@ -279,7 +279,7 @@ type RootTranslation = {
 	 */
 	learn_how_voting_power: string
 	/**
-	 * D​i​s​c​u​s​s​ ​o​n​ ​D​i​s​c​o​u​r​s​e
+	 * J​o​i​n​ ​t​h​e​ ​d​i​s​c​u​s​s​i​o​n​ ​o​n​ ​D​i​s​c​o​u​r​s​e
 	 */
 	discuss_on_discourse: string
 	datepicker: {
@@ -1609,7 +1609,7 @@ JPG, PNG or SVG of maximum of {size}MB.
 	 */
 	learn_how_voting_power: () => LocalizedString
 	/**
-	 * Discuss on Discourse
+	 * Join the discussion on Discourse
 	 */
 	discuss_on_discourse: () => LocalizedString
 	datepicker: {

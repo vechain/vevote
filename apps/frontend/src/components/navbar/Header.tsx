@@ -54,11 +54,11 @@ export const Banner = () => {
             <Link {...stargateButtonStyle} href={VeVoteLinks.VEVOTE_DOCS} isExternal>
               {LL.header.how_to_vote()} <Icon as={ArrowLinkIcon} />
             </Link>
-            <Link {...stargateButtonStyle} href={ResourcesLinks.STARGATE} isExternal>
+            <Link {...stargateButtonStyle} href={ResourcesLinks.STARGATE_APP} isExternal>
               {LL.header.how_to_get_voting_power()}
               <Icon as={ArrowLinkIcon} />
             </Link>
-            <Link {...stargateButtonStyle} href={ResourcesLinks.STARGATE} isExternal>
+            <Link {...stargateButtonStyle} href={ResourcesLinks.VOTING_POWER} isExternal>
               {LL.learn_how_voting_power()}
               <Icon as={ArrowLinkIcon} />
             </Link>
