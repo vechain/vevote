@@ -13,6 +13,7 @@ import { MixPanelEvent, trackEvent } from "@/utils/mixpanel/utilsMixpanel";
 import { getPicassoImgSrc } from "@/utils/picasso";
 import { Flex, HStack, Icon, Text, Stack } from "@chakra-ui/react";
 import { useGetAvatarOfAddress } from "@vechain/vechain-kit";
+import dayjs from "dayjs";
 import { useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -144,8 +145,8 @@ const BottomBar = ({
   const { results, isLoading: isLoadingResults } = useIndexerVoteResults({ proposalId: id });
 
   const showDate = useMemo(() => {
-    return status === ProposalStatus.UPCOMING || status === ProposalStatus.VOTING;
-  }, [status]);
+    return status === ProposalStatus.UPCOMING || (status === ProposalStatus.VOTING && dayjs(endDate).isAfter(dayjs()));
+  }, [endDate, status]);
 
   const showResults = useMemo(() => {
     return !isLoadingResults && ["voting", "approved", "executed", "rejected"].includes(status);

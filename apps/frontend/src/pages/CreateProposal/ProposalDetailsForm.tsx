@@ -42,7 +42,6 @@ export const ProposalDetailsForm = () => {
   );
 
   const onSubmit = (values: ProposalDetailsSchema) => {
-    console.log("Submitting proposal details:", values);
     setProposalDetails({
       ...proposalDetails,
       ...values,
