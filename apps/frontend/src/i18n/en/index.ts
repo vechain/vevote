@@ -66,6 +66,7 @@ const en = {
   comment_placeholder: "Add a comment to your vote...",
   migrate: "Migrate",
   stargate: "StarGate",
+  discuss_on_discourse: "Discuss on Discourse",
   datepicker: {
     select_date: "Select date",
     previous_month: "Previous month",
@@ -216,7 +217,6 @@ const en = {
       get_more_voting_power: "Get more Voting Power",
       get_voting_power: "Get Voting Power",
       title: "Voting Power",
-
       calculation: "Your Voting Power was calculated at the time of the snapshot {snapshot:string}.",
       total_voting_power: "Total Voting Power",
       warnings: {

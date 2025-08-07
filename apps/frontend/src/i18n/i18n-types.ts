@@ -274,6 +274,10 @@ type RootTranslation = {
 	 * S​t​a​r​G​a​t​e
 	 */
 	stargate: string
+	/**
+	 * D​i​s​c​u​s​s​ ​o​n​ ​D​i​s​c​o​u​r​s​e
+	 */
+	discuss_on_discourse: string
 	datepicker: {
 		/**
 		 * S​e​l​e​c​t​ ​d​a​t​e
@@ -1596,6 +1600,10 @@ JPG, PNG or SVG of maximum of {size}MB.
 	 * StarGate
 	 */
 	stargate: () => LocalizedString
+	/**
+	 * Discuss on Discourse
+	 */
+	discuss_on_discourse: () => LocalizedString
 	datepicker: {
 		/**
 		 * Select date

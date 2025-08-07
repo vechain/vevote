@@ -12,6 +12,7 @@ import {
   ModalHeader,
   Spinner,
   Text,
+  Tooltip,
   useDisclosure,
 } from "@chakra-ui/react";
 import { useWallet } from "@vechain/vechain-kit";
@@ -56,9 +57,11 @@ export const VotingPowerModal = () => {
 
   return (
     <>
-      <Button onClick={onOpen} leftIcon={<Icon as={VotingPowerIcon} boxSize={5} />} size={{ base: "md", md: "lg" }}>
-        {isLoading ? <Spinner size="sm" /> : totalVotingPower || "0"}
-      </Button>
+      <Tooltip label={LL.your_voting_power()}>
+        <Button onClick={onOpen} leftIcon={<Icon as={VotingPowerIcon} boxSize={5} />} size={{ base: "md", md: "lg" }}>
+          {isLoading ? <Spinner size="sm" /> : totalVotingPower || "0"}
+        </Button>
+      </Tooltip>
       <ModalSkeleton isOpen={isOpen} onClose={onClose}>
         <ModalHeader>
           <ModalTitle title={LL.your_voting_power()} icon={VotingPowerIcon} />
