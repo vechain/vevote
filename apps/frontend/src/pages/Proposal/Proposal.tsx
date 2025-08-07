@@ -78,7 +78,7 @@ export const Proposal = () => {
               <VStack gap={10} align="stretch" flex={2}>
                 <ProposalHeader />
                 <Heading
-                  fontWeight={500}
+                  fontWeight={600}
                   color={"gray.700"}
                   lineHeight={"1.33"}
                   fontSize={{ base: "20px", md: "30px" }}>
