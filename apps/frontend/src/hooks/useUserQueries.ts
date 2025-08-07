@@ -19,7 +19,6 @@ const getValidatorNode = (votingPower: bigint): ExtendedStargateNode => {
     tokenId: BigInt(0),
     vetAmountStaked: BigInt(0),
     lastVthoClaimTimestamp: 0,
-    multiplier: BigInt(100),
   };
 };
 

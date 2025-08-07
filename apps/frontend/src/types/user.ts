@@ -1,5 +1,4 @@
 export type NodeItem = {
-  multiplier: number;
   nodeName: string;
   votingPower: number;
   count: number;
@@ -41,7 +40,6 @@ export type StargateNode = {
 
 export type ExtendedStargateNode = StargateNode & {
   votingPower: bigint;
-  multiplier: bigint;
   nodeName: NodeStrengthLevel;
 };
 

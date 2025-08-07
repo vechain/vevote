@@ -41,7 +41,6 @@ export const VotingPowerModal = () => {
   const nodesList: NodeItem[] = useMemo(
     () =>
       groupedNodes.map((node: GroupedExtendedStargateNode) => ({
-        multiplier: Number(node.multiplier) / 100,
         nodeName: LL.node_names[node.nodeName](),
         votingPower: Number(node.votingPower) / 100,
         count: node.count,
