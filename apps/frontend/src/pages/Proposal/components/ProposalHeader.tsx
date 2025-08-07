@@ -1,14 +1,16 @@
-import { Avatar, Divider, Flex, HStack, Text } from "@chakra-ui/react";
+import { DiscourseLink } from "@/components/proposal/DiscourseLink";
 import { useProposal } from "@/components/proposal/ProposalProvider";
 import { IconBadge } from "@/components/ui/IconBadge";
-import { formatAddress } from "@/utils/address";
-import { getPicassoImgSrc } from "@/utils/picasso";
+import { useVechainDomainOrAddress } from "@/hooks/useVechainDomainOrAddress";
 import { useI18nContext } from "@/i18n/i18n-react";
-import { DiscourseLink } from "@/components/proposal/DiscourseLink";
+import { getPicassoImgSrc } from "@/utils/picasso";
+import { Avatar, Divider, Flex, HStack, Text } from "@chakra-ui/react";
 
 export const ProposalHeader = () => {
   const { LL } = useI18nContext();
   const { proposal } = useProposal();
+
+  const { addressOrDomain } = useVechainDomainOrAddress(proposal.proposer);
 
   return (
     <Flex flexDirection={"column"} gap={4} width={"full"}>
@@ -27,7 +29,7 @@ export const ProposalHeader = () => {
               {LL.by()}
             </Text>
             <Text color={"gray.800"} fontSize={{ base: "14px", md: "16px" }} fontWeight={400}>
-              {formatAddress(proposal.proposer)}
+              {addressOrDomain}
             </Text>
             <Avatar
               height={{ base: 4, md: 6 }}

@@ -44,7 +44,7 @@ const NodesList = ({ nodesList }: { nodesList: NodeItem[] }) => {
       maxHeight={shouldScroll ? "200px" : "none"}
       overflowY={shouldScroll ? "auto" : "visible"}
       pr={5}>
-      {nodesList.map(({ multiplier, nodeName, votingPower, count }, index) => (
+      {nodesList.map(({ nodeName, votingPower, count }, index) => (
         <Flex
           key={index}
           alignItems={"center"}
@@ -56,7 +56,6 @@ const NodesList = ({ nodesList }: { nodesList: NodeItem[] }) => {
           <HStack>
             <Text>{count}</Text>
             <Text>{nodeName}</Text>
-            <Text>{`(${multiplier}x)`}</Text>
           </HStack>
           <Text>{votingPower.toString()}</Text>
         </Flex>
