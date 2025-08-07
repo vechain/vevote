@@ -12,7 +12,7 @@ import { formatAddress } from "@/utils/address";
 import { MixPanelEvent, trackEvent } from "@/utils/mixpanel/utilsMixpanel";
 import { getPicassoImgSrc } from "@/utils/picasso";
 import { Flex, HStack, Icon, Text, Stack } from "@chakra-ui/react";
-import { useGetAvatarOfAddress } from "@vechain/vechain-kit";
+import { useGetAvatarOfAddress, useVechainDomain } from "@vechain/vechain-kit";
 import dayjs from "dayjs";
 import { useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
@@ -73,11 +73,17 @@ const TopBar = ({
   const { LL } = useI18nContext();
 
   const { data: avatar } = useGetAvatarOfAddress(proposer || "");
+  const { data: addressOrDomain } = useVechainDomain(proposer);
 
   const imageUrl = useMemo(() => avatar || getPicassoImgSrc(proposer || ""), [avatar, proposer]);
 
   const { hasVoted } = useHasVoted({ proposalId: id || "" });
   const { vote } = useVoteByProposalId({ proposalId: id || "", enabled: hasVoted });
+
+  const displayAddress = useMemo(() => {
+    if (addressOrDomain?.domain) return addressOrDomain?.domain;
+    return formatAddress(addressOrDomain?.address || "");
+  }, [addressOrDomain?.address, addressOrDomain?.domain]);
 
   const voteIcon = IconByVote[vote];
   const voteColor = ColorByVote[vote];
@@ -106,7 +112,7 @@ const TopBar = ({
               {LL.by()}
             </Text>
             <Text fontSize={{ base: "14px", md: "16px" }} color={"gray.800"}>
-              {formatAddress(proposer)}
+              {displayAddress}
             </Text>
             <Avatar src={imageUrl} bg="gray.200" borderRadius="full" boxSize={6} />
           </Flex>
