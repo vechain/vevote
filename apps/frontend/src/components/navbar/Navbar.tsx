@@ -27,7 +27,7 @@ export const Navbar = () => {
       <Container maxWidth={"1024px"} marginX={"auto"} paddingX={"20px"}>
         <Flex justifyContent={"space-between"} alignItems={"center"} gap={6} paddingY={4}>
           <Link to="/">
-            <VoteLogo width={{ base: 16, md: 20 }} />
+            <VoteLogo height={{ base: "20px", md: "30px" }} />
           </Link>
 
           <Flex alignItems={"center"} gap={{ base: 3, md: 6 }}>

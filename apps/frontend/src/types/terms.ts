@@ -1,7 +1,7 @@
 export enum LegalLinks {
-  TERMS_OF_SERVICE = "https://vote.vechain.org/terms",
-  PRIVACY_POLICY = "https://vote.vechain.org/privacy",
-  COOKIES_POLICY = "https://vote.vechain.org/cookies",
+  TERMS_OF_SERVICE = "https://vevote.vechain.org/terms",
+  PRIVACY_POLICY = "https://vevote.vechain.org/privacy",
+  COOKIES_POLICY = "https://vevote.vechain.org/cookies",
 }
 
 export enum ResourcesLinks {
