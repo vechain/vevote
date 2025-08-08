@@ -377,6 +377,8 @@ const en = {
     title: "Filters",
     apply: "Apply",
     reset: "Reset",
+    select_all: "Select all",
+    deselect_all: "Deselect all",
     sort: {
       newest: "Newest",
       oldest: "Oldest",

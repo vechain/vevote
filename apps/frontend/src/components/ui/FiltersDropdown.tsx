@@ -57,15 +57,23 @@ export const FiltersDropdown = ({
     onClose();
   }, [tempStatuses, setStatuses, onClose]);
 
-  const handleReset = useCallback(() => {
-    setTempStatuses(DEFAULT_STATUSES);
-    setStatuses(DEFAULT_STATUSES);
-    onClose();
-  }, [setStatuses, onClose]);
+  const handleSelectDeselect = useCallback(() => {
+    const allSelected = DEFAULT_STATUSES.every(status => tempStatuses.includes(status));
+    const newStatuses = allSelected ? [] : DEFAULT_STATUSES;
+    setTempStatuses(newStatuses);
+  }, [tempStatuses]);
 
   const hasChanges = useMemo(() => {
     return JSON.stringify(tempStatuses.sort()) !== JSON.stringify(statuses.sort());
   }, [tempStatuses, statuses]);
+
+  const areAllSelected = useMemo(() => {
+    return DEFAULT_STATUSES.every(status => tempStatuses.includes(status));
+  }, [tempStatuses]);
+
+  const selectDeselectButtonText = useMemo(() => {
+    return areAllSelected ? LL.filters.deselect_all() : LL.filters.select_all();
+  }, [areAllSelected, LL.filters]);
 
   const options = useMemo(() => {
     return Object.entries(LL.badge).map(opt => {
@@ -106,8 +114,8 @@ export const FiltersDropdown = ({
         </MenuOptionGroup>
         <MenuDivider />
         <Flex padding={3} gap={2} justifyContent={"space-between"}>
-          <Button size="sm" variant="ghost" onClick={handleReset} color="gray.600" _hover={{ bg: "gray.50" }}>
-            {LL.filters.reset()}
+          <Button size="sm" variant="ghost" onClick={handleSelectDeselect} color="gray.600" _hover={{ bg: "gray.50" }}>
+            {selectDeselectButtonText}
           </Button>
           <Button size="sm" variant="solid" colorScheme="primary" onClick={handleApply} isDisabled={!hasChanges}>
             {LL.filters.apply()}
