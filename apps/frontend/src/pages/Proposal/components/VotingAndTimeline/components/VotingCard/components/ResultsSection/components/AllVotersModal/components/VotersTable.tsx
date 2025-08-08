@@ -60,7 +60,7 @@ const AddressCell = ({ voter }: { voter: VoteItem["voter"] }) => {
       textOverflow={"ellipsis"}
       textAlign={"left"}
       display={"block"}
-      minW={"90px"}
+      w={"90px"}
       containerProps={{
         justifyContent: "center",
         width: "100%",
