@@ -108,9 +108,8 @@ export const useVotersData = ({
 
   return {
     votes: paginationData.votes,
+    totalVotes: votes.length,
     pagination: paginationData.pagination,
-    allVotes: filteredVotes,
-    originalVotes: votes,
     filterOptions,
     isLoading: isVotesLoading || isNodesLoading,
     error: votesError || nodesError,

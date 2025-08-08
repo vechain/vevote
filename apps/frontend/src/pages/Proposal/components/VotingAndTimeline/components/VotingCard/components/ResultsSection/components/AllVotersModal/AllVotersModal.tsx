@@ -24,7 +24,7 @@ export const AllVotersModal = () => {
 
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
 
-  const { votes, pagination, filterOptions, isLoading, error, originalVotes } = useVotersData({
+  const { votes, totalVotes, pagination, filterOptions, isLoading, error } = useVotersData({
     proposalId: proposal.id,
     filters: {
       selectedOption,
@@ -54,13 +54,13 @@ export const AllVotersModal = () => {
     setCurrentPage(page);
   }, []);
 
-  if (originalVotes.length === 0) return null;
+  if (totalVotes === 0) return null;
 
   return (
     <>
       <Flex alignItems={"center"} gap={1} onClick={onOpen} cursor={"pointer"}>
         <Text fontSize={{ base: "14px", md: "16px" }} color={"primary.600"} fontWeight={500}>
-          {LL.proposal.see_all_voters()}
+          {LL.proposal.see_all_voters({ voters: totalVotes })}
         </Text>
         <Icon as={ArrowRightIcon} width={4} height={4} color={"primary.600"} />
       </Flex>
