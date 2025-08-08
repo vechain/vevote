@@ -156,6 +156,7 @@ const en = {
     voting_will_start: "Voting will start {date:string}",
     see_your_vote: "See your vote details",
     see_all_voters: "See all {voters:number} voters",
+    see_first_voter: "See first voter",
     mark_as_executed: "Mark as executed",
     buy_another_node: "Buy another node to increase your voting power on future proposals.",
     buy_a_node:

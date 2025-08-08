@@ -577,6 +577,10 @@ type RootTranslation = {
 		 */
 		see_all_voters: RequiredParams<'voters'>
 		/**
+		 * S​e​e​ ​f​i​r​s​t​ ​v​o​t​e​r
+		 */
+		see_first_voter: string
+		/**
 		 * M​a​r​k​ ​a​s​ ​e​x​e​c​u​t​e​d
 		 */
 		mark_as_executed: string
@@ -1912,6 +1916,10 @@ JPG, PNG or SVG of maximum of {size}MB.
 		 * See all {voters} voters
 		 */
 		see_all_voters: (arg: { voters: number }) => LocalizedString
+		/**
+		 * See first voter
+		 */
+		see_first_voter: () => LocalizedString
 		/**
 		 * Mark as executed
 		 */
