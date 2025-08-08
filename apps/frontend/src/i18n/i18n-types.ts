@@ -572,7 +572,7 @@ type RootTranslation = {
 		 */
 		see_your_vote: string
 		/**
-		 * S​e​e​ ​a​l​l​ ​{​v​o​t​e​r​s​}​ ​v​o​t​e​r​s
+		 * S​e​e​ ​a​l​l​ ​(​{​v​o​t​e​r​s​}​)​ ​v​o​t​e​r​s
 		 * @param {number} voters
 		 */
 		see_all_voters: RequiredParams<'voters'>
@@ -1913,7 +1913,7 @@ JPG, PNG or SVG of maximum of {size}MB.
 		 */
 		see_your_vote: () => LocalizedString
 		/**
-		 * See all {voters} voters
+		 * See all ({voters}) voters
 		 */
 		see_all_voters: (arg: { voters: number }) => LocalizedString
 		/**
