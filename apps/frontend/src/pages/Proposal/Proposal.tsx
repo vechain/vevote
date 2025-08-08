@@ -30,7 +30,7 @@ export const Proposal = () => {
     return undefined;
   }, [params.proposalId]);
 
-  const { proposal: proposalData, loading: isLoading } = useProposalEvent(proposalId);
+  const { proposal: proposalData, loading: isLoading, error } = useProposalEvent(proposalId);
 
   const proposal = useMemo(() => {
     if (params.proposalId === "draft") return draftProposal || undefined;
@@ -56,7 +56,7 @@ export const Proposal = () => {
     );
   }
 
-  if (!proposal || proposal.id === "default") {
+  if (error) {
     navigate(`${Routes.HOME}?proposalNotFound=true`);
     return null;
   }
@@ -82,7 +82,7 @@ export const Proposal = () => {
                   color={"gray.700"}
                   lineHeight={"1.33"}
                   fontSize={{ base: "20px", md: "30px" }}>
-                  {proposal.title}
+                  {proposal?.title}
                 </Heading>
                 {!isMobile && <DescriptionSection />}
               </VStack>
