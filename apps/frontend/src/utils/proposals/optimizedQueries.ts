@@ -24,22 +24,25 @@ export const getProposals = async (
   proposalId?: string,
 ): Promise<PaginatedProposalsResult> => {
   const { pageSize = 20, statuses, searchQuery, cursor } = options;
+  try {
+    const data = await getProposalsEvents(thor, proposalId);
+    const allProposals = data?.proposals || [];
 
-  const data = await getProposalsEvents(thor, proposalId);
-  const allProposals = data?.proposals || [];
+    const enrichedProposals = await enrichProposalsWithData(allProposals);
 
-  const enrichedProposals = await enrichProposalsWithData(allProposals);
+    const filteredProposals = applyFilters(enrichedProposals, statuses, searchQuery);
 
-  const filteredProposals = applyFilters(enrichedProposals, statuses, searchQuery);
+    const { paginatedProposals, hasNextPage, nextCursor } = paginateProposals(filteredProposals, cursor, pageSize);
 
-  const { paginatedProposals, hasNextPage, nextCursor } = paginateProposals(filteredProposals, cursor, pageSize);
-
-  return {
-    proposals: paginatedProposals,
-    nextCursor,
-    hasNextPage,
-    totalCount: filteredProposals.length,
-  };
+    return {
+      proposals: paginatedProposals,
+      nextCursor,
+      hasNextPage,
+      totalCount: filteredProposals.length,
+    };
+  } catch (error) {
+    throw new Error(`Failed to fetch proposal: ${error}`);
+  }
 };
 
 export type { PaginatedProposalsResult, PaginationOptions };

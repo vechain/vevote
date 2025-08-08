@@ -5,7 +5,6 @@ import { useCallback, useState } from "react";
 import { useProposal } from "@/components/proposal/ProposalProvider";
 import { VotersFiltersPanel, DEFAULT_FILTER } from "./components/VotersFiltersPanel";
 import { useVotersData } from "@/hooks/useVotersData";
-import { NodeStrengthLevel } from "@/types/user";
 import { useDebounce } from "@/hooks/useDebounce";
 import { Sort } from "@/components/ui/SortDropdown";
 import { ModalSkeleton, ModalTitle } from "@/components/ui/ModalSkeleton";
@@ -19,18 +18,16 @@ export const AllVotersModal = () => {
   const { proposal } = useProposal();
 
   const [selectedOption, setSelectedOption] = useState(DEFAULT_FILTER);
-  const [node, setNode] = useState<NodeStrengthLevel | typeof DEFAULT_FILTER>(DEFAULT_FILTER);
   const [sort, setSort] = useState(Sort.Newest);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [currentPage, setCurrentPage] = useState(1);
 
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
 
-  const { votes, pagination, filterOptions, nodeOptions, isLoading, error, originalVotes } = useVotersData({
+  const { votes, totalVotes, pagination, filterOptions, isLoading, error } = useVotersData({
     proposalId: proposal.id,
     filters: {
       selectedOption,
-      node,
       sort,
       searchQuery: debouncedSearchQuery,
     },
@@ -40,11 +37,6 @@ export const AllVotersModal = () => {
 
   const handleSelectedOptionChange = useCallback((value: string) => {
     setSelectedOption(value);
-    setCurrentPage(1);
-  }, []);
-
-  const handleNodeChange = useCallback((value: NodeStrengthLevel | typeof DEFAULT_FILTER) => {
-    setNode(value);
     setCurrentPage(1);
   }, []);
 
@@ -62,26 +54,23 @@ export const AllVotersModal = () => {
     setCurrentPage(page);
   }, []);
 
-  if (originalVotes.length === 0) return null;
+  if (totalVotes === 0) return null;
 
   return (
     <>
       <Flex alignItems={"center"} gap={1} onClick={onOpen} cursor={"pointer"}>
         <Text fontSize={{ base: "14px", md: "16px" }} color={"primary.600"} fontWeight={500}>
-          {LL.proposal.see_all_voters()}
+          {LL.proposal.see_all_voters({ voters: totalVotes })}
         </Text>
         <Icon as={ArrowRightIcon} width={4} height={4} color={"primary.600"} />
       </Flex>
-      <ModalSkeleton isOpen={isOpen} onClose={onClose} size={"4xl"}>
+      <ModalSkeleton isOpen={isOpen} onClose={onClose} size={"3xl"}>
         <ModalHeader>
           <ModalTitle title={LL.voters()} icon={UserCheckIcon} />
           <VotersFiltersPanel
             options={filterOptions}
-            nodes={nodeOptions}
             selectedOption={selectedOption}
             onSelectedOptionChange={handleSelectedOptionChange}
-            node={node}
-            onNodeChange={handleNodeChange}
             sort={sort}
             onSortChange={handleSortChange}
             searchQuery={searchQuery}
