@@ -14,6 +14,10 @@ export const ResultsSection = () => {
   const { proposal } = useProposal();
   const { results } = useIndexerVoteResults({ proposalId: proposal.id });
 
+  const reachedVotingPower = useMemo(() => {
+    return results?.data?.reduce((acc, result) => acc + result.totalWeight / 100, 0) || 0;
+  }, [results?.data]);
+
   const votePercentages = useMemo(() => {
     const abstainVotes = results?.data?.find(result => result.support === "ABSTAIN")?.totalWeight ?? 0;
     const forVotes = results?.data?.find(result => result.support === "FOR")?.totalWeight ?? 0;
@@ -67,7 +71,7 @@ export const ResultsSection = () => {
           ))}
         </Flex>
       </Flex>
-      <ResultsInfo />
+      <ResultsInfo reachedVotingPower={reachedVotingPower} />
     </Flex>
   );
 };
