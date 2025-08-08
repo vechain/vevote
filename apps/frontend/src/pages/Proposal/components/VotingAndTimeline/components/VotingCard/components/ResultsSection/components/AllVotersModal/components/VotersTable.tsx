@@ -17,8 +17,6 @@ export type VoteItem = {
     address: string;
     domain?: string;
   };
-  node: string;
-  nodeId: string;
   votingPower: number;
   votedOption: string;
   transactionId: string;
