@@ -4,12 +4,22 @@ import { useProposal } from "@/components/proposal/ProposalProvider";
 import { ProposalStatus } from "@/types/proposal";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { useQuorum } from "@/hooks/useQuorum";
+import { useGetDatesBlocks } from "@/hooks/useGetDatesBlocks";
+import { useMemo } from "react";
 
-export const ResultsInfo = () => {
+export const ResultsInfo = ({ reachedVotingPower }: { reachedVotingPower: number }) => {
   const { proposal } = useProposal();
   const { LL } = useI18nContext();
 
-  const { quorumPercentage } = useQuorum();
+  const { startBlock } = useGetDatesBlocks({
+    startDate: proposal.startDate,
+  });
+
+  const { quorumPercentage } = useQuorum(startBlock);
+
+  const isQuorumReached = useMemo(() => {
+    return reachedVotingPower >= quorumPercentage;
+  }, [quorumPercentage, reachedVotingPower]);
 
   if (proposal.status === ProposalStatus.EXECUTED) {
     return (
@@ -82,11 +92,11 @@ export const ResultsInfo = () => {
         <Icon as={AlertTriangleIcon} width={5} height={5} color={"red.500"} marginTop={"2px"} />
         <Flex direction={"column"} gap={1}>
           <Text fontSize={"14px"} fontWeight={500} color={"red.700"}>
-            {LL.proposal.minimum_participation_not_reached()}
+            {LL.proposal.minimum_quorum_not_reached()}
           </Text>
           <Text fontSize={"12px"} color={"red.600"}>
-            {LL.proposal.the_voting_participation_didnt_reached_the_minimum_required_of_30_to_get_approval({
-              quorum: quorumPercentage || 30,
+            {LL.proposal.quorum_not_reached({
+              quorum: quorumPercentage.toLocaleString(),
             })}
           </Text>
         </Flex>
@@ -94,14 +104,20 @@ export const ResultsInfo = () => {
     );
   }
 
-  if (proposal.status === ProposalStatus.VOTING || proposal.status === ProposalStatus.UPCOMING) {
+  if (proposal.status === ProposalStatus.VOTING) {
+    if (isQuorumReached) {
+      <Flex gap={2} alignItems={"start"}>
+        <Icon as={CircleInfoIcon} width={4} height={4} color={"green.500"} marginTop={"2px"} />
+        <Text fontSize={"12px"} color={"green.700"}>
+          {LL.proposal.quorum_reached()}
+        </Text>
+      </Flex>;
+    }
     return (
       <Flex gap={2} alignItems={"start"}>
         <Icon as={CircleInfoIcon} width={4} height={4} color={"blue.500"} marginTop={"2px"} />
         <Text fontSize={"12px"} color={"blue.700"}>
-          {LL.proposal.a_minimum_of_30_participation_must_be_reached_to_validate_the_voting_of_the_proposal_and_get_approval(
-            { quorum: quorumPercentage || 30 },
-          )}
+          {LL.proposal.quorum_not_reached_yet({ quorum: quorumPercentage?.toLocaleString() })}
         </Text>
       </Flex>
     );

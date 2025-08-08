@@ -1121,19 +1121,23 @@ type RootTranslation = {
 		 */
 		the_proposal_didnt_get_enough_votes_in_favor_to_get_approval: string
 		/**
-		 * M​i​n​i​m​u​m​ ​p​a​r​t​i​c​i​p​a​t​i​o​n​ ​n​o​t​ ​r​e​a​c​h​e​d
+		 * M​i​n​i​m​u​m​ ​p​a​r​t​i​c​i​p​a​n​t​ ​n​o​t​ ​m​e​t
 		 */
-		minimum_participation_not_reached: string
+		minimum_quorum_not_reached: string
 		/**
-		 * T​h​e​ ​v​o​t​i​n​g​ ​p​a​r​t​i​c​i​p​a​t​i​o​n​ ​d​i​d​n​'​t​ ​r​e​a​c​h​e​d​ ​t​h​e​ ​m​i​n​i​m​u​m​ ​r​e​q​u​i​r​e​d​ ​o​f​ ​{​q​u​o​r​u​m​}​%​ ​t​o​ ​g​e​t​ ​a​p​p​r​o​v​a​l​.
-		 * @param {number} quorum
+		 * Q​u​o​r​u​m​ ​o​f​ ​{​q​u​o​r​u​m​}​ ​v​o​t​i​n​g​ ​p​o​w​e​r​ ​n​o​t​ ​r​e​a​c​h​e​d​.
+		 * @param {string} quorum
 		 */
-		the_voting_participation_didnt_reached_the_minimum_required_of_30_to_get_approval: RequiredParams<'quorum'>
+		quorum_not_reached: RequiredParams<'quorum'>
 		/**
-		 * A​ ​m​i​n​i​m​u​m​ ​o​f​ ​{​q​u​o​r​u​m​}​%​ ​p​a​r​t​i​c​i​p​a​t​i​o​n​ ​m​u​s​t​ ​b​e​ ​r​e​a​c​h​e​d​ ​t​o​ ​v​a​l​i​d​a​t​e​ ​t​h​e​ ​v​o​t​i​n​g​ ​o​f​ ​t​h​e​ ​p​r​o​p​o​s​a​l​ ​a​n​d​ ​g​e​t​ ​a​p​p​r​o​v​a​l​.
-		 * @param {number} quorum
+		 * Q​u​o​r​u​m​ ​o​f​ ​{​q​u​o​r​u​m​}​ ​v​o​t​i​n​g​ ​p​o​w​e​r​ ​n​o​t​ ​r​e​a​c​h​e​d​ ​y​e​t​.
+		 * @param {string} quorum
 		 */
-		a_minimum_of_30_participation_must_be_reached_to_validate_the_voting_of_the_proposal_and_get_approval: RequiredParams<'quorum'>
+		quorum_not_reached_yet: RequiredParams<'quorum'>
+		/**
+		 * Q​u​o​r​u​m​ ​r​e​a​c​h​e​d​.
+		 */
+		quorum_reached: string
 		/**
 		 * V​o​t​e​ ​s​u​b​m​i​s​s​i​o​n​ ​f​a​i​l​e​d
 		 */
@@ -2453,17 +2457,21 @@ JPG, PNG or SVG of maximum of {size}MB.
 		 */
 		the_proposal_didnt_get_enough_votes_in_favor_to_get_approval: () => LocalizedString
 		/**
-		 * Minimum participation not reached
+		 * Minimum participant not met
 		 */
-		minimum_participation_not_reached: () => LocalizedString
+		minimum_quorum_not_reached: () => LocalizedString
 		/**
-		 * The voting participation didn't reached the minimum required of {quorum}% to get approval.
+		 * Quorum of {quorum} voting power not reached.
 		 */
-		the_voting_participation_didnt_reached_the_minimum_required_of_30_to_get_approval: (arg: { quorum: number }) => LocalizedString
+		quorum_not_reached: (arg: { quorum: string }) => LocalizedString
 		/**
-		 * A minimum of {quorum}% participation must be reached to validate the voting of the proposal and get approval.
+		 * Quorum of {quorum} voting power not reached yet.
 		 */
-		a_minimum_of_30_participation_must_be_reached_to_validate_the_voting_of_the_proposal_and_get_approval: (arg: { quorum: number }) => LocalizedString
+		quorum_not_reached_yet: (arg: { quorum: string }) => LocalizedString
+		/**
+		 * Quorum reached.
+		 */
+		quorum_reached: () => LocalizedString
 		/**
 		 * Vote submission failed
 		 */
