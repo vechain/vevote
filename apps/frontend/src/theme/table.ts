@@ -16,15 +16,15 @@ const sizes = {
   default: definePartsStyle({
     th: {
       letterSpacing: "default",
-      paddingInlineStart: 3,
-      paddingInlineEnd: 3,
+      paddingInlineStart: 2,
+      paddingInlineEnd: 2,
       px: 2,
       py: 2,
       lineHeight: 4,
     },
     td: {
-      paddingInlineStart: 3,
-      paddingInlineEnd: 3,
+      paddingInlineStart: 2,
+      paddingInlineEnd: 2,
       px: 2,
       py: 2,
       lineHeight: 4,

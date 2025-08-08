@@ -72,7 +72,7 @@ export const AllVotersModal = () => {
         </Text>
         <Icon as={ArrowRightIcon} width={4} height={4} color={"primary.600"} />
       </Flex>
-      <ModalSkeleton isOpen={isOpen} onClose={onClose} size={"4xl"}>
+      <ModalSkeleton isOpen={isOpen} onClose={onClose} size={"3xl"}>
         <ModalHeader>
           <ModalTitle title={LL.voters()} icon={UserCheckIcon} />
           <VotersFiltersPanel

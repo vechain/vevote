@@ -28,7 +28,7 @@ const columnHelper = createColumnHelper<VoteItem>();
 
 const TableHeader = ({ label }: { label: string }) => {
   return (
-    <Text whiteSpace={"nowrap"} fontSize={12} color={"gray.800"} fontWeight={500} textTransform={"none"}>
+    <Text whiteSpace={"nowrap"} fontSize={12} color={"gray.800"} fontWeight={500} textTransform={"none"} flex={1}>
       {label}
     </Text>
   );
@@ -51,7 +51,7 @@ const AddressCell = ({ voter }: { voter: VoteItem["voter"] }) => {
       fontSize={12}
       fontWeight={500}
       href={`${VECHAIN_EXPLORER_URL}/accounts/${voter?.address}`}
-      w={"90px"}>
+      minW={"90px"}>
       {voter?.domain || formatAddress(voter?.address || "")}
     </CopyLink>
   );
@@ -131,16 +131,6 @@ export const VotersTable = ({ data }: VotersTableProps) => {
       cell: data => <AddressCell voter={data.getValue()} />,
       header: () => <TableHeader label={LL.proposal.voters_table.header.address()} />,
       id: "ADDRESS",
-    }),
-    columnHelper.accessor("node", {
-      cell: data => <BaseCell value={data.getValue()} />,
-      header: () => <TableHeader label={LL.proposal.voters_table.header.node()} />,
-      id: "NODE",
-    }),
-    columnHelper.accessor("nodeId", {
-      cell: data => <BaseCell value={formatAddress(data.getValue())} />,
-      header: () => <TableHeader label={LL.proposal.voters_table.header.node_id()} />,
-      id: "NODE_ID",
     }),
     columnHelper.accessor("votingPower", {
       cell: data => <BaseCell value={data.getValue().toString()} />,
