@@ -28,7 +28,14 @@ const columnHelper = createColumnHelper<VoteItem>();
 
 const TableHeader = ({ label }: { label: string }) => {
   return (
-    <Text whiteSpace={"nowrap"} fontSize={12} color={"gray.800"} fontWeight={500} textTransform={"none"} flex={1}>
+    <Text
+      whiteSpace={"nowrap"}
+      fontSize={12}
+      color={"gray.800"}
+      fontWeight={500}
+      textTransform={"none"}
+      flex={1}
+      textAlign={"center"}>
       {label}
     </Text>
   );
@@ -36,7 +43,7 @@ const TableHeader = ({ label }: { label: string }) => {
 
 const BaseCell = ({ value, ...restProps }: TextProps & { value: string }) => {
   return (
-    <Text whiteSpace={"nowrap"} fontSize={12} color={"gray.600"} {...restProps}>
+    <Text whiteSpace={"nowrap"} fontSize={12} color={"gray.600"} textAlign={"center"} {...restProps}>
       {value}
     </Text>
   );
@@ -51,7 +58,15 @@ const AddressCell = ({ voter }: { voter: VoteItem["voter"] }) => {
       fontSize={12}
       fontWeight={500}
       href={`${VECHAIN_EXPLORER_URL}/accounts/${voter?.address}`}
-      minW={"90px"}>
+      overflow={"hidden"}
+      textOverflow={"ellipsis"}
+      textAlign={"left"}
+      display={"block"}
+      w={"90px"}
+      containerProps={{
+        justifyContent: "center",
+        width: "100%",
+      }}>
       {voter?.domain || formatAddress(voter?.address || "")}
     </CopyLink>
   );
@@ -103,12 +118,15 @@ const TransactionIdCell = ({ value }: { value: string }) => {
       display={"flex"}
       gap={2}
       alignItems={"center"}
+      justifyContent={"center"}
       color={"primary.500"}
       fontWeight={500}
       fontSize={12}
       isExternal
       href={`${VECHAIN_EXPLORER_URL}/transactions/${value}`}>
-      <Text w={"86px"}>{formatAddress(value)}</Text>
+      <Text overflow={"hidden"} textOverflow={"ellipsis"}>
+        {formatAddress(value)}
+      </Text>
       <Icon as={ArrowLinkIcon} width={4} height={4} />
     </Link>
   );
@@ -126,26 +144,31 @@ export const VotersTable = ({ data }: VotersTableProps) => {
       cell: data => <BaseCell value={dayjs(data.getValue()).format("DD/MM/YYYY")} />,
       header: () => <TableHeader label={LL.proposal.voters_table.header.date()} />,
       id: "DATE",
+      size: 120,
     }),
     columnHelper.accessor("voter", {
       cell: data => <AddressCell voter={data.getValue()} />,
       header: () => <TableHeader label={LL.proposal.voters_table.header.address()} />,
       id: "ADDRESS",
+      size: 180,
     }),
     columnHelper.accessor("votingPower", {
       cell: data => <BaseCell value={data.getValue().toString()} />,
       header: () => <TableHeader label={LL.proposal.voters_table.header.voting_power()} />,
       id: "VOTING_POWER",
+      size: 120,
     }),
     columnHelper.accessor("votedOption", {
       cell: data => <VotedOptionCell option={data.getValue() as SingleChoiceEnum} />,
       header: () => <TableHeader label={LL.proposal.voters_table.header.voted_option()} />,
       id: "VOTED_OPTION",
+      size: 140,
     }),
     columnHelper.accessor("transactionId", {
       cell: data => <TransactionIdCell value={data.getValue()} />,
       header: () => <TableHeader label={LL.proposal.voters_table.header.transaction_id()} />,
       id: "TRANSACTION_ID",
+      size: 180,
     }),
   ];
 

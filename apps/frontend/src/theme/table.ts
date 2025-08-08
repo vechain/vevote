@@ -6,6 +6,8 @@ const { definePartsStyle, defineMultiStyleConfig } = createMultiStyleConfigHelpe
 const baseStyle = definePartsStyle({
   table: {
     fontFamily: "Inter, sans-serif",
+    tableLayout: { md: "fixed" },
+    width: "100%",
   },
   thead: {
     backgroundColor: "gray.100",
