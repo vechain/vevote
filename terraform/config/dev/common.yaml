@@ -2,7 +2,7 @@ project: vevote
 project_alias: ve
 vercel_team_id: team_gWCnY5uRnzsZIb5SvnCXAIjH
 tag: latest
-domain_frontend_name: vevote-staging.vercel.app
+domain_frontend_name: vote-staging.vercel.app
 
 all_environments:
   mnemonic: denial kitchen pet squirrel other broom bar gas better priority spoil cross
