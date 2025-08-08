@@ -60,7 +60,7 @@ const AddressCell = ({ voter }: { voter: VoteItem["voter"] }) => {
       textOverflow={"ellipsis"}
       textAlign={"left"}
       display={"block"}
-      w={"90px"}
+      minW={"90px"}
       containerProps={{
         justifyContent: "center",
         width: "100%",
@@ -104,6 +104,7 @@ const VotedOptionCell = ({ option }: { option: SingleChoiceEnum }) => {
       fontSize={12}
       borderRadius={4}
       p={1}
+      minWidth={"80px"}
       {...votedOptionCellVariants(option)}>
       {option}
     </Text>
@@ -122,7 +123,7 @@ const TransactionIdCell = ({ value }: { value: string }) => {
       fontSize={12}
       isExternal
       href={`${VECHAIN_EXPLORER_URL}/transactions/${value}`}>
-      <Text overflow={"hidden"} textOverflow={"ellipsis"}>
+      <Text overflow={"hidden"} textOverflow={"ellipsis"} minW={"86px"}>
         {formatAddress(value)}
       </Text>
       <Icon as={ArrowLinkIcon} width={4} height={4} />
@@ -151,7 +152,7 @@ export const VotersTable = ({ data }: VotersTableProps) => {
       size: 180,
     }),
     columnHelper.accessor("votingPower", {
-      cell: data => <BaseCell value={data.getValue().toString()} />,
+      cell: data => <BaseCell value={data.getValue().toString()} minW={"60px"} />,
       header: () => <TableHeader label={LL.proposal.voters_table.header.voting_power()} />,
       id: "VOTING_POWER",
       size: 120,
