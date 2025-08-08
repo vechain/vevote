@@ -347,7 +347,7 @@ const en = {
     quorum_reached: "Quorum reached.",
     vote_submission_failed: "Vote submission failed",
     vote_submitted_successfully: "Vote submitted successfully!",
-    submit_your_vote: "Submit your Vote",
+    submit_your_vote: "Submit your vote",
     vote_cannot_be_changed: "Your vote cannot be changed once submitted.",
     waiting_wallet_confirmation: "Waiting wallet confirmation...",
     confirm_vote: "Confirm vote",

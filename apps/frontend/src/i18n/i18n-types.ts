@@ -1147,7 +1147,7 @@ type RootTranslation = {
 		 */
 		vote_submitted_successfully: string
 		/**
-		 * S​u​b​m​i​t​ ​y​o​u​r​ ​V​o​t​e
+		 * S​u​b​m​i​t​ ​y​o​u​r​ ​v​o​t​e
 		 */
 		submit_your_vote: string
 		/**
@@ -2481,7 +2481,7 @@ JPG, PNG or SVG of maximum of {size}MB.
 		 */
 		vote_submitted_successfully: () => LocalizedString
 		/**
-		 * Submit your Vote
+		 * Submit your vote
 		 */
 		submit_your_vote: () => LocalizedString
 		/**

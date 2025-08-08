@@ -1,6 +1,7 @@
 import { useI18nContext } from "@/i18n/i18n-react";
 import { NodeItem } from "@/types/user";
 import { Flex, HStack, Text } from "@chakra-ui/react";
+import { useMemo } from "react";
 
 type VotingPowerModalTableProps = {
   nodesList: NodeItem[];
@@ -8,11 +9,13 @@ type VotingPowerModalTableProps = {
 };
 
 export const VotingPowerModalTable = ({ nodesList, totalVotingPower }: VotingPowerModalTableProps) => {
+  const shouldScroll = useMemo(() => nodesList.length > 8, [nodesList.length]);
+
   return (
     <Flex padding={6} borderRadius={12} background={"gray.50"} flexDirection={"column"} gap={2}>
       <NodesHeader />
       <NodesList nodesList={nodesList} />
-      <NodesFooter totalVotingPower={totalVotingPower} />
+      <NodesFooter totalVotingPower={totalVotingPower} shouldScroll={shouldScroll} />
     </Flex>
   );
 };
@@ -34,7 +37,7 @@ const NodesHeader = () => {
 };
 
 const NodesList = ({ nodesList }: { nodesList: NodeItem[] }) => {
-  const shouldScroll = nodesList.length > 8;
+  const shouldScroll = useMemo(() => nodesList.length > 8, [nodesList.length]);
 
   return (
     <Flex
@@ -64,7 +67,7 @@ const NodesList = ({ nodesList }: { nodesList: NodeItem[] }) => {
   );
 };
 
-const NodesFooter = ({ totalVotingPower }: { totalVotingPower: number }) => {
+const NodesFooter = ({ totalVotingPower, shouldScroll }: { totalVotingPower: number; shouldScroll: boolean }) => {
   const { LL } = useI18nContext();
   return (
     <Flex
@@ -75,7 +78,7 @@ const NodesFooter = ({ totalVotingPower }: { totalVotingPower: number }) => {
       alignItems={"center"}
       justifyContent={"space-between"}
       fontSize={{ base: 14, md: 16 }}
-      pr={5}>
+      pr={shouldScroll ? 8 : 5}>
       <Text>{LL.proposal.voting_power.total_voting_power()}</Text>
       <Text>{totalVotingPower}</Text>
     </Flex>

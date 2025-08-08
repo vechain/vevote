@@ -8,10 +8,10 @@ export enum ResourcesLinks {
   DOCS = "https://docs.stargate.vechain.org/",
   STARGATE_APP = "https://app.stargate.vechain.org/",
   STARGATE = "https://stargate.vechain.org/",
-  VOTING_POWER = "https://docs.vote.vechain.org/vote/vote-power#voting-power-table",
+  VOTING_POWER = "https://docs.vevote.vechain.org/vote/vote-power#voting-power-table",
 }
 
 export enum VeVoteLinks {
-  VEVOTE_DOCS = "https://vechain-foundation-san-marino.gitbook.io/vevote",
+  VEVOTE_DOCS = "https://docs.vevote.vechain.org",
   SUPPORT = "https://support.vechain.org/support/home",
 }
