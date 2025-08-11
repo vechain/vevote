@@ -1,14 +1,15 @@
-import { getQuorumPercentage } from "@/utils/proposals/quorumQueries";
+import { getQuorumThreshold } from "@/utils/proposals/quorumQueries";
 import { useQuery } from "@tanstack/react-query";
 
-export const useQuorum = () => {
+export const useQuorum = (timePoint?: number) => {
   const { data, isLoading, error } = useQuery({
-    queryKey: ["quorum"],
-    queryFn: async () => await getQuorumPercentage(),
+    queryKey: ["getQuorumThreshold", timePoint],
+    queryFn: async () => await getQuorumThreshold(timePoint || 0),
+    enabled: Boolean(timePoint),
   });
 
   return {
-    quorumPercentage: data,
+    quorumPercentage: Math.ceil(data ? data / 100 : 0),
     isLoading,
     error,
   };

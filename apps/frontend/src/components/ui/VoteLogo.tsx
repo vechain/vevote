@@ -3,7 +3,7 @@ import { Image, ImageProps } from "@chakra-ui/react";
 export const VoteLogo = (props: ImageProps) => {
   return (
     <Image
-      src="/svgs/vote_logo.svg"
+      src="/svgs/vevote_logo.svg"
       alt="VeVote Logo"
       width={"auto"}
       objectFit={"cover"}

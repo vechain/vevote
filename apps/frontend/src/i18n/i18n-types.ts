@@ -134,7 +134,7 @@ type RootTranslation = {
 	 */
 	submit_vote: string
 	/**
-	 * V​o​t​i​n​g​ ​P​o​w​e​r
+	 * V​o​t​i​n​g​ ​p​o​w​e​r
 	 */
 	voting_power: string
 	/**
@@ -274,6 +274,14 @@ type RootTranslation = {
 	 * S​t​a​r​G​a​t​e
 	 */
 	stargate: string
+	/**
+	 * H​o​w​ ​v​o​t​i​n​g​ ​p​o​w​e​r​ ​i​s​ ​o​b​t​a​i​n​e​d
+	 */
+	learn_how_voting_power: string
+	/**
+	 * J​o​i​n​ ​t​h​e​ ​d​i​s​c​u​s​s​i​o​n​ ​o​n​ ​D​i​s​c​o​u​r​s​e
+	 */
+	discuss_on_discourse: string
 	datepicker: {
 		/**
 		 * S​e​l​e​c​t​ ​d​a​t​e
@@ -564,9 +572,14 @@ type RootTranslation = {
 		 */
 		see_your_vote: string
 		/**
-		 * S​e​e​ ​a​l​l​ ​v​o​t​e​r​s
+		 * S​e​e​ ​a​l​l​ ​(​{​v​o​t​e​r​s​}​)​ ​v​o​t​e​r​s
+		 * @param {number} voters
 		 */
-		see_all_voters: string
+		see_all_voters: RequiredParams<'voters'>
+		/**
+		 * S​e​e​ ​f​i​r​s​t​ ​v​o​t​e​r
+		 */
+		see_first_voter: string
 		/**
 		 * M​a​r​k​ ​a​s​ ​e​x​e​c​u​t​e​d
 		 */
@@ -714,42 +727,42 @@ type RootTranslation = {
 		}
 		voting_power: {
 			/**
-			 * G​e​t​ ​m​o​r​e​ ​V​o​t​i​n​g​ ​P​o​w​e​r
+			 * G​e​t​ ​m​o​r​e​ ​v​o​t​i​n​g​ ​p​o​w​e​r
 			 */
 			get_more_voting_power: string
 			/**
-			 * G​e​t​ ​V​o​t​i​n​g​ ​P​o​w​e​r
+			 * G​e​t​ ​v​o​t​i​n​g​ ​p​o​w​e​r
 			 */
 			get_voting_power: string
 			/**
-			 * V​o​t​i​n​g​ ​P​o​w​e​r
+			 * V​o​t​i​n​g​ ​p​o​w​e​r
 			 */
 			title: string
 			/**
-			 * Y​o​u​r​ ​V​o​t​i​n​g​ ​P​o​w​e​r​ ​w​a​s​ ​c​a​l​c​u​l​a​t​e​d​ ​a​t​ ​t​h​e​ ​t​i​m​e​ ​o​f​ ​t​h​e​ ​s​n​a​p​s​h​o​t​ ​{​s​n​a​p​s​h​o​t​}​.
+			 * Y​o​u​r​ ​v​o​t​i​n​g​ ​p​o​w​e​r​ ​w​a​s​ ​c​a​l​c​u​l​a​t​e​d​ ​a​t​ ​t​h​e​ ​t​i​m​e​ ​o​f​ ​t​h​e​ ​s​n​a​p​s​h​o​t​ ​{​s​n​a​p​s​h​o​t​}​.
 			 * @param {string} snapshot
 			 */
 			calculation: RequiredParams<'snapshot'>
 			/**
-			 * T​o​t​a​l​ ​V​o​t​i​n​g​ ​P​o​w​e​r
+			 * T​o​t​a​l​ ​v​o​t​i​n​g​ ​p​o​w​e​r
 			 */
 			total_voting_power: string
 			warnings: {
 				/**
-				 * T​h​e​ ​c​o​n​n​e​c​t​e​d​ ​w​a​l​l​e​t​ ​h​a​s​ ​n​o​ ​V​o​t​i​n​g​ ​P​o​w​e​r
+				 * T​h​e​ ​c​o​n​n​e​c​t​e​d​ ​w​a​l​l​e​t​ ​h​a​s​ ​n​o​ ​v​o​t​i​n​g​ ​p​o​w​e​r
 				 */
 				zero_voting_power: string
 				/**
-				 * Y​o​u​ ​h​a​v​e​ ​l​e​g​a​c​y​ ​n​o​d​e​s​ ​t​h​a​t​ ​h​a​v​e​n​’​t​ ​b​e​e​n​ ​m​i​g​r​a​t​e​d​ ​y​e​t​.​ ​ ​M​i​g​r​a​t​e​ ​t​o​ ​g​e​t​ ​m​o​r​e​ ​V​o​t​i​n​g​ ​P​o​w​e​r​.
+				 * Y​o​u​ ​h​a​v​e​ ​l​e​g​a​c​y​ ​n​o​d​e​s​ ​t​h​a​t​ ​h​a​v​e​n​’​t​ ​b​e​e​n​ ​m​i​g​r​a​t​e​d​ ​y​e​t​.​ ​ ​M​i​g​r​a​t​e​ ​t​o​ ​g​e​t​ ​m​o​r​e​ ​v​o​t​i​n​g​ ​p​o​w​e​r​.
 				 */
 				legacy_node: string
 				delegated: {
 					/**
-					 * Y​o​u​r​ ​V​o​t​i​n​g​ ​P​o​w​e​r​ ​i​s​ ​d​e​l​e​g​a​t​e​d
+					 * Y​o​u​r​ ​v​o​t​i​n​g​ ​p​o​w​e​r​ ​i​s​ ​d​e​l​e​g​a​t​e​d
 					 */
 					title: string
 					/**
-					 * Y​o​u​r​ ​V​o​t​i​n​g​ ​P​o​w​e​r​ ​i​s​ ​d​e​l​e​g​a​t​e​d​ ​t​o​ ​a​n​o​t​h​e​r​ ​n​o​d​e
+					 * Y​o​u​r​ ​v​o​t​i​n​g​ ​p​o​w​e​r​ ​i​s​ ​d​e​l​e​g​a​t​e​d​ ​t​o​ ​a​n​o​t​h​e​r​ ​n​o​d​e
 					 */
 					description: string
 				}
@@ -792,11 +805,11 @@ type RootTranslation = {
 				 */
 				node_id: string
 				/**
-				 * V​o​t​i​n​g​ ​P​o​w​e​r
+				 * P​o​w​e​r
 				 */
 				voting_power: string
 				/**
-				 * V​o​t​e​d​ ​o​p​t​i​o​n
+				 * O​p​t​i​o​n
 				 */
 				voted_option: string
 				/**
@@ -1032,7 +1045,7 @@ type RootTranslation = {
 			}
 		}
 		/**
-		 * G​o​ ​t​o​ ​S​t​a​r​g​a​t​e
+		 * G​o​ ​t​o​ ​S​t​a​r​G​a​t​e
 		 */
 		go_to_stargate: string
 		/**
@@ -1108,19 +1121,23 @@ type RootTranslation = {
 		 */
 		the_proposal_didnt_get_enough_votes_in_favor_to_get_approval: string
 		/**
-		 * M​i​n​i​m​u​m​ ​p​a​r​t​i​c​i​p​a​t​i​o​n​ ​n​o​t​ ​r​e​a​c​h​e​d
+		 * M​i​n​i​m​u​m​ ​p​a​r​t​i​c​i​p​a​n​t​ ​n​o​t​ ​m​e​t
 		 */
-		minimum_participation_not_reached: string
+		minimum_quorum_not_reached: string
 		/**
-		 * T​h​e​ ​v​o​t​i​n​g​ ​p​a​r​t​i​c​i​p​a​t​i​o​n​ ​d​i​d​n​'​t​ ​r​e​a​c​h​e​d​ ​t​h​e​ ​m​i​n​i​m​u​m​ ​r​e​q​u​i​r​e​d​ ​o​f​ ​{​q​u​o​r​u​m​}​%​ ​t​o​ ​g​e​t​ ​a​p​p​r​o​v​a​l​.
-		 * @param {number} quorum
+		 * Q​u​o​r​u​m​ ​o​f​ ​{​q​u​o​r​u​m​}​ ​v​o​t​i​n​g​ ​p​o​w​e​r​ ​n​o​t​ ​r​e​a​c​h​e​d​.
+		 * @param {string} quorum
 		 */
-		the_voting_participation_didnt_reached_the_minimum_required_of_30_to_get_approval: RequiredParams<'quorum'>
+		quorum_not_reached: RequiredParams<'quorum'>
 		/**
-		 * A​ ​m​i​n​i​m​u​m​ ​o​f​ ​{​q​u​o​r​u​m​}​%​ ​p​a​r​t​i​c​i​p​a​t​i​o​n​ ​m​u​s​t​ ​b​e​ ​r​e​a​c​h​e​d​ ​t​o​ ​v​a​l​i​d​a​t​e​ ​t​h​e​ ​v​o​t​i​n​g​ ​o​f​ ​t​h​e​ ​p​r​o​p​o​s​a​l​ ​a​n​d​ ​g​e​t​ ​a​p​p​r​o​v​a​l​.
-		 * @param {number} quorum
+		 * Q​u​o​r​u​m​ ​o​f​ ​{​q​u​o​r​u​m​}​ ​v​o​t​i​n​g​ ​p​o​w​e​r​ ​n​o​t​ ​r​e​a​c​h​e​d​ ​y​e​t​.
+		 * @param {string} quorum
 		 */
-		a_minimum_of_30_participation_must_be_reached_to_validate_the_voting_of_the_proposal_and_get_approval: RequiredParams<'quorum'>
+		quorum_not_reached_yet: RequiredParams<'quorum'>
+		/**
+		 * Q​u​o​r​u​m​ ​r​e​a​c​h​e​d​.
+		 */
+		quorum_reached: string
 		/**
 		 * V​o​t​e​ ​s​u​b​m​i​s​s​i​o​n​ ​f​a​i​l​e​d
 		 */
@@ -1130,7 +1147,7 @@ type RootTranslation = {
 		 */
 		vote_submitted_successfully: string
 		/**
-		 * S​u​b​m​i​t​ ​y​o​u​r​ ​V​o​t​e
+		 * S​u​b​m​i​t​ ​y​o​u​r​ ​v​o​t​e
 		 */
 		submit_your_vote: string
 		/**
@@ -1227,6 +1244,14 @@ type RootTranslation = {
 		 * R​e​s​e​t
 		 */
 		reset: string
+		/**
+		 * S​e​l​e​c​t​ ​a​l​l
+		 */
+		select_all: string
+		/**
+		 * D​e​s​e​l​e​c​t​ ​a​l​l
+		 */
+		deselect_all: string
 		sort: {
 			/**
 			 * N​e​w​e​s​t
@@ -1256,17 +1281,17 @@ type RootTranslation = {
 		 */
 		description: string
 		/**
-		 * H​o​w​ ​t​o​ ​V​o​t​e
+		 * H​o​w​ ​t​o​ ​v​o​t​e
 		 */
 		how_to_vote: string
 		/**
-		 * H​o​w​ ​t​o​ ​g​e​t​ ​V​o​t​i​n​g​ ​P​o​w​e​r
+		 * G​e​t​ ​v​o​t​i​n​g​ ​p​o​w​e​r
 		 */
 		how_to_get_voting_power: string
 	}
 	stargate_warning: {
 		/**
-		 * S​t​a​r​g​a​t​e​ ​N​o​d​e​ ​M​i​g​r​a​t​i​o​n​ ​R​e​q​u​i​r​e​d
+		 * S​t​a​r​G​a​t​e​ ​N​o​d​e​ ​M​i​g​r​a​t​i​o​n​ ​R​e​q​u​i​r​e​d
 		 */
 		title: string
 		/**
@@ -1460,7 +1485,7 @@ export type TranslationFunctions = {
 	 */
 	submit_vote: () => LocalizedString
 	/**
-	 * Voting Power
+	 * Voting power
 	 */
 	voting_power: () => LocalizedString
 	/**
@@ -1596,6 +1621,14 @@ JPG, PNG or SVG of maximum of {size}MB.
 	 * StarGate
 	 */
 	stargate: () => LocalizedString
+	/**
+	 * How voting power is obtained
+	 */
+	learn_how_voting_power: () => LocalizedString
+	/**
+	 * Join the discussion on Discourse
+	 */
+	discuss_on_discourse: () => LocalizedString
 	datepicker: {
 		/**
 		 * Select date
@@ -1884,9 +1917,13 @@ JPG, PNG or SVG of maximum of {size}MB.
 		 */
 		see_your_vote: () => LocalizedString
 		/**
-		 * See all voters
+		 * See all ({voters}) voters
 		 */
-		see_all_voters: () => LocalizedString
+		see_all_voters: (arg: { voters: number }) => LocalizedString
+		/**
+		 * See first voter
+		 */
+		see_first_voter: () => LocalizedString
 		/**
 		 * Mark as executed
 		 */
@@ -2031,41 +2068,41 @@ JPG, PNG or SVG of maximum of {size}MB.
 		}
 		voting_power: {
 			/**
-			 * Get more Voting Power
+			 * Get more voting power
 			 */
 			get_more_voting_power: () => LocalizedString
 			/**
-			 * Get Voting Power
+			 * Get voting power
 			 */
 			get_voting_power: () => LocalizedString
 			/**
-			 * Voting Power
+			 * Voting power
 			 */
 			title: () => LocalizedString
 			/**
-			 * Your Voting Power was calculated at the time of the snapshot {snapshot}.
+			 * Your voting power was calculated at the time of the snapshot {snapshot}.
 			 */
 			calculation: (arg: { snapshot: string }) => LocalizedString
 			/**
-			 * Total Voting Power
+			 * Total voting power
 			 */
 			total_voting_power: () => LocalizedString
 			warnings: {
 				/**
-				 * The connected wallet has no Voting Power
+				 * The connected wallet has no voting power
 				 */
 				zero_voting_power: () => LocalizedString
 				/**
-				 * You have legacy nodes that haven’t been migrated yet.  Migrate to get more Voting Power.
+				 * You have legacy nodes that haven’t been migrated yet.  Migrate to get more voting power.
 				 */
 				legacy_node: () => LocalizedString
 				delegated: {
 					/**
-					 * Your Voting Power is delegated
+					 * Your voting power is delegated
 					 */
 					title: () => LocalizedString
 					/**
-					 * Your Voting Power is delegated to another node
+					 * Your voting power is delegated to another node
 					 */
 					description: () => LocalizedString
 				}
@@ -2108,11 +2145,11 @@ JPG, PNG or SVG of maximum of {size}MB.
 				 */
 				node_id: () => LocalizedString
 				/**
-				 * Voting Power
+				 * Power
 				 */
 				voting_power: () => LocalizedString
 				/**
-				 * Voted option
+				 * Option
 				 */
 				voted_option: () => LocalizedString
 				/**
@@ -2344,7 +2381,7 @@ JPG, PNG or SVG of maximum of {size}MB.
 			}
 		}
 		/**
-		 * Go to Stargate
+		 * Go to StarGate
 		 */
 		go_to_stargate: () => LocalizedString
 		/**
@@ -2420,17 +2457,21 @@ JPG, PNG or SVG of maximum of {size}MB.
 		 */
 		the_proposal_didnt_get_enough_votes_in_favor_to_get_approval: () => LocalizedString
 		/**
-		 * Minimum participation not reached
+		 * Minimum participant not met
 		 */
-		minimum_participation_not_reached: () => LocalizedString
+		minimum_quorum_not_reached: () => LocalizedString
 		/**
-		 * The voting participation didn't reached the minimum required of {quorum}% to get approval.
+		 * Quorum of {quorum} voting power not reached.
 		 */
-		the_voting_participation_didnt_reached_the_minimum_required_of_30_to_get_approval: (arg: { quorum: number }) => LocalizedString
+		quorum_not_reached: (arg: { quorum: string }) => LocalizedString
 		/**
-		 * A minimum of {quorum}% participation must be reached to validate the voting of the proposal and get approval.
+		 * Quorum of {quorum} voting power not reached yet.
 		 */
-		a_minimum_of_30_participation_must_be_reached_to_validate_the_voting_of_the_proposal_and_get_approval: (arg: { quorum: number }) => LocalizedString
+		quorum_not_reached_yet: (arg: { quorum: string }) => LocalizedString
+		/**
+		 * Quorum reached.
+		 */
+		quorum_reached: () => LocalizedString
 		/**
 		 * Vote submission failed
 		 */
@@ -2440,7 +2481,7 @@ JPG, PNG or SVG of maximum of {size}MB.
 		 */
 		vote_submitted_successfully: () => LocalizedString
 		/**
-		 * Submit your Vote
+		 * Submit your vote
 		 */
 		submit_your_vote: () => LocalizedString
 		/**
@@ -2535,6 +2576,14 @@ JPG, PNG or SVG of maximum of {size}MB.
 		 * Reset
 		 */
 		reset: () => LocalizedString
+		/**
+		 * Select all
+		 */
+		select_all: () => LocalizedString
+		/**
+		 * Deselect all
+		 */
+		deselect_all: () => LocalizedString
 		sort: {
 			/**
 			 * Newest
@@ -2564,17 +2613,17 @@ JPG, PNG or SVG of maximum of {size}MB.
 		 */
 		description: () => LocalizedString
 		/**
-		 * How to Vote
+		 * How to vote
 		 */
 		how_to_vote: () => LocalizedString
 		/**
-		 * How to get Voting Power
+		 * Get voting power
 		 */
 		how_to_get_voting_power: () => LocalizedString
 	}
 	stargate_warning: {
 		/**
-		 * Stargate Node Migration Required
+		 * StarGate Node Migration Required
 		 */
 		title: () => LocalizedString
 		/**

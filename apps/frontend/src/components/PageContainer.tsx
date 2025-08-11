@@ -12,6 +12,8 @@ const PageContainer = ({ variant = "constrained", ...props }: FlexProps & { vari
       marginX={"auto"}
       flexDirection={"column"}
       gap={{ base: "20px", md: "40px" }}
+      pt={{ base: 4, md: 10 }}
+      pb={{ base: 10, md: 20 }}
       {...props}></Flex>
   );
 };

@@ -18,3 +18,17 @@ export const getQuorumPercentage = async () => {
   }
   return Number(res.result.plain);
 };
+
+export const getQuorumThreshold = async (timePoint: number) => {
+  const res = await executeCall({
+    contractAddress,
+    contractInterface,
+    method: "quorum",
+    args: [timePoint],
+  });
+
+  if (!res.success) {
+    throw new Error("Failed to fetch quorum threshold");
+  }
+  return Number(res.result.plain);
+};

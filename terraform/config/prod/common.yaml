@@ -7,6 +7,7 @@ public_zone_name: vevote.vechain.org
 origin_id: vevote.vechain.org
 environment: prod
 region: eu-west-1
+domain_frontend_name: vote.vechain.org
 
 all_environments:
   mnemonic: denial kitchen pet squirrel other broom bar gas better priority spoil cross

@@ -45,7 +45,7 @@ export const modalTheme = defineMultiStyleConfig({
     default: {
       dialog: {
         padding: { base: "24px", md: "40px" },
-        maxWidth: { base: "327px", md: "480px" },
+        maxWidth: { md: "480px" },
       },
       header: resetModalItemsStyle.padding,
       body: resetModalItemsStyle.padding,

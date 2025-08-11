@@ -1,11 +1,10 @@
-import React, { useCallback, useMemo } from "react";
-import { Flex } from "@chakra-ui/react";
-import { useI18nContext } from "@/i18n/i18n-react";
-import { SearchInput } from "@/components/ui/SearchInput";
 import { VotingBaseDropdown } from "@/components/proposal/VotingBaseDropdown";
-import { FilterIcon, NodeIcon, SortDescIcon } from "@/icons";
-import { NodeStrengthLevel } from "@/types/user";
+import { SearchInput } from "@/components/ui/SearchInput";
 import { Sort } from "@/components/ui/SortDropdown";
+import { useI18nContext } from "@/i18n/i18n-react";
+import { FilterIcon, SortDescIcon } from "@/icons";
+import { Flex } from "@chakra-ui/react";
+import React, { useCallback, useMemo } from "react";
 
 export const DEFAULT_FILTER = "All";
 
@@ -13,11 +12,8 @@ const sortOptions = [Sort.Newest, Sort.Oldest];
 
 export interface VotersFiltersProps {
   options: string[];
-  nodes: NodeStrengthLevel[];
   selectedOption: string;
   onSelectedOptionChange: (value: string) => void;
-  node: NodeStrengthLevel | typeof DEFAULT_FILTER;
-  onNodeChange: (value: NodeStrengthLevel | typeof DEFAULT_FILTER) => void;
   sort: Sort;
   onSortChange: (value: Sort) => void;
   searchQuery: string;
@@ -26,11 +22,8 @@ export interface VotersFiltersProps {
 
 export const VotersFiltersPanel = ({
   options,
-  nodes,
   selectedOption,
   onSelectedOptionChange,
-  node,
-  onNodeChange,
   sort,
   onSortChange,
   searchQuery,
@@ -53,13 +46,6 @@ export const VotersFiltersPanel = ({
     [onSelectedOptionChange],
   );
 
-  const handleNodeChange = useCallback(
-    (value: NodeStrengthLevel | typeof DEFAULT_FILTER) => {
-      onNodeChange(value);
-    },
-    [onNodeChange],
-  );
-
   const handleSortChange = useCallback(
     (value: Sort) => {
       onSortChange(value);
@@ -68,25 +54,20 @@ export const VotersFiltersPanel = ({
   );
 
   const optionsWithAll = useMemo(() => [DEFAULT_FILTER, ...options], [options]);
-  const nodesWithAll: (NodeStrengthLevel | typeof DEFAULT_FILTER)[] = useMemo(
-    () => [DEFAULT_FILTER, ...nodes],
-    [nodes],
-  );
 
   return (
     <Flex gap={4} alignItems={"center"} pt={8} width={"full"} flexDirection={{ base: "column", md: "row" }}>
       <div
-        onClick={(e) => e.stopPropagation()}
-        onMouseDown={(e) => e.stopPropagation()}
-        onKeyDown={(e) => e.stopPropagation()}
-        style={{ flex: 1, minWidth: 0 }}
-      >
+        onClick={e => e.stopPropagation()}
+        onMouseDown={e => e.stopPropagation()}
+        onKeyDown={e => e.stopPropagation()}
+        style={{ flex: 1, minWidth: 0 }}>
         <SearchInput
           size={"sm"}
           placeholder={LL.proposal.voters_table.filters.search_by_address()}
           value={searchQuery}
           onChange={handleSearchChange}
-          onFocus={(e) => e.stopPropagation()}
+          onFocus={e => e.stopPropagation()}
         />
       </div>
 
@@ -98,14 +79,6 @@ export const VotersFiltersPanel = ({
           onChange={handleOptionChange}
           ms={"auto"}
           icon={FilterIcon}
-        />
-
-        <VotingBaseDropdown
-          label={LL.node()}
-          options={nodesWithAll}
-          selectedOption={node}
-          onChange={handleNodeChange}
-          icon={NodeIcon}
         />
 
         <VotingBaseDropdown

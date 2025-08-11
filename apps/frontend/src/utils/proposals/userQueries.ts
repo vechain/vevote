@@ -77,30 +77,16 @@ export const getUserNodes = async ({ address }: { address: string }) => {
       args: [node.tokenId],
     }));
 
-    const multiplierArgs = userNodes.map(node => ({
-      method: "levelIdMultiplier" as const,
-      args: [node.levelId],
-    }));
-
-    const [nodesPower, nodesMultiplier] = await Promise.all([
-      executeMultipleClauses({
-        contractAddress,
-        contractInterface,
-        methodsWithArgs: votingPowerArgs,
-      }),
-      executeMultipleClauses({
-        contractAddress,
-        contractInterface,
-        methodsWithArgs: multiplierArgs,
-      }),
-    ]);
+    const nodesPower = await executeMultipleClauses({
+      contractAddress,
+      contractInterface,
+      methodsWithArgs: votingPowerArgs,
+    });
 
     const nodesPowerResults = nodesPower.map(r => (r.success ? (r.result.plain as bigint) : BigInt(0)));
-    const nodesMultiplierResults = nodesMultiplier.map(r => (r.success ? (r.result.plain as bigint) : BigInt(0)));
 
     const nodes: ExtendedStargateNode[] = userNodes.map((node, index) => ({
       ...node,
-      multiplier: nodesMultiplierResults[index] || BigInt(0),
       nodeName: NodeStrengthLevels[node.levelId],
       votingPower: nodesPowerResults[index] || BigInt(0),
     }));
