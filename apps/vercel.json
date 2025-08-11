@@ -1,4 +1,11 @@
 {
+  "redirects": [
+    {
+      "source": "/home",
+      "destination": "/",
+      "permanent": true
+    }
+  ],
     "rewrites": [
       {
         "source": "/privacy",
@@ -11,10 +18,6 @@
       {
         "source": "/terms",
         "destination": "https://irlnxowcx9wwrmfk.public.blob.vercel-storage.com/terms-AptJplC0N1dN2ETyoadVgAaxezk8z1.pdf"
-      },
-      {
-        "source": "/(.*)",
-        "destination": "/index.html"
       }
     ],
     "git": {
