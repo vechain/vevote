@@ -1,5 +1,6 @@
 import { ProposalDetails } from "@/pages/CreateProposal/CreateProposalProvider";
 import { ProposalCardType, ProposalStatus } from "@/types/proposal";
+import { getDiscourseTopicUrl, getFullDiscourseUrl } from "@/utils/discourse";
 import { base64ToBlob } from "@/utils/file";
 import dayjs from "dayjs";
 
@@ -12,9 +13,11 @@ export const useDraftProposal = () => {
 
     const imageUrl = draftProposal.headerImage?.url;
     const blob = imageUrl ? base64ToBlob(imageUrl, draftProposal.headerImage?.type) : undefined;
+    const topic = getDiscourseTopicUrl(draftProposal.discourseUrl || "");
 
     return {
       ...draftProposal,
+      discourseUrl: topic,
       startDate: dayjs(draftProposal.startDate).toDate(),
       endDate: dayjs(draftProposal.endDate).toDate(),
       headerImage: imageUrl
@@ -45,6 +48,7 @@ export const useDraftProposal = () => {
     const draft: ProposalCardType = {
       ...proposalDetails,
       status: ProposalStatus.DRAFT,
+      discourseUrl: getFullDiscourseUrl(proposalDetails.discourseUrl || ""),
       id: "draft",
       proposer,
       createdAt: new Date(),
