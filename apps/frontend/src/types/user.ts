@@ -56,9 +56,9 @@ export enum NodeStrengthLevel {
   StrengthX = "strengthx",
   ThunderX = "thunderx",
   MjolnirX = "mjolnirx",
-  Flash = "flash",
-  Lightning = "lightning",
   Dawn = "dawn",
+  Lightning = "lightning",
+  Flash = "flash",
   Validator = "validator",
   InactiveValidator = "inactive_validator",
 }
@@ -72,9 +72,9 @@ export const NodeStrengthLevels: NodeStrengthLevel[] = [
   NodeStrengthLevel.StrengthX,
   NodeStrengthLevel.ThunderX,
   NodeStrengthLevel.MjolnirX,
-  NodeStrengthLevel.Flash,
-  NodeStrengthLevel.Lightning,
   NodeStrengthLevel.Dawn,
+  NodeStrengthLevel.Lightning,
+  NodeStrengthLevel.Flash,
   NodeStrengthLevel.Validator,
 ];
 
