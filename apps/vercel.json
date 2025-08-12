@@ -6,23 +6,27 @@
       "permanent": true
     }
   ],
-    "rewrites": [
-      {
-        "source": "/privacy",
-        "destination": "https://irlnxowcx9wwrmfk.public.blob.vercel-storage.com/privacy-4fDVkEPb0KjL2I0A6F5Cmmsjmtshg9.pdf"
-      },
-      {
-        "source": "/cookies",
-        "destination": "https://irlnxowcx9wwrmfk.public.blob.vercel-storage.com/cookies-DJ2acVscuGmor21IVQrTX88cINgVDc.pdf"
-      },
-      {
-        "source": "/terms",
-        "destination": "https://irlnxowcx9wwrmfk.public.blob.vercel-storage.com/terms-AptJplC0N1dN2ETyoadVgAaxezk8z1.pdf"
-      }
-    ],
-    "git": {
-      "deploymentEnabled": {
-        "main": false
-      }
+  "rewrites": [
+    {
+      "source": "/proposal/:proposalId",
+      "destination": "/"
+    },
+    {
+      "source": "/privacy",
+      "destination": "https://irlnxowcx9wwrmfk.public.blob.vercel-storage.com/privacy-4fDVkEPb0KjL2I0A6F5Cmmsjmtshg9.pdf"
+    },
+    {
+      "source": "/cookies",
+      "destination": "https://irlnxowcx9wwrmfk.public.blob.vercel-storage.com/cookies-DJ2acVscuGmor21IVQrTX88cINgVDc.pdf"
+    },
+    {
+      "source": "/terms",
+      "destination": "https://irlnxowcx9wwrmfk.public.blob.vercel-storage.com/terms-AptJplC0N1dN2ETyoadVgAaxezk8z1.pdf"
+    }
+  ],
+  "git": {
+    "deploymentEnabled": {
+      "main": false
     }
   }
+}
