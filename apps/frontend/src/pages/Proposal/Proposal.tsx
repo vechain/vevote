@@ -26,7 +26,7 @@ export const Proposal = () => {
   const isMobile = useBreakpointValue({ base: true, lg: false });
 
   const proposalId = useMemo(() => {
-    if (params.proposalId !== "draft") return params.proposalId;
+    if (!["draft", "default"].includes(params.proposalId || "")) return params.proposalId;
     return undefined;
   }, [params.proposalId]);
 
