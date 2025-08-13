@@ -26,11 +26,11 @@ export const Proposal = () => {
   const isMobile = useBreakpointValue({ base: true, lg: false });
 
   const proposalId = useMemo(() => {
-    if (!["draft", "default"].includes(params.proposalId || "")) return params.proposalId;
+    if (params.proposalId !== "draft") return params.proposalId;
     return undefined;
   }, [params.proposalId]);
 
-  const { proposal: proposalData, loading: isLoading } = useProposalEvent(proposalId);
+  const { proposal: proposalData, loading: isLoading, error: proposalError } = useProposalEvent(proposalId);
 
   const proposal = useMemo(() => {
     if (params.proposalId === "draft") return draftProposal || undefined;
@@ -41,10 +41,9 @@ export const Proposal = () => {
 
   useEffect(() => {
     const isDraftProposal = params.proposalId === "draft" && !account?.address;
-    const isProposalNotFound = !isLoading && (!proposal || proposal.id === "default");
     if (isDraftProposal) navigate(Routes.HOME);
-    if (isProposalNotFound) navigate(`${Routes.HOME}?proposalNotFound=true`);
-  }, [account?.address, isLoading, navigate, params.proposalId, proposal]);
+    if (proposalError) navigate(`${Routes.HOME}?proposalNotFound=true`);
+  }, [account?.address, navigate, params.proposalId, proposalError]);
 
   if (isLoading) {
     return (

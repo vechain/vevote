@@ -13,13 +13,23 @@ export const useProposalEvent = (proposalId?: string) => {
   } = useQuery({
     queryKey: ["proposalEvent", proposalId],
     queryFn: async (): Promise<ProposalCardType | null> => {
-      if (!proposalId) return null;
-      const result = await getProposals(thor, { pageSize: 1000 }, proposalId);
-      return result.proposals.find(p => p.id === proposalId) || null;
+      try {
+        if (!proposalId) return null;
+        const result = await getProposals(thor, { pageSize: 1000 }, proposalId);
+        const proposal = result.proposals.find(p => p.id === proposalId);
+        
+        if (!proposal) {
+          throw new Error(`Proposal with ID ${proposalId} not found`);
+        }
+        
+        return proposal;
+      } catch (error) {
+        throw new Error(`Failed to fetch proposal event: ${error}`);
+      }
     },
     enabled: !!thor && !!proposalId,
-    // staleTime: 30 * 1000,
-    // gcTime: 10 * 60 * 1000,
+    staleTime: 30 * 1000,
+    gcTime: 10 * 60 * 1000,
   });
 
   return {
