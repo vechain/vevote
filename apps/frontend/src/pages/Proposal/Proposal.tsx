@@ -40,8 +40,11 @@ export const Proposal = () => {
   const isCanceled = useMemo(() => proposal?.status === ProposalStatus.CANCELED, [proposal?.status]);
 
   useEffect(() => {
-    if (params.proposalId === "draft" && !account?.address) navigate(Routes.HOME);
-  }, [account?.address, navigate, params.proposalId]);
+    const isDraftProposal = params.proposalId === "draft" && !account?.address;
+    const isProposalNotFound = !isLoading && (!proposal || proposal.id === "default");
+    if (isDraftProposal) navigate(Routes.HOME);
+    if (isProposalNotFound) navigate(`${Routes.HOME}?proposalNotFound=true`);
+  }, [account?.address, isLoading, navigate, params.proposalId, proposal]);
 
   if (isLoading) {
     return (
@@ -54,11 +57,6 @@ export const Proposal = () => {
         </Box>
       </ProposalProvider>
     );
-  }
-
-  if (!isLoading && (!proposal || proposal.id === "default")) {
-    navigate(`${Routes.HOME}?proposalNotFound=true`);
-    return null;
   }
 
   return (
