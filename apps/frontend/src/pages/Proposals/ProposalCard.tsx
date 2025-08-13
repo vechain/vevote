@@ -98,7 +98,7 @@ const TopBar = ({
         color={"gray.600"}
         fontSize={{ md: "20px" }}
         fontWeight={600}
-        noOfLines={1}
+        noOfLines={3}
         textOverflow={"ellipsis"}>
         {title}
       </Text>
