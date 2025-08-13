@@ -18,8 +18,8 @@ export const useProposalEvent = (proposalId?: string) => {
       return result.proposals.find(p => p.id === proposalId) || null;
     },
     enabled: !!thor && !!proposalId,
-    staleTime: 30 * 1000,
-    gcTime: 10 * 60 * 1000,
+    // staleTime: 30 * 1000,
+    // gcTime: 10 * 60 * 1000,
   });
 
   return {
