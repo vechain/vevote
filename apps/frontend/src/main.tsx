@@ -57,7 +57,7 @@ const Providers = ({ children }: PropsWithChildren) => {
             { method: "dappkit", gridColumn: 4 },
           ]}
           dappKit={{
-            allowedWallets: ["veworld", "sync2"],
+            allowedWallets: ["veworld", "sync2", "wallet-connect"],
             walletConnectOptions: {
               projectId: walletConnectOptions.projectId,
               metadata: walletConnectOptions.metadata,
