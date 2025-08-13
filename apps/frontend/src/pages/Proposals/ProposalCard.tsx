@@ -91,8 +91,15 @@ const TopBar = ({
       alignItems={"start"}
       paddingBottom={4}
       borderBottomWidth={"1px"}
-      borderColor={"gray.100"}>
-      <Text color={"gray.600"} fontSize={{ md: "20px" }} fontWeight={600}>
+      borderColor={"gray.100"}
+      overflow={"hidden"}>
+      <Text
+        w={"full"}
+        color={"gray.600"}
+        fontSize={{ md: "20px" }}
+        fontWeight={600}
+        noOfLines={1}
+        textOverflow={"ellipsis"}>
         {title}
       </Text>
       <Stack

@@ -184,7 +184,6 @@ h6 {
   }
 }
 
-//Sync 2 Iframe Fix
-iframe[style*="position: fixed"][style*="z-index: 9999"][style*="width: 100vw"][style*="height: 110px"][style*="bottom: 0px"][style*="left: 0px"] {
+iframe[style*="border: none"][style*="position: fixed"][style*="z-index: 9999"][style*="width: 100vw"][style*="height: 110px"][style*="bottom: 0px"][style*="left: 0px"] {
   z-index: 10001 !important;
 }
