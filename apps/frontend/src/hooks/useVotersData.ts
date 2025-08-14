@@ -72,7 +72,6 @@ export const useVotersData = ({
     const DEFAULT_FILTER = "All";
 
     const filtered = votes.reduce((acc: VoteItem[], vote) => {
-      console.log("vote", vote.voter);
       const isSelectedOption =
         selectedOption && selectedOption !== DEFAULT_FILTER && vote.votedOption !== selectedOption;
       const isSearchQuery =
