@@ -6,7 +6,7 @@ terraform {
   }
   backend "s3" {
     # The S3 backend bucket is configured in '../environments/prod.config'
-    key                  = "vevote-docs.tfstate"
+    key                  = "vevote-resources.tfstate"
     region               = "eu-west-1"
     workspace_key_prefix = "workspaces"
   }
