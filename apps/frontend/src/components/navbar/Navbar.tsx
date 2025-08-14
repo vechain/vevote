@@ -17,7 +17,6 @@ export const bgHeaderStyle = defineStyle({
   bgPosition: "top",
   bgRepeat: "no-repeat",
   bgAttachment: "fixed",
-  borderBottom: "1px solid rgba(255, 255, 255, 0.2)",
 });
 
 export const Navbar = () => {

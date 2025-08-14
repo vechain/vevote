@@ -72,9 +72,17 @@ export const useVotersData = ({
     const DEFAULT_FILTER = "All";
 
     const filtered = votes.reduce((acc: VoteItem[], vote) => {
-      if (selectedOption && selectedOption !== DEFAULT_FILTER && vote.votedOption !== selectedOption) return acc;
-      if (searchQuery && !vote.voter.address.toLowerCase().includes(searchQuery.toLowerCase())) return acc;
+      const isSelectedOption =
+        selectedOption && selectedOption !== DEFAULT_FILTER && vote.votedOption !== selectedOption;
+      const isSearchQuery =
+        searchQuery &&
+        !(
+          vote.voter.address.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          (vote.voter.domain && vote.voter.domain.toLowerCase().includes(searchQuery.toLowerCase()))
+        );
 
+      if (isSelectedOption) return acc;
+      if (isSearchQuery) return acc;
       acc.push(vote);
       return acc;
     }, []);

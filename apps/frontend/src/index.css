@@ -1,16 +1,6 @@
-@font-face {
-  font-family: "Geist Variable";
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Rubik Variable";
-  font-display: swap;
-}
-
 body {
   margin: 0;
-  font-family: "Geist Variable", "Geist", sans-serif;
+  font-family: "Geist", system-ui, -apple-system, sans-serif;
 }
 
 h1,
@@ -19,7 +9,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: "Rubik Variable", "Rubik", sans-serif;
+  font-family: "Rubik", system-ui, -apple-system, sans-serif;
 }
 
 .ql-toolbar.ql-snow {
@@ -50,7 +40,7 @@ h6 {
 }
 
 .ql-container.ql-snow [data-placeholder]:before {
-  font-family: "Geist", sans-serif;
+  font-family: "Geist", system-ui, -apple-system, sans-serif;
 }
 
 .ql-picker-options {

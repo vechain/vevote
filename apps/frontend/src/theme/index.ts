@@ -85,8 +85,8 @@ export const colors = {
 };
 
 export const fonts = {
-  body: `"Geist", sans-serif`,
-  heading: `"Rubik", sans-serif`,
+  body: `"Geist", system-ui, -apple-system, sans-serif`,
+  heading: `"Rubik", system-ui, -apple-system, sans-serif`,
 };
 
 export const fontSizes = defineStyle({

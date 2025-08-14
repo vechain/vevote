@@ -4,6 +4,6 @@ export const headingStyle = defineStyle({
   ...theme.components.Heading,
   baseStyle: {
     ...theme.components.Heading.baseStyle,
-    fontFamily: "Rubik, sans-serif",
+    fontFamily: "heading",
   },
 });

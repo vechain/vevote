@@ -1,7 +1,7 @@
 import { defineStyle, defineStyleConfig } from "@chakra-ui/react";
 
 export const baseStyle = defineStyle({
-  fontFamily: "Inter, sans-serif",
+  fontFamily: "body",
   fontSize: "0.875rem",
 });
 
