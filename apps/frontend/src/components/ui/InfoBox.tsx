@@ -1,6 +1,6 @@
 import { useI18nContext } from "@/i18n/i18n-react";
-import { CancelIcon, CheckCircleIcon, CircleInfoIcon, CircleXIcon } from "@/icons";
-import { Box, defineStyle, Flex, FlexProps, Icon, Text } from "@chakra-ui/react";
+import { ArrowLinkIcon, CancelIcon, CheckCircleIcon, CheckDoubleIcon, CircleInfoIcon, CircleXIcon } from "@/icons";
+import { Box, Button, defineStyle, Flex, FlexProps, Icon, Link, Text } from "@chakra-ui/react";
 
 export type InfoBoxProps = FlexProps & {
   variant: "info" | "approved" | "executed" | "min-not-reached" | "rejected" | "canceled";
@@ -20,15 +20,15 @@ export const infoBoxVariants = {
     style: defineStyle({
       borderColor: "green.200",
       backgroundColor: "green.50",
-      color: "green.700",
+      color: "green.500",
     }),
   },
   executed: {
-    icon: CheckCircleIcon,
+    icon: CheckDoubleIcon,
     style: defineStyle({
       borderColor: "green.200",
       backgroundColor: "green.50",
-      color: "green.700",
+      color: "green.500",
     }),
   },
   "min-not-reached": {
@@ -36,7 +36,7 @@ export const infoBoxVariants = {
     style: defineStyle({
       borderColor: "red.200",
       backgroundColor: "red.50",
-      color: "red.700",
+      color: "red.500",
     }),
   },
   rejected: {
@@ -44,7 +44,7 @@ export const infoBoxVariants = {
     style: defineStyle({
       borderColor: "red.200",
       backgroundColor: "red.50",
-      color: "red.700",
+      color: "red.500",
     }),
   },
   canceled: {
@@ -64,12 +64,16 @@ export const InfoBox = ({ children, variant, ...restProps }: InfoBoxProps) => {
       backgroundColor={infoBoxVariants[variant].style.backgroundColor}
       borderRadius={12}
       borderWidth={2}
-      paddingY={4}
-      paddingX={6}
+      padding={4}
       width={"100%"}
       gap={3}
       {...restProps}>
-      <Icon as={infoBoxVariants[variant].icon} color={infoBoxVariants[variant].style.color} boxSize={4} />
+      <Icon
+        marginTop={0.5}
+        as={infoBoxVariants[variant].icon}
+        color={infoBoxVariants[variant].style.color}
+        boxSize={4}
+      />
       {children}
     </Flex>
   );
@@ -83,8 +87,7 @@ export const CanceledInfoBox = ({ reason, date }: { reason?: string; date?: stri
       backgroundColor={infoBoxVariants["canceled"].style.backgroundColor}
       borderRadius={12}
       borderWidth={2}
-      paddingY={4}
-      paddingX={6}
+      padding={4}
       width={"100%"}
       flexDirection="column"
       alignItems="start"
@@ -107,6 +110,45 @@ export const CanceledInfoBox = ({ reason, date }: { reason?: string; date?: stri
           {reason || LL.proposal.no_reason_provided()}
         </Text>
       </Box>
+    </Flex>
+  );
+};
+
+export const ExecutedInfoBox = ({ executedProposalLink }: { executedProposalLink?: string }) => {
+  const { LL } = useI18nContext();
+
+  return (
+    <Flex
+      borderColor={infoBoxVariants["executed"].style.borderColor}
+      backgroundColor={infoBoxVariants["executed"].style.backgroundColor}
+      borderRadius={12}
+      borderWidth={2}
+      padding={4}
+      width={"100%"}
+      flexDirection="column"
+      alignItems="start"
+      gap={3}
+      color={"gray.600"}>
+      <Flex alignItems="center" gap={3}>
+        <Icon as={infoBoxVariants["executed"].icon} color={infoBoxVariants["executed"].style.color} boxSize={4} />
+        <Text fontSize={"14px"} fontWeight={500} color="green.700">
+          {LL.proposal.proposal_approved_and_executed()}
+        </Text>
+      </Flex>
+
+      <Text fontSize={"12px"}>{LL.proposal.the_voting_approved_the_proposal_and_the_actions_have_been_executed()}</Text>
+      {executedProposalLink && (
+        <Button
+          as={Link}
+          size={"sm"}
+          variant={"secondary"}
+          rightIcon={<Icon as={ArrowLinkIcon} />}
+          href={executedProposalLink}
+          alignSelf={"flex-end"}
+          isExternal>
+          {LL.proposal.see_details()}
+        </Button>
+      )}
     </Flex>
   );
 };

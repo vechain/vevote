@@ -335,6 +335,7 @@ const en = {
     unknown_error: "Unknown error",
     failed_to_execute_proposal: "Failed to execute proposal",
     proposal_approved_and_executed: "Proposal Approved and Executed",
+    proposal_approved: "The voting participation reached the minimum quorum to get approval.",
     the_voting_approved_the_proposal_and_the_actions_have_been_executed:
       "The voting approved the proposal and the actions have been executed.",
     see_details: "See details",
