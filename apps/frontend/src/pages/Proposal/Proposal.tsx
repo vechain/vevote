@@ -30,7 +30,7 @@ export const Proposal = () => {
     return undefined;
   }, [params.proposalId]);
 
-  const { proposal: proposalData, loading: isLoading } = useProposalEvent(proposalId);
+  const { proposal: proposalData, loading: isLoading, error: proposalError } = useProposalEvent(proposalId);
 
   const proposal = useMemo(() => {
     if (params.proposalId === "draft") return draftProposal || undefined;
@@ -40,8 +40,10 @@ export const Proposal = () => {
   const isCanceled = useMemo(() => proposal?.status === ProposalStatus.CANCELED, [proposal?.status]);
 
   useEffect(() => {
-    if (params.proposalId === "draft" && !account?.address) navigate(Routes.HOME);
-  }, [account?.address, navigate, params.proposalId]);
+    const isDraftProposal = params.proposalId === "draft" && !account?.address;
+    if (isDraftProposal) navigate(Routes.HOME);
+    if (proposalError) navigate(`${Routes.HOME}?proposalNotFound=true`);
+  }, [account?.address, navigate, params.proposalId, proposalError]);
 
   if (isLoading) {
     return (
@@ -54,11 +56,6 @@ export const Proposal = () => {
         </Box>
       </ProposalProvider>
     );
-  }
-
-  if (!isLoading && (!proposal || proposal.id === "default")) {
-    navigate(`${Routes.HOME}?proposalNotFound=true`);
-    return null;
   }
 
   return (

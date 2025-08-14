@@ -49,5 +49,7 @@ export const useBuildCreateProposal = () => {
 
   return useVevoteSendTransaction({
     clauseBuilder: buildClauses,
+    refetchQueryKeys: [["proposalEvent"], ["infiniteProposals"]],
+    delayedRefetchKeys: [["proposalEvent"]],
   });
 };
