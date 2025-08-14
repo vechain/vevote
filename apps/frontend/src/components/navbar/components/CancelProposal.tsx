@@ -62,7 +62,7 @@ export const CancelProposal = ({ proposalId }: { proposalId?: string }) => {
         });
       }
     },
-    [proposalId, sendTransaction, onClose, navigate],
+    [proposalId, sendTransaction, onClose, navigate, LL.proposal],
   );
   return (
     <>
