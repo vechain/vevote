@@ -71,10 +71,11 @@ export const Proposal = () => {
               <Text color={"gray.400"}>{"→"}</Text>
               <Text color={"gray.600"}>{LL.proposal.title()}</Text>
             </Flex>
-            <Stack direction={{ base: "column", lg: "row" }} w={"full"} gap={{ base: 10, md: 12 }}>
+            <Stack direction={{ base: "column", lg: "row" }} gap={{ base: 10, md: 12 }}>
               <VStack gap={10} align="stretch" flex={2}>
                 <ProposalHeader />
                 <Heading
+                  maxWidth={{ lg: "530px" }}
                   fontWeight={600}
                   color={"gray.700"}
                   lineHeight={"1.33"}
