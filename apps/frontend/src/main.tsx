@@ -1,6 +1,4 @@
 import "quill/dist/quill.core.css";
-import "@fontsource-variable/inter";
-import "@fontsource-variable/rubik";
 import "./index.css";
 
 import { getConfig } from "@repo/config";
