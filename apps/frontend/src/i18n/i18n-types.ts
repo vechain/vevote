@@ -1105,6 +1105,10 @@ type RootTranslation = {
 		 */
 		proposal_approved_and_executed: string
 		/**
+		 * T​h​e​ ​v​o​t​i​n​g​ ​p​a​r​t​i​c​i​p​a​t​i​o​n​ ​r​e​a​c​h​e​d​ ​t​h​e​ ​m​i​n​i​m​u​m​ ​q​u​o​r​u​m​ ​t​o​ ​g​e​t​ ​a​p​p​r​o​v​a​l​.
+		 */
+		proposal_approved: string
+		/**
 		 * T​h​e​ ​v​o​t​i​n​g​ ​a​p​p​r​o​v​e​d​ ​t​h​e​ ​p​r​o​p​o​s​a​l​ ​a​n​d​ ​t​h​e​ ​a​c​t​i​o​n​s​ ​h​a​v​e​ ​b​e​e​n​ ​e​x​e​c​u​t​e​d​.
 		 */
 		the_voting_approved_the_proposal_and_the_actions_have_been_executed: string
@@ -2440,6 +2444,10 @@ JPG, PNG or SVG of maximum of {size}MB.
 		 * Proposal Approved and Executed
 		 */
 		proposal_approved_and_executed: () => LocalizedString
+		/**
+		 * The voting participation reached the minimum quorum to get approval.
+		 */
+		proposal_approved: () => LocalizedString
 		/**
 		 * The voting approved the proposal and the actions have been executed.
 		 */
