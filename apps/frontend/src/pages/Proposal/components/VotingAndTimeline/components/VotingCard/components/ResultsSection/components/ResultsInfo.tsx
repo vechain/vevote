@@ -7,7 +7,7 @@ import { useI18nContext } from "@/i18n/i18n-react";
 import { CircleInfoIcon } from "@/icons";
 import { ProposalStatus } from "@/types/proposal";
 import { Flex, Icon, Text } from "@chakra-ui/react";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 
 export const ResultsInfo = () => {
   const { proposal } = useProposal();
@@ -19,10 +19,6 @@ export const ResultsInfo = () => {
 
   const { quorumPercentage } = useQuorum(startBlock);
   const { totalVotes } = useTotalVotes({ proposalId: proposal.id });
-
-  useEffect(() => {
-    console.log("QUORUM:", { totalVotes, quorumPercentage });
-  }, [totalVotes, quorumPercentage]);
 
   const isQuorumReached = useMemo(() => {
     return totalVotes >= quorumPercentage;
