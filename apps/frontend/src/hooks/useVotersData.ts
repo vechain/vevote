@@ -48,7 +48,7 @@ export const useVotersData = ({
         return acc;
       }, 0);
 
-      const votingPower = vote.validator !== ZERO_ADDRESS ? Number(vote.weight) : totalVotingPowerPerVoter;
+      const votingPower = vote.validator !== ZERO_ADDRESS ? Number(vote.weight) / 100 : totalVotingPowerPerVoter;
 
       return {
         date: vote.date,
