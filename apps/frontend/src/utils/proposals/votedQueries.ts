@@ -121,3 +121,16 @@ export const getIndexerVoteResults = async (proposalId?: string, size?: number, 
     return { results: undefined };
   }
 };
+
+export const getTotalVotes = async (proposalId?: string) => {
+  if (!proposalId) return { results: undefined };
+
+  const totalVotes = await executeCall({
+    contractAddress,
+    contractInterface,
+    method: "totalVotes",
+    args: [proposalId],
+  });
+
+  return (totalVotes.result.plain as bigint) || BigInt(0);
+};

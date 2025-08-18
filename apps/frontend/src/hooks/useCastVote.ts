@@ -1,7 +1,7 @@
 import { ProposalCardType } from "@/types/proposal";
 import { useVevoteSendTransaction } from "@/utils/hooks/useVevoteSendTransaction";
 import { fromStringToUint256, getSingleChoiceFromIndex } from "@/utils/proposals/helpers";
-import { getHasVoted, getVoteCastResults, getIndexerVoteResults } from "@/utils/proposals/votedQueries";
+import { getHasVoted, getVoteCastResults, getIndexerVoteResults, getTotalVotes } from "@/utils/proposals/votedQueries";
 import { getConfig } from "@repo/config";
 import { VeVote__factory } from "@repo/contracts";
 import { useQuery } from "@tanstack/react-query";
@@ -97,6 +97,19 @@ export const useIndexerVoteResults = ({ proposalId, size }: { proposalId?: strin
 
   return {
     results: data?.results,
+    isLoading,
+    error,
+  };
+};
+
+export const useTotalVotes = ({ proposalId }: { proposalId: string }) => {
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["totalVotes", proposalId],
+    queryFn: async () => await getTotalVotes(proposalId),
+  });
+
+  return {
+    totalVotes: Number(data) / 100,
     isLoading,
     error,
   };

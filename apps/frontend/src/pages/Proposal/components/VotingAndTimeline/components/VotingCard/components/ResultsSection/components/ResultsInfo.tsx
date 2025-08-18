@@ -1,14 +1,15 @@
 import { useProposal } from "@/components/proposal/ProposalProvider";
 import { ExecutedInfoBox, InfoBox } from "@/components/ui/InfoBox";
+import { useTotalVotes } from "@/hooks/useCastVote";
 import { useGetDatesBlocks } from "@/hooks/useGetDatesBlocks";
 import { useQuorum } from "@/hooks/useQuorum";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { CircleInfoIcon } from "@/icons";
 import { ProposalStatus } from "@/types/proposal";
 import { Flex, Icon, Text } from "@chakra-ui/react";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 
-export const ResultsInfo = ({ reachedVotingPower }: { reachedVotingPower: number }) => {
+export const ResultsInfo = () => {
   const { proposal } = useProposal();
   const { LL } = useI18nContext();
 
@@ -17,10 +18,15 @@ export const ResultsInfo = ({ reachedVotingPower }: { reachedVotingPower: number
   });
 
   const { quorumPercentage } = useQuorum(startBlock);
+  const { totalVotes } = useTotalVotes({ proposalId: proposal.id });
+
+  useEffect(() => {
+    console.log("QUORUM:", { totalVotes, quorumPercentage });
+  }, [totalVotes, quorumPercentage]);
 
   const isQuorumReached = useMemo(() => {
-    return reachedVotingPower >= quorumPercentage;
-  }, [quorumPercentage, reachedVotingPower]);
+    return totalVotes >= quorumPercentage;
+  }, [quorumPercentage, totalVotes]);
 
   if (proposal.status === ProposalStatus.APPROVED) {
     return (
