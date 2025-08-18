@@ -132,3 +132,58 @@ export const useVoteByProposalId = ({ proposalId, enabled }: { proposalId: strin
     error,
   };
 };
+
+export const useVoteCastPercentages = ({ proposalId }: { proposalId?: string }) => {
+  const thor = useThor();
+
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["voteCastPercentages", proposalId],
+    queryFn: async () => await getVoteCastResults(thor, { proposalIds: [proposalId!] }),
+    enabled: !!proposalId && !!thor,
+    refetchInterval: 10000,
+  });
+
+  const votePercentages = useMemo(() => {
+    if (!data?.votes) {
+      return {
+        Against: 0,
+        For: 0,
+        Abstain: 0,
+      };
+    }
+
+    const voteTotals = data.votes.reduce(
+      (acc, vote) => {
+        const weight = parseFloat(vote.weight);
+        switch (vote.choice) {
+          case 0:
+            acc.against += weight;
+            break;
+          case 1:
+            acc.for += weight;
+            break;
+          case 2:
+            acc.abstain += weight;
+            break;
+        }
+        return acc;
+      },
+      { against: 0, for: 0, abstain: 0 },
+    );
+
+    const totalVotes = voteTotals.against + voteTotals.for + voteTotals.abstain;
+
+    return {
+      Against: totalVotes ? (voteTotals.against / totalVotes) * 100 : 0,
+      For: totalVotes ? (voteTotals.for / totalVotes) * 100 : 0,
+      Abstain: totalVotes ? (voteTotals.abstain / totalVotes) * 100 : 0,
+    };
+  }, [data?.votes]);
+
+  return {
+    votePercentages,
+    votes: data?.votes,
+    isLoading,
+    error,
+  };
+};

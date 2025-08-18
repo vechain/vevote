@@ -3,7 +3,7 @@ import { VoteIcon } from "@/icons";
 import { useProposal } from "@/components/proposal/ProposalProvider";
 import { useMemo } from "react";
 import { ResultsInfo } from "./components/ResultsInfo";
-import { useIndexerVoteResults } from "@/hooks/useCastVote";
+import { useVoteCastPercentages } from "@/hooks/useCastVote";
 import { AllVotersModal } from "./components/AllVotersModal/AllVotersModal";
 import { ProposalStatus, SingleChoiceEnum } from "@/types/proposal";
 import { ColorByVote, IconByVote, voteOptions } from "@/constants";
@@ -12,21 +12,15 @@ import { useI18nContext } from "@/i18n/i18n-react";
 export const ResultsSection = () => {
   const { LL } = useI18nContext();
   const { proposal } = useProposal();
-  const { results } = useIndexerVoteResults({ proposalId: proposal.id });
+  const { votePercentages: rawPercentages } = useVoteCastPercentages({ proposalId: proposal.id });
 
   const votePercentages = useMemo(() => {
-    const abstainVotes = results?.data?.find(result => result.support === "ABSTAIN")?.totalWeight ?? 0;
-    const forVotes = results?.data?.find(result => result.support === "FOR")?.totalWeight ?? 0;
-    const againstVotes = results?.data?.find(result => result.support === "AGAINST")?.totalWeight ?? 0;
-
-    const totalVotes = abstainVotes + forVotes + againstVotes;
-
     return {
-      [SingleChoiceEnum.ABSTAIN]: totalVotes ? (abstainVotes / totalVotes) * 100 : 0,
-      [SingleChoiceEnum.FOR]: totalVotes ? (forVotes / totalVotes) * 100 : 0,
-      [SingleChoiceEnum.AGAINST]: totalVotes ? (againstVotes / totalVotes) * 100 : 0,
+      [SingleChoiceEnum.ABSTAIN]: rawPercentages.Abstain,
+      [SingleChoiceEnum.FOR]: rawPercentages.For,
+      [SingleChoiceEnum.AGAINST]: rawPercentages.Against,
     };
-  }, [results]);
+  }, [rawPercentages]);
 
   const isGreyIcon = [ProposalStatus.DRAFT, ProposalStatus.UPCOMING].includes(proposal.status);
 
