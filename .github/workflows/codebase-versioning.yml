@@ -1,12 +1,11 @@
 name: Codebase Versioning
 
 on:
-on:
   pull_request:
     branches: 
       - main
     types: [closed]
-    
+
   workflow_call:
     secrets:
       DEPLOY_KEY:
