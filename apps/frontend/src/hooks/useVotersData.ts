@@ -3,6 +3,7 @@ import { useVoteCastResults } from "@/hooks/useCastVote";
 import { useVotersNodes } from "@/hooks/useUserQueries";
 import { VoteItem } from "@/pages/Proposal/components/VotingAndTimeline/components/VotingCard/components/ResultsSection/components/AllVotersModal/components/VotersTable";
 import { getSingleChoiceFromIndex } from "@/utils/proposals/helpers";
+import { ZERO_ADDRESS } from "@vechain/sdk-core";
 import { useMemo } from "react";
 
 export type VotersFilters = {
@@ -47,10 +48,12 @@ export const useVotersData = ({
         return acc;
       }, 0);
 
+      const votingPower = vote.validator !== ZERO_ADDRESS ? Number(vote.weight) / 100 : totalVotingPowerPerVoter;
+
       return {
         date: vote.date,
         voter: vote.voter,
-        votingPower: totalVotingPowerPerVoter,
+        votingPower,
         votedOption: getSingleChoiceFromIndex(vote.choice),
         transactionId: vote.transactionId,
       };
