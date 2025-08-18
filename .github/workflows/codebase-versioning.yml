@@ -6,9 +6,129 @@ on:
       - main
     types: [closed]
 
-jobs:
-  semantic-versioning:
-    uses: vechain/github-actions/.github/workflows/semantic-versioning.yaml@v.1.1.8
+  workflow_call:
     secrets:
-      DEPLOY_KEY: ${{ secrets.VECHAINCI_SSH_PRIVATE_KEYS }}
-    
+      DEPLOY_KEY:
+        required: true
+
+jobs:
+  auto-versioning:
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    # Don't run if pull request is closed without merging.
+    if: github.event.pull_request.merged == true
+
+    env:
+      PR_LABELS: ${{ toJson(github.event.pull_request.labels) }}
+
+    steps:
+    - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      with:
+        fetch-depth: 0
+        ssh-key: ${{ secrets.DEPLOY_KEY }}
+
+    - name: Configure Git
+      run: |
+        echo "Configuring git..."
+        git config --global user.name 'vechain-ci'
+        git config --global user.email 'vechain.ci@vechain.org'
+
+    - name: Determine increment type
+      id: increment
+      run: |
+        label_names=$(echo "${PR_LABELS}" | jq -r ".[] | .name")
+        echo "PR labels: ${label_names}" 
+
+        increment_type="patch"  # Default increment type
+
+        for label in ${label_names[@]}; do
+          case "${label}" in
+            increment:major)
+              increment_type="major"
+              ;;
+            increment:minor)
+              # Only update if a major increment hasn't been set
+              if [ "$increment_type" != "major" ]; then
+                increment_type="minor"
+              fi
+              ;;
+            increment:patch)
+              # Only update if neither major nor minor has been set
+              if [ "$increment_type" != "major" ] && [ "$increment_type" != "minor" ]; then
+                increment_type="patch"
+              fi
+              ;;
+          esac
+        done
+
+        echo "increment_type=${increment_type}" >> $GITHUB_OUTPUT
+
+    - name: Define new tag
+      id: define-new-tag
+      run: |
+        echo "Determining current SHA..."
+        CURRENT_SHA=$(git rev-parse HEAD)
+        echo "Current SHA: $CURRENT_SHA"
+
+        echo "Fetching the latest tag..."
+        git fetch --tags
+        LATEST_TAG=$(git tag -l 'v.*' | sort -V | tail -n1)
+
+        if [[ -z "$LATEST_TAG" ]]; then
+          echo "No existing tags found. Starting from initial version."
+          MAJOR=1
+          MINOR=0
+          PATCH=0
+        else
+          echo "Latest tag: $LATEST_TAG"
+          IFS='-' read -ra TAG_PARTS <<< "$LATEST_TAG"
+          IFS='.' read -ra VERSION_PARTS <<< "${TAG_PARTS[0]}"
+          MAJOR=${VERSION_PARTS[1]}
+          MINOR=${VERSION_PARTS[2]}
+          PATCH=${VERSION_PARTS[3]}
+          PREVIOUS_SHA=$(git rev-list -n 1 $LATEST_TAG)
+          echo "Latest tag version: MAJOR=$MAJOR, MINOR=$MINOR, PATCH=$PATCH, PREVIOUS_SHA=$PREVIOUS_SHA"
+
+          if [[ "$CURRENT_SHA" == "$PREVIOUS_SHA" ]]; then
+            echo "Current SHA is the same as the SHA in the latest tag. Skipping further steps."
+            exit 0
+          fi
+        fi
+
+        increment_type="${{ steps.increment.outputs.increment_type }}"
+        if [[ "${increment_type}" == "major" ]]; then
+          echo "Major version increment detected. INCREMENTING MAJOR VERSION."
+          MAJOR=$((MAJOR + 1))
+          MINOR=0
+          PATCH=0
+        elif [[ "${increment_type}" == "minor" ]]; then
+          echo "Minor version increment detected. INCREMENTING MINOR VERSION"
+          MINOR=$((MINOR + 1))
+          PATCH=0
+        elif [[ "${increment_type}" == "patch" ]]; then
+          echo "Patch version increment detected. INCREMENTING PATCH VERSION."
+          PATCH=$((PATCH + 1))
+        else
+          echo "No version increment detected, INCREMENTING PATCH VERSION by default."
+          PATCH=$((PATCH + 1))
+        fi
+
+        echo "NEW_TAG=v.${MAJOR}.${MINOR}.${PATCH}" >> $GITHUB_OUTPUT
+
+    - name: Create and Push New Tag
+      if: steps.define-new-tag.outputs.NEW_TAG != ''
+      env:
+        PR_TITLE: ${{ github.event.pull_request.title }}
+      run: |
+        NEW_TAG=${{ steps.define-new-tag.outputs.NEW_TAG }}
+        echo "Preparing new tag: ${NEW_TAG}"
+
+        if git rev-parse "${NEW_TAG}" >/dev/null 2>&1; then
+          echo "Tag ${NEW_TAG} already exists. Skipping tag creation and exiting job."
+          exit 0
+        else
+          echo "Creating and pushing new tag: ${NEW_TAG}"
+          git tag -a "${NEW_TAG}" -m "${NEW_TAG} - ${PR_TITLE}"
+          git push origin "${NEW_TAG}"
+        fi
