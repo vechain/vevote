@@ -1,5 +1,8 @@
 name: Validate PR Label
 on:
+on:
+  pull_request:
+    types: [opened, reopened, labeled, unlabeled, synchronize]
   workflow_call:
     inputs:
       FAIL_IF_MISSING_LABEL:
