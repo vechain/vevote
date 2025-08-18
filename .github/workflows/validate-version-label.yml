@@ -1,3 +1,5 @@
+permissions:
+  issues: write
 name: Validate PR Label
 
 on:
