@@ -3,7 +3,7 @@ import { ProposalCardVotesResults } from "@/components/proposal/ProposalCardVote
 import { Avatar } from "@/components/ui/Avatar";
 import { IconBadge } from "@/components/ui/IconBadge";
 import { ColorByVote, IconByVote } from "@/constants";
-import { useHasVoted, useIndexerVoteResults, useVoteByProposalId } from "@/hooks/useCastVote";
+import { useHasVoted, useVoteByProposalId, useVoteCastPercentages } from "@/hooks/useCastVote";
 import { useFormatDate } from "@/hooks/useFormatDate";
 import { useVechainDomainOrAddress } from "@/hooks/useVechainDomainOrAddress";
 import { useI18nContext } from "@/i18n/i18n-react";
@@ -149,7 +149,7 @@ const BottomBar = ({
   status,
 }: Pick<ProposalCardType, "endDate" | "startDate" | "status" | "id">) => {
   const { LL } = useI18nContext();
-  const { results, isLoading: isLoadingResults } = useIndexerVoteResults({ proposalId: id });
+  const { votePercentages, isLoading: isLoadingResults } = useVoteCastPercentages({ proposalId: id });
 
   const showDate = useMemo(() => {
     return status === ProposalStatus.UPCOMING || (status === ProposalStatus.VOTING && dayjs(endDate).isAfter(dayjs()));
@@ -176,7 +176,7 @@ const BottomBar = ({
         )}
         {showDate && <DateItem startDate={startDate} endDate={endDate} status={status} />}
       </Flex>
-      {showResults && <ProposalCardVotesResults status={status} results={results?.data || []} />}
+      {showResults && <ProposalCardVotesResults status={status} votePercentages={votePercentages} />}
     </Flex>
   );
 };
