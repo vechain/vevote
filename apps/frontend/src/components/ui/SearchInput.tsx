@@ -1,10 +1,11 @@
-import { Button, defineStyle, Icon, InputProps } from "@chakra-ui/react";
+import { Button, defineStyle, Icon, InputGroupProps, InputProps } from "@chakra-ui/react";
 import { InputWithIcon } from "./InputWithIcon";
 import { forwardRef } from "react";
 import { CloseIcon, SearchIcon } from "@/icons";
 
 type SearchInputProps = InputProps & {
   onClear?: () => void;
+  groupProps?: InputGroupProps;
 };
 
 const buttonStyle = defineStyle({
@@ -21,28 +22,30 @@ const buttonStyle = defineStyle({
   paddingX: 2,
 } as const);
 
-export const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(({ onClear, value, ...props }, ref) => {
-  return (
-    <InputWithIcon backgroundColor={"white"} position={"relative"} flex={1} minWidth="0">
-      <InputWithIcon.Icon iconPosition="left">
-        <Icon as={SearchIcon} width={4} height={4} />
-      </InputWithIcon.Icon>
-      <InputWithIcon.Input
-        paddingInlineEnd={0}
-        minWidth="0"
-        ref={ref}
-        paddingLeft={0}
-        value={value}
-        size={{ base: "none", md: "md" }}
-        {...props}
-      />
-      {value && onClear && (
-        <Button {...buttonStyle} _hover={{ bg: "white" }} onClick={onClear} size={{ base: "sm", md: "md" }}>
-          <Icon as={CloseIcon} width={4} height={4} />
-        </Button>
-      )}
-    </InputWithIcon>
-  );
-});
+export const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
+  ({ onClear, value, groupProps, ...props }, ref) => {
+    return (
+      <InputWithIcon backgroundColor={"white"} position={"relative"} flex={1} minWidth="0" {...groupProps}>
+        <InputWithIcon.Icon iconPosition="left">
+          <Icon as={SearchIcon} width={4} height={4} />
+        </InputWithIcon.Icon>
+        <InputWithIcon.Input
+          paddingInlineEnd={0}
+          minWidth="0"
+          ref={ref}
+          paddingLeft={0}
+          value={value}
+          size={{ base: "none", md: "md" }}
+          {...props}
+        />
+        {value && onClear && (
+          <Button {...buttonStyle} _hover={{ bg: "white" }} onClick={onClear} size={{ base: "sm", md: "md" }}>
+            <Icon as={CloseIcon} width={4} height={4} />
+          </Button>
+        )}
+      </InputWithIcon>
+    );
+  },
+);
 
 SearchInput.displayName = "SearchInput";
