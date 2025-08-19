@@ -79,7 +79,7 @@ export const AllVotersModal = () => {
             onSearchChange={handleSearchChange}
           />
         </ModalHeader>
-        <ModalBody overflowX={"auto"}>
+        <ModalBody overflowX={"auto"} minH={"280px"}>
           {isLoading && <Spinner size="lg" />}
           {(error || votes.length === 0) && (
             <GenericInfoBox variant="info">{LL.field_errors.failed_load_voters()}</GenericInfoBox>
