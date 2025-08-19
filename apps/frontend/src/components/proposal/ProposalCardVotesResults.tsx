@@ -9,8 +9,8 @@ export const ProposalCardVotesResults = ({
 }: {
   status: ProposalStatus;
   votePercentages: {
-    [SingleChoiceEnum.AGAINST]: number;
     [SingleChoiceEnum.FOR]: number;
+    [SingleChoiceEnum.AGAINST]: number;
     [SingleChoiceEnum.ABSTAIN]: number;
   };
 }) => {
