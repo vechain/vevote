@@ -71,7 +71,7 @@ export const useVotersData = ({
       return acc;
     }, []);
 
-    if (sort === Sort.Oldest) {
+    if (sort === Sort.Newest) {
       return [...filtered].reverse();
     }
 
