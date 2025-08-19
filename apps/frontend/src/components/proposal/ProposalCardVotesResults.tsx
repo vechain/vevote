@@ -9,8 +9,8 @@ export const ProposalCardVotesResults = ({
 }: {
   status: ProposalStatus;
   votePercentages: {
-    [SingleChoiceEnum.AGAINST]: number;
     [SingleChoiceEnum.FOR]: number;
+    [SingleChoiceEnum.AGAINST]: number;
     [SingleChoiceEnum.ABSTAIN]: number;
   };
 }) => {
@@ -19,15 +19,14 @@ export const ProposalCardVotesResults = ({
   const isMostVoted = useMemo(() => {
     const maxPercentage = Math.max(votePercentages.Against, votePercentages.For, votePercentages.Abstain);
     return {
-      Against: votePercentages.Against === maxPercentage,
       For: votePercentages.For === maxPercentage,
+      Against: votePercentages.Against === maxPercentage,
       Abstain: votePercentages.Abstain === maxPercentage,
     };
   }, [votePercentages]);
 
   const votePercentageOrdered = useMemo(() => {
-    const rows = Object.keys(votePercentages);
-    return [rows[1], rows[0], rows[2]];
+    return Object.keys(votePercentages);
   }, [votePercentages]);
 
   return (
