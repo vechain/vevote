@@ -1,4 +1,4 @@
-import { ProposalCardType } from "@/types/proposal";
+import { ProposalCardType, SingleChoiceEnum } from "@/types/proposal";
 import { useVevoteSendTransaction } from "@/utils/hooks/useVevoteSendTransaction";
 import { fromStringToUint256, getSingleChoiceFromIndex } from "@/utils/proposals/helpers";
 import { getHasVoted, getVoteCastResults, getIndexerVoteResults, getTotalVotes } from "@/utils/proposals/votedQueries";
@@ -146,9 +146,9 @@ export const useVoteCastPercentages = ({ proposalId }: { proposalId?: string }) 
   const votePercentages = useMemo(() => {
     if (!data?.votes) {
       return {
-        Against: 0,
-        For: 0,
-        Abstain: 0,
+        [SingleChoiceEnum.FOR]: 0,
+        [SingleChoiceEnum.AGAINST]: 0,
+        [SingleChoiceEnum.ABSTAIN]: 0,
       };
     }
 
@@ -156,11 +156,11 @@ export const useVoteCastPercentages = ({ proposalId }: { proposalId?: string }) 
       (acc, vote) => {
         const weight = parseFloat(vote.weight);
         switch (vote.choice) {
-          case 0:
-            acc.against += weight;
-            break;
           case 1:
             acc.for += weight;
+            break;
+          case 0:
+            acc.against += weight;
             break;
           case 2:
             acc.abstain += weight;
@@ -168,15 +168,16 @@ export const useVoteCastPercentages = ({ proposalId }: { proposalId?: string }) 
         }
         return acc;
       },
-      { against: 0, for: 0, abstain: 0 },
+      { for: 0, against: 0, abstain: 0 },
     );
 
     const totalVotes = voteTotals.against + voteTotals.for + voteTotals.abstain;
 
     return {
-      Against: totalVotes ? (voteTotals.against / totalVotes) * 100 : 0,
-      For: totalVotes ? (voteTotals.for / totalVotes) * 100 : 0,
-      Abstain: totalVotes ? (voteTotals.abstain / totalVotes) * 100 : 0,
+      [SingleChoiceEnum.FOR]: totalVotes ? (voteTotals.for / totalVotes) * 100 : 0,
+
+      [SingleChoiceEnum.AGAINST]: totalVotes ? (voteTotals.against / totalVotes) * 100 : 0,
+      [SingleChoiceEnum.ABSTAIN]: totalVotes ? (voteTotals.abstain / totalVotes) * 100 : 0,
     };
   }, [data?.votes]);
 

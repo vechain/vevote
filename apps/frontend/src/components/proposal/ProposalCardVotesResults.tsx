@@ -1,89 +1,44 @@
+import { ColorByVote, IconByVote } from "@/constants";
 import { ProposalStatus, SingleChoiceEnum } from "@/types/proposal";
-import { VotedResultData } from "@/types/votes";
 import { Flex, Icon, Text } from "@chakra-ui/react";
-import { useCallback, useMemo } from "react";
-import { IconByVote, ColorByVote } from "@/constants";
+import { useMemo } from "react";
 
 export const ProposalCardVotesResults = ({
   status,
-  results,
+  votePercentages,
 }: {
   status: ProposalStatus;
-  results: VotedResultData[];
+  votePercentages: {
+    [SingleChoiceEnum.FOR]: number;
+    [SingleChoiceEnum.AGAINST]: number;
+    [SingleChoiceEnum.ABSTAIN]: number;
+  };
 }) => {
-  const totalPerVotes = useMemo(() => {
-    return results.reduce((sum, result) => sum + (Number(result.totalWeight) ?? 0), 0);
-  }, [results]);
+  const quorumNotReached = useMemo(() => status === ProposalStatus.MIN_NOT_REACHED, [status]);
 
-  const quorumNotReached = status === ProposalStatus.MIN_NOT_REACHED;
-
-  const proposalVotes = useMemo(() => {
-    return (
-      results?.reduce(
-        (acc, vote) => {
-          const weight = Number(vote.totalWeight);
-          const choice = SingleChoiceEnum[vote.support];
-          switch (choice) {
-            case SingleChoiceEnum.FOR:
-              acc[SingleChoiceEnum.FOR] += weight;
-              break;
-            case SingleChoiceEnum.AGAINST:
-              acc[SingleChoiceEnum.AGAINST] += weight;
-              break;
-            case SingleChoiceEnum.ABSTAIN:
-              acc[SingleChoiceEnum.ABSTAIN] += weight;
-              break;
-          }
-          return acc;
-        },
-        {
-          [SingleChoiceEnum.FOR]: 0,
-          [SingleChoiceEnum.AGAINST]: 0,
-          [SingleChoiceEnum.ABSTAIN]: 0,
-        },
-      ) || { [SingleChoiceEnum.FOR]: 0, [SingleChoiceEnum.AGAINST]: 0, [SingleChoiceEnum.ABSTAIN]: 0 }
-    );
-  }, [results]);
-
-  const proposalVotesPercentage = useMemo(() => {
+  const isMostVoted = useMemo(() => {
+    const maxPercentage = Math.max(votePercentages.Against, votePercentages.For, votePercentages.Abstain);
     return {
-      [SingleChoiceEnum.FOR]: Number(((proposalVotes[SingleChoiceEnum.FOR] / totalPerVotes) * 100 || 0).toFixed()),
-      [SingleChoiceEnum.AGAINST]: Number(
-        ((proposalVotes[SingleChoiceEnum.AGAINST] / totalPerVotes) * 100 || 0).toFixed(),
-      ),
-      [SingleChoiceEnum.ABSTAIN]: Number(
-        ((proposalVotes[SingleChoiceEnum.ABSTAIN] / totalPerVotes) * 100 || 0).toFixed(),
-      ),
+      For: votePercentages.For === maxPercentage,
+      Against: votePercentages.Against === maxPercentage,
+      Abstain: votePercentages.Abstain === maxPercentage,
     };
-  }, [proposalVotes, totalPerVotes]);
+  }, [votePercentages]);
 
-  const isMostVoted = useCallback(
-    (voteCount: number) => {
-      if (voteCount === 0) return false;
-      const highestVoteCount = Math.max(
-        proposalVotes[SingleChoiceEnum.FOR],
-        proposalVotes[SingleChoiceEnum.AGAINST],
-        proposalVotes[SingleChoiceEnum.ABSTAIN],
-      );
-      return voteCount === highestVoteCount;
-    },
-    [proposalVotes],
-  );
+  const votePercentageOrdered = useMemo(() => {
+    return Object.keys(votePercentages);
+  }, [votePercentages]);
 
   return (
     <Flex gap={3} alignItems={"center"}>
-      {Object.keys(proposalVotesPercentage).map(option => {
-        const mostVoted = quorumNotReached ? false : isMostVoted(proposalVotes[option as keyof typeof proposalVotes]);
-        const percentage = proposalVotesPercentage[option as keyof typeof proposalVotesPercentage];
-        const color = ColorByVote[option as keyof typeof ColorByVote];
+      {votePercentageOrdered.map(opt => {
+        const option = opt as SingleChoiceEnum;
+        const percentage = votePercentages[option];
+        const mostVoted = quorumNotReached ? false : isMostVoted[option];
+        const color = ColorByVote[option];
         return (
           <Flex key={option} alignItems={"center"} gap={2}>
-            <Icon
-              as={IconByVote[option as keyof typeof IconByVote]}
-              width={4}
-              height={4}
-              color={mostVoted ? color : "gray.500"}
-            />
+            <Icon as={IconByVote[option]} width={4} height={4} color={mostVoted ? color : "gray.500"} />
             <Text
               fontSize={{ base: "14px", md: "16px" }}
               color={mostVoted ? color : undefined}
