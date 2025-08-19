@@ -66,7 +66,11 @@ export const AllVotersModal = () => {
         </Text>
         <Icon as={ArrowRightIcon} width={4} height={4} color={"primary.600"} />
       </Flex>
-      <ModalSkeleton isOpen={isOpen} onClose={onClose} size={"3xl"}>
+      <ModalSkeleton
+        isOpen={isOpen}
+        onClose={onClose}
+        size={"3xl"}
+        contentProps={{ height: { base: "90vh", md: "auto" } }}>
         <ModalHeader>
           <ModalTitle title={LL.voters()} icon={UserCheckIcon} />
           <VotersFiltersPanel
@@ -79,7 +83,7 @@ export const AllVotersModal = () => {
             onSearchChange={handleSearchChange}
           />
         </ModalHeader>
-        <ModalBody overflowX={"auto"} minH={"400px"}>
+        <ModalBody overflowX={"auto"}>
           {isLoading && <Spinner size="lg" />}
           {(error || votes.length === 0) && (
             <GenericInfoBox variant="info">{LL.field_errors.failed_load_voters()}</GenericInfoBox>

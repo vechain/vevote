@@ -47,8 +47,7 @@ const BaseCell = ({ value, ...restProps }: TextProps & { value: string }) => {
   );
 };
 
-const AddressCell = ({ voter }: { voter: VoteItem["voter"] }) => {
-  const isMobile = useBreakpointValue({ base: true, md: false });
+const AddressCell = ({ voter, isMobile }: { voter: VoteItem["voter"]; isMobile: boolean }) => {
   return (
     <CopyLink
       isExternal
@@ -114,9 +113,7 @@ const VotedOptionCell = ({ option }: { option: SingleChoiceEnum }) => {
   );
 };
 
-const TransactionIdCell = ({ value }: { value: string }) => {
-  const isMobile = useBreakpointValue({ base: true, md: false });
-
+const TransactionIdCell = ({ value, isMobile }: { value: string; isMobile: boolean }) => {
   return (
     <Link
       display={"flex"}
@@ -142,6 +139,7 @@ interface VotersTableProps {
 
 export const VotersTable = ({ data }: VotersTableProps) => {
   const { LL } = useI18nContext();
+  const isMobile = useBreakpointValue({ base: true, md: false });
 
   const votersColumn = [
     columnHelper.accessor("date", {
@@ -151,7 +149,7 @@ export const VotersTable = ({ data }: VotersTableProps) => {
       size: 120,
     }),
     columnHelper.accessor("voter", {
-      cell: data => <AddressCell voter={data.getValue()} />,
+      cell: data => <AddressCell voter={data.getValue()} isMobile={isMobile || false} />,
       header: () => <TableHeader label={LL.proposal.voters_table.header.address()} />,
       id: "ADDRESS",
       size: 180,
@@ -169,7 +167,7 @@ export const VotersTable = ({ data }: VotersTableProps) => {
       size: 140,
     }),
     columnHelper.accessor("transactionId", {
-      cell: data => <TransactionIdCell value={data.getValue()} />,
+      cell: data => <TransactionIdCell value={data.getValue()} isMobile={isMobile || false} />,
       header: () => <TableHeader label={LL.proposal.voters_table.header.transaction_id()} />,
       id: "TRANSACTION_ID",
       size: 180,

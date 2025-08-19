@@ -4,6 +4,7 @@ import {
   Heading,
   Icon,
   ModalCloseButton,
+  ModalContentProps,
   ModalHeader,
   ModalOverlay,
   ModalProps,
@@ -15,12 +16,16 @@ import { BaseModalContent } from "./BaseModalContent";
 export const ModalSkeleton = ({
   children,
   showCloseButton = true,
+  contentProps,
   ...props
-}: ModalProps & { showCloseButton?: boolean }) => {
+}: ModalProps & {
+  showCloseButton?: boolean;
+  contentProps: ModalContentProps;
+}) => {
   return (
     <BaseModal isCentered motionPreset="slideInBottom" {...props}>
       <ModalOverlay />
-      <BaseModalContent>
+      <BaseModalContent {...contentProps}>
         {showCloseButton && <ModalCloseButton onClick={props.onClose} />}
         {children}
       </BaseModalContent>
