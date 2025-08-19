@@ -1,6 +1,6 @@
 import { useI18nContext } from "@/i18n/i18n-react";
 import { ArrowRightIcon, UserCheckIcon } from "@/icons";
-import { Icon, ModalBody, ModalHeader, useDisclosure, Spinner, Flex, Text } from "@chakra-ui/react";
+import { Icon, ModalBody, ModalHeader, useDisclosure, Spinner, Flex, Text, useBreakpointValue } from "@chakra-ui/react";
 import { useCallback, useState } from "react";
 import { useProposal } from "@/components/proposal/ProposalProvider";
 import { VotersFiltersPanel, DEFAULT_FILTER } from "./components/VotersFiltersPanel";
@@ -24,6 +24,8 @@ export const AllVotersModal = () => {
 
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
 
+  const isMobile = useBreakpointValue({ base: true, md: false });
+
   const { votes, totalVotes, pagination, filterOptions, isLoading, error } = useVotersData({
     proposalId: proposal.id,
     filters: {
@@ -32,7 +34,7 @@ export const AllVotersModal = () => {
       searchQuery: debouncedSearchQuery,
     },
     page: currentPage,
-    pageSize: 10,
+    pageSize: isMobile ? 6 : 10,
   });
 
   const handleSelectedOptionChange = useCallback((value: string) => {
