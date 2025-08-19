@@ -1,5 +1,5 @@
 import { createColumnHelper } from "@tanstack/react-table";
-import { defineStyle, Icon, Link, Text, TextProps } from "@chakra-ui/react";
+import { defineStyle, Icon, Link, Text, TextProps, useBreakpointValue } from "@chakra-ui/react";
 import { formatAddress } from "@/utils/address";
 import { CopyLink } from "@/components/ui/CopyLink";
 import { DataTable } from "@/components/ui/TableSkeleton";
@@ -48,6 +48,7 @@ const BaseCell = ({ value, ...restProps }: TextProps & { value: string }) => {
 };
 
 const AddressCell = ({ voter }: { voter: VoteItem["voter"] }) => {
+  const isMobile = useBreakpointValue({ base: true, md: false });
   return (
     <CopyLink
       isExternal
@@ -64,7 +65,9 @@ const AddressCell = ({ voter }: { voter: VoteItem["voter"] }) => {
       containerProps={{
         justifyContent: "center",
         width: "100%",
-      }}>
+      }}
+      noOfLines={1}
+      showCopyIcon={!isMobile}>
       {voter?.domain || formatAddress(voter?.address || "")}
     </CopyLink>
   );
@@ -112,6 +115,8 @@ const VotedOptionCell = ({ option }: { option: SingleChoiceEnum }) => {
 };
 
 const TransactionIdCell = ({ value }: { value: string }) => {
+  const isMobile = useBreakpointValue({ base: true, md: false });
+
   return (
     <Link
       display={"flex"}
@@ -126,7 +131,7 @@ const TransactionIdCell = ({ value }: { value: string }) => {
       <Text overflow={"hidden"} textOverflow={"ellipsis"} minW={"86px"}>
         {formatAddress(value)}
       </Text>
-      <Icon as={ArrowLinkIcon} width={4} height={4} />
+      {!isMobile && <Icon as={ArrowLinkIcon} width={4} height={4} />}
     </Link>
   );
 };
