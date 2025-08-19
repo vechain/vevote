@@ -25,9 +25,14 @@ export const ProposalCardVotesResults = ({
     };
   }, [votePercentages]);
 
+  const votePercentageOrdered = useMemo(() => {
+    const rows = Object.keys(votePercentages);
+    return [rows[1], rows[0], rows[2]];
+  }, [votePercentages]);
+
   return (
     <Flex gap={3} alignItems={"center"}>
-      {Object.keys(votePercentages).map(opt => {
+      {votePercentageOrdered.map(opt => {
         const option = opt as SingleChoiceEnum;
         const percentage = votePercentages[option];
         const mostVoted = quorumNotReached ? false : isMostVoted[option];
