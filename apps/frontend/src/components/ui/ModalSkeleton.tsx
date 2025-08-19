@@ -20,7 +20,7 @@ export const ModalSkeleton = ({
   ...props
 }: ModalProps & {
   showCloseButton?: boolean;
-  contentProps: ModalContentProps;
+  contentProps?: ModalContentProps;
 }) => {
   return (
     <BaseModal isCentered motionPreset="slideInBottom" {...props}>
