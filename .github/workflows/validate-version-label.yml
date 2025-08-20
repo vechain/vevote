@@ -10,7 +10,7 @@ on:
       FAIL_IF_MISSING_LABEL:
         type: boolean
         description: 'Requires manual label selection on PR, label will not be auto-applied'
-        default: false
+        default: true
         required: false
       DEFAULT_LABEL:
         type: string
@@ -56,3 +56,5 @@ jobs:
           contains(github.event.pull_request.labels.*.name, 'increment:minor') ||
           contains(github.event.pull_request.labels.*.name, 'increment:patch')
         run: echo "Versioning label found. PR can be merged."
+
+    
