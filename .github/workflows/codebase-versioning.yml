@@ -145,7 +145,12 @@ jobs:
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
-          const tag = "${{ github.event_name == 'workflow_dispatch' ? steps.test-tag.outputs.NEW_TAG : steps.define-new-tag.outputs.NEW_TAG }}";
+          let tag = "";
+          if ("${{ github.event_name }}" === "workflow_dispatch") {
+            tag = "${{ steps.test-tag.outputs.NEW_TAG }}";
+          } else {
+            tag = "${{ steps.define-new-tag.outputs.NEW_TAG }}";
+          }
           github.rest.actions.createWorkflowDispatch({
             owner: context.repo.owner,
             repo: context.repo.repo,
