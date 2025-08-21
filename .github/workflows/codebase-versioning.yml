@@ -41,11 +41,15 @@ jobs:
     - name: Determine increment type
       id: increment
       run: |
+        # Default to patch for non-PR events
+        if [ "${{ github.event_name }}" == "push" ] || [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+          echo "increment_type=patch" >> $GITHUB_OUTPUT
+          exit 0
+        fi
+        # Process PR labels only for PR events
         label_names=$(echo "${PR_LABELS}" | jq -r ".[] | .name")
         echo "PR labels: ${label_names}" 
-
         increment_type="patch"  # Default increment type
-
         for label in ${label_names[@]}; do
           case "${label}" in
             increment:major)
@@ -65,7 +69,6 @@ jobs:
               ;;
           esac
         done
-
         echo "increment_type=${increment_type}" >> $GITHUB_OUTPUT
 
     - name: Define new tag
