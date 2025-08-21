@@ -18,7 +18,7 @@ jobs:
       contents: write
     runs-on: ubuntu-latest
     # Don't run if pull request is closed without merging.
-    if: github.event.pull_request.merged == true
+    if: github.event.pull_request.merged == true || github.event_name == 'workflow_dispatch'
 
     env:
       PR_LABELS: ${{ toJson(github.event.pull_request.labels) }}
