@@ -4,7 +4,8 @@ on:
   pull_request:
     branches: 
       - main
-    types: [closed] 
+    types: [closed]
+  workflow_dispatch:
 
   workflow_call:
     secrets:
@@ -132,3 +133,27 @@ jobs:
           git tag -a "${NEW_TAG}" -m "${NEW_TAG} - ${PR_TITLE}"
           git push origin "${NEW_TAG}"
         fi
+
+    - name: Set test tag for manual run
+      if: github.event_name == 'workflow_dispatch'
+      id: test-tag
+      run: |
+        echo "NEW_TAG=test-v.1.0.0" >> $GITHUB_OUTPUT
+
+    - name: Trigger Deployment to Dev
+      if: steps.define-new-tag.outputs.NEW_TAG != '' || steps.test-tag.outputs.NEW_TAG != ''
+      uses: actions/github-script@v6
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const tag = "${{ github.event_name == 'workflow_dispatch' ? steps.test-tag.outputs.NEW_TAG : steps.define-new-tag.outputs.NEW_TAG }}";
+          github.rest.actions.createWorkflowDispatch({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            workflow_id: 'deploy-frontend-and-release.yml',
+            ref: 'main',
+            inputs: {
+              'deployment-environment': 'dev',
+              'version': tag
+            }
+          });
