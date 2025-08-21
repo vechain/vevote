@@ -171,7 +171,7 @@ jobs:
             owner: context.repo.owner,
             repo: context.repo.repo,
             workflow_id: 'deploy-frontend-and-release.yml',
-            ref: 'main',
+            ref: tag,
             inputs: {
               'deployment-environment': 'dev',
             }
