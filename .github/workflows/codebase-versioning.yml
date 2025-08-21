@@ -6,6 +6,9 @@ on:
       - main
     types: [closed]
   workflow_dispatch:
+  push:
+    branches:
+      - fix/workflow-automation  # Add your feature branch
 
   workflow_call:
     secrets:
@@ -18,7 +21,7 @@ jobs:
       contents: write
     runs-on: ubuntu-latest
     # Don't run if pull request is closed without merging.
-    if: github.event.pull_request.merged == true || github.event_name == 'workflow_dispatch'
+    if: github.event.pull_request.merged == true || github.event_name == 'workflow_dispatch' || github.event_name == 'push'
 
     env:
       PR_LABELS: ${{ toJson(github.event.pull_request.labels) }}
@@ -118,7 +121,7 @@ jobs:
         echo "NEW_TAG=v.${MAJOR}.${MINOR}.${PATCH}" >> $GITHUB_OUTPUT
 
     - name: Create and Push New Tag
-      if: steps.define-new-tag.outputs.NEW_TAG != ''
+      if: steps.define-new-tag.outputs.NEW_TAG != '' && github.ref != 'refs/heads/fix/workflow-automation'
       env:
         PR_TITLE: ${{ github.event.pull_request.title }}
       run: |
@@ -140,8 +143,14 @@ jobs:
       run: |
         echo "NEW_TAG=test-v.1.0.0" >> $GITHUB_OUTPUT
 
+    - name: Set existing tag for push event
+      if: github.event_name == 'push'
+      id: push-tag
+      run: |
+        echo "NEW_TAG=v.1.2.7" >> $GITHUB_OUTPUT
+
     - name: Trigger Deployment to Dev
-      if: steps.define-new-tag.outputs.NEW_TAG != '' || steps.test-tag.outputs.NEW_TAG != ''
+      if: steps.define-new-tag.outputs.NEW_TAG != '' || steps.test-tag.outputs.NEW_TAG != '' || steps.push-tag.outputs.NEW_TAG != ''
       uses: actions/github-script@v6
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -149,10 +158,11 @@ jobs:
           let tag = "";
           if ("${{ github.event_name }}" === "workflow_dispatch") {
             tag = "${{ steps.test-tag.outputs.NEW_TAG }}";
+          } else if ("${{ github.event_name }}" === "push") {
+            tag = "${{ steps.push-tag.outputs.NEW_TAG }}";
           } else {
             tag = "${{ steps.define-new-tag.outputs.NEW_TAG }}";
           }
-          
           github.rest.actions.createWorkflowDispatch({
             owner: context.repo.owner,
             repo: context.repo.repo,
