@@ -49,6 +49,52 @@ export const getStatusParProposalMethod = (proposalIds?: string[]) => {
   }));
 };
 
+export const calculateNextStateChangeTime = (proposals: ProposalCardType[]): number | null => {
+  const now = dayjs().valueOf();
+  let nextChangeTime: number | null = null;
+
+  for (const proposal of proposals) {
+    let proposalNextChange: number | null = null;
+
+    if (proposal.status === ProposalStatus.UPCOMING && proposal.startDate) {
+      proposalNextChange = dayjs(proposal.startDate).valueOf();
+    } else if (proposal.status === ProposalStatus.VOTING && proposal.endDate) {
+      proposalNextChange = dayjs(proposal.endDate).valueOf();
+    }
+
+    if (proposalNextChange && proposalNextChange > now) {
+      if (!nextChangeTime || proposalNextChange < nextChangeTime) {
+        nextChangeTime = proposalNextChange;
+      }
+    }
+  }
+
+  return nextChangeTime;
+};
+
+export const calculateRefetchInterval = (proposals: ProposalCardType[]): number | false => {
+  const nextChangeTime = calculateNextStateChangeTime(proposals);
+
+  if (!nextChangeTime) return false;
+
+  const now = dayjs().valueOf();
+  const timeUntilChange = nextChangeTime - now;
+
+  let interval: number;
+
+  if (timeUntilChange <= 0) {
+    interval = 10 * 1000;
+  } else if (timeUntilChange <= 60 * 1000) {
+    interval = 10 * 1000;
+  } else if (timeUntilChange <= 5 * 60 * 1000) {
+    interval = 30 * 1000;
+  } else {
+    interval = 60 * 1000;
+  }
+
+  return interval;
+};
+
 export const getIndexFromSingleChoice = (choice: SingleChoiceEnum): 0 | 1 | 2 => {
   switch (choice) {
     case SingleChoiceEnum.AGAINST:
