@@ -19,7 +19,7 @@ jobs:
   auto-versioning:
     permissions:
       contents: write
-      workflows: write
+      actions: write
     runs-on: ubuntu-latest
     # Don't run if pull request is closed without merging.
     if: github.event.pull_request.merged == true || github.event_name == 'workflow_dispatch' || github.event_name == 'push'
