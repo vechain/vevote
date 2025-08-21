@@ -76,25 +76,31 @@ export const calculateRefetchInterval = (proposals: ProposalCardType[]): number 
   const nextChangeTime = calculateNextStateChangeTime(proposals);
 
   if (!nextChangeTime) {
+    console.log('🔄 useProposalsEvents: No refetch interval - no time-sensitive proposals');
     return false;
   }
 
   const now = dayjs().valueOf();
   const timeUntilChange = nextChangeTime - now;
 
+  let interval: number;
+  
   if (timeUntilChange <= 0) {
-    return 10 * 1000;
+    interval = 10 * 1000;
+    console.log('🔄 useProposalsEvents: Refetch every 10s - proposal state should change now');
+  } else if (timeUntilChange <= 60 * 1000) {
+    interval = 10 * 1000;
+    console.log('🔄 useProposalsEvents: Refetch every 10s - proposal changing within 1 minute');
+  } else if (timeUntilChange <= 5 * 60 * 1000) {
+    interval = 30 * 1000;
+    console.log('🔄 useProposalsEvents: Refetch every 30s - proposal changing within 5 minutes');
+  } else {
+    interval = 60 * 1000;
+    console.log('🔄 useProposalsEvents: Refetch every 60s - proposal changing later');
   }
 
-  if (timeUntilChange <= 60 * 1000) {
-    return 10 * 1000;
-  }
-
-  if (timeUntilChange <= 5 * 60 * 1000) {
-    return 30 * 1000;
-  }
-
-  return 60 * 1000;
+  console.log(`⏰ Next proposal state change in: ${Math.round(timeUntilChange / 1000)}s`);
+  return interval;
 };
 
 export const getIndexFromSingleChoice = (choice: SingleChoiceEnum): 0 | 1 | 2 => {

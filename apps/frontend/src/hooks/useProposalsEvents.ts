@@ -18,8 +18,10 @@ export const useProposalsEvents = (options: UseProposalsEventsOptions = {}) => {
 
   const { data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage, error } = useInfiniteQuery({
     queryKey: ["infiniteProposals", queryOptions],
-    queryFn: async ({ pageParam }): Promise<PaginatedProposalsResult> =>
-      await getProposals(thor, { ...queryOptions, cursor: pageParam as string }),
+    queryFn: async ({ pageParam }): Promise<PaginatedProposalsResult> => {
+      console.log('🚀 useProposalsEvents: Fetching proposals data');
+      return await getProposals(thor, { ...queryOptions, cursor: pageParam as string });
+    },
     getNextPageParam: (lastPage: PaginatedProposalsResult) => lastPage.nextCursor,
     enabled: !!thor,
     staleTime: 30 * 1000,
