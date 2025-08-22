@@ -80,7 +80,7 @@ jobs:
         id: init
         run: |
           if [[ "${{ env.ENVIRONMENT }}" == "prod-preview" ]]; then
-            terraform init -backend-config="../config/${{ env.ENVIRONMENT }}/backend.config" -var="preview_mode=true"
+            terraform init -backend-config="../config/prod/backend.config" -var="preview_mode=true"
           else
             terraform init -backend-config="../config/${{ env.ENVIRONMENT }}/backend.config"
           fi
@@ -97,8 +97,12 @@ jobs:
         id: update-tag
         if: inputs.version && inputs.version != 'latest'
         run: |
-          sed -i "s/latest/${{ inputs.version }}/g" ../config/${{ env.ENVIRONMENT }}/common.yaml
-          cat ../config/${{ env.ENVIRONMENT }}/common.yaml
+          ENV_DIR="${{ env.ENVIRONMENT }}"
+          if [[ "${{ env.ENVIRONMENT }}" == "prod-preview" ]]; then
+            ENV_DIR="prod"
+          fi
+          sed -i "s/latest/${{ inputs.version }}/g" ../config/${ENV_DIR}/common.yaml
+          cat ../config/${ENV_DIR}/common.yaml
         continue-on-error: false
 
       - name: Terraform Plan
