@@ -43,7 +43,7 @@ jobs:
   deploy:
     name: "Plan/deploy VeVote terraform - ${{ inputs.environment }}"
     runs-on: ubuntu-latest
-    environment: ${{ (inputs.environment == 'prod-preview') && 'prod' || inputs.environment }}
+    environment: ${{ (inputs.environment == 'prod-preview') && 'dev' || inputs.environment }}
 
     defaults:
       run:
@@ -79,7 +79,7 @@ jobs:
       - name: Set environment directory
         run: |
           if [[ "${{ env.ENVIRONMENT }}" == "prod-preview" ]]; then
-            echo "TF_ENV=prod" >> $GITHUB_ENV
+            echo "TF_ENV=dev" >> $GITHUB_ENV
           else
             echo "TF_ENV=${{ env.ENVIRONMENT }}" >> $GITHUB_ENV
           fi
