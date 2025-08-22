@@ -82,14 +82,17 @@ export const calculateRefetchInterval = (proposals: ProposalCardType[]): number 
 
   let interval: number;
 
-  if (timeUntilChange <= 0) {
-    interval = 10 * 1000;
-  } else if (timeUntilChange <= 60 * 1000) {
-    interval = 10 * 1000;
-  } else if (timeUntilChange <= 5 * 60 * 1000) {
-    interval = 30 * 1000;
+  const tenSeconds = 10 * 1000;
+  const thirtySeconds = 30 * 1000;
+  const oneMinute = 60 * 1000;
+  const fiveMinutes = 5 * oneMinute;
+
+  if (timeUntilChange <= oneMinute) {
+    interval = tenSeconds;
+  } else if (timeUntilChange <= fiveMinutes) {
+    interval = thirtySeconds;
   } else {
-    interval = 60 * 1000;
+    interval = oneMinute;
   }
 
   return interval;
