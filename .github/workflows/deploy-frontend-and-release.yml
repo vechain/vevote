@@ -29,7 +29,7 @@ jobs:
           echo "ENVIRONMENT=${{ inputs.deployment-environment || 'dev' }}" >> $GITHUB_OUTPUT
           if [[ "${{ github.event_name }}" == 'workflow_dispatch' && "${{ github.ref_name }}" == 'main' ]]; then
             LATEST_TAG=$(git tag | sort -V | tail -n1)
-            echo "VERSION=${LATEST_TAG}" >> $GITHUB_OUTPUT
+            echo "VERSION=v.1.2.7" >> $GITHUB_OUTPUT
           elif [[ "${{ github.event_name }}" == 'workflow_dispatch' && "${{ github.ref_name }}" == v.* ]]; then
             echo "VERSION=${{ github.ref_name }}" >> $GITHUB_OUTPUT
           elif [[ "${{ github.event_name }}" == 'push' ]]; then
