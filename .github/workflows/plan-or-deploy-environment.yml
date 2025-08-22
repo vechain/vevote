@@ -43,7 +43,7 @@ jobs:
   deploy:
     name: "Plan/deploy VeVote terraform - ${{ inputs.environment }}"
     runs-on: ubuntu-latest
-    environment: ${{ inputs.environment || 'dev' }}
+    environment: ${{ (inputs.environment == 'prod-preview') && 'prod' || inputs.environment }}
 
     defaults:
       run:

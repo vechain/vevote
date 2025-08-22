@@ -35,7 +35,7 @@ jobs:
           elif [[ "${{ github.event_name }}" == 'push' ]]; then
             echo "VERSION=${{ github.ref_name }}" >> $GITHUB_OUTPUT
           else
-            echo "VERSION=latest" >> $GITHUB_OUTPUT
+            echo "VERSION=v.1.2.7" >> $GITHUB_OUTPUT
           fi
   check-existing-release:
     name: Check Existing Releases
