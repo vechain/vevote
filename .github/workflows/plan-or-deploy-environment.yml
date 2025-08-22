@@ -76,18 +76,22 @@ jobs:
         run: terraform fmt -check -recursive
         continue-on-error: true
 
+      - name: Set environment directory
+        run: |
+          if [[ "${{ env.ENVIRONMENT }}" == "prod-preview" ]]; then
+            echo "TF_ENV=prod" >> $GITHUB_ENV
+          else
+            echo "TF_ENV=${{ env.ENVIRONMENT }}" >> $GITHUB_ENV
+          fi
+
       - name: Terraform Initialize
         id: init
         run: |
-          if [[ "${{ env.ENVIRONMENT }}" == "prod-preview" ]]; then
-            terraform init -backend-config="../config/prod/backend.config" -var="preview_mode=true"
-          else
-            terraform init -backend-config="../config/${{ env.ENVIRONMENT }}/backend.config"
-          fi
+          terraform init -backend-config="../config/${{ env.TF_ENV }}/backend.config" ${{ env.ENVIRONMENT == 'prod-preview' && '-var="preview_mode=true"' || '' }}
 
       - name: Terraform Workspace
         id: workspace
-        run: terraform workspace select --or-create  ${{ env.ENVIRONMENT }}
+        run: terraform workspace select --or-create ${{ env.TF_ENV }}
 
       - name: Terraform Validate
         id: validate
@@ -97,12 +101,8 @@ jobs:
         id: update-tag
         if: inputs.version && inputs.version != 'latest'
         run: |
-          ENV_DIR="${{ env.ENVIRONMENT }}"
-          if [[ "${{ env.ENVIRONMENT }}" == "prod-preview" ]]; then
-            ENV_DIR="prod"
-          fi
-          sed -i "s/latest/${{ inputs.version }}/g" ../config/${ENV_DIR}/common.yaml
-          cat ../config/${ENV_DIR}/common.yaml
+          sed -i "s/latest/${{ inputs.version }}/g" ../config/${{ env.TF_ENV }}/common.yaml
+          cat ../config/${{ env.TF_ENV }}/common.yaml
         continue-on-error: false
 
       - name: Terraform Plan
