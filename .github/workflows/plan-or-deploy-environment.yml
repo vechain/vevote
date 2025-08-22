@@ -78,7 +78,12 @@ jobs:
 
       - name: Terraform Initialize
         id: init
-        run: terraform init -backend-config="../config/${{ env.ENVIRONMENT }}/backend.config"
+        run: |
+          if [[ "${{ env.ENVIRONMENT }}" == "prod-preview" ]]; then
+            terraform init -backend-config="../config/${{ env.ENVIRONMENT }}/backend.config" -var="preview_mode=true"
+          else
+            terraform init -backend-config="../config/${{ env.ENVIRONMENT }}/backend.config"
+          fi
 
       - name: Terraform Workspace
         id: workspace
@@ -98,9 +103,19 @@ jobs:
 
       - name: Terraform Plan
         id: plan
-        run: terraform plan -out "apply.plan"
+        run: |
+          if [[ "${{ env.ENVIRONMENT }}" == "prod-preview" ]]; then
+            terraform plan -var="preview_mode=true" -out "apply.plan"
+          else
+            terraform plan -out "apply.plan"
+          fi
 
       - name: Terraform Apply (PR builds will only plan, never deploy)
         if: github.ref == 'refs/heads/main' || inputs.force
         id: apply
-        run: terraform apply "apply.plan"
+        run: |
+          if [[ "${{ env.ENVIRONMENT }}" == "prod-preview" ]]; then
+            terraform apply -var="preview_mode=true" "apply.plan"
+          else
+            terraform apply "apply.plan"
+          fi

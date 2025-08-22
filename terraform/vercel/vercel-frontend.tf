@@ -61,7 +61,7 @@ resource "vercel_project" "vevote_frontend" {
 resource "vercel_deployment" "vevote_frontend_deployment" {
   project_id = vercel_project.vevote_frontend.id
   team_id    = local.config.vercel_team_id
-  production = true
+  production = var.preview_mode ? false : true
   ref        = local.config.tag
 }
 

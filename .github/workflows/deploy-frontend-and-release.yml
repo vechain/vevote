@@ -12,6 +12,7 @@ on:
         options:
           - dev
           - prod
+          - prod-preview
 
 jobs:
   setup-environment:
