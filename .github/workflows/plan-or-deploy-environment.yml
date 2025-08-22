@@ -118,8 +118,5 @@ jobs:
         if: github.ref == 'refs/heads/main' || inputs.force
         id: apply
         run: |
-          if [[ "${{ env.ENVIRONMENT }}" == "prod-preview" ]]; then
-            terraform apply -var="preview_mode=true" "apply.plan"
-          else
-            terraform apply "apply.plan"
-          fi
+          # Just apply the saved plan, variables are already included
+          terraform apply "apply.plan"
