@@ -2,7 +2,7 @@ import { useProposal } from "@/components/proposal/ProposalProvider";
 import { GenericInfoBox } from "@/components/ui/GenericInfoBox";
 import { ModalSkeleton } from "@/components/ui/ModalSkeleton";
 import { ColorByVote, IconByVote, voteOptions } from "@/constants";
-import { useCastVote } from "@/hooks/useCastVote";
+import { useBuildCastVote } from "@/hooks/useBuildCastVote";
 import { useNodes } from "@/hooks/useUserQueries";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { ArrowLinkIcon, CheckIcon, CircleXIcon, VoteIcon, VotingPowerIcon } from "@/icons";
@@ -45,7 +45,7 @@ export const SubmitVoteModal = ({ submitVoteModal }: { submitVoteModal: UseDiscl
     return new Intl.NumberFormat().format(totalVotingPower);
   }, [totalVotingPower]);
 
-  const { sendTransaction, isTransactionPending } = useCastVote({
+  const { sendTransaction, isTransactionPending } = useBuildCastVote({
     proposalId: proposal.id,
     masterNode,
   });

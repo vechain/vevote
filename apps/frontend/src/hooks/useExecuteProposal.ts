@@ -34,6 +34,7 @@ export const useExecuteProposal = ({ proposalId }: { proposalId?: string }) => {
 
   return useVevoteSendTransaction({
     clauseBuilder: buildClauses,
-    refetchQueryKeys: [["getSingleProposal", proposalId]],
+    refetchQueryKeys: [["infiniteProposals"]],
+    delayedRefetchKeys: [["proposalEvent", proposalId]],
   });
 };
