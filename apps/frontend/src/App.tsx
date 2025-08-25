@@ -6,14 +6,15 @@ import { CreateProposal } from "./pages/CreateProposal/CreateProposal";
 import { Footer } from "./components/footer/Footer";
 import { ScrollToTop } from "./components/ui/ScrollToTop";
 import { useVoteCastInvalidate } from "./hooks/useVoteCastInvalidate";
+import { useProposalCreatedInvalidate } from "./hooks/useProposalCreatedInvalidate";
 
 const excludedRoutes = ["/create-proposal"];
 
 function Layout() {
   const { pathname } = useLocation();
-  
-  // WebSocket VoteCast con invalidate query
+
   useVoteCastInvalidate();
+  useProposalCreatedInvalidate();
 
   return (
     <Box h="full" bgColor="#f7f7f7">
