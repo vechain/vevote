@@ -16,7 +16,7 @@ import { FormSkeleton } from "../../ui/FormSkeleton";
 import { z } from "zod";
 import { Label } from "../../ui/Label";
 import { InputMessage } from "../../ui/InputMessage";
-import { DeleteIcon, MinusCircleIcon } from "@/icons";
+import { CheckIcon, DeleteIcon, MinusCircleIcon } from "@/icons";
 import { useCancelProposal } from "@/hooks/useCancelProposal";
 import { Routes } from "@/types/routes";
 import { useNavigate } from "react-router-dom";
@@ -25,6 +25,7 @@ import { trackEvent, MixPanelEvent } from "@/utils/mixpanel/utilsMixpanel";
 export const CancelProposal = ({ proposalId }: { proposalId?: string }) => {
   const { LL } = useI18nContext();
   const { isOpen, onClose, onOpen } = useDisclosure();
+  const { isOpen: isSuccessOpen, onClose: onSuccessClose, onOpen: onSuccessOpen } = useDisclosure();
   const navigate = useNavigate();
   const isMobile = useBreakpointValue({ base: true, md: false });
 
@@ -51,7 +52,7 @@ export const CancelProposal = ({ proposalId }: { proposalId?: string }) => {
         });
 
         onClose();
-        navigate(Routes.HOME);
+        onSuccessOpen();
       } catch (error) {
         const txError = error as { txId?: string; error?: { message?: string }; message?: string };
 
@@ -62,8 +63,13 @@ export const CancelProposal = ({ proposalId }: { proposalId?: string }) => {
         });
       }
     },
-    [proposalId, sendTransaction, onClose, navigate, LL.proposal],
+    [proposalId, sendTransaction, onClose, onSuccessOpen, LL.proposal],
   );
+
+  const onSuccessConfirm = useCallback(() => {
+    onSuccessClose();
+    navigate(Routes.HOME);
+  }, [onSuccessClose, navigate]);
   return (
     <>
       <Button
@@ -114,6 +120,22 @@ export const CancelProposal = ({ proposalId }: { proposalId?: string }) => {
             </>
           )}
         </FormSkeleton>
+      </MessageModal>
+      {/* Success modal */}
+      <MessageModal
+        isOpen={isSuccessOpen}
+        onClose={onSuccessClose}
+        icon={CheckIcon}
+        iconColor={"primary.500"}
+        title={LL.proposal.cancel_proposal.success_title()}>
+        <Text textAlign={"center"} fontSize={14} color={"gray.600"}>
+          {LL.proposal.cancel_proposal.success_description()}
+        </Text>
+        <ModalFooter width={"full"} justifyContent={"space-center"} mt={7}>
+          <Button width={"full"} onClick={onSuccessConfirm} color={"white"} _hover={{ textDecoration: "none" }}>
+            {LL.continue()}
+          </Button>
+        </ModalFooter>
       </MessageModal>
     </>
   );
