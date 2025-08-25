@@ -1,6 +1,7 @@
 import { FormSkeleton } from "@/components/ui/FormSkeleton";
 import { CreateFormWrapper } from "./CreateFormWrapper";
 import { useMemo } from "react";
+import React from "react";
 import { useCreateProposal } from "./CreateProposalProvider";
 import { Button, Flex, FormControl, Icon, Input, Text, InputGroup, InputLeftAddon } from "@chakra-ui/react";
 import { Label } from "@/components/ui/Label";
@@ -51,8 +52,20 @@ export const ProposalDetailsForm = () => {
   };
   return (
     <FormSkeleton schema={schema} defaultValues={defaultValues} onSubmit={onSubmit}>
-      {({ register, errors, watch }) => {
+      {({ register, errors, watch, trigger }) => {
         const title = watch("title");
+        const discourseUrl = watch("discourseUrl");
+        
+        // Trigger validazione asincrona per il campo discourse dopo un debounce
+        React.useEffect(() => {
+          if (discourseUrl) {
+            const timeoutId = setTimeout(() => {
+              trigger("discourseUrl");
+            }, 1000); // Aspetta 1 secondo dopo che l'utente ha smesso di digitare
+            
+            return () => clearTimeout(timeoutId);
+          }
+        }, [discourseUrl, trigger]);
         return (
           <>
             <CreateFormWrapper>
