@@ -26,8 +26,6 @@ export const useProposalsEvents = (options: UseProposalsEventsOptions = {}) => {
     staleTime: 30 * 1000,
     gcTime: 5 * 60 * 1000,
     initialPageParam: undefined,
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
     refetchInterval: query => {
       const proposals = query.state.data?.pages.flatMap(page => page.proposals) || [];
       return calculateRefetchInterval(proposals);
