@@ -5,7 +5,7 @@ permissions:
   pull-requests: write
 on:
   pull_request:
-    types: [opened, reopened, labeled, unlabeled, synchronize]
+    types: [opened, reopened, labeled, unlabeled, synchronize, converted_to_draft]
   workflow_call:
     inputs:
       FAIL_IF_MISSING_LABEL:
