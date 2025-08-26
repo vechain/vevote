@@ -1,7 +1,8 @@
-permissions:
-  issues: write
 name: Validate PR Label
 
+permissions:
+  issues: write
+  pull-requests: write
 on:
   pull_request:
     types: [opened, reopened, labeled, unlabeled, synchronize]
@@ -42,6 +43,7 @@ jobs:
         if: ${{ !inputs.FAIL_IF_MISSING_LABEL && steps.label-check.outputs.label_missing == 'true' }}
         uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
         with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             github.rest.issues.addLabels({
               owner: context.repo.owner,
