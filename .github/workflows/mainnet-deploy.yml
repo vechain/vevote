@@ -1,5 +1,8 @@
 name: Mainnet — Preview or Release
 
+permissions:
+  contents: read  
+  
 on:
   workflow_dispatch:
     inputs:
@@ -21,7 +24,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: prod   # use environment-scoped secrets
+    environment: test   # use environment-scoped secrets
     env:
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
