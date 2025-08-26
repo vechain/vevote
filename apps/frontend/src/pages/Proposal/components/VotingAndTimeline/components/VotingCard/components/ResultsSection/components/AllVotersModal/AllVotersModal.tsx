@@ -1,6 +1,16 @@
 import { useI18nContext } from "@/i18n/i18n-react";
 import { ArrowRightIcon, UserCheckIcon } from "@/icons";
-import { Icon, ModalBody, ModalHeader, useDisclosure, Spinner, Flex, Text, useBreakpointValue } from "@chakra-ui/react";
+import {
+  Icon,
+  ModalBody,
+  ModalHeader,
+  useDisclosure,
+  Spinner,
+  Flex,
+  Text,
+  Skeleton,
+  useBreakpointValue,
+} from "@chakra-ui/react";
 import { useCallback, useState } from "react";
 import { useProposal } from "@/components/proposal/ProposalProvider";
 import { VotersFiltersPanel, DEFAULT_FILTER } from "./components/VotersFiltersPanel";
@@ -55,6 +65,8 @@ export const AllVotersModal = () => {
   const handlePageChange = useCallback((page: number) => {
     setCurrentPage(page);
   }, []);
+
+  if (isLoading) return <Skeleton height="20px" width="40%" borderRadius="4px" />;
 
   if (totalVotes === 0) return null;
 
