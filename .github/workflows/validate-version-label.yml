@@ -1,7 +1,8 @@
-permissions:
-  issues: write
 name: Validate PR Label
 
+permissions:
+  issues: write
+  pull-requests: write
 on:
   pull_request:
     types: [opened, reopened, labeled, unlabeled, synchronize]
@@ -21,6 +22,9 @@ jobs:
   labeler:
     name: Validate PR versioning label
     runs-on: ubuntu-latest
+    env:
+      DEFAULT_LABEL: increment:patch
+      FAIL_IF_MISSING_LABEL: false
     steps:
       - name: Check if PR label is missing
         id: label-check
@@ -32,22 +36,29 @@ jobs:
           echo "Label is missing"
           echo "label_missing=true" >> $GITHUB_OUTPUT
 
+      - name: Set workflow call variables if available
+        if: github.event_name == 'workflow_call'
+        run: |
+          echo "DEFAULT_LABEL=${{ inputs.DEFAULT_LABEL }}" >> $GITHUB_ENV
+          echo "FAIL_IF_MISSING_LABEL=${{ inputs.FAIL_IF_MISSING_LABEL }}" >> $GITHUB_ENV
+
       - name: Fail if label is missing and manual selection is required
-        if: ${{ inputs.FAIL_IF_MISSING_LABEL && steps.label-check.outputs.label_missing == 'true' }}
+        if: ${{ env.FAIL_IF_MISSING_LABEL == 'true' && steps.label-check.outputs.label_missing == 'true' }}
         run: |
           echo "Missing increment label. Please indicate whether this PR contains major, minor, or patch changes."
           exit 1
 
       - name: Add default label if missing
-        if: ${{ !inputs.FAIL_IF_MISSING_LABEL && steps.label-check.outputs.label_missing == 'true' }}
+        if: ${{ env.FAIL_IF_MISSING_LABEL != 'true' && steps.label-check.outputs.label_missing == 'true' }}
         uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
         with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             github.rest.issues.addLabels({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
-              labels: ['${{ inputs.DEFAULT_LABEL }}']
+              labels: ['${{ env.DEFAULT_LABEL }}']
             })
 
       - name: Confirm label presence
