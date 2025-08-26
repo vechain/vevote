@@ -31,6 +31,7 @@ export const AllVotersModal = () => {
   const [sort, setSort] = useState(Sort.Newest);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [isFocused, setIsFocused] = useState(false);
 
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
 
@@ -82,7 +83,7 @@ export const AllVotersModal = () => {
         isOpen={isOpen}
         onClose={onClose}
         size={"3xl"}
-        contentProps={{ height: { base: "90vh", md: "auto" } }}>
+        contentProps={{ minHeight: isFocused ? "90vh" : "0vh", transition: "all 0.3s ease" }}>
         <ModalHeader>
           <ModalTitle title={LL.voters()} icon={UserCheckIcon} />
           <VotersFiltersPanel
@@ -93,6 +94,7 @@ export const AllVotersModal = () => {
             onSortChange={handleSortChange}
             searchQuery={searchQuery}
             onSearchChange={handleSearchChange}
+            setIsFocused={setIsFocused}
           />
         </ModalHeader>
         <ModalBody overflowX={"auto"}>

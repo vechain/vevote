@@ -18,6 +18,7 @@ export interface VotersFiltersProps {
   onSortChange: (value: Sort) => void;
   searchQuery: string;
   onSearchChange: (value: string) => void;
+  setIsFocused: (value: boolean) => void;
 }
 
 export const VotersFiltersPanel = ({
@@ -28,6 +29,7 @@ export const VotersFiltersPanel = ({
   onSortChange,
   searchQuery,
   onSearchChange,
+  setIsFocused,
 }: VotersFiltersProps) => {
   const { LL } = useI18nContext();
 
@@ -61,8 +63,9 @@ export const VotersFiltersPanel = ({
         placeholder={LL.proposal.voters_table.filters.search_by_address()}
         value={searchQuery}
         onChange={handleSearchChange}
-        onFocus={e => e.stopPropagation()}
         onClear={() => onSearchChange("")}
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
       />
 
       <Flex gap={{ base: 3, md: 4 }} width={{ base: "full", md: "fit-content" }}>
