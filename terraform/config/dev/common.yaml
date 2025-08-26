@@ -2,10 +2,10 @@ project: vevote
 project_alias: ve
 vercel_team_id: team_gWCnY5uRnzsZIb5SvnCXAIjH
 tag: latest
-domain_frontend_name: vote-staging.vercel.app
+domain_frontend_name: vevote.vechain.org
 
 all_environments:
   mnemonic: denial kitchen pet squirrel other broom bar gas better priority spoil cross
-  TESTNET_STAGING_MNEMONIC: belt enemy list bless taxi produce inner whale urge width sauce release
+  TESTNET_STAGING_MNEMONIC: 
   public_ipfs_pinning_service: https://api.gateway-proxy.vechain.org/api/v1/pinning/pinFileToIPFS
   vechain_url_devnet: https://galactica.green.dev.node.vechain.org/
