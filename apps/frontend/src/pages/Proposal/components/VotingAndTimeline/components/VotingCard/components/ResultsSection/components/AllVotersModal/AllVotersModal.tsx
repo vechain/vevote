@@ -83,7 +83,7 @@ export const AllVotersModal = () => {
         isOpen={isOpen}
         onClose={onClose}
         size={"3xl"}
-        contentProps={{ minHeight: isFocused ? "90vh" : "0vh", transition: "all 0.3s ease" }}>
+        contentProps={{ minHeight: { base: isFocused ? "90vh" : "0vh", md: "0vh" }, transition: "all 0.3s ease" }}>
         <ModalHeader>
           <ModalTitle title={LL.voters()} icon={UserCheckIcon} />
           <VotersFiltersPanel
