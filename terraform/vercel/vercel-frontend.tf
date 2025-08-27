@@ -12,6 +12,7 @@ resource "vercel_project" "vevote_frontend" {
   build_command    = terraform.workspace == "prod" ? "yarn build:mainnet" : "yarn build:staging"
   output_directory = "frontend/dist"
   dev_command      = terraform.workspace == "prod" ? "yarn dev:mainnet" : "yarn dev:staging"
+  ignore_command = terraform.workspace == "prod" ? "exit 0" : null
   environment = terraform.workspace == "prod" ? [
     {
       key    = "VECHAIN_URL_DEVNET"
@@ -62,6 +63,10 @@ resource "vercel_deployment" "vevote_frontend_deployment" {
   team_id    = local.config.vercel_team_id
   production = true
   ref        = local.config.tag
+  lifecycle {
+    ignore_changes  = all
+    prevent_destroy = true
+  }
 }
 
 resource "vercel_project_domain" "vercel-frontend-domain" {

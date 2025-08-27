@@ -90,7 +90,7 @@ jobs:
 
       - name: Update tag
         id: update-tag
-        if: inputs.version && inputs.version != 'latest'
+        if: inputs.version && inputs.version != 'latest' && env.ENVIRONMENT == 'prod'
         run: |
           sed -i "s/latest/${{ inputs.version }}/g" ../config/${{ env.ENVIRONMENT }}/common.yaml
           cat ../config/${{ env.ENVIRONMENT }}/common.yaml
