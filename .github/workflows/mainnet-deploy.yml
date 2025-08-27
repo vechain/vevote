@@ -19,8 +19,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    # REMOVE this if your secrets are at repo level, or ensure they exist in the "test" environment
-    # environment: test
+    environment: test
     env:
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}         # e.g. team_xxxxx
