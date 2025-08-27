@@ -44,14 +44,6 @@ jobs:
       - name: Enable Corepack (pnpm/yarn if needed)
         run: corepack enable
 
-      - name: Sanity checks
-        run: |
-          echo "PWD=$(pwd)"
-          ls -la
-          test -n "$VERCEL_TOKEN" || (echo "❌ Missing VERCEL_TOKEN" && exit 1)
-          test -n "$VERCEL_PROJECT_ID" || (echo "❌ Missing VERCEL_PROJECT_ID" && exit 1)
-          test -f package.json || (echo "❌ No package.json in $(pwd). Check working-directory vs Vercel Root Directory." && exit 1)
-
       # 🔒 Deterministic link to the exact project/org
       - name: Create .vercel/project.json
         run: |
