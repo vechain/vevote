@@ -11,24 +11,22 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { MessageModal } from "../../ui/ModalSkeleton";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { FormSkeleton } from "../../ui/FormSkeleton";
 import { z } from "zod";
 import { Label } from "../../ui/Label";
 import { InputMessage } from "../../ui/InputMessage";
-import { DeleteIcon, MinusCircleIcon } from "@/icons";
+import { CheckIcon, DeleteIcon, MinusCircleIcon } from "@/icons";
 import { useCancelProposal } from "@/hooks/useCancelProposal";
-import { Routes } from "@/types/routes";
-import { useNavigate } from "react-router-dom";
 import { trackEvent, MixPanelEvent } from "@/utils/mixpanel/utilsMixpanel";
 
 export const CancelProposal = ({ proposalId }: { proposalId?: string }) => {
   const { LL } = useI18nContext();
   const { isOpen, onClose, onOpen } = useDisclosure();
-  const navigate = useNavigate();
+  const { isOpen: isSuccessOpen, onClose: onSuccessClose, onOpen: onSuccessOpen } = useDisclosure();
   const isMobile = useBreakpointValue({ base: true, md: false });
 
-  const { sendTransaction, isTransactionPending } = useCancelProposal();
+  const { sendTransaction, isTransactionPending, status } = useCancelProposal();
 
   const schema = z.object({
     reason: z.string().optional(),
@@ -49,9 +47,6 @@ export const CancelProposal = ({ proposalId }: { proposalId?: string }) => {
           proposalId,
           transactionId: result.txId,
         });
-
-        onClose();
-        navigate(Routes.HOME);
       } catch (error) {
         const txError = error as { txId?: string; error?: { message?: string }; message?: string };
 
@@ -62,8 +57,15 @@ export const CancelProposal = ({ proposalId }: { proposalId?: string }) => {
         });
       }
     },
-    [proposalId, sendTransaction, onClose, navigate, LL.proposal],
+    [proposalId, sendTransaction, LL.proposal],
   );
+
+  useEffect(() => {
+    if (status === "success") {
+      onClose();
+      onSuccessOpen();
+    }
+  }, [status, onClose, onSuccessOpen]);
   return (
     <>
       <Button
@@ -114,6 +116,22 @@ export const CancelProposal = ({ proposalId }: { proposalId?: string }) => {
             </>
           )}
         </FormSkeleton>
+      </MessageModal>
+      {/* Success modal */}
+      <MessageModal
+        isOpen={isSuccessOpen}
+        onClose={onSuccessClose}
+        icon={CheckIcon}
+        iconColor={"primary.500"}
+        title={LL.proposal.cancel_proposal.success_title()}>
+        <Text textAlign={"center"} fontSize={14} color={"gray.600"}>
+          {LL.proposal.cancel_proposal.success_description()}
+        </Text>
+        <ModalFooter width={"full"} mt={7}>
+          <Button width={"full"} onClick={onSuccessClose} color={"white"}>
+            {LL.continue()}
+          </Button>
+        </ModalFooter>
       </MessageModal>
     </>
   );
