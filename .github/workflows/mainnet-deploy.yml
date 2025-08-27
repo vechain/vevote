@@ -1,6 +1,4 @@
-# .github/workflows/vercel-mainnet.yml
 name: Mainnet — Preview or Release
-
 permissions:
   contents: read
 
@@ -21,15 +19,16 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: test   # <- use your GitHub Environment that holds the secrets
+    # REMOVE this if your secrets are at repo level, or ensure they exist in the "test" environment
+    # environment: test
     env:
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}   # the prod/mainnet project
-      VERCEL_SCOPE: ${{ secrets.VERCEL_SCOPE }}             # optional team slug
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}         # e.g. team_xxxxx
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }} # e.g. prj_xxxxx
+      VERCEL_SCOPE: ${{ secrets.VERCEL_SCOPE }}           # team slug, e.g. my-team
     defaults:
       run:
-        working-directory: apps   # matches your Vercel "Root Directory"
+        working-directory: apps   # same as your Vercel Root Directory
 
     steps:
       - name: Checkout (full history)
@@ -38,47 +37,59 @@ jobs:
           fetch-depth: 0
           ref: ${{ inputs.ref }}
 
-      - name: Setup Node (for Vercel CLI build)
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      # Pull project settings to create .vercel/project.json (required by `vercel build`)
+      - name: Enable Corepack (pnpm/yarn if needed)
+        run: corepack enable
+
+      - name: Sanity checks
+        run: |
+          echo "PWD=$(pwd)"
+          ls -la
+          test -n "$VERCEL_TOKEN" || (echo "❌ Missing VERCEL_TOKEN" && exit 1)
+          test -n "$VERCEL_PROJECT_ID" || (echo "❌ Missing VERCEL_PROJECT_ID" && exit 1)
+          test -f package.json || (echo "❌ No package.json in $(pwd). Check working-directory vs Vercel Root Directory." && exit 1)
+
+      # 🔒 Deterministic link to the exact project/org
+      - name: Create .vercel/project.json
+        run: |
+          mkdir -p .vercel
+          cat > .vercel/project.json <<EOF
+          { "orgId": "${VERCEL_ORG_ID}", "projectId": "${VERCEL_PROJECT_ID}" }
+          EOF
+          echo "Linked to:"
+          cat .vercel/project.json
+
+      - name: Who am I?
+        run: npx vercel whoami --token "$VERCEL_TOKEN" $([ -n "$VERCEL_SCOPE" ] && echo --scope "$VERCEL_SCOPE")
+
       - name: Vercel pull (preview)
         if: ${{ inputs.target == 'preview' }}
-        run: |
-          npx vercel pull --yes \
-            --environment=preview \
-            --project "$VERCEL_PROJECT_ID" \
-            --token "$VERCEL_TOKEN" $([ -n "$VERCEL_SCOPE" ] && echo --scope "$VERCEL_SCOPE")
+        run: npx vercel pull --yes --environment=preview --token "$VERCEL_TOKEN" $([ -n "$VERCEL_SCOPE" ] && echo --scope "$VERCEL_SCOPE")
 
       - name: Vercel pull (production)
         if: ${{ inputs.target == 'release' }}
-        run: |
-          npx vercel pull --yes \
-            --environment=production \
-            --project "$VERCEL_PROJECT_ID" \
-            --token "$VERCEL_TOKEN" $([ -n "$VERCEL_SCOPE" ] && echo --scope "$VERCEL_SCOPE")
+        run: npx vercel pull --yes --environment=production --token "$VERCEL_TOKEN" $([ -n "$VERCEL_SCOPE" ] && echo --scope "$VERCEL_SCOPE")
 
-      # Optional but recommended for Vite: fetch env vars into a local .env (VITE_* used at build)
       - name: Env pull (.env for PREVIEW)
         if: ${{ inputs.target == 'preview' }}
-        run: npx vercel env pull .env --environment=preview --project "$VERCEL_PROJECT_ID" --token "$VERCEL_TOKEN" $([ -n "$VERCEL_SCOPE" ] && echo --scope "$VERCEL_SCOPE")
+        run: npx vercel env pull .env --environment=preview --token "$VERCEL_TOKEN" $([ -n "$VERCEL_SCOPE" ] && echo --scope "$VERCEL_SCOPE")
 
       - name: Env pull (.env for PRODUCTION)
         if: ${{ inputs.target == 'release' }}
-        run: npx vercel env pull .env --environment=production --project "$VERCEL_PROJECT_ID" --token "$VERCEL_TOKEN" $([ -n "$VERCEL_SCOPE" ] && echo --scope "$VERCEL_SCOPE")
+        run: npx vercel env pull .env --environment=production --token "$VERCEL_TOKEN" $([ -n "$VERCEL_SCOPE" ] && echo --scope "$VERCEL_SCOPE")
 
-      # Build with your Vercel project settings (e.g., Vite + yarn build:mainnet; Output Directory configured)
-      - name: Vercel build (preview)
+      - name: Build (preview)
         if: ${{ inputs.target == 'preview' }}
         run: npx vercel build --token "$VERCEL_TOKEN" $([ -n "$VERCEL_SCOPE" ] && echo --scope "$VERCEL_SCOPE")
 
-      - name: Vercel build (production)
+      - name: Build (production)
         if: ${{ inputs.target == 'release' }}
         run: npx vercel build --prod --token "$VERCEL_TOKEN" $([ -n "$VERCEL_SCOPE" ] && echo --scope "$VERCEL_SCOPE")
 
-      # Deploy the prebuilt output
       - name: Deploy PREVIEW
         if: ${{ inputs.target == 'preview' }}
         id: deploy_preview
