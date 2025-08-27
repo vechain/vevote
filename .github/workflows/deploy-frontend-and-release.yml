@@ -38,6 +38,15 @@ jobs:
         with:
           fetch-depth: 0
           ref: ${{ github.event_name == 'workflow_dispatch' && inputs.ref || github.ref_name }}
+    
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
 
       - run: npm i -g vercel@latest
       - run: vercel pull --yes --environment=production --token "$VERCEL_TOKEN"
