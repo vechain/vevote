@@ -11,7 +11,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { MessageModal } from "../../ui/ModalSkeleton";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { FormSkeleton } from "../../ui/FormSkeleton";
 import { z } from "zod";
 import { Label } from "../../ui/Label";
@@ -29,7 +29,7 @@ export const CancelProposal = ({ proposalId }: { proposalId?: string }) => {
   const navigate = useNavigate();
   const isMobile = useBreakpointValue({ base: true, md: false });
 
-  const { sendTransaction, isTransactionPending } = useCancelProposal();
+  const { sendTransaction, isTransactionPending, status } = useCancelProposal();
 
   const schema = z.object({
     reason: z.string().optional(),
@@ -50,9 +50,6 @@ export const CancelProposal = ({ proposalId }: { proposalId?: string }) => {
           proposalId,
           transactionId: result.txId,
         });
-
-        onClose();
-        onSuccessOpen();
       } catch (error) {
         const txError = error as { txId?: string; error?: { message?: string }; message?: string };
 
@@ -63,13 +60,20 @@ export const CancelProposal = ({ proposalId }: { proposalId?: string }) => {
         });
       }
     },
-    [proposalId, sendTransaction, onClose, onSuccessOpen, LL.proposal],
+    [proposalId, sendTransaction, LL.proposal],
   );
 
   const onSuccessConfirm = useCallback(() => {
     onSuccessClose();
     navigate(Routes.HOME);
   }, [onSuccessClose, navigate]);
+
+  useEffect(() => {
+    if (status === "success") {
+      onClose();
+      onSuccessOpen();
+    }
+  }, [status, onClose, onSuccessOpen]);
   return (
     <>
       <Button
@@ -131,8 +135,8 @@ export const CancelProposal = ({ proposalId }: { proposalId?: string }) => {
         <Text textAlign={"center"} fontSize={14} color={"gray.600"}>
           {LL.proposal.cancel_proposal.success_description()}
         </Text>
-        <ModalFooter width={"full"} justifyContent={"space-center"} mt={7}>
-          <Button width={"full"} onClick={onSuccessConfirm} color={"white"} _hover={{ textDecoration: "none" }}>
+        <ModalFooter width={"full"} mt={7}>
+          <Button width={"full"} onClick={onSuccessConfirm} color={"white"}>
             {LL.continue()}
           </Button>
         </ModalFooter>
