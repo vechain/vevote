@@ -18,15 +18,12 @@ import { Label } from "../../ui/Label";
 import { InputMessage } from "../../ui/InputMessage";
 import { CheckIcon, DeleteIcon, MinusCircleIcon } from "@/icons";
 import { useCancelProposal } from "@/hooks/useCancelProposal";
-import { Routes } from "@/types/routes";
-import { useNavigate } from "react-router-dom";
 import { trackEvent, MixPanelEvent } from "@/utils/mixpanel/utilsMixpanel";
 
 export const CancelProposal = ({ proposalId }: { proposalId?: string }) => {
   const { LL } = useI18nContext();
   const { isOpen, onClose, onOpen } = useDisclosure();
   const { isOpen: isSuccessOpen, onClose: onSuccessClose, onOpen: onSuccessOpen } = useDisclosure();
-  const navigate = useNavigate();
   const isMobile = useBreakpointValue({ base: true, md: false });
 
   const { sendTransaction, isTransactionPending, status } = useCancelProposal();
@@ -62,11 +59,6 @@ export const CancelProposal = ({ proposalId }: { proposalId?: string }) => {
     },
     [proposalId, sendTransaction, LL.proposal],
   );
-
-  const onSuccessConfirm = useCallback(() => {
-    onSuccessClose();
-    navigate(Routes.HOME);
-  }, [onSuccessClose, navigate]);
 
   useEffect(() => {
     if (status === "success") {
@@ -136,7 +128,7 @@ export const CancelProposal = ({ proposalId }: { proposalId?: string }) => {
           {LL.proposal.cancel_proposal.success_description()}
         </Text>
         <ModalFooter width={"full"} mt={7}>
-          <Button width={"full"} onClick={onSuccessConfirm} color={"white"}>
+          <Button width={"full"} onClick={onSuccessClose} color={"white"}>
             {LL.continue()}
           </Button>
         </ModalFooter>
