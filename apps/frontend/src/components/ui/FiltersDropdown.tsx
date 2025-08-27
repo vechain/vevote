@@ -91,7 +91,7 @@ export const FiltersDropdown = ({
     <Menu closeOnSelect={false} isOpen={isOpen} onOpen={onOpen} onClose={onClose}>
       <MenuButton as={Button} variant={"secondary"} size={{ base: "md", md: "lg" }} {...restProps}>
         <Flex alignItems={"center"} gap={2}>
-          <Text>{LL.filters.title()}</Text>
+          <Text display={{ base: "none", md: "block" }}>{LL.filters.title()}</Text>
           <Icon as={FilterIcon} />
         </Flex>
       </MenuButton>
