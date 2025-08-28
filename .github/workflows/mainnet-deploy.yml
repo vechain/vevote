@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       ref:
-        description: 'Tag/branch/SHA to deploy (e.g. v1.2.3 or feature/foo)'
+        description: 'Tag/branch/SHA to deploy'
         required: true
         type: string
       target:
@@ -19,9 +19,8 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     environment: test
-    
+
     env:
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
@@ -29,14 +28,16 @@ jobs:
       VERCEL_SCOPE: ${{ secrets.VERCEL_SCOPE }}
 
     steps:
-      - name: Checkout (full history)
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
           ref: ${{ inputs.ref }}
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      # optional: clean any accidental link inside apps/
+      - name: Ensure no nested .vercel
+        run: rm -rf apps/.vercel || true
+
+      - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: yarn
@@ -45,19 +46,19 @@ jobs:
       - name: Install dependencies (root)
         run: yarn install --frozen-lockfile
 
-      - name: Install vercel CLI
-        run: yarn global add vercel
-
       - name: Vercel pull (config + env)
         run: |
           ENVIRONMENT=${{ inputs.target == 'release' && 'production' || 'preview' }}
-          vercel pull --yes --environment="$ENVIRONMENT" \
+          npx -y vercel@latest pull --yes --environment="$ENVIRONMENT" \
             --token "$VERCEL_TOKEN" $([ -n "$VERCEL_SCOPE" ] && echo --scope "$VERCEL_SCOPE")
 
-      - name: Build (with debug)
+      - name: Build (debug)
+        env:
+          VERCEL_DEBUG: 1
         run: |
           PROD_FLAG=$([ "${{ inputs.target }}" = "release" ] && echo "--prod")
-          vercel build $PROD_FLAG
+          npx -y vercel@latest build $PROD_FLAG \
+            --token "$VERCEL_TOKEN" $([ -n "$VERCEL_SCOPE" ] && echo --scope "$VERCEL_SCOPE")
 
       - name: Deploy
         id: deploy
@@ -66,3 +67,4 @@ jobs:
           URL=$(npx -y vercel@latest deploy --prebuilt $PROD_FLAG --yes \
             --token "$VERCEL_TOKEN" $([ -n "$VERCEL_SCOPE" ] && echo --scope "$VERCEL_SCOPE"))
           echo "url=$URL" >> "$GITHUB_OUTPUT"
+          echo "🌐 Deployed: $URL" | tee -a $GITHUB_STEP_SUMMARY
