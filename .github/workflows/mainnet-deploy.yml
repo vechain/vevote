@@ -20,11 +20,6 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
 
-    # optional: avoid overlapping runs
-    concurrency:
-      group: vercel-${{ inputs.target }}
-      cancel-in-progress: true
-
     environment: test
     
     env:
@@ -60,12 +55,9 @@ jobs:
             --token "$VERCEL_TOKEN" $([ -n "$VERCEL_SCOPE" ] && echo --scope "$VERCEL_SCOPE")
 
       - name: Build (with debug)
-        env:
-          VERCEL_DEBUG: 1
         run: |
           PROD_FLAG=$([ "${{ inputs.target }}" = "release" ] && echo "--prod")
-          vercel build $PROD_FLAG \
-            --token "$VERCEL_TOKEN"
+          vercel build $PROD_FLAG
 
       - name: Deploy
         id: deploy
