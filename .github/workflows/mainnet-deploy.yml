@@ -30,6 +30,8 @@ jobs:
       run:
         working-directory: apps
 
+    environment: test
+    
     env:
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
@@ -47,7 +49,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'pnpm' # optional, helps if you use pnpm
 
       - name: Enable Corepack
         run: corepack enable
