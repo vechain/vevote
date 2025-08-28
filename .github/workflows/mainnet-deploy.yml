@@ -25,11 +25,6 @@ jobs:
       group: vercel-${{ inputs.target }}
       cancel-in-progress: true
 
-    # If your project root is a subfolder, keep this; otherwise remove it.
-    defaults:
-      run:
-        working-directory: apps
-
     environment: test
     
     env:
