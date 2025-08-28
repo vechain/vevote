@@ -19,15 +19,22 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: test
-    env:
-      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}         # e.g. team_xxxxx
-      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }} # e.g. prj_xxxxx
-      VERCEL_SCOPE: ${{ secrets.VERCEL_SCOPE }}           # team slug, e.g. my-team
+
+    # optional: avoid overlapping runs
+    concurrency:
+      group: vercel-${{ inputs.target }}
+      cancel-in-progress: true
+
+    # If your project root is a subfolder, keep this; otherwise remove it.
     defaults:
       run:
-        working-directory: apps   # same as your Vercel Root Directory
+        working-directory: apps
+
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      VERCEL_SCOPE: ${{ secrets.VERCEL_SCOPE }}
 
     steps:
       - name: Checkout (full history)
@@ -40,55 +47,30 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: 'pnpm' # optional, helps if you use pnpm
 
-      - name: Enable Corepack (pnpm/yarn if needed)
+      - name: Enable Corepack
         run: corepack enable
 
-      # 🔒 Deterministic link to the exact project/org
-      - name: Create .vercel/project.json
+      # Pulls project link + env from Vercel (no need to hand-write .vercel/project.json)
+      - name: Vercel pull (config + env)
         run: |
-          mkdir -p .vercel
-          cat > .vercel/project.json <<EOF
-          { "orgId": "${VERCEL_ORG_ID}", "projectId": "${VERCEL_PROJECT_ID}" }
-          EOF
-          echo "Linked to:"
-          cat .vercel/project.json
+          ENVIRONMENT=${{ inputs.target == 'release' && 'production' || 'preview' }}
+          npx vercel pull --yes --environment="$ENVIRONMENT" --token "$VERCEL_TOKEN" $([ -n "$VERCEL_SCOPE" ] && echo --scope "$VERCEL_SCOPE")
 
-      - name: Who am I?
-        run: npx vercel whoami --token "$VERCEL_TOKEN" $([ -n "$VERCEL_SCOPE" ] && echo --scope "$VERCEL_SCOPE")
-
-      - name: Vercel pull (preview)
-        if: ${{ inputs.target == 'preview' }}
-        run: npx vercel pull --yes --environment=preview --token "$VERCEL_TOKEN" $([ -n "$VERCEL_SCOPE" ] && echo --scope "$VERCEL_SCOPE")
-
-      - name: Vercel pull (production)
-        if: ${{ inputs.target == 'release' }}
-        run: npx vercel pull --yes --environment=production --token "$VERCEL_TOKEN" $([ -n "$VERCEL_SCOPE" ] && echo --scope "$VERCEL_SCOPE")
-
-      - name: Env pull (.env for PREVIEW)
-        if: ${{ inputs.target == 'preview' }}
-        run: npx vercel env pull .env --environment=preview --token "$VERCEL_TOKEN" $([ -n "$VERCEL_SCOPE" ] && echo --scope "$VERCEL_SCOPE")
-
-      - name: Env pull (.env for PRODUCTION)
-        if: ${{ inputs.target == 'release' }}
-        run: npx vercel env pull .env --environment=production --token "$VERCEL_TOKEN" $([ -n "$VERCEL_SCOPE" ] && echo --scope "$VERCEL_SCOPE")
-
-      - name: Build (preview)
-        if: ${{ inputs.target == 'preview' }}
-        run: npx vercel build --token "$VERCEL_TOKEN" $([ -n "$VERCEL_SCOPE" ] && echo --scope "$VERCEL_SCOPE")
-
-      - name: Build (production)
-        if: ${{ inputs.target == 'release' }}
-        run: npx vercel build --prod --token "$VERCEL_TOKEN" $([ -n "$VERCEL_SCOPE" ] && echo --scope "$VERCEL_SCOPE")
-
-      - name: Deploy PREVIEW
-        if: ${{ inputs.target == 'preview' }}
-        id: deploy_preview
+      # Local build (prod flag only for releases)
+      - name: Build
         run: |
-          URL=$(npx vercel deploy --prebuilt --yes --token "$VERCEL_TOKEN" $([ -n "$VERCEL_SCOPE" ] && echo --scope "$VERCEL_SCOPE"))
+          PROD_FLAG=$([ "${{ inputs.target }}" = "release" ] && echo "--prod")
+          npx vercel build $PROD_FLAG --token "$VERCEL_TOKEN" $([ -n "$VERCEL_SCOPE" ] && echo --scope "$VERCEL_SCOPE")
+
+      # Deploy prebuilt output
+      - name: Deploy
+        id: deploy
+        run: |
+          PROD_FLAG=$([ "${{ inputs.target }}" = "release" ] && echo "--prod")
+          URL=$(npx vercel deploy --prebuilt $PROD_FLAG --yes --token "$VERCEL_TOKEN" $([ -n "$VERCEL_SCOPE" ] && echo --scope "$VERCEL_SCOPE"))
           echo "url=$URL" >> $GITHUB_OUTPUT
-          echo "🔍 Preview URL: $URL" | tee -a $GITHUB_STEP_SUMMARY
+          echo "🌐 Deployed: $URL" | tee -a $GITHUB_STEP_SUMMARY
 
-      - name: Deploy PRODUCTION
-        if: ${{ inputs.target == 'release' }}
-        run: npx vercel deploy --prebuilt --prod --yes --token "$VERCEL_TOKEN" $([ -n "$VERCEL_SCOPE" ] && echo --scope "$VERCEL_SCOPE")
+      # Optional: expose the URL in the job summary + as an output for callers
