@@ -6,11 +6,6 @@ on:
       - main
     types: [closed]
 
-  workflow_call:
-    secrets:
-      DEPLOY_KEY:
-        required: true
-
 jobs:
   auto-versioning:
     permissions:
