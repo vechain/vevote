@@ -62,7 +62,7 @@ jobs:
         run: |
           PROD_FLAG=$([ "${{ inputs.target }}" = "release" ] && echo "--prod")
           npx -y vercel@latest build $PROD_FLAG \
-            --token "$VERCEL_TOKEN" $([ -n "$VERCEL_SCOPE" ] && echo --scope "$VERCEL_SCOPE")
+            --token "$VERCEL_TOKEN"
 
       - name: Deploy
         id: deploy
