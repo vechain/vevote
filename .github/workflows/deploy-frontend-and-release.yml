@@ -53,7 +53,7 @@ jobs:
       - name: Set Vercel Project
         run: |
           echo "Vercel Project ID: $VERCEL_PROJECT_ID"
-          vercel link --token "$VERCEL_TOKEN" --project-id "$VERCEL_PROJECT_ID" --yes
+          vercel link --token "$VERCEL_TOKEN" --yes --scope "$VERCEL_ORG_ID" --project "$VERCEL_PROJECT_ID"
       
       - run: vercel pull --yes --environment=production --token "$VERCEL_TOKEN"
       - run: vercel build --prod --token "$VERCEL_TOKEN"           # prod-parity build
