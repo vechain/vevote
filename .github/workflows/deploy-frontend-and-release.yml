@@ -23,7 +23,7 @@ permissions:
 env:
   VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_PROD }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_DEV }}
 
 jobs:
   vercel-preview:
@@ -49,6 +49,12 @@ jobs:
         run: yarn install --frozen-lockfile
 
       - run: npm i -g vercel@latest
+      
+      - name: Set Vercel Project
+        run: |
+          echo "Vercel Project ID: $VERCEL_PROJECT_ID"
+          vercel link --token "$VERCEL_TOKEN" --project-id "$VERCEL_PROJECT_ID" --yes
+      
       - run: vercel pull --yes --environment=production --token "$VERCEL_TOKEN"
       - run: vercel build --prod --token "$VERCEL_TOKEN"           # prod-parity build
 
@@ -63,7 +69,7 @@ jobs:
     needs: vercel-preview
     if: ${{ github.event_name == 'push' || inputs.mode == 'promote' }}
     runs-on: ubuntu-latest
-    environment: production     # require manual approval here
+    environment: production
     steps:
       - run: npm i -g vercel@latest
       - run: vercel promote "${{ needs.vercel-preview.outputs.url }}" --token "$VERCEL_TOKEN"
