@@ -3,10 +3,11 @@ import { createBrowserRouter, RouterProvider, Outlet, useLocation } from "react-
 import { Proposal } from "./pages/Proposal/Proposal";
 import { Proposals } from "./pages/Proposals";
 import { CreateProposal } from "./pages/CreateProposal/CreateProposal";
+import { AdminDashboard } from "./pages/Admin/AdminDashboard";
 import { Footer } from "./components/footer/Footer";
 import { ScrollToTop } from "./components/ui/ScrollToTop";
 
-const excludedRoutes = ["/create-proposal"];
+const excludedRoutes = ["/create-proposal", "/admin"];
 
 function Layout() {
   const { pathname } = useLocation();
@@ -40,6 +41,10 @@ const router = createBrowserRouter([
       {
         path: "create-proposal",
         element: <CreateProposal />,
+      },
+      {
+        path: "admin",
+        element: <AdminDashboard />,
       },
     ],
   },
