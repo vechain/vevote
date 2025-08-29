@@ -55,8 +55,8 @@ jobs:
           echo "Vercel Project ID: $VERCEL_PROJECT_ID"
           vercel link --token "$VERCEL_TOKEN" --yes --scope "$VERCEL_ORG_ID" --project "$VERCEL_PROJECT_ID"
       
-      - run: vercel pull --yes --environment=production --token "$VERCEL_TOKEN"
-      - run: vercel build --prod --token "$VERCEL_TOKEN"           # prod-parity build
+      - run: vercel pull --yes --environment=preview --token "$VERCEL_TOKEN"
+      - run:  vercel build --token "$VERCEL_TOKEN"
 
       # Preview (non-prod): safe to run from any branch/tag
       - id: deploy
