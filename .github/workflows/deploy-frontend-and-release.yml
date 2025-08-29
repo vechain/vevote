@@ -37,23 +37,31 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.ref || github.ref }}
+          ref: ${{ github.ref }}
       
       - name: Set Git Info
         id: git-info
         run: |
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            echo "GIT_REF=${{ inputs.ref }}" >> $GITHUB_ENV
+            echo "GIT_REF=${{ inputs.ref }}" >> $GITHUB_OUTPUT
           else
-            echo "GIT_REF=${{ github.ref_name }}" >> $GITHUB_ENV
+            echo "GIT_REF=${{ github.ref_name }}" >> $GITHUB_OUTPUT
           fi
-          echo "Git ref: $GIT_REF"
+          echo "Git ref: ${{ github.event_name == 'workflow_dispatch' && inputs.ref || github.ref_name }}"
     
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 22
           cache: 'yarn'
+
+      - name: Cache Vercel CLI
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-vercel-cli-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-vercel-cli-
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
@@ -71,6 +79,9 @@ jobs:
       # Preview (non-prod): safe to run from any branch/tag
       - id: deploy
         run: |
+          # Use the git ref from the step output
+          GIT_REF="${{ steps.git-info.outputs.GIT_REF }}"
+          echo "Using Git ref: $GIT_REF"
           URL=$(vercel deploy --prebuilt --token "$VERCEL_TOKEN" --meta gitSource="$GIT_REF" | tail -n1)
           echo "url=$URL" >> "$GITHUB_OUTPUT"
           echo "Preview: $URL"
