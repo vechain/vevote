@@ -1,16 +1,20 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { VeVote__factory } from "@repo/contracts";
 import { getConfig } from "@repo/config";
-import { executeCall, executeMultipleClauses } from "../../../utils/contract";
+import { executeMultipleClauses } from "../../../utils/contract";
 
 export interface VeVoteInfo {
   quorumNumerator: bigint;
   quorumDenominator: bigint;
-  minVotingDelay: bigint;
-  minVotingDuration: bigint;
-  maxVotingDuration: bigint;
-  minStakedAmount: bigint;
+  minVotingDelay: number;
+  minVotingDuration: number;
+  maxVotingDuration: number;
   version: bigint;
 }
+
+type VevoteContractInterface = ReturnType<typeof VeVote__factory.createInterface>;
+
+type ContractInterfaceFixed = VevoteContractInterface;
 
 export interface VotingMultipliers {
   [levelId: number]: bigint;
@@ -18,7 +22,7 @@ export interface VotingMultipliers {
 
 export class VeVoteService {
   private readonly contractAddress: string;
-  private readonly contractInterface: ReturnType<typeof VeVote__factory.createInterface>;
+  private readonly contractInterface: ContractInterfaceFixed;
 
   constructor() {
     const config = getConfig(import.meta.env.VITE_APP_ENV);
@@ -28,12 +32,11 @@ export class VeVoteService {
 
   async getVeVoteInfo(): Promise<VeVoteInfo> {
     const methodsWithArgs = [
-      // { method: "quorumNumerator" as const, args: [] },
+      { method: "quorumNumerator" as any, args: [] },
       { method: "quorumDenominator" as const, args: [] },
       { method: "getMinVotingDelay" as const, args: [] },
       { method: "getMinVotingDuration" as const, args: [] },
       { method: "getMaxVotingDuration" as const, args: [] },
-      { method: "getMinStakedAmount" as const, args: [] },
       { method: "version" as const, args: [] },
     ];
 
@@ -43,125 +46,16 @@ export class VeVoteService {
       methodsWithArgs,
     });
 
+    console.log("VeVote info results:", results);
+
     return {
-      quorumNumerator: BigInt(0), //TODO: fix this
+      quorumNumerator: BigInt(results[0]?.success ? String(results[0].result.plain) : "0"),
       quorumDenominator: BigInt(results[1]?.success ? String(results[1].result.plain) : "0"),
-      minVotingDelay: BigInt(results[2]?.success ? String(results[2].result.plain) : "0"),
-      minVotingDuration: BigInt(results[3]?.success ? String(results[3].result.plain) : "0"),
-      maxVotingDuration: BigInt(results[4]?.success ? String(results[4].result.plain) : "0"),
-      minStakedAmount: BigInt(results[5]?.success ? String(results[5].result.plain) : "0"),
-      version: BigInt(results[6]?.success ? String(results[6].result.plain) : "0"),
+      minVotingDelay: Number(results[2]?.success ? results[2].result.plain : 0) * 10,
+      minVotingDuration: Number(results[3]?.success ? results[3].result.plain : 0) * 10,
+      maxVotingDuration: Number(results[4]?.success ? results[4].result.plain : 0) * 10,
+      version: BigInt(results[5]?.success ? String(results[5].result.plain) : "0"),
     };
-  }
-
-  async getQuorumNumerator(): Promise<bigint> {
-    const result = await executeCall({
-      contractAddress: this.contractAddress,
-      contractInterface: this.contractInterface,
-      method: "quorumNumerator()",
-      args: [],
-    });
-    return BigInt(result?.success ? String(result.result.plain) : "0");
-  }
-
-  async getQuorumDenominator(): Promise<bigint> {
-    const result = await executeCall({
-      contractAddress: this.contractAddress,
-      contractInterface: this.contractInterface,
-      method: "quorumDenominator",
-      args: [],
-    });
-    return BigInt(result?.success ? String(result.result.plain) : "0");
-  }
-
-  async getMinVotingDelay(): Promise<bigint> {
-    const result = await executeCall({
-      contractAddress: this.contractAddress,
-      contractInterface: this.contractInterface,
-      method: "getMinVotingDelay",
-      args: [],
-    });
-    return BigInt(result?.success ? String(result.result.plain) : "0");
-  }
-
-  async getMinVotingDuration(): Promise<bigint> {
-    const result = await executeCall({
-      contractAddress: this.contractAddress,
-      contractInterface: this.contractInterface,
-      method: "getMinVotingDuration",
-      args: [],
-    });
-    return BigInt(result?.success ? String(result.result.plain) : "0");
-  }
-
-  async getMaxVotingDuration(): Promise<bigint> {
-    const result = await executeCall({
-      contractAddress: this.contractAddress,
-      contractInterface: this.contractInterface,
-      method: "getMaxVotingDuration",
-      args: [],
-    });
-    return BigInt(result?.success ? String(result.result.plain) : "0");
-  }
-
-  async getMinStakedAmount(): Promise<bigint> {
-    const result = await executeCall({
-      contractAddress: this.contractAddress,
-      contractInterface: this.contractInterface,
-      method: "getMinStakedAmount",
-      args: [],
-    });
-    return BigInt(result?.success ? String(result.result.plain) : "0");
-  }
-
-  async getLevelIdMultiplier(levelId: number): Promise<bigint> {
-    const result = await executeCall({
-      contractAddress: this.contractAddress,
-      contractInterface: this.contractInterface,
-      method: "levelIdMultiplier",
-      args: [levelId],
-    });
-    return BigInt(result?.success ? String(result.result.plain) : "0");
-  }
-
-  async getNodeManagementContract(): Promise<string> {
-    const result = await executeCall({
-      contractAddress: this.contractAddress,
-      contractInterface: this.contractInterface,
-      method: "getNodeManagementContract",
-      args: [],
-    });
-    return result?.success ? String(result.result.plain) : "";
-  }
-
-  async getStargateNFTContract(): Promise<string> {
-    const result = await executeCall({
-      contractAddress: this.contractAddress,
-      contractInterface: this.contractInterface,
-      method: "getStargateNFTContract",
-      args: [],
-    });
-    return result?.success ? String(result.result.plain) : "";
-  }
-
-  async getValidatorContract(): Promise<string> {
-    const result = await executeCall({
-      contractAddress: this.contractAddress,
-      contractInterface: this.contractInterface,
-      method: "getValidatorContract",
-      args: [],
-    });
-    return result?.success ? String(result.result.plain) : "";
-  }
-
-  async getVersion(): Promise<bigint> {
-    const result = await executeCall({
-      contractAddress: this.contractAddress,
-      contractInterface: this.contractInterface,
-      method: "version",
-      args: [],
-    });
-    return BigInt(result?.success ? String(result.result.plain) : "0");
   }
 }
 

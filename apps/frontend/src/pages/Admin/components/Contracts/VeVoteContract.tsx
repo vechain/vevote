@@ -1,5 +1,21 @@
-import { Box, Heading, SimpleGrid, Stat, StatLabel, StatNumber, StatHelpText, Spinner, Alert, AlertIcon, VStack } from "@chakra-ui/react";
+import {
+  Box,
+  Heading,
+  SimpleGrid,
+  Stat,
+  StatLabel,
+  StatNumber,
+  StatHelpText,
+  Spinner,
+  Alert,
+  AlertIcon,
+  VStack,
+} from "@chakra-ui/react";
 import { useVeVoteInfo } from "../../hooks";
+import dayjs from "dayjs";
+import duration from "dayjs/plugin/duration";
+
+dayjs.extend(duration);
 
 export function VeVoteContract() {
   const { data: veVoteInfo, isLoading, error } = useVeVoteInfo();
@@ -17,7 +33,7 @@ export function VeVoteContract() {
     return (
       <Alert status="error">
         <AlertIcon />
-        Error loading VeVote contract data: {error instanceof Error ? error.message : 'Unknown error'}
+        Error loading VeVote contract data: {error instanceof Error ? error.message : "Unknown error"}
       </Alert>
     );
   }
@@ -31,22 +47,12 @@ export function VeVoteContract() {
     );
   }
 
-  const formatDuration = (seconds: bigint) => {
-    const days = Number(seconds) / (24 * 60 * 60);
-    return `${days.toFixed(2)} days (${seconds.toString()}s)`;
-  };
-
-  const formatVET = (wei: bigint) => {
-    const vet = Number(wei) / 1e18;
-    return `${vet.toLocaleString()} VET`;
-  };
-
   return (
     <Box>
       <Heading size="md" mb={6}>
         VeVote Contract Information
       </Heading>
-      
+
       <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={6}>
         <Stat>
           <StatLabel>Contract Version</StatLabel>
@@ -57,7 +63,7 @@ export function VeVoteContract() {
           <StatLabel>Quorum Numerator</StatLabel>
           <StatNumber>{veVoteInfo.quorumNumerator.toString()}</StatNumber>
           <StatHelpText>
-            {Number(veVoteInfo.quorumNumerator) / Number(veVoteInfo.quorumDenominator) * 100}% required
+            {(Number(veVoteInfo.quorumNumerator) / Number(veVoteInfo.quorumDenominator)) * 100}% required
           </StatHelpText>
         </Stat>
 
@@ -68,22 +74,17 @@ export function VeVoteContract() {
 
         <Stat>
           <StatLabel>Min Voting Delay</StatLabel>
-          <StatNumber>{formatDuration(veVoteInfo.minVotingDelay)}</StatNumber>
+          <StatNumber>{veVoteInfo.minVotingDelay}</StatNumber>
         </Stat>
 
         <Stat>
           <StatLabel>Min Voting Duration</StatLabel>
-          <StatNumber>{formatDuration(veVoteInfo.minVotingDuration)}</StatNumber>
+          <StatNumber>{veVoteInfo.minVotingDuration}</StatNumber>
         </Stat>
 
         <Stat>
           <StatLabel>Max Voting Duration</StatLabel>
-          <StatNumber>{formatDuration(veVoteInfo.maxVotingDuration)}</StatNumber>
-        </Stat>
-
-        <Stat>
-          <StatLabel>Min Staked Amount</StatLabel>
-          <StatNumber>{formatVET(veVoteInfo.minStakedAmount)}</StatNumber>
+          <StatNumber>{dayjs.duration(veVoteInfo.maxVotingDuration, "seconds").asDays()}</StatNumber>
         </Stat>
       </SimpleGrid>
     </Box>
