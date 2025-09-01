@@ -12,8 +12,8 @@ export const getDiscourseTopicUrl = (url: string): string => {
   return url.replace(discourseBaseUrl, "").replace(/^\//, "");
 };
 
-export const validateDiscourseTopicExists = async (topicName: string, delay: number = 300): Promise<boolean> => {
-  return new Promise((resolve) => {
+export const validateDiscourseTopicExists = async (topicName: string, delay: number = 500): Promise<boolean> => {
+  return new Promise(resolve => {
     if (debounceTimer) {
       clearTimeout(debounceTimer);
     }
