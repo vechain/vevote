@@ -61,9 +61,6 @@ jobs:
         run: |
           PROD_FLAG=$([ "${{ inputs.target }}" = "release" ] && echo "--prod")
           echo "Build with PROD_FLAG: $PROD_FLAG"
-          vercel build $PROD_FLAG \
-            --token "$VERCEL_TOKEN"
-
       - name: Deploy
         id: deploy
         run: |
