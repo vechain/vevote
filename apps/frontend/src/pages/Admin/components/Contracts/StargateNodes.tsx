@@ -20,15 +20,17 @@ import {
   TableContainer
 } from "@chakra-ui/react";
 import { useStargateStats } from "../../hooks";
+import { useI18nContext } from "@/i18n/i18n-react";
 
 export function StargateNodes() {
+  const { LL } = useI18nContext();
   const { data: stargateStats, isLoading, error } = useStargateStats();
 
   if (isLoading) {
     return (
       <VStack spacing={4} align="center" py={8}>
         <Spinner size="lg" />
-        <Heading size="md">Loading Stargate NFT Information...</Heading>
+        <Heading size="md">{LL.admin.stargate_nodes.loading()}</Heading>
       </VStack>
     );
   }
@@ -37,7 +39,7 @@ export function StargateNodes() {
     return (
       <Alert status="error">
         <AlertIcon />
-        Error loading Stargate NFT data: {error instanceof Error ? error.message : 'Unknown error'}
+        {LL.admin.stargate_nodes.error({ error: error instanceof Error ? error.message : 'Unknown error' })}
       </Alert>
     );
   }
@@ -46,49 +48,49 @@ export function StargateNodes() {
     return (
       <Alert status="warning">
         <AlertIcon />
-        No Stargate NFT data available
+        {LL.admin.stargate_nodes.no_data()}
       </Alert>
     );
   }
 
   const formatVET = (wei: bigint) => {
     const vet = Number(wei) / 1e18;
-    return `${vet.toLocaleString()} VET`;
+    return LL.admin.stargate_nodes.vet_format({ amount: vet.toLocaleString() });
   };
 
   return (
     <Box>
       <Heading size="md" mb={6}>
-        Stargate NFT Contract Information
+        {LL.admin.stargate_nodes.title()}
       </Heading>
       
       <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={6} mb={8}>
         <Stat>
-          <StatLabel>Total Supply</StatLabel>
+          <StatLabel>{LL.admin.stargate_nodes.total_supply()}</StatLabel>
           <StatNumber>{stargateStats.totalSupply.toString()}</StatNumber>
         </Stat>
 
         <Stat>
-          <StatLabel>Available Levels</StatLabel>
+          <StatLabel>{LL.admin.stargate_nodes.available_levels()}</StatLabel>
           <StatNumber>{stargateStats.levelIds.length}</StatNumber>
-          <StatHelpText>Level IDs: {stargateStats.levelIds.join(", ")}</StatHelpText>
+          <StatHelpText>{LL.admin.stargate_nodes.level_ids({ ids: stargateStats.levelIds.join(", ") })}</StatHelpText>
         </Stat>
       </SimpleGrid>
 
       {stargateStats.levels.length > 0 && (
         <Box mb={8}>
-          <Heading size="sm" mb={4}>Level Details</Heading>
+          <Heading size="sm" mb={4}>{LL.admin.stargate_nodes.level_details_title()}</Heading>
           <TableContainer>
             <Table variant="simple" size="sm">
               <Thead>
                 <Tr>
-                  <Th>Level</Th>
-                  <Th>Name</Th>
-                  <Th>Is X-Node</Th>
-                  <Th>Maturity Blocks</Th>
-                  <Th>VET Required</Th>
-                  <Th>Circulating</Th>
-                  <Th>Cap</Th>
+                  <Th>{LL.admin.stargate_nodes.table.level()}</Th>
+                  <Th>{LL.admin.stargate_nodes.table.name()}</Th>
+                  <Th>{LL.admin.stargate_nodes.table.is_x_node()}</Th>
+                  <Th>{LL.admin.stargate_nodes.table.maturity_blocks()}</Th>
+                  <Th>{LL.admin.stargate_nodes.table.vet_required()}</Th>
+                  <Th>{LL.admin.stargate_nodes.table.circulating()}</Th>
+                  <Th>{LL.admin.stargate_nodes.table.cap()}</Th>
                 </Tr>
               </Thead>
               <Tbody>
@@ -98,11 +100,11 @@ export function StargateNodes() {
                     <Tr key={index}>
                       <Td>{stargateStats.levelIds[index]}</Td>
                       <Td>{level.name}</Td>
-                      <Td>{level.isX ? "Yes" : "No"}</Td>
+                      <Td>{level.isX ? LL.admin.stargate_nodes.yes() : LL.admin.stargate_nodes.no()}</Td>
                       <Td>{level.maturityBlocks.toString()}</Td>
                       <Td>{formatVET(level.vetAmountRequiredToStake)}</Td>
-                      <Td>{supply ? supply.circulating.toString() : "N/A"}</Td>
-                      <Td>{supply ? supply.cap.toString() : "N/A"}</Td>
+                      <Td>{supply ? supply.circulating.toString() : LL.admin.stargate_nodes.not_available()}</Td>
+                      <Td>{supply ? supply.cap.toString() : LL.admin.stargate_nodes.not_available()}</Td>
                     </Tr>
                   );
                 })}
@@ -113,10 +115,9 @@ export function StargateNodes() {
       )}
 
       <Box>
-        <Heading size="sm" mb={4}>Contract Information</Heading>
+        <Heading size="sm" mb={4}>{LL.admin.stargate_nodes.contract_info_title()}</Heading>
         <Text fontSize="sm" color="gray.600">
-          This displays comprehensive information about the Stargate NFT contract including
-          level configurations, supply information, and staking requirements.
+          {LL.admin.stargate_nodes.contract_description()}
         </Text>
       </Box>
     </Box>

@@ -1365,6 +1365,266 @@ type RootTranslation = {
 			support: string
 		}
 	}
+	admin: {
+		/**
+		 * A​d​m​i​n​ ​D​a​s​h​b​o​a​r​d
+		 */
+		title: string
+		tabs: {
+			/**
+			 * C​o​n​t​r​a​c​t​s
+			 */
+			contracts: string
+			/**
+			 * U​t​i​l​s
+			 */
+			utils: string
+			/**
+			 * U​s​e​r​s
+			 */
+			users: string
+			/**
+			 * G​o​v​e​r​n​a​n​c​e​ ​S​e​t​t​i​n​g​s
+			 */
+			governance_settings: string
+		}
+		contracts: {
+			/**
+			 * V​e​V​o​t​e
+			 */
+			vevote: string
+			/**
+			 * N​o​d​e​ ​M​a​n​a​g​e​m​e​n​t
+			 */
+			node_management: string
+			/**
+			 * S​t​a​r​g​a​t​e​ ​N​o​d​e​s
+			 */
+			stargate_nodes: string
+		}
+		vevote_contract: {
+			/**
+			 * V​e​V​o​t​e​ ​C​o​n​t​r​a​c​t​ ​I​n​f​o​r​m​a​t​i​o​n
+			 */
+			title: string
+			/**
+			 * L​o​a​d​i​n​g​ ​V​e​V​o​t​e​ ​C​o​n​t​r​a​c​t​ ​I​n​f​o​r​m​a​t​i​o​n​.​.​.
+			 */
+			loading: string
+			/**
+			 * E​r​r​o​r​ ​l​o​a​d​i​n​g​ ​V​e​V​o​t​e​ ​c​o​n​t​r​a​c​t​ ​d​a​t​a​:​ ​{​e​r​r​o​r​}
+			 * @param {string} error
+			 */
+			error: RequiredParams<'error'>
+			/**
+			 * N​o​ ​V​e​V​o​t​e​ ​c​o​n​t​r​a​c​t​ ​d​a​t​a​ ​a​v​a​i​l​a​b​l​e
+			 */
+			no_data: string
+			/**
+			 * C​o​n​t​r​a​c​t​ ​V​e​r​s​i​o​n
+			 */
+			contract_version: string
+			/**
+			 * Q​u​o​r​u​m​ ​N​u​m​e​r​a​t​o​r
+			 */
+			quorum_numerator: string
+			/**
+			 * Q​u​o​r​u​m​ ​D​e​n​o​m​i​n​a​t​o​r
+			 */
+			quorum_denominator: string
+			/**
+			 * M​i​n​ ​V​o​t​i​n​g​ ​D​e​l​a​y
+			 */
+			min_voting_delay: string
+			/**
+			 * M​i​n​ ​V​o​t​i​n​g​ ​D​u​r​a​t​i​o​n
+			 */
+			min_voting_duration: string
+			/**
+			 * M​a​x​ ​V​o​t​i​n​g​ ​D​u​r​a​t​i​o​n
+			 */
+			max_voting_duration: string
+			/**
+			 * {​p​e​r​c​e​n​t​a​g​e​}​%​ ​r​e​q​u​i​r​e​d
+			 * @param {number} percentage
+			 */
+			quorum_percentage: RequiredParams<'percentage'>
+		}
+		node_management: {
+			/**
+			 * N​o​d​e​ ​M​a​n​a​g​e​m​e​n​t​ ​C​o​n​t​r​a​c​t​ ​I​n​f​o​r​m​a​t​i​o​n
+			 */
+			title: string
+			/**
+			 * U​s​e​r​ ​A​d​d​r​e​s​s
+			 */
+			user_address_label: string
+			/**
+			 * E​n​t​e​r​ ​u​s​e​r​ ​a​d​d​r​e​s​s​ ​(​0​x​.​.​.​)
+			 */
+			user_address_placeholder: string
+			/**
+			 * L​o​a​d​ ​U​s​e​r​ ​N​o​d​e​ ​I​n​f​o
+			 */
+			load_button: string
+			/**
+			 * L​o​a​d​i​n​g​.​.​.
+			 */
+			loading_button: string
+			/**
+			 * L​o​a​d​i​n​g​ ​u​s​e​r​ ​n​o​d​e​ ​i​n​f​o​r​m​a​t​i​o​n​.​.​.
+			 */
+			loading_text: string
+			/**
+			 * N​o​d​e​ ​I​n​f​o​r​m​a​t​i​o​n​ ​f​o​r​ ​{​a​d​d​r​e​s​s​}
+			 * @param {string} address
+			 */
+			node_info_title: RequiredParams<'address'>
+			/**
+			 * I​s​ ​N​o​d​e​ ​H​o​l​d​e​r
+			 */
+			is_node_holder: string
+			/**
+			 * I​s​ ​N​o​d​e​ ​D​e​l​e​g​a​t​o​r
+			 */
+			is_node_delegator: string
+			/**
+			 * O​w​n​e​d​ ​N​o​d​e​s
+			 */
+			owned_nodes: string
+			/**
+			 * M​a​n​a​g​e​d​ ​N​o​d​e​s
+			 */
+			managed_nodes: string
+			/**
+			 * I​D​s​:​ ​{​i​d​s​}
+			 * @param {string} ids
+			 */
+			ids_label: RequiredParams<'ids'>
+			/**
+			 * Y​e​s
+			 */
+			yes: string
+			/**
+			 * N​o
+			 */
+			no: string
+			/**
+			 * E​r​r​o​r​ ​l​o​a​d​i​n​g​ ​n​o​d​e​ ​d​a​t​a​:​ ​{​e​r​r​o​r​}
+			 * @param {string} error
+			 */
+			error: RequiredParams<'error'>
+			/**
+			 * A​v​a​i​l​a​b​l​e​ ​M​e​t​h​o​d​s
+			 */
+			methods_title: string
+			/**
+			 * T​h​i​s​ ​c​o​m​p​o​n​e​n​t​ ​d​e​m​o​n​s​t​r​a​t​e​s​ ​t​h​e​ ​N​o​d​e​M​a​n​a​g​e​m​e​n​t​S​e​r​v​i​c​e​ ​f​u​n​c​t​i​o​n​a​l​i​t​y​.​ ​Y​o​u​ ​c​a​n​ ​e​x​t​e​n​d​ ​i​t​ ​t​o​ ​s​h​o​w​ ​a​d​d​i​t​i​o​n​a​l​ ​s​t​a​t​i​s​t​i​c​s​ ​l​i​k​e​ ​t​o​t​a​l​ ​n​o​d​e​s​,​ ​d​e​l​e​g​a​t​i​o​n​ ​s​t​a​t​s​,​ ​e​t​c​.
+			 */
+			methods_description: string
+		}
+		stargate_nodes: {
+			/**
+			 * S​t​a​r​g​a​t​e​ ​N​F​T​ ​C​o​n​t​r​a​c​t​ ​I​n​f​o​r​m​a​t​i​o​n
+			 */
+			title: string
+			/**
+			 * L​o​a​d​i​n​g​ ​S​t​a​r​g​a​t​e​ ​N​F​T​ ​I​n​f​o​r​m​a​t​i​o​n​.​.​.
+			 */
+			loading: string
+			/**
+			 * E​r​r​o​r​ ​l​o​a​d​i​n​g​ ​S​t​a​r​g​a​t​e​ ​N​F​T​ ​d​a​t​a​:​ ​{​e​r​r​o​r​}
+			 * @param {string} error
+			 */
+			error: RequiredParams<'error'>
+			/**
+			 * N​o​ ​S​t​a​r​g​a​t​e​ ​N​F​T​ ​d​a​t​a​ ​a​v​a​i​l​a​b​l​e
+			 */
+			no_data: string
+			/**
+			 * T​o​t​a​l​ ​S​u​p​p​l​y
+			 */
+			total_supply: string
+			/**
+			 * A​v​a​i​l​a​b​l​e​ ​L​e​v​e​l​s
+			 */
+			available_levels: string
+			/**
+			 * L​e​v​e​l​ ​I​D​s​:​ ​{​i​d​s​}
+			 * @param {string} ids
+			 */
+			level_ids: RequiredParams<'ids'>
+			/**
+			 * L​e​v​e​l​ ​D​e​t​a​i​l​s
+			 */
+			level_details_title: string
+			table: {
+				/**
+				 * L​e​v​e​l
+				 */
+				level: string
+				/**
+				 * N​a​m​e
+				 */
+				name: string
+				/**
+				 * I​s​ ​X​-​N​o​d​e
+				 */
+				is_x_node: string
+				/**
+				 * M​a​t​u​r​i​t​y​ ​B​l​o​c​k​s
+				 */
+				maturity_blocks: string
+				/**
+				 * V​E​T​ ​R​e​q​u​i​r​e​d
+				 */
+				vet_required: string
+				/**
+				 * C​i​r​c​u​l​a​t​i​n​g
+				 */
+				circulating: string
+				/**
+				 * C​a​p
+				 */
+				cap: string
+			}
+			/**
+			 * Y​e​s
+			 */
+			yes: string
+			/**
+			 * N​o
+			 */
+			no: string
+			/**
+			 * N​/​A
+			 */
+			not_available: string
+			/**
+			 * {​a​m​o​u​n​t​}​ ​V​E​T
+			 * @param {string} amount
+			 */
+			vet_format: RequiredParams<'amount'>
+			/**
+			 * C​o​n​t​r​a​c​t​ ​I​n​f​o​r​m​a​t​i​o​n
+			 */
+			contract_info_title: string
+			/**
+			 * T​h​i​s​ ​d​i​s​p​l​a​y​s​ ​c​o​m​p​r​e​h​e​n​s​i​v​e​ ​i​n​f​o​r​m​a​t​i​o​n​ ​a​b​o​u​t​ ​t​h​e​ ​S​t​a​r​g​a​t​e​ ​N​F​T​ ​c​o​n​t​r​a​c​t​ ​i​n​c​l​u​d​i​n​g​ ​l​e​v​e​l​ ​c​o​n​f​i​g​u​r​a​t​i​o​n​s​,​ ​s​u​p​p​l​y​ ​i​n​f​o​r​m​a​t​i​o​n​,​ ​a​n​d​ ​s​t​a​k​i​n​g​ ​r​e​q​u​i​r​e​m​e​n​t​s​.
+			 */
+			contract_description: string
+		}
+		/**
+		 * {​n​u​m​b​e​r​}​s
+		 * @param {number} number
+		 */
+		format_seconds: RequiredParams<'number'>
+		/**
+		 * {​n​u​m​b​e​r​}​ ​d​a​y​s
+		 * @param {number} number
+		 */
+		format_days: RequiredParams<'number'>
+	}
 }
 
 export type TranslationFunctions = {
@@ -2700,6 +2960,256 @@ JPG, PNG or SVG of maximum of {size}MB.
 			 */
 			support: () => LocalizedString
 		}
+	}
+	admin: {
+		/**
+		 * Admin Dashboard
+		 */
+		title: () => LocalizedString
+		tabs: {
+			/**
+			 * Contracts
+			 */
+			contracts: () => LocalizedString
+			/**
+			 * Utils
+			 */
+			utils: () => LocalizedString
+			/**
+			 * Users
+			 */
+			users: () => LocalizedString
+			/**
+			 * Governance Settings
+			 */
+			governance_settings: () => LocalizedString
+		}
+		contracts: {
+			/**
+			 * VeVote
+			 */
+			vevote: () => LocalizedString
+			/**
+			 * Node Management
+			 */
+			node_management: () => LocalizedString
+			/**
+			 * Stargate Nodes
+			 */
+			stargate_nodes: () => LocalizedString
+		}
+		vevote_contract: {
+			/**
+			 * VeVote Contract Information
+			 */
+			title: () => LocalizedString
+			/**
+			 * Loading VeVote Contract Information...
+			 */
+			loading: () => LocalizedString
+			/**
+			 * Error loading VeVote contract data: {error}
+			 */
+			error: (arg: { error: string }) => LocalizedString
+			/**
+			 * No VeVote contract data available
+			 */
+			no_data: () => LocalizedString
+			/**
+			 * Contract Version
+			 */
+			contract_version: () => LocalizedString
+			/**
+			 * Quorum Numerator
+			 */
+			quorum_numerator: () => LocalizedString
+			/**
+			 * Quorum Denominator
+			 */
+			quorum_denominator: () => LocalizedString
+			/**
+			 * Min Voting Delay
+			 */
+			min_voting_delay: () => LocalizedString
+			/**
+			 * Min Voting Duration
+			 */
+			min_voting_duration: () => LocalizedString
+			/**
+			 * Max Voting Duration
+			 */
+			max_voting_duration: () => LocalizedString
+			/**
+			 * {percentage}% required
+			 */
+			quorum_percentage: (arg: { percentage: number }) => LocalizedString
+		}
+		node_management: {
+			/**
+			 * Node Management Contract Information
+			 */
+			title: () => LocalizedString
+			/**
+			 * User Address
+			 */
+			user_address_label: () => LocalizedString
+			/**
+			 * Enter user address (0x...)
+			 */
+			user_address_placeholder: () => LocalizedString
+			/**
+			 * Load User Node Info
+			 */
+			load_button: () => LocalizedString
+			/**
+			 * Loading...
+			 */
+			loading_button: () => LocalizedString
+			/**
+			 * Loading user node information...
+			 */
+			loading_text: () => LocalizedString
+			/**
+			 * Node Information for {address}
+			 */
+			node_info_title: (arg: { address: string }) => LocalizedString
+			/**
+			 * Is Node Holder
+			 */
+			is_node_holder: () => LocalizedString
+			/**
+			 * Is Node Delegator
+			 */
+			is_node_delegator: () => LocalizedString
+			/**
+			 * Owned Nodes
+			 */
+			owned_nodes: () => LocalizedString
+			/**
+			 * Managed Nodes
+			 */
+			managed_nodes: () => LocalizedString
+			/**
+			 * IDs: {ids}
+			 */
+			ids_label: (arg: { ids: string }) => LocalizedString
+			/**
+			 * Yes
+			 */
+			yes: () => LocalizedString
+			/**
+			 * No
+			 */
+			no: () => LocalizedString
+			/**
+			 * Error loading node data: {error}
+			 */
+			error: (arg: { error: string }) => LocalizedString
+			/**
+			 * Available Methods
+			 */
+			methods_title: () => LocalizedString
+			/**
+			 * This component demonstrates the NodeManagementService functionality. You can extend it to show additional statistics like total nodes, delegation stats, etc.
+			 */
+			methods_description: () => LocalizedString
+		}
+		stargate_nodes: {
+			/**
+			 * Stargate NFT Contract Information
+			 */
+			title: () => LocalizedString
+			/**
+			 * Loading Stargate NFT Information...
+			 */
+			loading: () => LocalizedString
+			/**
+			 * Error loading Stargate NFT data: {error}
+			 */
+			error: (arg: { error: string }) => LocalizedString
+			/**
+			 * No Stargate NFT data available
+			 */
+			no_data: () => LocalizedString
+			/**
+			 * Total Supply
+			 */
+			total_supply: () => LocalizedString
+			/**
+			 * Available Levels
+			 */
+			available_levels: () => LocalizedString
+			/**
+			 * Level IDs: {ids}
+			 */
+			level_ids: (arg: { ids: string }) => LocalizedString
+			/**
+			 * Level Details
+			 */
+			level_details_title: () => LocalizedString
+			table: {
+				/**
+				 * Level
+				 */
+				level: () => LocalizedString
+				/**
+				 * Name
+				 */
+				name: () => LocalizedString
+				/**
+				 * Is X-Node
+				 */
+				is_x_node: () => LocalizedString
+				/**
+				 * Maturity Blocks
+				 */
+				maturity_blocks: () => LocalizedString
+				/**
+				 * VET Required
+				 */
+				vet_required: () => LocalizedString
+				/**
+				 * Circulating
+				 */
+				circulating: () => LocalizedString
+				/**
+				 * Cap
+				 */
+				cap: () => LocalizedString
+			}
+			/**
+			 * Yes
+			 */
+			yes: () => LocalizedString
+			/**
+			 * No
+			 */
+			no: () => LocalizedString
+			/**
+			 * N/A
+			 */
+			not_available: () => LocalizedString
+			/**
+			 * {amount} VET
+			 */
+			vet_format: (arg: { amount: string }) => LocalizedString
+			/**
+			 * Contract Information
+			 */
+			contract_info_title: () => LocalizedString
+			/**
+			 * This displays comprehensive information about the Stargate NFT contract including level configurations, supply information, and staking requirements.
+			 */
+			contract_description: () => LocalizedString
+		}
+		/**
+		 * {number}s
+		 */
+		format_seconds: (arg: { number: number }) => LocalizedString
+		/**
+		 * {number} days
+		 */
+		format_days: (arg: { number: number }) => LocalizedString
 	}
 }
 

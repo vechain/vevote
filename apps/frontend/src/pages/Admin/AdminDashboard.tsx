@@ -4,29 +4,32 @@ import { NodeManagement } from "./components/Contracts/NodeManagement";
 import { StargateNodes } from "./components/Contracts/StargateNodes";
 import { UserManagement } from "./components/Utils/UserManagement";
 import { GovernanceSettings } from "./components/Utils/GovernanceSettings";
+import { useI18nContext } from "@/i18n/i18n-react";
 
 export function AdminDashboard() {
+  const { LL } = useI18nContext();
+
   return (
     <Container maxW="container.xl" py={8}>
       <Box mb={8}>
         <Heading size="lg" mb={2}>
-          Admin Dashboard
+          {LL.admin.title()}
         </Heading>
       </Box>
 
       <Tabs colorScheme="blue" variant="enclosed">
         <TabList>
-          <Tab>Contracts</Tab>
-          <Tab>Utils</Tab>
+          <Tab>{LL.admin.tabs.contracts()}</Tab>
+          <Tab>{LL.admin.tabs.utils()}</Tab>
         </TabList>
 
         <TabPanels>
           <TabPanel px={0}>
             <Tabs orientation="vertical" variant="line" colorScheme="gray">
               <TabList minW="200px" mr={4}>
-                <Tab justifyContent="flex-start">VeVote</Tab>
-                <Tab justifyContent="flex-start">Node Management</Tab>
-                <Tab justifyContent="flex-start">Stargate Nodes</Tab>
+                <Tab justifyContent="flex-start">{LL.admin.contracts.vevote()}</Tab>
+                <Tab justifyContent="flex-start">{LL.admin.contracts.node_management()}</Tab>
+                <Tab justifyContent="flex-start">{LL.admin.contracts.stargate_nodes()}</Tab>
               </TabList>
 
               <TabPanels flex="1">
@@ -46,8 +49,8 @@ export function AdminDashboard() {
           <TabPanel px={0}>
             <Tabs orientation="vertical" variant="line" colorScheme="gray">
               <TabList minW="200px" mr={4}>
-                <Tab justifyContent="flex-start">Users</Tab>
-                <Tab justifyContent="flex-start">Governance Settings</Tab>
+                <Tab justifyContent="flex-start">{LL.admin.tabs.users()}</Tab>
+                <Tab justifyContent="flex-start">{LL.admin.tabs.governance_settings()}</Tab>
               </TabList>
 
               <TabPanels flex="1">
