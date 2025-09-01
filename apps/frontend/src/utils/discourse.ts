@@ -14,9 +14,11 @@ export const validateDiscourseTopicExists = async (topicName: string): Promise<b
   try {
     if (!topicName.trim()) return false;
 
-    const searchUrl = `${discourseBaseUrl}/search.json?q=${encodeURIComponent(topicName)}`;
+    const url = `${discourseBaseUrl}${encodeURIComponent(topicName)}`;
 
-    const response = await fetch(searchUrl);
+    const response = await fetch(url, {
+      method: "HEAD",
+    });
 
     if (!response.ok) {
       return false;
