@@ -1620,6 +1620,12 @@ type RootTranslation = {
 		 */
 		format_seconds: RequiredParams<'number'>
 		/**
+		 * {​m​i​n​u​t​e​s​}​ ​m​i​n​ ​(​{​s​e​c​o​n​d​s​}​s​)
+		 * @param {number} minutes
+		 * @param {number} seconds
+		 */
+		format_minutes_seconds: RequiredParams<'minutes' | 'seconds'>
+		/**
 		 * {​n​u​m​b​e​r​}​ ​d​a​y​s
 		 * @param {number} number
 		 */
@@ -3206,6 +3212,10 @@ JPG, PNG or SVG of maximum of {size}MB.
 		 * {number}s
 		 */
 		format_seconds: (arg: { number: number }) => LocalizedString
+		/**
+		 * {minutes} min ({seconds}s)
+		 */
+		format_minutes_seconds: (arg: { minutes: number, seconds: number }) => LocalizedString
 		/**
 		 * {number} days
 		 */

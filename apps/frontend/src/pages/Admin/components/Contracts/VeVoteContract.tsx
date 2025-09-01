@@ -76,12 +76,12 @@ export function VeVoteContract() {
 
         <Stat>
           <StatLabel>{LL.admin.vevote_contract.min_voting_delay()}</StatLabel>
-          <StatNumber>{LL.admin.format_seconds({ number: veVoteInfo.minVotingDelay })}</StatNumber>
+          <StatNumber>{LL.admin.format_minutes_seconds({ minutes: Math.floor(veVoteInfo.minVotingDelay / 60), seconds: veVoteInfo.minVotingDelay })}</StatNumber>
         </Stat>
 
         <Stat>
           <StatLabel>{LL.admin.vevote_contract.min_voting_duration()}</StatLabel>
-          <StatNumber>{LL.admin.format_seconds({ number: veVoteInfo.minVotingDuration })}</StatNumber>
+          <StatNumber>{LL.admin.format_minutes_seconds({ minutes: Math.floor(veVoteInfo.minVotingDuration / 60), seconds: veVoteInfo.minVotingDuration })}</StatNumber>
         </Stat>
 
         <Stat>

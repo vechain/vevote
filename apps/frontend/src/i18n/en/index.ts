@@ -491,6 +491,7 @@ const en = {
         "This displays comprehensive information about the Stargate NFT contract including level configurations, supply information, and staking requirements.",
     },
     format_seconds: "{number:number}s",
+    format_minutes_seconds: "{minutes:number} min ({seconds:number}s)",
     format_days: "{number:number} days",
   },
 } satisfies BaseTranslation;
