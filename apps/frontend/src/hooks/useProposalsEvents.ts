@@ -5,6 +5,7 @@ import { ProposalCardType, ProposalStatus } from "@/types/proposal";
 import { areAddressesEqual } from "@/utils/address";
 import { useMemo } from "react";
 import { useWallet } from "@vechain/vechain-kit";
+import { calculateRefetchInterval } from "@/utils/proposals/helpers";
 
 interface UseProposalsEventsOptions extends PaginationOptions {
   draftProposal?: ProposalCardType | null;
@@ -17,15 +18,18 @@ export const useProposalsEvents = (options: UseProposalsEventsOptions = {}) => {
 
   const { data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage, error } = useInfiniteQuery({
     queryKey: ["infiniteProposals", queryOptions],
-    queryFn: async ({ pageParam }): Promise<PaginatedProposalsResult> =>
-      await getProposals(thor, { ...queryOptions, cursor: pageParam as string }),
+    queryFn: async ({ pageParam }): Promise<PaginatedProposalsResult> => {
+      return await getProposals(thor, { ...queryOptions, cursor: pageParam as string });
+    },
     getNextPageParam: (lastPage: PaginatedProposalsResult) => lastPage.nextCursor,
     enabled: !!thor,
     staleTime: 30 * 1000,
     gcTime: 5 * 60 * 1000,
     initialPageParam: undefined,
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
+    refetchInterval: query => {
+      const proposals = query.state.data?.pages.flatMap(page => page.proposals) || [];
+      return calculateRefetchInterval(proposals);
+    },
   });
 
   const fetchedProposals = useMemo(() => data?.pages.flatMap(page => page.proposals) || [], [data?.pages]);

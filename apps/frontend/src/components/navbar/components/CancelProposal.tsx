@@ -28,7 +28,7 @@ export const CancelProposal = ({ proposalId }: { proposalId?: string }) => {
   const navigate = useNavigate();
   const isMobile = useBreakpointValue({ base: true, md: false });
 
-  const { sendTransaction, isTransactionPending } = useCancelProposal();
+  const { sendTransaction, isTransactionPending } = useCancelProposal({ proposalId });
 
   const schema = z.object({
     reason: z.string().optional(),

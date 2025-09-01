@@ -34,7 +34,7 @@ export const ProposalCardVotesResults = ({
       {votePercentageOrdered.map(opt => {
         const option = opt as SingleChoiceEnum;
         const percentage = votePercentages[option];
-        const mostVoted = quorumNotReached ? false : isMostVoted[option];
+        const mostVoted = quorumNotReached || percentage <= 0 ? false : isMostVoted[option];
         const color = ColorByVote[option];
         return (
           <Flex key={option} alignItems={"center"} gap={2}>
