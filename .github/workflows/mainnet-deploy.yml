@@ -25,7 +25,6 @@ jobs:
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-      VERCEL_SCOPE: ${{ secrets.VERCEL_SCOPE }}
 
     steps:
       - uses: actions/checkout@v4
@@ -33,32 +32,51 @@ jobs:
           fetch-depth: 0
           ref: ${{ inputs.ref }}
 
-      # optional: clean any accidental link inside apps/
-      - name: Ensure no nested .vercel
-        run: rm -rf apps/.vercel || true
-
-      - uses: actions/setup-node@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
           node-version: 22
-          cache: yarn
-          cache-dependency-path: '**/yarn.lock'
+          cache: 'yarn'
 
-      - name: Install dependencies (root)
+      - name: Install dependencies
         run: yarn install --frozen-lockfile
+
+      - name: Install dependencies
+        run: npm i -g vercel@latest
 
       - name: Vercel pull (config + env)
         run: |
           ENVIRONMENT=${{ inputs.target == 'release' && 'production' || 'preview' }}
-          npx -y vercel@latest pull --yes --environment="$ENVIRONMENT" \
-            --token "$VERCEL_TOKEN" $([ -n "$VERCEL_SCOPE" ] && echo --scope "$VERCEL_SCOPE")
+          vercel pull --yes --environment="$ENVIRONMENT" \
+            --token "$VERCEL_TOKEN"
+
+      - name: Debug before build (APPS)
+        working-directory: apps
+        run: |
+          echo "CWD: $(pwd)"
+          ls -la
+          echo "Has package.json?"; test -f package.json && echo yes || (echo NO; exit 1)
+          echo "Has .vercel/project.json?"; test -f .vercel/project.json && cat .vercel/project.json || (echo NO; exit 1)
+          echo "Node/PM versions:"; node -v; yarn -v || true; pnpm -v || true; npm -v
+          echo "Vercel CLI:"; npx -y vercel@46 --version
+
+
+      - name: Debug before build
+        run: |
+          echo "CWD: $(pwd)"
+          ls -la
+          echo "Has package.json?"; test -f package.json && echo yes || (echo NO; exit 1)
+          echo "Has .vercel/project.json?"; test -f .vercel/project.json && cat .vercel/project.json || (echo NO; exit 1)
+          echo "Node/PM versions:"; node -v; yarn -v || true; pnpm -v || true; npm -v
+          echo "Vercel CLI:"; npx -y vercel@46 --version
 
       - name: Build (debug)
         env:
           VERCEL_DEBUG: 1
         run: |
           PROD_FLAG=$([ "${{ inputs.target }}" = "release" ] && echo "--prod")
-          npx -y vercel@latest build $PROD_FLAG \
-            --token "$VERCEL_TOKEN" $([ -n "$VERCEL_SCOPE" ] && echo --scope "$VERCEL_SCOPE")
+          vercel build $PROD_FLAG \
+            --token "$VERCEL_TOKEN"
 
       - name: Deploy
         id: deploy
