@@ -14,13 +14,11 @@ export const discourseTopic = z
   .refine(
     async value => {
       if (!value) return true;
-      console.log("Zod validation called for:", value);
       const result = await validateDiscourseTopicExists(value);
-      console.log("Zod validation result:", result);
       return result;
     },
     {
-      message: "Il topic Discourse non esiste o non è accessibile",
+      message: LL.field_errors.discourse_topic_not_exist(),
     },
   );
 

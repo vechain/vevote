@@ -506,6 +506,10 @@ type RootTranslation = {
 			 */
 			empty_description: string
 		}
+		/**
+		 * T​h​e​ ​D​i​s​c​o​u​r​s​e​ ​t​o​p​i​c​ ​d​o​e​s​ ​n​o​t​ ​e​x​i​s​t​ ​o​r​ ​i​s​ ​n​o​t​ ​a​c​c​e​s​s​i​b​l​e
+		 */
+		discourse_topic_not_exist: string
 	}
 	voting_list: {
 		/**
@@ -1856,6 +1860,10 @@ JPG, PNG or SVG of maximum of {size}MB.
 			 */
 			empty_description: () => LocalizedString
 		}
+		/**
+		 * The Discourse topic does not exist or is not accessible
+		 */
+		discourse_topic_not_exist: () => LocalizedString
 	}
 	voting_list: {
 		/**

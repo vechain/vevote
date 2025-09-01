@@ -136,6 +136,7 @@ const en = {
         "Please replace placeholder text with your own content before submitting the proposal.",
       empty_description: "Description cannot be empty. Please provide content for your proposal.",
     },
+    discourse_topic_not_exist: "The Discourse topic does not exist or is not accessible",
   },
   voting_list: {
     voting_options: "Voting options:",
