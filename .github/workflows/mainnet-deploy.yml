@@ -6,6 +6,10 @@ permissions:
 on:
   workflow_dispatch:
     inputs:
+      ref:
+        description: 'Tag/branch/SHA to deploy'
+        required: true
+        type: string
       target:
         description: 'Deploy as preview or release to production'
         required: true
@@ -28,7 +32,7 @@ jobs:
         with:
           fetch-depth: 0
           fetch-tags: true
-          ref: ${{ github.ref }}
+          ref: ${{ inputs.ref }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
@@ -70,7 +74,7 @@ jobs:
           DEPLOY_URL: ${{ steps.deploy.outputs.url }}
         run: |
           set -euo pipefail
-          REF="${{ github.ref }}"
+          REF="${{ inputs.ref }}"
           SHA=$(git rev-parse "$REF")
 
           # Extract tag name from ref if it's a tag, otherwise use branch name
