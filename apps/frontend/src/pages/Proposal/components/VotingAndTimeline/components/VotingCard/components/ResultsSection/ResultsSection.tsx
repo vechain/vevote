@@ -8,11 +8,22 @@ import { AllVotersModal } from "./components/AllVotersModal/AllVotersModal";
 import { ProposalStatus, SingleChoiceEnum } from "@/types/proposal";
 import { ColorByVote, IconByVote, voteOptions } from "@/constants";
 import { useI18nContext } from "@/i18n/i18n-react";
+import { ResultSectionSkeleton } from "@/components/ui/SingleProposalSkeleton";
 
 export const ResultsSection = () => {
+  return (
+    <Flex flexDirection={"column"} gap={6} padding={{ base: "16px", md: "24px" }}>
+      <ResultsPercentages />
+      <ResultsInfo />
+    </Flex>
+  );
+};
+
+const ResultsPercentages = () => {
   const { LL } = useI18nContext();
+
   const { proposal } = useProposal();
-  const { votePercentages: rawPercentages } = useVoteCastPercentages({ proposalId: proposal.id });
+  const { votePercentages: rawPercentages, isLoading } = useVoteCastPercentages({ proposalId: proposal.id });
 
   const votePercentages = useMemo(() => {
     return {
@@ -24,8 +35,9 @@ export const ResultsSection = () => {
 
   const isGreyIcon = [ProposalStatus.DRAFT, ProposalStatus.UPCOMING].includes(proposal.status);
 
+  if (isLoading) return <ResultSectionSkeleton />;
   return (
-    <Flex flexDirection={"column"} gap={6} padding={{ base: "16px", md: "24px" }}>
+    <>
       <Flex alignItems={"center"} justifyContent={"space-between"}>
         <Flex alignItems={"center"} gap={3}>
           <Icon as={VoteIcon} width={5} height={5} color={"primary.700"} />
@@ -35,7 +47,6 @@ export const ResultsSection = () => {
         </Flex>
         <AllVotersModal />
       </Flex>
-
       <Flex flexDirection={"column"} gap={4}>
         {/* Progress bar */}
         <Flex height={"8px"} borderRadius={8} overflow={"hidden"} backgroundColor={"gray.200"}>
@@ -61,7 +72,6 @@ export const ResultsSection = () => {
           ))}
         </Flex>
       </Flex>
-      <ResultsInfo />
-    </Flex>
+    </>
   );
 };
