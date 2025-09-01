@@ -83,6 +83,6 @@ jobs:
         run: |
           PROD_FLAG=$([ "${{ inputs.target }}" = "release" ] && echo "--prod")
           URL=$(npx -y vercel@latest deploy --prebuilt $PROD_FLAG --yes \
-            --token "$VERCEL_TOKEN" $([ -n "$VERCEL_SCOPE" ] && echo --scope "$VERCEL_SCOPE"))
+            --token "$VERCEL_TOKEN"
           echo "url=$URL" >> "$GITHUB_OUTPUT"
           echo "🌐 Deployed: $URL" | tee -a $GITHUB_STEP_SUMMARY
