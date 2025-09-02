@@ -95,10 +95,26 @@ jobs:
               --title "Release $TAG" \
               --notes "Deployed to Vercel: ${DEPLOY_URL}"
           else
+            echo "✨ Creating new release for tag $TAG"
+            
+            # Generate comprehensive release notes from previous release to current tag
+            PREVIOUS_TAG=$(git describe --tags --abbrev=0 "$TAG"^ 2>/dev/null || echo "")
+            
+            if [[ -n "$PREVIOUS_TAG" ]]; then
+              echo "📝 Generating release notes from $PREVIOUS_TAG to $TAG"
+              # Get all commits between previous tag and current tag
+              RELEASE_NOTES=$(git log --oneline --reverse "$PREVIOUS_TAG..$TAG" | head -50 | sed 's/^/- /')
+              RELEASE_NOTES="## Changes from $PREVIOUS_TAG to $TAG\n\n$RELEASE_NOTES\n\n## Deployment\nDeployed to Vercel: ${DEPLOY_URL}"
+            else
+              echo "📝 This is the first release, generating notes from initial commit"
+              RELEASE_NOTES=$(git log --oneline --reverse | head -20 | sed 's/^/- /')
+              RELEASE_NOTES="## Initial Release\n\n$RELEASE_NOTES\n\n## Deployment\nDeployed to Vercel: ${DEPLOY_URL}"
+            fi
+            
             gh release create "$TAG" \
               --target "$SHA" \
               --title "Release $TAG" \
-              --generate-notes
+              --notes "$RELEASE_NOTES"
           fi
           
           echo "✅ Release created/updated successfully for tag: $TAG"
