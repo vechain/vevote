@@ -95,11 +95,10 @@ jobs:
               --title "Release $TAG" \
               --notes "Deployed to Vercel: ${DEPLOY_URL}"
           else
-            echo "✨ Creating new release for tag $TAG"
             gh release create "$TAG" \
               --target "$SHA" \
               --title "Release $TAG" \
-              --notes "Deployed to Vercel: ${DEPLOY_URL}"
+              --generate-notes
           fi
           
           echo "✅ Release created/updated successfully for tag: $TAG"
