@@ -1,12 +1,26 @@
 import { z } from "zod";
 import { LL } from "@/i18n/i18n-ssr";
 import dayjs from "dayjs";
+import { validateDiscourseTopicExists } from "./discourse";
 
 export const requiredString = z.string().min(1, { message: LL.field_errors.required() });
 
 export const optionalUrl = z.union([z.string().url().nullish(), z.literal("")]);
 
-export const discourseTopic = z.string().trim().min(1, { message: LL.field_errors.required() });
+export const discourseTopic = z
+  .string()
+  .trim()
+  .min(1, { message: LL.field_errors.required() })
+  .refine(
+    async value => {
+      if (!value) return true;
+      const result = await validateDiscourseTopicExists(value);
+      return result;
+    },
+    {
+      message: LL.field_errors.discourse_topic_not_exist(),
+    },
+  );
 
 export const zodStartEndDates = (delay: number, duration: number) =>
   z
