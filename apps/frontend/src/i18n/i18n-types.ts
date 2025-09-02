@@ -282,6 +282,30 @@ type RootTranslation = {
 	 * J​o​i​n​ ​t​h​e​ ​d​i​s​c​u​s​s​i​o​n​ ​o​n​ ​D​i​s​c​o​u​r​s​e
 	 */
 	discuss_on_discourse: string
+	common: {
+		time: {
+			/**
+			 * {​c​o​u​n​t​}​ ​{​c​o​u​n​t​|​{​1​:​ ​s​e​c​o​n​d​,​ ​*​:​ ​s​e​c​o​n​d​s​}​}
+			 * @param {number | '1' | string} count
+			 */
+			seconds: RequiredParams<'count' | `count|{1:${string}, *:${string}}`>
+			/**
+			 * {​c​o​u​n​t​}​ ​{​c​o​u​n​t​|​{​1​:​ ​m​i​n​u​t​e​,​ ​*​:​ ​m​i​n​u​t​e​s​}​}
+			 * @param {number | '1' | string} count
+			 */
+			minutes: RequiredParams<'count' | `count|{1:${string}, *:${string}}`>
+			/**
+			 * {​c​o​u​n​t​}​ ​{​c​o​u​n​t​|​{​1​:​ ​h​o​u​r​,​ ​*​:​ ​h​o​u​r​s​}​}
+			 * @param {number | '1' | string} count
+			 */
+			hours: RequiredParams<'count' | `count|{1:${string}, *:${string}}`>
+			/**
+			 * {​c​o​u​n​t​}​ ​{​c​o​u​n​t​|​{​1​:​ ​d​a​y​,​ ​*​:​ ​d​a​y​s​}​}
+			 * @param {number | '1' | string} count
+			 */
+			days: RequiredParams<'count' | `count|{1:${string}, *:${string}}`>
+		}
+	}
 	datepicker: {
 		/**
 		 * S​e​l​e​c​t​ ​d​a​t​e
@@ -2090,6 +2114,26 @@ JPG, PNG or SVG of maximum of {size}MB.
 	 * Join the discussion on Discourse
 	 */
 	discuss_on_discourse: () => LocalizedString
+	common: {
+		time: {
+			/**
+			 * {count} {count|{1: second, *: seconds}}
+			 */
+			seconds: (arg: { count: number | '1' | string }) => LocalizedString
+			/**
+			 * {count} {count|{1: minute, *: minutes}}
+			 */
+			minutes: (arg: { count: number | '1' | string }) => LocalizedString
+			/**
+			 * {count} {count|{1: hour, *: hours}}
+			 */
+			hours: (arg: { count: number | '1' | string }) => LocalizedString
+			/**
+			 * {count} {count|{1: day, *: days}}
+			 */
+			days: (arg: { count: number | '1' | string }) => LocalizedString
+		}
+	}
 	datepicker: {
 		/**
 		 * Select date

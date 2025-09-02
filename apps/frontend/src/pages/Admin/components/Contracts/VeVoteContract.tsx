@@ -12,15 +12,13 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { useVeVoteInfo } from "../../hooks";
-import dayjs from "dayjs";
-import duration from "dayjs/plugin/duration";
 import { useI18nContext } from "@/i18n/i18n-react";
-
-dayjs.extend(duration);
+import { useFormatTime } from "@/hooks/useFormatTime";
 
 export function VeVoteContract() {
   const { LL } = useI18nContext();
   const { data: veVoteInfo, isLoading, error } = useVeVoteInfo();
+  const { formatTime } = useFormatTime();
 
   if (isLoading) {
     return (
@@ -76,17 +74,17 @@ export function VeVoteContract() {
 
         <Stat>
           <StatLabel>{LL.admin.vevote_contract.min_voting_delay()}</StatLabel>
-          <StatNumber>{LL.admin.format_minutes_seconds({ minutes: Math.floor(veVoteInfo.minVotingDelay / 60), seconds: veVoteInfo.minVotingDelay })}</StatNumber>
+          <StatNumber>{formatTime(veVoteInfo.minVotingDelay)}</StatNumber>
         </Stat>
 
         <Stat>
           <StatLabel>{LL.admin.vevote_contract.min_voting_duration()}</StatLabel>
-          <StatNumber>{LL.admin.format_minutes_seconds({ minutes: Math.floor(veVoteInfo.minVotingDuration / 60), seconds: veVoteInfo.minVotingDuration })}</StatNumber>
+          <StatNumber>{formatTime(veVoteInfo.minVotingDuration)}</StatNumber>
         </Stat>
 
         <Stat>
           <StatLabel>{LL.admin.vevote_contract.max_voting_duration()}</StatLabel>
-          <StatNumber>{LL.admin.format_days({ number: Math.round(dayjs.duration(veVoteInfo.maxVotingDuration, "seconds").asDays()) })}</StatNumber>
+          <StatNumber>{formatTime(veVoteInfo.maxVotingDuration)}</StatNumber>
         </Stat>
       </SimpleGrid>
     </Box>

@@ -21,6 +21,7 @@ import { useState, useCallback } from "react";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { useVeVoteInfo } from "../../hooks";
 import { useGovernanceSettings } from "@/hooks/useGovernanceSettings";
+import { useFormatTime } from "@/hooks/useFormatTime";
 import { MessageModal } from "@/components/ui/ModalSkeleton";
 import { CheckIcon } from "@/icons";
 
@@ -28,6 +29,7 @@ export function GovernanceSettings() {
   const { LL } = useI18nContext();
   const { data: veVoteInfo, isLoading, error } = useVeVoteInfo();
   const { sendTransaction, isTransactionPending } = useGovernanceSettings();
+  const { formatTime } = useFormatTime();
 
   const { isOpen: isSuccessOpen, onClose: onSuccessClose, onOpen: onSuccessOpen } = useDisclosure();
   const [errorMessage, setErrorMessage] = useState<string>("");
@@ -156,11 +158,7 @@ export function GovernanceSettings() {
             <FormHelperText>
               {LL.admin.governance_settings.min_voting_delay_help()}
               <br />
-              Current:{" "}
-              {LL.admin.format_minutes_seconds({
-                minutes: Math.floor(veVoteInfo.minVotingDelay / 60),
-                seconds: veVoteInfo.minVotingDelay,
-              })}
+              Current: {formatTime(veVoteInfo.minVotingDelay)}
             </FormHelperText>
           </FormControl>
 
@@ -179,11 +177,7 @@ export function GovernanceSettings() {
             <FormHelperText>
               {LL.admin.governance_settings.min_voting_duration_help()}
               <br />
-              Current:{" "}
-              {LL.admin.format_minutes_seconds({
-                minutes: Math.floor(veVoteInfo.minVotingDuration / 60),
-                seconds: veVoteInfo.minVotingDuration,
-              })}
+              Current: {formatTime(veVoteInfo.minVotingDuration)}
             </FormHelperText>
           </FormControl>
 
@@ -202,7 +196,7 @@ export function GovernanceSettings() {
             <FormHelperText>
               {LL.admin.governance_settings.max_voting_duration_help()}
               <br />
-              Current: {LL.admin.format_days({ number: Math.round(veVoteInfo.maxVotingDuration / 86400) })}
+              Current: {formatTime(veVoteInfo.maxVotingDuration)}
             </FormHelperText>
           </FormControl>
         </SimpleGrid>

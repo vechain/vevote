@@ -68,6 +68,14 @@ const en = {
   stargate: "StarGate",
   learn_how_voting_power: "How voting power is obtained",
   discuss_on_discourse: "Join the discussion on Discourse",
+  common: {
+    time: {
+      seconds: "{count:number} {count|{1: second, *: seconds}}",
+      minutes: "{count:number} {count|{1: minute, *: minutes}}",
+      hours: "{count:number} {count|{1: hour, *: hours}}",
+      days: "{count:number} {count|{1: day, *: days}}",
+    },
+  },
   datepicker: {
     select_date: "Select date",
     previous_month: "Previous month",
