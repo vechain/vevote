@@ -1,92 +1,87 @@
 name: Mainnet — Preview or Release
 
 permissions:
-  contents: read  
-  
+  contents: write
+
 on:
   workflow_dispatch:
     inputs:
-      ref:
-        description: 'Tag/branch/SHA to deploy (e.g. v1.2.3)'
-        required: true
-        type: string
       target:
-        description: 'Deploy as preview or production'
+        description: 'Deploy as preview or release to production'
         required: true
         type: choice
         options: [preview, release]
         default: preview
-      require_on_main:
-        description: 'For release: require ref to be reachable from main'
-        type: boolean
-        default: true
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: test   # use environment-scoped secrets
+    environment: test
+
     env:
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-      VERCEL_SCOPE: ${{ secrets.VERCEL_SCOPE }} # optional
-    defaults:
-      run:
-        working-directory: apps   # <-- matches your Vercel Root Directory
 
     steps:
-      - name: Checkout (full history)
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          ref: ${{ inputs.ref }}
+          fetch-tags: true
+          ref: ${{ github.ref }}
 
-      - name: Safety gate (release only)
-        if: ${{ inputs.target == 'release' && inputs.require_on_main }}
-        run: |
-          git fetch origin main --force
-          SHA=$(git rev-parse HEAD)
-          git merge-base --is-ancestor "$SHA" origin/main || { echo "Ref is NOT on main"; exit 1; }
-
-      - name: Setup Node (for vercel build)
-        uses: actions/setup-node@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
-          node-version: 20
+          node-version: 22
+          cache: 'yarn'
 
-      - name: Link Vercel project
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Install dependencies
+        run: npm i -g vercel@latest
+
+      - name: Vercel pull (config + env)
         run: |
-          mkdir -p .vercel
-          cat > .vercel/project.json <<EOF
-          { "orgId": "${VERCEL_ORG_ID}", "projectId": "${VERCEL_PROJECT_ID}" }
-          EOF
+          ENVIRONMENT=${{ inputs.target == 'release' && 'production' || 'preview' }}
+          vercel pull --yes --environment="$ENVIRONMENT" \
+            --token "$VERCEL_TOKEN"
 
-      # Pull the correct env vars into .env for Vite (Vercel local build reads this)
-      - name: Pull env (PREVIEW)
-        if: ${{ inputs.target == 'preview' }}
-        run: npx vercel env pull .env --environment=preview --token="$VERCEL_TOKEN" $([ -n "$VERCEL_SCOPE" ] && echo --scope "$VERCEL_SCOPE")
-
-      - name: Pull env (PRODUCTION)
-        if: ${{ inputs.target == 'release' }}
-        run: npx vercel env pull .env --environment=production --token="$VERCEL_TOKEN" $([ -n "$VERCEL_SCOPE" ] && echo --scope "$VERCEL_SCOPE")
-
-      # Build using your Vercel project settings (Vite + yarn build:mainnet under Root Dir=apps)
-      - name: Vercel build (preview)
-        if: ${{ inputs.target == 'preview' }}
-        run: npx vercel build --token="$VERCEL_TOKEN" $([ -n "$VERCEL_SCOPE" ] && echo --scope "$VERCEL_SCOPE")
-
-      - name: Vercel build (production)
-        if: ${{ inputs.target == 'release' }}
-        run: npx vercel build --prod --token="$VERCEL_TOKEN" $([ -n "$VERCEL_SCOPE" ] && echo --scope "$VERCEL_SCOPE")
-
-      # Deploy the prebuilt output
-      - name: Deploy PREVIEW
-        if: ${{ inputs.target == 'preview' }}
-        id: deploy_preview
+      - name: Build (debug)
+        env:
+          VERCEL_DEBUG: 1
         run: |
-          URL=$(npx vercel deploy --prebuilt --token="$VERCEL_TOKEN" --yes $([ -n "$VERCEL_SCOPE" ] && echo --scope "$VERCEL_SCOPE"))
-          echo "url=$URL" >> $GITHUB_OUTPUT
-          echo "🔍 Preview URL: $URL" | tee -a $GITHUB_STEP_SUMMARY
+          PROD_FLAG="${{ inputs.target == 'release' && '--prod' || '' }}"
+          vercel build $PROD_FLAG --token "$VERCEL_TOKEN"
+      - name: Deploy
+        id: deploy
+        run: |
+          PROD_FLAG="${{ inputs.target == 'release' && '--prod' || '' }}"
+          URL=$(npx -y vercel@latest deploy --prebuilt $PROD_FLAG --yes \
+            --token "$VERCEL_TOKEN")
+          echo "url=$URL" >> "$GITHUB_OUTPUT"
+          echo "🌐 Deployed: $URL" | tee -a "$GITHUB_STEP_SUMMARY"
 
-      - name: Deploy PRODUCTION
+      - name: Create GitHub Release
         if: ${{ inputs.target == 'release' }}
-        run: npx vercel deploy --prebuilt --prod --token="$VERCEL_TOKEN" --yes $([ -n "$VERCEL_SCOPE" ] && echo --scope "$VERCEL_SCOPE")
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEPLOY_URL: ${{ steps.deploy.outputs.url }}
+        run: |
+          set -euo pipefail
+          REF="${{ github.ref }}"
+          SHA=$(git rev-parse "$REF")
+
+          # Extract tag name from ref if it's a tag, otherwise use branch name
+          if [[ "$REF" == refs/tags/* ]]; then
+            TAG="${REF#refs/tags/}"
+          else
+            echo "⚠️ Ref '$REF' is not a tag. Skipping GitHub Release. Create a tag to publish a release."
+            exit 0
+          fi
+
+          gh release create "$TAG" --target "$SHA" \
+            --title "Release $TAG" \
+            --notes "Deployed to Vercel: ${DEPLOY_URL}"
+
