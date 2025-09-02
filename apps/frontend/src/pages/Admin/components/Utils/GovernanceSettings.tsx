@@ -1,6 +1,4 @@
 import {
-  Box,
-  Heading,
   Text,
   SimpleGrid,
   FormControl,
@@ -16,6 +14,7 @@ import {
   Alert,
   AlertIcon,
   VStack,
+  Box,
 } from "@chakra-ui/react";
 import { useState, useCallback } from "react";
 import { useI18nContext } from "@/i18n/i18n-react";
@@ -24,6 +23,7 @@ import { useGovernanceSettings } from "@/hooks/useGovernanceSettings";
 import { useFormatTime } from "@/hooks/useFormatTime";
 import { MessageModal } from "@/components/ui/ModalSkeleton";
 import { CheckIcon } from "@/icons";
+import { AdminCard } from "../common/AdminCard";
 
 export function GovernanceSettings() {
   const { LL } = useI18nContext();
@@ -82,41 +82,39 @@ export function GovernanceSettings() {
       setErrorMessage(
         error?.error?.message ||
           error?.message ||
-          LL.admin.governance_settings.error_description({ error: "Unknown error" }),
+          LL.admin.governance_settings.error_description({ error: LL.admin.unknown_error() }),
       );
     }
   }, [formValues, veVoteInfo, sendTransaction, onSuccessOpen, LL.admin.governance_settings]);
 
   if (isLoading) {
     return (
-      <Box>
+      <AdminCard title={LL.admin.governance_settings.title()}>
         <Text>{LL.admin.vevote_contract.loading()}</Text>
-      </Box>
+      </AdminCard>
     );
   }
 
   if (error || !veVoteInfo) {
     return (
-      <Alert status="error">
-        <AlertIcon />
-        {error instanceof Error ? error.message : LL.admin.vevote_contract.no_data()}
-      </Alert>
+      <AdminCard title={LL.admin.governance_settings.title()}>
+        <Alert status="error">
+          <AlertIcon />
+          {error instanceof Error ? error.message : LL.admin.vevote_contract.no_data()}
+        </Alert>
+      </AdminCard>
     );
   }
 
   const hasChanges = Object.values(formValues).some(value => value !== "");
 
   return (
-    <Box>
+    <>
+    <AdminCard title={LL.admin.governance_settings.title()}>
       <VStack spacing={6} align="stretch">
-        <Box>
-          <Heading size="md" mb={2}>
-            {LL.admin.governance_settings.title()}
-          </Heading>
-          <Text fontSize="sm" color="gray.600">
-            {LL.admin.governance_settings.description()}
-          </Text>
-        </Box>
+        <Text fontSize="sm" color="gray.600">
+          {LL.admin.governance_settings.description()}
+        </Text>
 
         {errorMessage && (
           <Alert status="error">
@@ -213,8 +211,9 @@ export function GovernanceSettings() {
           </Button>
         </Box>
       </VStack>
+    </AdminCard>
 
-      <MessageModal
+    <MessageModal
         isOpen={isSuccessOpen}
         onClose={onSuccessClose}
         icon={CheckIcon}
@@ -224,6 +223,6 @@ export function GovernanceSettings() {
           {LL.admin.governance_settings.success_description()}
         </Text>
       </MessageModal>
-    </Box>
+    </>
   );
 }

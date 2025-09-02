@@ -27,7 +27,7 @@ export function VeVoteContract() {
     return (
       <Alert status="error">
         <AlertIcon />
-        {LL.admin.vevote_contract.error({ error: error instanceof Error ? error.message : "Unknown error" })}
+        {LL.admin.vevote_contract.error({ error: error instanceof Error ? error.message : LL.admin.unknown_error() })}
       </Alert>
     );
   }

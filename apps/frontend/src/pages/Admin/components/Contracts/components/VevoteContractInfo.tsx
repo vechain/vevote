@@ -1,7 +1,8 @@
-import { Box, VStack, HStack, Text, Heading } from "@chakra-ui/react";
+import { VStack, HStack, Text } from "@chakra-ui/react";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { useFormatTime } from "@/hooks/useFormatTime";
 import { VeVoteInfo } from "../../../services";
+import { AdminCard } from "../../common/AdminCard";
 
 interface VevoteContractInfoProps {
   veVoteInfo: VeVoteInfo;
@@ -39,10 +40,7 @@ export function VevoteContractInfo({ veVoteInfo }: VevoteContractInfoProps) {
   ];
 
   return (
-    <Box border="1px" borderColor="gray.200" borderRadius="md" p={4} w={"fit-content"} minW={300}>
-      <Heading size="sm" mb={3}>
-        Contract Information
-      </Heading>
+    <AdminCard title={LL.admin.vevote_contract.contract_info_title()}>
       <VStack spacing={2} align="stretch">
         {contractData.map(({ label, value }) => (
           <HStack key={label} justify="space-between" align="center">
@@ -55,6 +53,6 @@ export function VevoteContractInfo({ veVoteInfo }: VevoteContractInfoProps) {
           </HStack>
         ))}
       </VStack>
-    </Box>
+    </AdminCard>
   );
 }

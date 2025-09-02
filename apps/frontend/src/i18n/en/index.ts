@@ -452,6 +452,7 @@ const en = {
       min_voting_duration: "Min Voting Duration",
       max_voting_duration: "Max Voting Duration",
       quorum_percentage: "{percentage:number}% required",
+      contract_info_title: "Contract Information",
     },
     node_management: {
       title: "Node Management Contract Information",
@@ -469,6 +470,8 @@ const en = {
       yes: "Yes",
       no: "No",
       error: "Error loading node data: {error:string}",
+      card_title: "Node Information",
+      results_for: "Results for {address:string}",
       methods_title: "Available Methods",
       methods_description:
         "This component demonstrates the NodeManagementService functionality. You can extend it to show additional statistics like total nodes, delegation stats, etc.",
@@ -507,8 +510,6 @@ const en = {
     governance_settings: {
       title: "Governance Settings",
       description: "Configure VeVote governance parameters",
-
-      // Form labels
       quorum_numerator_label: "Quorum Numerator",
       quorum_numerator_help: "Required votes numerator (current: {current:number})",
       min_voting_delay_label: "Min Voting Delay",
@@ -517,35 +518,24 @@ const en = {
       min_voting_duration_help: "Minimum voting duration (in seconds)",
       max_voting_duration_label: "Max Voting Duration",
       max_voting_duration_help: "Maximum voting duration (in seconds)",
-
-      // Buttons
       update_settings: "Update Settings",
       updating: "Updating...",
-
-      // Messages
       success_title: "Settings Updated Successfully",
       success_description: "Governance settings have been updated and are now active.",
       error_title: "Failed to Update Settings",
       error_description: "There was an error updating the governance settings: {error:string}",
-
-      // Validation
       invalid_range: "Value must be between {min:number} and {max:number}",
       required_field: "This field is required",
+      current_value: "Current: {value:string}",
     },
-
-    // User Management
     user_management: {
       title: "User Management",
       description: "Grant or revoke roles for VeVote governance",
-
-      // Form labels
       user_address_label: "User Address",
       user_address_placeholder: "Enter user address (0x...)",
       role_label: "Role",
       role_placeholder: "Select a role",
       action_label: "Action",
-
-      // Roles
       roles: {
         DEFAULT_ADMIN_ROLE: "Default Admin",
         EXECUTOR_ROLE: "Executor",
@@ -555,9 +545,28 @@ const en = {
         WHITELISTED_ROLE: "Whitelisted",
         WHITELIST_ADMIN_ROLE: "Whitelist Admin",
       },
+      grant_role: "Grant Role",
+      revoke_role: "Revoke Role",
+      granting: "Granting...",
+      revoking: "Revoking...",
+      current_roles_label: "Current Roles:",
+      checking_roles: "Checking roles...",
+      no_roles_assigned: "No roles assigned",
+      grant_success_title: "Role Granted Successfully",
+      grant_success_description: "The role has been granted to the user.",
+      revoke_success_title: "Role Revoked Successfully",
+      revoke_success_description: "The role has been revoked from the user.",
+      error_description: "There was an error with the role operation: {error:string}",
+      invalid_address: "Please enter a valid address",
+      role_required: "Please select a role",
+      address_required: "User address is required",
     },
-
-    // Common role names for all contracts
+    user_role_checker: {
+      title: "Your Permissions",
+      connect_wallet_message: "Connect wallet to see your roles",
+      checking_roles: "Checking your roles...",
+    },
+    unknown_error: "Unknown error",
     common_roles: {
       DEFAULT_ADMIN_ROLE: "Default Admin",
       UPGRADER_ROLE: "Upgrader",
@@ -570,22 +579,16 @@ const en = {
       NODE_WEIGHT_MANAGER_ROLE: "Node Weight Manager",
       WHITELIST_ADMIN_ROLE: "Whitelist Admin",
       WHITELISTED_ROLE: "Whitelisted",
-
-      // Buttons
       grant_role: "Grant Role",
       revoke_role: "Revoke Role",
       granting: "Granting...",
       revoking: "Revoking...",
-
-      // Messages
       grant_success_title: "Role Granted Successfully",
       grant_success_description: "The role has been granted to the user.",
       revoke_success_title: "Role Revoked Successfully",
       revoke_success_description: "The role has been revoked from the user.",
       error_title: "Role Operation Failed",
       error_description: "There was an error with the role operation: {error:string}",
-
-      // Validation
       invalid_address: "Please enter a valid address",
       role_required: "Please select a role",
       address_required: "User address is required",

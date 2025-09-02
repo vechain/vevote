@@ -1477,6 +1477,10 @@ type RootTranslation = {
 			 * @param {number} percentage
 			 */
 			quorum_percentage: RequiredParams<'percentage'>
+			/**
+			 * C​o​n​t​r​a​c​t​ ​I​n​f​o​r​m​a​t​i​o​n
+			 */
+			contract_info_title: string
 		}
 		node_management: {
 			/**
@@ -1542,6 +1546,15 @@ type RootTranslation = {
 			 * @param {string} error
 			 */
 			error: RequiredParams<'error'>
+			/**
+			 * N​o​d​e​ ​I​n​f​o​r​m​a​t​i​o​n
+			 */
+			card_title: string
+			/**
+			 * R​e​s​u​l​t​s​ ​f​o​r​ ​{​a​d​d​r​e​s​s​}
+			 * @param {string} address
+			 */
+			results_for: RequiredParams<'address'>
 			/**
 			 * A​v​a​i​l​a​b​l​e​ ​M​e​t​h​o​d​s
 			 */
@@ -1735,6 +1748,11 @@ type RootTranslation = {
 			 * T​h​i​s​ ​f​i​e​l​d​ ​i​s​ ​r​e​q​u​i​r​e​d
 			 */
 			required_field: string
+			/**
+			 * C​u​r​r​e​n​t​:​ ​{​v​a​l​u​e​}
+			 * @param {string} value
+			 */
+			current_value: RequiredParams<'value'>
 		}
 		user_management: {
 			/**
@@ -1795,7 +1813,86 @@ type RootTranslation = {
 				 */
 				WHITELIST_ADMIN_ROLE: string
 			}
+			/**
+			 * G​r​a​n​t​ ​R​o​l​e
+			 */
+			grant_role: string
+			/**
+			 * R​e​v​o​k​e​ ​R​o​l​e
+			 */
+			revoke_role: string
+			/**
+			 * G​r​a​n​t​i​n​g​.​.​.
+			 */
+			granting: string
+			/**
+			 * R​e​v​o​k​i​n​g​.​.​.
+			 */
+			revoking: string
+			/**
+			 * C​u​r​r​e​n​t​ ​R​o​l​e​s​:
+			 */
+			current_roles_label: string
+			/**
+			 * C​h​e​c​k​i​n​g​ ​r​o​l​e​s​.​.​.
+			 */
+			checking_roles: string
+			/**
+			 * N​o​ ​r​o​l​e​s​ ​a​s​s​i​g​n​e​d
+			 */
+			no_roles_assigned: string
+			/**
+			 * R​o​l​e​ ​G​r​a​n​t​e​d​ ​S​u​c​c​e​s​s​f​u​l​l​y
+			 */
+			grant_success_title: string
+			/**
+			 * T​h​e​ ​r​o​l​e​ ​h​a​s​ ​b​e​e​n​ ​g​r​a​n​t​e​d​ ​t​o​ ​t​h​e​ ​u​s​e​r​.
+			 */
+			grant_success_description: string
+			/**
+			 * R​o​l​e​ ​R​e​v​o​k​e​d​ ​S​u​c​c​e​s​s​f​u​l​l​y
+			 */
+			revoke_success_title: string
+			/**
+			 * T​h​e​ ​r​o​l​e​ ​h​a​s​ ​b​e​e​n​ ​r​e​v​o​k​e​d​ ​f​r​o​m​ ​t​h​e​ ​u​s​e​r​.
+			 */
+			revoke_success_description: string
+			/**
+			 * T​h​e​r​e​ ​w​a​s​ ​a​n​ ​e​r​r​o​r​ ​w​i​t​h​ ​t​h​e​ ​r​o​l​e​ ​o​p​e​r​a​t​i​o​n​:​ ​{​e​r​r​o​r​}
+			 * @param {string} error
+			 */
+			error_description: RequiredParams<'error'>
+			/**
+			 * P​l​e​a​s​e​ ​e​n​t​e​r​ ​a​ ​v​a​l​i​d​ ​a​d​d​r​e​s​s
+			 */
+			invalid_address: string
+			/**
+			 * P​l​e​a​s​e​ ​s​e​l​e​c​t​ ​a​ ​r​o​l​e
+			 */
+			role_required: string
+			/**
+			 * U​s​e​r​ ​a​d​d​r​e​s​s​ ​i​s​ ​r​e​q​u​i​r​e​d
+			 */
+			address_required: string
 		}
+		user_role_checker: {
+			/**
+			 * Y​o​u​r​ ​P​e​r​m​i​s​s​i​o​n​s
+			 */
+			title: string
+			/**
+			 * C​o​n​n​e​c​t​ ​w​a​l​l​e​t​ ​t​o​ ​s​e​e​ ​y​o​u​r​ ​r​o​l​e​s
+			 */
+			connect_wallet_message: string
+			/**
+			 * C​h​e​c​k​i​n​g​ ​y​o​u​r​ ​r​o​l​e​s​.​.​.
+			 */
+			checking_roles: string
+		}
+		/**
+		 * U​n​k​n​o​w​n​ ​e​r​r​o​r
+		 */
+		unknown_error: string
 		common_roles: {
 			/**
 			 * D​e​f​a​u​l​t​ ​A​d​m​i​n
@@ -3338,6 +3435,10 @@ JPG, PNG or SVG of maximum of {size}MB.
 			 * {percentage}% required
 			 */
 			quorum_percentage: (arg: { percentage: number }) => LocalizedString
+			/**
+			 * Contract Information
+			 */
+			contract_info_title: () => LocalizedString
 		}
 		node_management: {
 			/**
@@ -3400,6 +3501,14 @@ JPG, PNG or SVG of maximum of {size}MB.
 			 * Error loading node data: {error}
 			 */
 			error: (arg: { error: string }) => LocalizedString
+			/**
+			 * Node Information
+			 */
+			card_title: () => LocalizedString
+			/**
+			 * Results for {address}
+			 */
+			results_for: (arg: { address: string }) => LocalizedString
 			/**
 			 * Available Methods
 			 */
@@ -3582,6 +3691,10 @@ JPG, PNG or SVG of maximum of {size}MB.
 			 * This field is required
 			 */
 			required_field: () => LocalizedString
+			/**
+			 * Current: {value}
+			 */
+			current_value: (arg: { value: string }) => LocalizedString
 		}
 		user_management: {
 			/**
@@ -3642,7 +3755,85 @@ JPG, PNG or SVG of maximum of {size}MB.
 				 */
 				WHITELIST_ADMIN_ROLE: () => LocalizedString
 			}
+			/**
+			 * Grant Role
+			 */
+			grant_role: () => LocalizedString
+			/**
+			 * Revoke Role
+			 */
+			revoke_role: () => LocalizedString
+			/**
+			 * Granting...
+			 */
+			granting: () => LocalizedString
+			/**
+			 * Revoking...
+			 */
+			revoking: () => LocalizedString
+			/**
+			 * Current Roles:
+			 */
+			current_roles_label: () => LocalizedString
+			/**
+			 * Checking roles...
+			 */
+			checking_roles: () => LocalizedString
+			/**
+			 * No roles assigned
+			 */
+			no_roles_assigned: () => LocalizedString
+			/**
+			 * Role Granted Successfully
+			 */
+			grant_success_title: () => LocalizedString
+			/**
+			 * The role has been granted to the user.
+			 */
+			grant_success_description: () => LocalizedString
+			/**
+			 * Role Revoked Successfully
+			 */
+			revoke_success_title: () => LocalizedString
+			/**
+			 * The role has been revoked from the user.
+			 */
+			revoke_success_description: () => LocalizedString
+			/**
+			 * There was an error with the role operation: {error}
+			 */
+			error_description: (arg: { error: string }) => LocalizedString
+			/**
+			 * Please enter a valid address
+			 */
+			invalid_address: () => LocalizedString
+			/**
+			 * Please select a role
+			 */
+			role_required: () => LocalizedString
+			/**
+			 * User address is required
+			 */
+			address_required: () => LocalizedString
 		}
+		user_role_checker: {
+			/**
+			 * Your Permissions
+			 */
+			title: () => LocalizedString
+			/**
+			 * Connect wallet to see your roles
+			 */
+			connect_wallet_message: () => LocalizedString
+			/**
+			 * Checking your roles...
+			 */
+			checking_roles: () => LocalizedString
+		}
+		/**
+		 * Unknown error
+		 */
+		unknown_error: () => LocalizedString
 		common_roles: {
 			/**
 			 * Default Admin

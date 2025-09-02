@@ -247,5 +247,4 @@ export class StargateService {
   }
 }
 
-// Singleton instance
 export const stargateService = new StargateService();

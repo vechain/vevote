@@ -1,6 +1,4 @@
 import {
-  Box,
-  Heading,
   Text,
   VStack,
   HStack,
@@ -17,6 +15,7 @@ import {
   Wrap,
   WrapItem,
   Spinner,
+  Box,
 } from "@chakra-ui/react";
 import { useState, useCallback } from "react";
 import { useI18nContext } from "@/i18n/i18n-react";
@@ -24,6 +23,7 @@ import { useRoleManagement } from "@/hooks/useRoleManagement";
 import { useUserRoles } from "@/hooks/useUserRoles";
 import { MessageModal } from "@/components/ui/ModalSkeleton";
 import { CheckIcon } from "@/icons";
+import { AdminCard } from "../common/AdminCard";
 
 const ROLES = [
   "DEFAULT_ADMIN_ROLE",
@@ -94,116 +94,113 @@ export function UserManagement() {
         setErrorMessage(
           error?.error?.message ||
             error?.message ||
-            LL.admin.user_management.error_description({ error: "Unknown error" }),
+            LL.admin.user_management.error_description({ error: LL.admin.unknown_error() }),
         );
       }
     },
-    [formValues, sendTransaction, onSuccessOpen, refetchRoles, LL.admin.user_management],
+    [formValues.userAddress, formValues.selectedRole, LL.admin, sendTransaction, onSuccessOpen, refetchRoles],
   );
 
   const isFormValid = formValues.userAddress.trim() !== "" && formValues.selectedRole !== "";
 
   return (
-    <Box>
-      <VStack spacing={6} align="stretch">
-        <Box>
-          <Heading size="md" mb={2}>
-            {LL.admin.user_management.title()}
-          </Heading>
+    <>
+      <AdminCard title={LL.admin.user_management.title()}>
+        <VStack spacing={6} align="stretch">
           <Text fontSize="sm" color="gray.600">
             {LL.admin.user_management.description()}
           </Text>
-        </Box>
 
-        {errorMessage && (
-          <Alert status="error">
-            <AlertIcon />
-            {errorMessage}
-          </Alert>
-        )}
-
-        <VStack spacing={4} align="stretch">
-          <FormControl>
-            <FormLabel>{LL.admin.user_management.user_address_label()}</FormLabel>
-            <Input
-              placeholder={LL.admin.user_management.user_address_placeholder()}
-              value={formValues.userAddress}
-              onChange={e => setFormValues(prev => ({ ...prev, userAddress: e.target.value }))}
-            />
-          </FormControl>
-
-          {/* Show current user roles */}
-          {formValues.userAddress && formValues.userAddress.match(/^0x[a-fA-F0-9]{40}$/) && (
-            <Box>
-              <Text fontSize="sm" fontWeight="medium" mb={2}>
-                Current Roles:
-              </Text>
-              {isLoadingRoles ? (
-                <HStack>
-                  <Spinner size="sm" />
-                  <Text fontSize="sm" color="gray.500">
-                    Checking roles...
-                  </Text>
-                </HStack>
-              ) : userRoles && userRoles.length > 0 ? (
-                <Wrap>
-                  {userRoles.map(role => (
-                    <WrapItem key={role}>
-                      <Badge colorScheme="blue" variant="solid">
-                        {LL.admin.user_management.roles[role]()}
-                      </Badge>
-                    </WrapItem>
-                  ))}
-                </Wrap>
-              ) : (
-                <Text fontSize="sm" color="gray.500" fontStyle="italic">
-                  No roles assigned
-                </Text>
-              )}
-            </Box>
+          {errorMessage && (
+            <Alert status="error">
+              <AlertIcon />
+              {errorMessage}
+            </Alert>
           )}
 
-          <FormControl>
-            <FormLabel>{LL.admin.user_management.role_label()}</FormLabel>
-            <Select
-              placeholder={LL.admin.user_management.role_placeholder()}
-              value={formValues.selectedRole}
-              onChange={e => setFormValues(prev => ({ ...prev, selectedRole: e.target.value }))}>
-              {ROLES.map(role => (
-                <option key={role} value={role}>
-                  {LL.admin.user_management.roles[role]()}
-                </option>
-              ))}
-            </Select>
-          </FormControl>
+          <VStack spacing={4} align="stretch">
+            <FormControl>
+              <FormLabel>{LL.admin.user_management.user_address_label()}</FormLabel>
+              <Input
+                placeholder={LL.admin.user_management.user_address_placeholder()}
+                value={formValues.userAddress}
+                onChange={e => setFormValues(prev => ({ ...prev, userAddress: e.target.value }))}
+              />
+            </FormControl>
 
-          <Divider />
+            {/* Show current user roles */}
+            {formValues.userAddress && formValues.userAddress.match(/^0x[a-fA-F0-9]{40}$/) && (
+              <Box>
+                <Text fontSize="sm" fontWeight="medium" mb={2}>
+                  {LL.admin.user_management.current_roles_label()}
+                </Text>
+                {isLoadingRoles ? (
+                  <HStack>
+                    <Spinner size="sm" />
+                    <Text fontSize="sm" color="gray.500">
+                      {LL.admin.user_management.checking_roles()}
+                    </Text>
+                  </HStack>
+                ) : userRoles && userRoles.length > 0 ? (
+                  <Wrap>
+                    {userRoles.map(role => (
+                      <WrapItem key={role}>
+                        <Badge colorScheme="blue" variant="solid">
+                          {LL.admin.user_management.roles[role]()}
+                        </Badge>
+                      </WrapItem>
+                    ))}
+                  </Wrap>
+                ) : (
+                  <Text fontSize="sm" color="gray.500" fontStyle="italic">
+                    {LL.admin.user_management.no_roles_assigned()}
+                  </Text>
+                )}
+              </Box>
+            )}
 
-          <HStack spacing={4}>
-            <Button
-              colorScheme="green"
-              size="lg"
-              onClick={() => handleRoleAction("grant")}
-              isLoading={isTransactionPending}
-              loadingText={LL.admin.user_management.granting()}
-              isDisabled={!isFormValid}
-              flex={1}>
-              {LL.admin.user_management.grant_role()}
-            </Button>
+            <FormControl>
+              <FormLabel>{LL.admin.user_management.role_label()}</FormLabel>
+              <Select
+                placeholder={LL.admin.user_management.role_placeholder()}
+                value={formValues.selectedRole}
+                onChange={e => setFormValues(prev => ({ ...prev, selectedRole: e.target.value }))}>
+                {ROLES.map(role => (
+                  <option key={role} value={role}>
+                    {LL.admin.user_management.roles[role]()}
+                  </option>
+                ))}
+              </Select>
+            </FormControl>
 
-            <Button
-              colorScheme="red"
-              size="lg"
-              onClick={() => handleRoleAction("revoke")}
-              isLoading={isTransactionPending}
-              loadingText={LL.admin.user_management.revoking()}
-              isDisabled={!isFormValid}
-              flex={1}>
-              {LL.admin.user_management.revoke_role()}
-            </Button>
-          </HStack>
+            <Divider />
+
+            <HStack spacing={4}>
+              <Button
+                colorScheme="green"
+                size="lg"
+                onClick={() => handleRoleAction("grant")}
+                isLoading={isTransactionPending}
+                loadingText={LL.admin.user_management.granting()}
+                isDisabled={!isFormValid}
+                flex={1}>
+                {LL.admin.user_management.grant_role()}
+              </Button>
+
+              <Button
+                colorScheme="red"
+                size="lg"
+                onClick={() => handleRoleAction("revoke")}
+                isLoading={isTransactionPending}
+                loadingText={LL.admin.user_management.revoking()}
+                isDisabled={!isFormValid}
+                flex={1}>
+                {LL.admin.user_management.revoke_role()}
+              </Button>
+            </HStack>
+          </VStack>
         </VStack>
-      </VStack>
+      </AdminCard>
 
       {/* Success Modal */}
       <MessageModal
@@ -220,6 +217,6 @@ export function UserManagement() {
           {successMessage}
         </Text>
       </MessageModal>
-    </Box>
+    </>
   );
 }

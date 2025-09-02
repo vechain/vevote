@@ -5,8 +5,8 @@ export function useStargateStats() {
   return useQuery({
     queryKey: ["stargateStats"],
     queryFn: () => stargateService.getStargateStats(),
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    refetchInterval: 15 * 60 * 1000, // 15 minutes
+    staleTime: 5 * 60 * 1000,
+    refetchInterval: 15 * 60 * 1000,
   });
 }
 
@@ -14,7 +14,7 @@ export function useStargateLevels() {
   return useQuery({
     queryKey: ["stargateLevels"],
     queryFn: () => stargateService.getLevels(),
-    staleTime: 10 * 60 * 1000, // 10 minutes
+    staleTime: 10 * 60 * 1000,
   });
 }
 
@@ -23,6 +23,6 @@ export function useTokensOwnedBy(owner: string) {
     queryKey: ["tokensOwnedBy", owner],
     queryFn: () => stargateService.getTokensOwnedBy(owner),
     enabled: !!owner.trim(),
-    staleTime: 2 * 60 * 1000, // 2 minutes
+    staleTime: 2 * 60 * 1000,
   });
 }

@@ -1,9 +1,10 @@
 import { useI18nContext } from "@/i18n/i18n-react";
 import { CheckIcon, CircleXIcon } from "@/icons";
-import { Box, HStack, Icon, Spinner, Text, VStack, Heading } from "@chakra-ui/react";
+import { HStack, Icon, Spinner, Text, VStack } from "@chakra-ui/react";
 import { useContractRoles } from "@/hooks/useContractRoles";
 import { useWallet } from "@vechain/vechain-kit";
 import { ContractType } from "@/pages/Admin/constants/contracts";
+import { AdminCard } from "./AdminCard";
 
 interface UserRoleCheckerProps {
   contractType?: ContractType;
@@ -16,38 +17,29 @@ export function UserRoleChecker({ contractType }: UserRoleCheckerProps) {
 
   if (!account?.address) {
     return (
-      <Box border="1px" borderColor="gray.200" borderRadius="md" p={4}>
-        <Heading size="sm" mb={3}>
-          Your Permissions
-        </Heading>
+      <AdminCard title={LL.admin.user_role_checker.title()}>
         <Text fontSize="sm" color="gray.500" fontStyle="italic">
-          Connect wallet to see your roles
+          {LL.admin.user_role_checker.connect_wallet_message()}
         </Text>
-      </Box>
+      </AdminCard>
     );
   }
 
   if (isLoading) {
     return (
-      <Box border="1px" borderColor="gray.200" borderRadius="md" p={4}>
-        <Heading size="sm" mb={3}>
-          Your Permissions
-        </Heading>
+      <AdminCard title={LL.admin.user_role_checker.title()}>
         <HStack>
           <Spinner size="sm" />
           <Text fontSize="sm" color="gray.500">
-            Checking your roles...
+            {LL.admin.user_role_checker.checking_roles()}
           </Text>
         </HStack>
-      </Box>
+      </AdminCard>
     );
   }
 
   return (
-    <Box border="1px" borderColor="gray.200" borderRadius="md" p={4} w={"fit-content"} minW={300}>
-      <Heading size="sm" mb={3}>
-        Your Permissions
-      </Heading>
+    <AdminCard title="Your Permissions">
       <VStack spacing={2} align="stretch">
         {defaultRoles.map(role => {
           const hasRole = roles?.includes(role) || false;
@@ -62,6 +54,6 @@ export function UserRoleChecker({ contractType }: UserRoleCheckerProps) {
           );
         })}
       </VStack>
-    </Box>
+    </AdminCard>
   );
 }
