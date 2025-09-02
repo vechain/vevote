@@ -1,24 +1,11 @@
 import { CopyLink } from "@/components/ui/CopyLink";
-import { useFormatTime } from "@/hooks/useFormatTime";
 import { useI18nContext } from "@/i18n/i18n-react";
-import {
-  Alert,
-  AlertIcon,
-  Box,
-  Heading,
-  HStack,
-  SimpleGrid,
-  Spinner,
-  Stat,
-  StatHelpText,
-  StatLabel,
-  StatNumber,
-  Text,
-  VStack,
-} from "@chakra-ui/react";
+import { formatAddress } from "@/utils/address";
+import { Alert, AlertIcon, Box, Heading, HStack, Spinner, Text, VStack } from "@chakra-ui/react";
 import { getConfig } from "@repo/config";
 import { useVeVoteInfo } from "../../hooks";
-import { formatAddress } from "@/utils/address";
+import { UserRoleChecker } from "../common/UserRoleChecker";
+import { VevoteContractInfo } from "./components/VevoteContractInfo";
 
 const EXPLORER_URL = getConfig(import.meta.env.VITE_APP_ENV).network.explorerUrl;
 const contractAddress = getConfig(import.meta.env.VITE_APP_ENV).vevoteContractAddress;
@@ -26,7 +13,6 @@ const contractAddress = getConfig(import.meta.env.VITE_APP_ENV).vevoteContractAd
 export function VeVoteContract() {
   const { LL } = useI18nContext();
   const { data: veVoteInfo, isLoading, error } = useVeVoteInfo();
-  const { formatTime } = useFormatTime();
 
   if (isLoading) {
     return (
@@ -75,42 +61,10 @@ export function VeVoteContract() {
           </HStack>
         </Box>
 
-        <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={6}>
-          <Stat>
-            <StatLabel>{LL.admin.vevote_contract.contract_version()}</StatLabel>
-            <StatNumber>{veVoteInfo.version.toString()}</StatNumber>
-          </Stat>
-
-          <Stat>
-            <StatLabel>{LL.admin.vevote_contract.quorum_numerator()}</StatLabel>
-            <StatNumber>{veVoteInfo.quorumNumerator.toString()}</StatNumber>
-            <StatHelpText>
-              {LL.admin.vevote_contract.quorum_percentage({
-                percentage: (Number(veVoteInfo.quorumNumerator) / Number(veVoteInfo.quorumDenominator)) * 100,
-              })}
-            </StatHelpText>
-          </Stat>
-
-          <Stat>
-            <StatLabel>{LL.admin.vevote_contract.quorum_denominator()}</StatLabel>
-            <StatNumber>{veVoteInfo.quorumDenominator.toString()}</StatNumber>
-          </Stat>
-
-          <Stat>
-            <StatLabel>{LL.admin.vevote_contract.min_voting_delay()}</StatLabel>
-            <StatNumber>{formatTime(veVoteInfo.minVotingDelay)}</StatNumber>
-          </Stat>
-
-          <Stat>
-            <StatLabel>{LL.admin.vevote_contract.min_voting_duration()}</StatLabel>
-            <StatNumber>{formatTime(veVoteInfo.minVotingDuration)}</StatNumber>
-          </Stat>
-
-          <Stat>
-            <StatLabel>{LL.admin.vevote_contract.max_voting_duration()}</StatLabel>
-            <StatNumber>{formatTime(veVoteInfo.maxVotingDuration)}</StatNumber>
-          </Stat>
-        </SimpleGrid>
+        <HStack spacing={6} align="flex-start" wrap="wrap">
+          <UserRoleChecker contractType="vevote" />
+          <VevoteContractInfo veVoteInfo={veVoteInfo} />
+        </HStack>
       </VStack>
     </Box>
   );

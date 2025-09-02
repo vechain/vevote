@@ -1795,6 +1795,52 @@ type RootTranslation = {
 				 */
 				WHITELIST_ADMIN_ROLE: string
 			}
+		}
+		common_roles: {
+			/**
+			 * D​e​f​a​u​l​t​ ​A​d​m​i​n
+			 */
+			DEFAULT_ADMIN_ROLE: string
+			/**
+			 * U​p​g​r​a​d​e​r
+			 */
+			UPGRADER_ROLE: string
+			/**
+			 * P​a​u​s​e​r
+			 */
+			PAUSER_ROLE: string
+			/**
+			 * L​e​v​e​l​ ​O​p​e​r​a​t​o​r
+			 */
+			LEVEL_OPERATOR_ROLE: string
+			/**
+			 * M​a​n​a​g​e​r
+			 */
+			MANAGER_ROLE: string
+			/**
+			 * W​h​i​t​e​l​i​s​t​e​r
+			 */
+			WHITELISTER_ROLE: string
+			/**
+			 * E​x​e​c​u​t​o​r
+			 */
+			EXECUTOR_ROLE: string
+			/**
+			 * S​e​t​t​i​n​g​s​ ​M​a​n​a​g​e​r
+			 */
+			SETTINGS_MANAGER_ROLE: string
+			/**
+			 * N​o​d​e​ ​W​e​i​g​h​t​ ​M​a​n​a​g​e​r
+			 */
+			NODE_WEIGHT_MANAGER_ROLE: string
+			/**
+			 * W​h​i​t​e​l​i​s​t​ ​A​d​m​i​n
+			 */
+			WHITELIST_ADMIN_ROLE: string
+			/**
+			 * W​h​i​t​e​l​i​s​t​e​d
+			 */
+			WHITELISTED_ROLE: string
 			/**
 			 * G​r​a​n​t​ ​R​o​l​e
 			 */
@@ -3596,6 +3642,52 @@ JPG, PNG or SVG of maximum of {size}MB.
 				 */
 				WHITELIST_ADMIN_ROLE: () => LocalizedString
 			}
+		}
+		common_roles: {
+			/**
+			 * Default Admin
+			 */
+			DEFAULT_ADMIN_ROLE: () => LocalizedString
+			/**
+			 * Upgrader
+			 */
+			UPGRADER_ROLE: () => LocalizedString
+			/**
+			 * Pauser
+			 */
+			PAUSER_ROLE: () => LocalizedString
+			/**
+			 * Level Operator
+			 */
+			LEVEL_OPERATOR_ROLE: () => LocalizedString
+			/**
+			 * Manager
+			 */
+			MANAGER_ROLE: () => LocalizedString
+			/**
+			 * Whitelister
+			 */
+			WHITELISTER_ROLE: () => LocalizedString
+			/**
+			 * Executor
+			 */
+			EXECUTOR_ROLE: () => LocalizedString
+			/**
+			 * Settings Manager
+			 */
+			SETTINGS_MANAGER_ROLE: () => LocalizedString
+			/**
+			 * Node Weight Manager
+			 */
+			NODE_WEIGHT_MANAGER_ROLE: () => LocalizedString
+			/**
+			 * Whitelist Admin
+			 */
+			WHITELIST_ADMIN_ROLE: () => LocalizedString
+			/**
+			 * Whitelisted
+			 */
+			WHITELISTED_ROLE: () => LocalizedString
 			/**
 			 * Grant Role
 			 */

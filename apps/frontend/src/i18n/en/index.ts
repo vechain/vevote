@@ -555,6 +555,21 @@ const en = {
         WHITELISTED_ROLE: "Whitelisted",
         WHITELIST_ADMIN_ROLE: "Whitelist Admin",
       },
+    },
+
+    // Common role names for all contracts
+    common_roles: {
+      DEFAULT_ADMIN_ROLE: "Default Admin",
+      UPGRADER_ROLE: "Upgrader",
+      PAUSER_ROLE: "Pauser",
+      LEVEL_OPERATOR_ROLE: "Level Operator",
+      MANAGER_ROLE: "Manager",
+      WHITELISTER_ROLE: "Whitelister",
+      EXECUTOR_ROLE: "Executor",
+      SETTINGS_MANAGER_ROLE: "Settings Manager",
+      NODE_WEIGHT_MANAGER_ROLE: "Node Weight Manager",
+      WHITELIST_ADMIN_ROLE: "Whitelist Admin",
+      WHITELISTED_ROLE: "Whitelisted",
 
       // Buttons
       grant_role: "Grant Role",
