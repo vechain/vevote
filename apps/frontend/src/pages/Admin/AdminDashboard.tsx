@@ -1,21 +1,23 @@
-import { Box, Container, Heading, Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
+import { Box, Container, Heading, HStack, Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
 import { VeVoteContract } from "./components/Contracts/VeVoteContract";
 import { NodeManagement } from "./components/Contracts/NodeManagement";
 import { StargateNodes } from "./components/Contracts/StargateNodes";
 import { UserManagement } from "./components/Utils/UserManagement";
 import { GovernanceSettings } from "./components/Utils/GovernanceSettings";
 import { useI18nContext } from "@/i18n/i18n-react";
+import { ConnectButton } from "@/components/ui/ConnectButton";
 
 export function AdminDashboard() {
   const { LL } = useI18nContext();
 
   return (
     <Container maxW="container.xl" py={8}>
-      <Box mb={8}>
-        <Heading size="lg" mb={2}>
-          {LL.admin.title()}
-        </Heading>
-      </Box>
+      <HStack mb={8} w={"full"} alignItems={"center"}>
+        <Heading size="lg">{LL.admin.title()}</Heading>
+        <Box ml="auto">
+          <ConnectButton />
+        </Box>
+      </HStack>
 
       <Tabs colorScheme="blue" variant="enclosed">
         <TabList>
