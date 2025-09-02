@@ -57,5 +57,4 @@ export class VeVoteService {
   }
 }
 
-// Singleton instance
 export const veVoteService = new VeVoteService();

@@ -50,8 +50,5 @@ export const useRoleManagement = () => {
 
   return useVevoteSendTransaction({
     clauseBuilder: buildClauses,
-    delayedRefetchKeys: [["roleEvents"]], // This would need to be implemented if role checking is needed
-    refetchDelay: 500,
-    maxRetries: 1,
   });
 };
