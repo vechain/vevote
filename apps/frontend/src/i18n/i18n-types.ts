@@ -1630,6 +1630,197 @@ type RootTranslation = {
 		 * @param {number} number
 		 */
 		format_days: RequiredParams<'number'>
+		governance_settings: {
+			/**
+			 * G​o​v​e​r​n​a​n​c​e​ ​S​e​t​t​i​n​g​s
+			 */
+			title: string
+			/**
+			 * C​o​n​f​i​g​u​r​e​ ​V​e​V​o​t​e​ ​g​o​v​e​r​n​a​n​c​e​ ​p​a​r​a​m​e​t​e​r​s
+			 */
+			description: string
+			/**
+			 * Q​u​o​r​u​m​ ​N​u​m​e​r​a​t​o​r
+			 */
+			quorum_numerator_label: string
+			/**
+			 * R​e​q​u​i​r​e​d​ ​v​o​t​e​s​ ​n​u​m​e​r​a​t​o​r​ ​(​c​u​r​r​e​n​t​:​ ​{​c​u​r​r​e​n​t​}​)
+			 * @param {number} current
+			 */
+			quorum_numerator_help: RequiredParams<'current'>
+			/**
+			 * M​i​n​ ​V​o​t​i​n​g​ ​D​e​l​a​y
+			 */
+			min_voting_delay_label: string
+			/**
+			 * M​i​n​i​m​u​m​ ​d​e​l​a​y​ ​b​e​f​o​r​e​ ​v​o​t​i​n​g​ ​s​t​a​r​t​s​ ​(​i​n​ ​s​e​c​o​n​d​s​)
+			 */
+			min_voting_delay_help: string
+			/**
+			 * M​i​n​ ​V​o​t​i​n​g​ ​D​u​r​a​t​i​o​n
+			 */
+			min_voting_duration_label: string
+			/**
+			 * M​i​n​i​m​u​m​ ​v​o​t​i​n​g​ ​d​u​r​a​t​i​o​n​ ​(​i​n​ ​s​e​c​o​n​d​s​)
+			 */
+			min_voting_duration_help: string
+			/**
+			 * M​a​x​ ​V​o​t​i​n​g​ ​D​u​r​a​t​i​o​n
+			 */
+			max_voting_duration_label: string
+			/**
+			 * M​a​x​i​m​u​m​ ​v​o​t​i​n​g​ ​d​u​r​a​t​i​o​n​ ​(​i​n​ ​s​e​c​o​n​d​s​)
+			 */
+			max_voting_duration_help: string
+			/**
+			 * U​p​d​a​t​e​ ​S​e​t​t​i​n​g​s
+			 */
+			update_settings: string
+			/**
+			 * U​p​d​a​t​i​n​g​.​.​.
+			 */
+			updating: string
+			/**
+			 * S​e​t​t​i​n​g​s​ ​U​p​d​a​t​e​d​ ​S​u​c​c​e​s​s​f​u​l​l​y
+			 */
+			success_title: string
+			/**
+			 * G​o​v​e​r​n​a​n​c​e​ ​s​e​t​t​i​n​g​s​ ​h​a​v​e​ ​b​e​e​n​ ​u​p​d​a​t​e​d​ ​a​n​d​ ​a​r​e​ ​n​o​w​ ​a​c​t​i​v​e​.
+			 */
+			success_description: string
+			/**
+			 * F​a​i​l​e​d​ ​t​o​ ​U​p​d​a​t​e​ ​S​e​t​t​i​n​g​s
+			 */
+			error_title: string
+			/**
+			 * T​h​e​r​e​ ​w​a​s​ ​a​n​ ​e​r​r​o​r​ ​u​p​d​a​t​i​n​g​ ​t​h​e​ ​g​o​v​e​r​n​a​n​c​e​ ​s​e​t​t​i​n​g​s​:​ ​{​e​r​r​o​r​}
+			 * @param {string} error
+			 */
+			error_description: RequiredParams<'error'>
+			/**
+			 * V​a​l​u​e​ ​m​u​s​t​ ​b​e​ ​b​e​t​w​e​e​n​ ​{​m​i​n​}​ ​a​n​d​ ​{​m​a​x​}
+			 * @param {number} max
+			 * @param {number} min
+			 */
+			invalid_range: RequiredParams<'max' | 'min'>
+			/**
+			 * T​h​i​s​ ​f​i​e​l​d​ ​i​s​ ​r​e​q​u​i​r​e​d
+			 */
+			required_field: string
+		}
+		user_management: {
+			/**
+			 * U​s​e​r​ ​M​a​n​a​g​e​m​e​n​t
+			 */
+			title: string
+			/**
+			 * G​r​a​n​t​ ​o​r​ ​r​e​v​o​k​e​ ​r​o​l​e​s​ ​f​o​r​ ​V​e​V​o​t​e​ ​g​o​v​e​r​n​a​n​c​e
+			 */
+			description: string
+			/**
+			 * U​s​e​r​ ​A​d​d​r​e​s​s
+			 */
+			user_address_label: string
+			/**
+			 * E​n​t​e​r​ ​u​s​e​r​ ​a​d​d​r​e​s​s​ ​(​0​x​.​.​.​)
+			 */
+			user_address_placeholder: string
+			/**
+			 * R​o​l​e
+			 */
+			role_label: string
+			/**
+			 * S​e​l​e​c​t​ ​a​ ​r​o​l​e
+			 */
+			role_placeholder: string
+			/**
+			 * A​c​t​i​o​n
+			 */
+			action_label: string
+			roles: {
+				/**
+				 * D​e​f​a​u​l​t​ ​A​d​m​i​n
+				 */
+				DEFAULT_ADMIN_ROLE: string
+				/**
+				 * E​x​e​c​u​t​o​r
+				 */
+				EXECUTOR_ROLE: string
+				/**
+				 * S​e​t​t​i​n​g​s​ ​M​a​n​a​g​e​r
+				 */
+				SETTINGS_MANAGER_ROLE: string
+				/**
+				 * N​o​d​e​ ​W​e​i​g​h​t​ ​M​a​n​a​g​e​r
+				 */
+				NODE_WEIGHT_MANAGER_ROLE: string
+				/**
+				 * U​p​g​r​a​d​e​r
+				 */
+				UPGRADER_ROLE: string
+				/**
+				 * W​h​i​t​e​l​i​s​t​e​d
+				 */
+				WHITELISTED_ROLE: string
+				/**
+				 * W​h​i​t​e​l​i​s​t​ ​A​d​m​i​n
+				 */
+				WHITELIST_ADMIN_ROLE: string
+			}
+			/**
+			 * G​r​a​n​t​ ​R​o​l​e
+			 */
+			grant_role: string
+			/**
+			 * R​e​v​o​k​e​ ​R​o​l​e
+			 */
+			revoke_role: string
+			/**
+			 * G​r​a​n​t​i​n​g​.​.​.
+			 */
+			granting: string
+			/**
+			 * R​e​v​o​k​i​n​g​.​.​.
+			 */
+			revoking: string
+			/**
+			 * R​o​l​e​ ​G​r​a​n​t​e​d​ ​S​u​c​c​e​s​s​f​u​l​l​y
+			 */
+			grant_success_title: string
+			/**
+			 * T​h​e​ ​r​o​l​e​ ​h​a​s​ ​b​e​e​n​ ​g​r​a​n​t​e​d​ ​t​o​ ​t​h​e​ ​u​s​e​r​.
+			 */
+			grant_success_description: string
+			/**
+			 * R​o​l​e​ ​R​e​v​o​k​e​d​ ​S​u​c​c​e​s​s​f​u​l​l​y
+			 */
+			revoke_success_title: string
+			/**
+			 * T​h​e​ ​r​o​l​e​ ​h​a​s​ ​b​e​e​n​ ​r​e​v​o​k​e​d​ ​f​r​o​m​ ​t​h​e​ ​u​s​e​r​.
+			 */
+			revoke_success_description: string
+			/**
+			 * R​o​l​e​ ​O​p​e​r​a​t​i​o​n​ ​F​a​i​l​e​d
+			 */
+			error_title: string
+			/**
+			 * T​h​e​r​e​ ​w​a​s​ ​a​n​ ​e​r​r​o​r​ ​w​i​t​h​ ​t​h​e​ ​r​o​l​e​ ​o​p​e​r​a​t​i​o​n​:​ ​{​e​r​r​o​r​}
+			 * @param {string} error
+			 */
+			error_description: RequiredParams<'error'>
+			/**
+			 * P​l​e​a​s​e​ ​e​n​t​e​r​ ​a​ ​v​a​l​i​d​ ​a​d​d​r​e​s​s
+			 */
+			invalid_address: string
+			/**
+			 * P​l​e​a​s​e​ ​s​e​l​e​c​t​ ​a​ ​r​o​l​e
+			 */
+			role_required: string
+			/**
+			 * U​s​e​r​ ​a​d​d​r​e​s​s​ ​i​s​ ​r​e​q​u​i​r​e​d
+			 */
+			address_required: string
+		}
 	}
 }
 
@@ -3220,6 +3411,192 @@ JPG, PNG or SVG of maximum of {size}MB.
 		 * {number} days
 		 */
 		format_days: (arg: { number: number }) => LocalizedString
+		governance_settings: {
+			/**
+			 * Governance Settings
+			 */
+			title: () => LocalizedString
+			/**
+			 * Configure VeVote governance parameters
+			 */
+			description: () => LocalizedString
+			/**
+			 * Quorum Numerator
+			 */
+			quorum_numerator_label: () => LocalizedString
+			/**
+			 * Required votes numerator (current: {current})
+			 */
+			quorum_numerator_help: (arg: { current: number }) => LocalizedString
+			/**
+			 * Min Voting Delay
+			 */
+			min_voting_delay_label: () => LocalizedString
+			/**
+			 * Minimum delay before voting starts (in seconds)
+			 */
+			min_voting_delay_help: () => LocalizedString
+			/**
+			 * Min Voting Duration
+			 */
+			min_voting_duration_label: () => LocalizedString
+			/**
+			 * Minimum voting duration (in seconds)
+			 */
+			min_voting_duration_help: () => LocalizedString
+			/**
+			 * Max Voting Duration
+			 */
+			max_voting_duration_label: () => LocalizedString
+			/**
+			 * Maximum voting duration (in seconds)
+			 */
+			max_voting_duration_help: () => LocalizedString
+			/**
+			 * Update Settings
+			 */
+			update_settings: () => LocalizedString
+			/**
+			 * Updating...
+			 */
+			updating: () => LocalizedString
+			/**
+			 * Settings Updated Successfully
+			 */
+			success_title: () => LocalizedString
+			/**
+			 * Governance settings have been updated and are now active.
+			 */
+			success_description: () => LocalizedString
+			/**
+			 * Failed to Update Settings
+			 */
+			error_title: () => LocalizedString
+			/**
+			 * There was an error updating the governance settings: {error}
+			 */
+			error_description: (arg: { error: string }) => LocalizedString
+			/**
+			 * Value must be between {min} and {max}
+			 */
+			invalid_range: (arg: { max: number, min: number }) => LocalizedString
+			/**
+			 * This field is required
+			 */
+			required_field: () => LocalizedString
+		}
+		user_management: {
+			/**
+			 * User Management
+			 */
+			title: () => LocalizedString
+			/**
+			 * Grant or revoke roles for VeVote governance
+			 */
+			description: () => LocalizedString
+			/**
+			 * User Address
+			 */
+			user_address_label: () => LocalizedString
+			/**
+			 * Enter user address (0x...)
+			 */
+			user_address_placeholder: () => LocalizedString
+			/**
+			 * Role
+			 */
+			role_label: () => LocalizedString
+			/**
+			 * Select a role
+			 */
+			role_placeholder: () => LocalizedString
+			/**
+			 * Action
+			 */
+			action_label: () => LocalizedString
+			roles: {
+				/**
+				 * Default Admin
+				 */
+				DEFAULT_ADMIN_ROLE: () => LocalizedString
+				/**
+				 * Executor
+				 */
+				EXECUTOR_ROLE: () => LocalizedString
+				/**
+				 * Settings Manager
+				 */
+				SETTINGS_MANAGER_ROLE: () => LocalizedString
+				/**
+				 * Node Weight Manager
+				 */
+				NODE_WEIGHT_MANAGER_ROLE: () => LocalizedString
+				/**
+				 * Upgrader
+				 */
+				UPGRADER_ROLE: () => LocalizedString
+				/**
+				 * Whitelisted
+				 */
+				WHITELISTED_ROLE: () => LocalizedString
+				/**
+				 * Whitelist Admin
+				 */
+				WHITELIST_ADMIN_ROLE: () => LocalizedString
+			}
+			/**
+			 * Grant Role
+			 */
+			grant_role: () => LocalizedString
+			/**
+			 * Revoke Role
+			 */
+			revoke_role: () => LocalizedString
+			/**
+			 * Granting...
+			 */
+			granting: () => LocalizedString
+			/**
+			 * Revoking...
+			 */
+			revoking: () => LocalizedString
+			/**
+			 * Role Granted Successfully
+			 */
+			grant_success_title: () => LocalizedString
+			/**
+			 * The role has been granted to the user.
+			 */
+			grant_success_description: () => LocalizedString
+			/**
+			 * Role Revoked Successfully
+			 */
+			revoke_success_title: () => LocalizedString
+			/**
+			 * The role has been revoked from the user.
+			 */
+			revoke_success_description: () => LocalizedString
+			/**
+			 * Role Operation Failed
+			 */
+			error_title: () => LocalizedString
+			/**
+			 * There was an error with the role operation: {error}
+			 */
+			error_description: (arg: { error: string }) => LocalizedString
+			/**
+			 * Please enter a valid address
+			 */
+			invalid_address: () => LocalizedString
+			/**
+			 * Please select a role
+			 */
+			role_required: () => LocalizedString
+			/**
+			 * User address is required
+			 */
+			address_required: () => LocalizedString
+		}
 	}
 }
 

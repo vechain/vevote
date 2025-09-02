@@ -46,8 +46,6 @@ export class VeVoteService {
       methodsWithArgs,
     });
 
-    console.log("VeVote info results:", results);
-
     return {
       quorumNumerator: BigInt(results[0]?.success ? String(results[0].result.plain) : "0"),
       quorumDenominator: BigInt(results[1]?.success ? String(results[1].result.plain) : "0"),
