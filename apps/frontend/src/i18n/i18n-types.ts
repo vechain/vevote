@@ -1428,6 +1428,10 @@ type RootTranslation = {
 		}
 		vevote_contract: {
 			/**
+			 * C​o​n​t​r​a​c​t​ ​A​d​d​r​e​s​s​:
+			 */
+			contract_address: string
+			/**
 			 * V​e​V​o​t​e​ ​C​o​n​t​r​a​c​t​ ​I​n​f​o​r​m​a​t​i​o​n
 			 */
 			title: string
@@ -3240,6 +3244,10 @@ JPG, PNG or SVG of maximum of {size}MB.
 			stargate_nodes: () => LocalizedString
 		}
 		vevote_contract: {
+			/**
+			 * Contract Address:
+			 */
+			contract_address: () => LocalizedString
 			/**
 			 * VeVote Contract Information
 			 */

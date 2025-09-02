@@ -440,6 +440,7 @@ const en = {
       stargate_nodes: "Stargate Nodes",
     },
     vevote_contract: {
+      contract_address: "Contract Address:",
       title: "VeVote Contract Information",
       loading: "Loading VeVote Contract Information...",
       error: "Error loading VeVote contract data: {error:string}",
@@ -501,74 +502,74 @@ const en = {
     format_seconds: "{number:number}s",
     format_minutes_seconds: "{minutes:number} min ({seconds:number}s)",
     format_days: "{number:number} days",
-    
+
     // Governance Settings
     governance_settings: {
       title: "Governance Settings",
       description: "Configure VeVote governance parameters",
-      
+
       // Form labels
       quorum_numerator_label: "Quorum Numerator",
       quorum_numerator_help: "Required votes numerator (current: {current:number})",
       min_voting_delay_label: "Min Voting Delay",
       min_voting_delay_help: "Minimum delay before voting starts (in seconds)",
-      min_voting_duration_label: "Min Voting Duration", 
+      min_voting_duration_label: "Min Voting Duration",
       min_voting_duration_help: "Minimum voting duration (in seconds)",
       max_voting_duration_label: "Max Voting Duration",
       max_voting_duration_help: "Maximum voting duration (in seconds)",
-      
+
       // Buttons
       update_settings: "Update Settings",
       updating: "Updating...",
-      
+
       // Messages
       success_title: "Settings Updated Successfully",
       success_description: "Governance settings have been updated and are now active.",
       error_title: "Failed to Update Settings",
       error_description: "There was an error updating the governance settings: {error:string}",
-      
+
       // Validation
       invalid_range: "Value must be between {min:number} and {max:number}",
       required_field: "This field is required",
     },
-    
+
     // User Management
     user_management: {
-      title: "User Management", 
+      title: "User Management",
       description: "Grant or revoke roles for VeVote governance",
-      
+
       // Form labels
       user_address_label: "User Address",
       user_address_placeholder: "Enter user address (0x...)",
       role_label: "Role",
       role_placeholder: "Select a role",
       action_label: "Action",
-      
+
       // Roles
       roles: {
         DEFAULT_ADMIN_ROLE: "Default Admin",
-        EXECUTOR_ROLE: "Executor", 
+        EXECUTOR_ROLE: "Executor",
         SETTINGS_MANAGER_ROLE: "Settings Manager",
         NODE_WEIGHT_MANAGER_ROLE: "Node Weight Manager",
         UPGRADER_ROLE: "Upgrader",
         WHITELISTED_ROLE: "Whitelisted",
         WHITELIST_ADMIN_ROLE: "Whitelist Admin",
       },
-      
+
       // Buttons
       grant_role: "Grant Role",
       revoke_role: "Revoke Role",
       granting: "Granting...",
       revoking: "Revoking...",
-      
+
       // Messages
       grant_success_title: "Role Granted Successfully",
       grant_success_description: "The role has been granted to the user.",
-      revoke_success_title: "Role Revoked Successfully", 
+      revoke_success_title: "Role Revoked Successfully",
       revoke_success_description: "The role has been revoked from the user.",
       error_title: "Role Operation Failed",
       error_description: "There was an error with the role operation: {error:string}",
-      
+
       // Validation
       invalid_address: "Please enter a valid address",
       role_required: "Please select a role",

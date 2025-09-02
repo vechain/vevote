@@ -1,14 +1,14 @@
-import { 
-  Box, 
-  Heading, 
-  SimpleGrid, 
-  Stat, 
-  StatLabel, 
-  StatNumber, 
+import {
+  Box,
+  Heading,
+  SimpleGrid,
+  Stat,
+  StatLabel,
+  StatNumber,
   StatHelpText,
-  Spinner, 
-  Alert, 
-  AlertIcon, 
+  Spinner,
+  Alert,
+  AlertIcon,
   VStack,
   Text,
   Table,
@@ -17,10 +17,17 @@ import {
   Tr,
   Th,
   Td,
-  TableContainer
+  TableContainer,
+  HStack,
 } from "@chakra-ui/react";
 import { useStargateStats } from "../../hooks";
 import { useI18nContext } from "@/i18n/i18n-react";
+import { getConfig } from "@repo/config";
+import { CopyLink } from "@/components/ui/CopyLink";
+import { formatAddress } from "@/utils/address";
+
+const EXPLORER_URL = getConfig(import.meta.env.VITE_APP_ENV).network.explorerUrl;
+const stargateNFTContractAddress = getConfig(import.meta.env.VITE_APP_ENV).stargateNFTContractAddress;
 
 export function StargateNodes() {
   const { LL } = useI18nContext();
@@ -39,7 +46,7 @@ export function StargateNodes() {
     return (
       <Alert status="error">
         <AlertIcon />
-        {LL.admin.stargate_nodes.error({ error: error instanceof Error ? error.message : 'Unknown error' })}
+        {LL.admin.stargate_nodes.error({ error: error instanceof Error ? error.message : "Unknown error" })}
       </Alert>
     );
   }
@@ -60,11 +67,23 @@ export function StargateNodes() {
 
   return (
     <Box>
-      <Heading size="md" mb={6}>
+      <Heading size="md" mb={2}>
         {LL.admin.stargate_nodes.title()}
       </Heading>
-      
-      <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={6} mb={8}>
+
+      <HStack>
+        <Text>{LL.admin.vevote_contract.contract_address()}</Text>
+        <CopyLink
+          href={`${EXPLORER_URL}/accounts/${stargateNFTContractAddress}`}
+          isExternal
+          textToCopy={stargateNFTContractAddress}
+          color={"primary.700"}
+          fontWeight={500}>
+          {formatAddress(stargateNFTContractAddress)}
+        </CopyLink>
+      </HStack>
+
+      <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={6} py={8}>
         <Stat>
           <StatLabel>{LL.admin.stargate_nodes.total_supply()}</StatLabel>
           <StatNumber>{stargateStats.totalSupply.toString()}</StatNumber>
@@ -79,7 +98,9 @@ export function StargateNodes() {
 
       {stargateStats.levels.length > 0 && (
         <Box mb={8}>
-          <Heading size="sm" mb={4}>{LL.admin.stargate_nodes.level_details_title()}</Heading>
+          <Heading size="sm" mb={4}>
+            {LL.admin.stargate_nodes.level_details_title()}
+          </Heading>
           <TableContainer>
             <Table variant="simple" size="sm">
               <Thead>
@@ -115,7 +136,9 @@ export function StargateNodes() {
       )}
 
       <Box>
-        <Heading size="sm" mb={4}>{LL.admin.stargate_nodes.contract_info_title()}</Heading>
+        <Heading size="sm" mb={4}>
+          {LL.admin.stargate_nodes.contract_info_title()}
+        </Heading>
         <Text fontSize="sm" color="gray.600">
           {LL.admin.stargate_nodes.contract_description()}
         </Text>
