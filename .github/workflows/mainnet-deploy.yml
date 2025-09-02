@@ -97,24 +97,29 @@ jobs:
           else
             echo "✨ Creating new release for tag $TAG"
             
-            # Generate comprehensive release notes from previous release to current tag
-            PREVIOUS_TAG=$(git describe --tags --abbrev=0 "$TAG"^ 2>/dev/null || echo "")
+            # Get the latest release tag to use as starting point for notes
+            LATEST_RELEASE=$(curl -s -H "Authorization: token ${{ github.token }}" \
+              https://api.github.com/repos/${{ github.repository }}/releases/latest | jq -r '.tag_name')
             
-            if [[ -n "$PREVIOUS_TAG" ]]; then
-              echo "📝 Generating release notes from $PREVIOUS_TAG to $TAG"
-              # Get all commits between previous tag and current tag
-              RELEASE_NOTES=$(git log --oneline --reverse "$PREVIOUS_TAG..$TAG" | head -50 | sed 's/^/- /')
-              RELEASE_NOTES="## Changes from $PREVIOUS_TAG to $TAG\n\n$RELEASE_NOTES\n\n## Deployment\nDeployed to Vercel: ${DEPLOY_URL}"
-            else
+            if [[ "$LATEST_RELEASE" == "null" ]]; then
               echo "📝 This is the first release, generating notes from initial commit"
-              RELEASE_NOTES=$(git log --oneline --reverse | head -20 | sed 's/^/- /')
-              RELEASE_NOTES="## Initial Release\n\n$RELEASE_NOTES\n\n## Deployment\nDeployed to Vercel: ${DEPLOY_URL}"
+              gh release create "$TAG" \
+                --target "$SHA" \
+                --title "Release $TAG" \
+                --generate-notes
+            else
+              echo "📝 Generating release notes from $LATEST_RELEASE to $TAG"
+              gh release create "$TAG" \
+                --target "$SHA" \
+                --title "Release $TAG" \
+                --generate-notes \
+                --notes-start-tag "$LATEST_RELEASE"
             fi
             
-            gh release create "$TAG" \
-              --target "$SHA" \
-              --title "Release $TAG" \
-              --notes "$RELEASE_NOTES"
+            # Add deployment info to the release notes
+            sleep 2  # Wait for release to be created
+            gh release edit "$TAG" \
+              --notes "$(gh release view "$TAG" --json body --jq '.body')"$'\n\n## Deployment\nDeployed to Vercel: '"${DEPLOY_URL}"
           fi
           
           echo "✅ Release created/updated successfully for tag: $TAG"
