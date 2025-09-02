@@ -17,6 +17,8 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     environment: test
+    # Only run if this is triggered from a tag
+    if: startsWith(github.ref, 'refs/tags/')
 
     env:
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
@@ -66,22 +68,40 @@ jobs:
       - name: Create GitHub Release
         if: ${{ inputs.target == 'release' }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}
           DEPLOY_URL: ${{ steps.deploy.outputs.url }}
         run: |
           set -euo pipefail
+          
+          # Get the current ref and SHA
           REF="${{ github.ref }}"
-          SHA=$(git rev-parse "$REF")
-
-          # Extract tag name from ref if it's a tag, otherwise use branch name
+          SHA="${{ github.sha }}"
+          
+          # Check if this is a tag or branch
           if [[ "$REF" == refs/tags/* ]]; then
             TAG="${REF#refs/tags/}"
+            echo "🎯 Creating release for tag: $TAG"
           else
-            echo "⚠️ Ref '$REF' is not a tag. Skipping GitHub Release. Create a tag to publish a release."
+            echo "⚠️ Ref '$REF' is not a tag. Skipping GitHub Release."
+            echo "To create a release, either:"
+            echo "1. Run this workflow on a tag, or"
+            echo "2. Create a tag first: git tag v1.0.0 && git push origin v1.0.0"
             exit 0
           fi
-
-          gh release create "$TAG" --target "$SHA" \
-            --title "Release $TAG" \
-            --notes "Deployed to Vercel: ${DEPLOY_URL}"
+          
+          # Check if release already exists
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "🔄 Release for tag $TAG already exists. Updating..."
+            gh release edit "$TAG" \
+              --title "Release $TAG" \
+              --notes "Deployed to Vercel: ${DEPLOY_URL}"
+          else
+            echo "✨ Creating new release for tag $TAG"
+            gh release create "$TAG" \
+              --target "$SHA" \
+              --title "Release $TAG" \
+              --notes "Deployed to Vercel: ${DEPLOY_URL}"
+          fi
+          
+          echo "✅ Release created/updated successfully for tag: $TAG"
 
