@@ -152,14 +152,12 @@ export function UserManagement() {
                     <FormErrorMessage>{errors.userAddress?.message}</FormErrorMessage>
                   </FormControl>
 
-                  {isAddressValid && (
-                    <Box>
-                      <Text fontSize="sm" fontWeight="medium" mb={2}>
-                        {LL.admin.user_management.current_roles_label()}
-                      </Text>
-                      <RoleSection isLoadingRoles={isLoadingRoles} isUserRoles={isUserRoles} userRoles={userRoles} />
-                    </Box>
-                  )}
+                  <Box>
+                    <Text fontSize="sm" fontWeight="medium" mb={2}>
+                      {LL.admin.user_management.current_roles_label()}
+                    </Text>
+                    <RoleSection isLoadingRoles={isLoadingRoles} isUserRoles={isUserRoles} userRoles={userRoles} />
+                  </Box>
 
                   <FormControl isInvalid={!!errors.selectedRole}>
                     <FormLabel>{LL.admin.user_management.role_label()}</FormLabel>
