@@ -4,7 +4,6 @@ import { useI18nContext } from "@/i18n/i18n-react";
 import { getConfig } from "@repo/config";
 import { CopyLink } from "@/components/ui/CopyLink";
 import { formatAddress } from "@/utils/address";
-import { UserRoleChecker } from "../common/UserRoleChecker";
 import { StargateContractInfo } from "./components/StargateContractInfo";
 import { StargateLevelDetails } from "./components/StargateLevelDetails";
 
@@ -14,7 +13,7 @@ const stargateNFTContractAddress = getConfig(import.meta.env.VITE_APP_ENV).starg
 export function StargateNodes() {
   const { LL } = useI18nContext();
   const { data: stargateStats, isLoading, error } = useStargateStats();
-  
+
   const stackSpacing = useBreakpointValue({
     base: 4,
     md: 6,
@@ -68,7 +67,6 @@ export function StargateNodes() {
         </Box>
 
         <HStack spacing={stackSpacing} align="flex-start" wrap="wrap">
-          <UserRoleChecker contractType="stargate" />
           <StargateContractInfo totalSupply={stargateStats.totalSupply} levelIds={stargateStats.levelIds} />
         </HStack>
 
