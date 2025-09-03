@@ -12,6 +12,12 @@ export interface VeVoteInfo {
   version: bigint;
 }
 
+export interface ContractAddresses {
+  vevoteContractAddress: string;
+  nodeManagementAddress: string;
+  stargateAddress: string;
+}
+
 type VevoteContractInterface = ReturnType<typeof VeVote__factory.createInterface>;
 
 export interface VotingMultipliers {
@@ -52,6 +58,30 @@ export class VeVoteService {
       maxVotingDuration: Number(results[4]?.success ? results[4].result.plain : 0) * 10,
       version: BigInt(results[5]?.success ? String(results[5].result.plain) : "0"),
     };
+  }
+
+  async getContractAddress(): Promise<ContractAddresses> {
+    const methodsWithArgs = [
+      { method: "getNodeManagementContract" as const, args: [] },
+      { method: "getStargateNFTContract" as const, args: [] },
+    ];
+
+    try {
+      const results = await executeMultipleClauses({
+        contractAddress: this.contractAddress,
+        contractInterface: this.contractInterface,
+        methodsWithArgs,
+      });
+
+      return {
+        vevoteContractAddress: this.contractAddress,
+        nodeManagementAddress: results[0]?.success ? String(results[0].result.plain) : "",
+        stargateAddress: results[1]?.success ? String(results[1].result.plain) : "",
+      };
+    } catch (error) {
+      console.error("Error fetching contract addresses:", error);
+      throw error;
+    }
   }
 }
 

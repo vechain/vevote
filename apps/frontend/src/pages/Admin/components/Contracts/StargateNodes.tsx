@@ -6,13 +6,20 @@ import { CopyLink } from "@/components/ui/CopyLink";
 import { formatAddress } from "@/utils/address";
 import { StargateContractInfo } from "./components/StargateContractInfo";
 import { StargateLevelDetails } from "./components/StargateLevelDetails";
+import { useContractAddresses } from "../../hooks/useContractAddresses";
+import { useMemo } from "react";
 
 const EXPLORER_URL = getConfig(import.meta.env.VITE_APP_ENV).network.explorerUrl;
-const stargateNFTContractAddress = getConfig(import.meta.env.VITE_APP_ENV).stargateNFTContractAddress;
 
 export function StargateNodes() {
   const { LL } = useI18nContext();
   const { data: stargateStats, isLoading, error } = useStargateStats();
+  const { contractAddresses } = useContractAddresses();
+
+  const stargateNFTContractAddress = useMemo(
+    () => contractAddresses?.stargateAddress,
+    [contractAddresses?.stargateAddress],
+  );
 
   const stackSpacing = useBreakpointValue({
     base: 4,
@@ -53,17 +60,19 @@ export function StargateNodes() {
           <Heading size="md" mb={2}>
             {LL.admin.stargate_nodes.title()}
           </Heading>
-          <HStack>
-            <Text>{LL.admin.vevote_contract.contract_address()}</Text>
-            <CopyLink
-              href={`${EXPLORER_URL}/accounts/${stargateNFTContractAddress}`}
-              isExternal
-              textToCopy={stargateNFTContractAddress}
-              color={"primary.700"}
-              fontWeight={500}>
-              {formatAddress(stargateNFTContractAddress)}
-            </CopyLink>
-          </HStack>
+          {stargateNFTContractAddress && (
+            <HStack>
+              <Text>{LL.admin.vevote_contract.contract_address()}</Text>
+              <CopyLink
+                href={`${EXPLORER_URL}/accounts/${stargateNFTContractAddress}`}
+                isExternal
+                textToCopy={stargateNFTContractAddress}
+                color={"primary.700"}
+                fontWeight={500}>
+                {formatAddress(stargateNFTContractAddress)}
+              </CopyLink>
+            </HStack>
+          )}
         </Box>
 
         <HStack spacing={stackSpacing} align="flex-start" wrap="wrap">
