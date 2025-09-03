@@ -138,28 +138,7 @@ export function UserManagement() {
                       <Text fontSize="sm" fontWeight="medium" mb={2}>
                         {LL.admin.user_management.current_roles_label()}
                       </Text>
-                      {isLoadingRoles ? (
-                        <HStack>
-                          <Spinner size="sm" />
-                          <Text fontSize="sm" color="gray.500">
-                            {LL.admin.user_management.checking_roles()}
-                          </Text>
-                        </HStack>
-                      ) : isUserRoles ? (
-                        <Wrap>
-                          {userRoles?.map(role => (
-                            <WrapItem key={role}>
-                              <Badge colorScheme="blue" variant="solid">
-                                {LL.admin.common_roles[role]()}
-                              </Badge>
-                            </WrapItem>
-                          ))}
-                        </Wrap>
-                      ) : (
-                        <Text fontSize="sm" color="gray.500" fontStyle="italic">
-                          {LL.admin.user_management.no_roles_assigned()}
-                        </Text>
-                      )}
+                      <RoleSection isLoadingRoles={isLoadingRoles} isUserRoles={isUserRoles} userRoles={userRoles} />
                     </Box>
                   )}
 
@@ -226,3 +205,45 @@ export function UserManagement() {
     </>
   );
 }
+
+const RoleSection = ({
+  isLoadingRoles,
+  isUserRoles,
+  userRoles,
+}: {
+  isLoadingRoles: boolean;
+  isUserRoles: boolean;
+  userRoles?: (typeof ROLES)[number][];
+}) => {
+  const { LL } = useI18nContext();
+  if (isLoadingRoles) {
+    return (
+      <HStack>
+        <Spinner size="sm" />
+        <Text fontSize="sm" color="gray.500">
+          {LL.admin.user_management.checking_roles()}
+        </Text>
+      </HStack>
+    );
+  }
+
+  if (isUserRoles) {
+    return (
+      <Wrap>
+        {userRoles?.map(role => (
+          <WrapItem key={role}>
+            <Badge colorScheme="blue" variant="solid">
+              {LL.admin.common_roles[role]()}
+            </Badge>
+          </WrapItem>
+        ))}
+      </Wrap>
+    );
+  }
+
+  return (
+    <Text fontSize="sm" color="gray.500" fontStyle="italic">
+      {LL.admin.user_management.no_roles_assigned()}
+    </Text>
+  );
+};

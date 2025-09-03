@@ -10,6 +10,10 @@ interface ResponsiveNavigationProps {
   readonly utilsContent: readonly React.ReactNode[];
 }
 
+// Define semantic keys for each content type to avoid using array indices
+const contractKeys = ["vevote-contract", "node-management", "stargate-nodes"];
+const utilsKeys = ["user-management", "governance-settings"];
+
 export function ResponsiveNavigation({ contractsContent, utilsContent }: ResponsiveNavigationProps) {
   const { LL } = useI18nContext();
   const { showVerticalTabs, showHorizontalTabs, showMobileDrawer, drawerState } = useResponsiveNavigation();
@@ -68,7 +72,7 @@ export function ResponsiveNavigation({ contractsContent, utilsContent }: Respons
 
                 <TabPanels flex="1">
                   {contractsContent.map((content, index) => (
-                    <TabPanel key={`contracts-${index}`}>{content}</TabPanel>
+                    <TabPanel key={contractKeys[index]}>{content}</TabPanel>
                   ))}
                 </TabPanels>
               </Tabs>
@@ -88,7 +92,7 @@ export function ResponsiveNavigation({ contractsContent, utilsContent }: Respons
 
                 <TabPanels flex="1">
                   {utilsContent.map((content, index) => (
-                    <TabPanel key={`utils-${index}`}>{content}</TabPanel>
+                    <TabPanel key={utilsKeys[index]}>{content}</TabPanel>
                   ))}
                 </TabPanels>
               </Tabs>
@@ -120,7 +124,7 @@ export function ResponsiveNavigation({ contractsContent, utilsContent }: Respons
 
                 <TabPanels>
                   {contractsContent.map((content, index) => (
-                    <TabPanel key={`contracts-horizontal-${index}`} px={0}>
+                    <TabPanel key={contractKeys[index]} px={0}>
                       {content}
                     </TabPanel>
                   ))}
@@ -137,7 +141,7 @@ export function ResponsiveNavigation({ contractsContent, utilsContent }: Respons
 
                 <TabPanels>
                   {utilsContent.map((content, index) => (
-                    <TabPanel key={`utils-horizontal-${index}`} px={0}>
+                    <TabPanel key={utilsKeys[index]} px={0}>
                       {content}
                     </TabPanel>
                   ))}
@@ -196,7 +200,7 @@ export function ResponsiveNavigation({ contractsContent, utilsContent }: Respons
 
               <TabPanels flex="1">
                 {contractsContent.map((content, index) => (
-                  <TabPanel key={`contracts-fallback-${index}`}>{content}</TabPanel>
+                  <TabPanel key={contractKeys[index]}>{content}</TabPanel>
                 ))}
               </TabPanels>
             </Tabs>
@@ -216,7 +220,7 @@ export function ResponsiveNavigation({ contractsContent, utilsContent }: Respons
 
               <TabPanels flex="1">
                 {utilsContent.map((content, index) => (
-                  <TabPanel key={`utils-fallback-${index}`}>{content}</TabPanel>
+                  <TabPanel key={utilsKeys[index]}>{content}</TabPanel>
                 ))}
               </TabPanels>
             </Tabs>

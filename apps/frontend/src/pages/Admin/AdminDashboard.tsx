@@ -13,14 +13,14 @@ export function AdminDashboard() {
   });
 
   const contractsContent = [
-    <VeVoteContract />,
-    <NodeManagement />,
-    <StargateNodes />,
+    <VeVoteContract key="vevote-contract" />,
+    <NodeManagement key="node-management" />,
+    <StargateNodes key="stargate-nodes" />,
   ];
 
   const utilsContent = [
-    <UserManagement />,
-    <GovernanceSettings />,
+    <UserManagement key="user-management" />,
+    <GovernanceSettings key="governance-settings" />,
   ];
 
   return (
