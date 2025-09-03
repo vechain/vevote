@@ -18,7 +18,6 @@ interface StargateLevelDetailsProps {
   readonly supplies: readonly StargateLevelSupply[];
 }
 
-// Data type for table rows
 interface StargateLevelRow {
   levelId: number;
   name: string;

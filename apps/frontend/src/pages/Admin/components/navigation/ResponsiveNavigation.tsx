@@ -1,7 +1,5 @@
 import { useMemo, useState } from "react";
-import { useBreakpointValue } from "@chakra-ui/react";
 import { useResponsiveNavigation } from "../../hooks/useResponsiveNavigation";
-import { VerticalLayout } from "./layouts/VerticalLayout";
 import { HorizontalLayout } from "./layouts/HorizontalLayout";
 import { MobileLayout } from "./layouts/MobileLayout";
 
@@ -11,19 +9,7 @@ interface ResponsiveNavigationProps {
 }
 
 export function ResponsiveNavigation({ contractsContent, utilsContent }: ResponsiveNavigationProps) {
-  const { showHorizontalTabs, showMobileDrawer, drawerState } = useResponsiveNavigation();
-
-  const sidebarWidth = useBreakpointValue({
-    base: "150px",
-    md: "180px",
-    lg: "200px",
-  });
-
-  const sidebarMargin = useBreakpointValue({
-    base: 2,
-    md: 3,
-    lg: 4,
-  });
+  const { showMobileDrawer, drawerState } = useResponsiveNavigation();
 
   const [mainTabIndex, setMainTabIndex] = useState(0);
   const [contractsTabIndex, setContractsTabIndex] = useState(0);
@@ -57,7 +43,5 @@ export function ResponsiveNavigation({ contractsContent, utilsContent }: Respons
 
   if (showMobileDrawer) return <MobileLayout {...commonProps} drawerState={drawerState} />;
 
-  if (showHorizontalTabs) return <HorizontalLayout {...commonProps} />;
-
-  return <VerticalLayout {...commonProps} sidebarWidth={sidebarWidth} sidebarMargin={sidebarMargin} />;
+  return <HorizontalLayout {...commonProps} />;
 }

@@ -27,7 +27,7 @@ export function HorizontalLayout({
     <>
       <ResponsiveHeader showMenuButton={false} onMenuToggle={() => {}} />
       <MainTabs mainTabIndex={mainTabIndex} onMainTabChange={onMainTabChange}>
-        <TabPanel px={0}>
+        <TabPanel px={0} pt={{ base: 3, md: 4 }}>
           <HorizontalTabs
             tabIndex={contractsTabIndex}
             onTabChange={onContractsTabChange}
@@ -36,13 +36,8 @@ export function HorizontalLayout({
           />
         </TabPanel>
 
-        <TabPanel px={0}>
-          <HorizontalTabs
-            tabIndex={utilsTabIndex}
-            onTabChange={onUtilsTabChange}
-            content={utilsContent}
-            type="utils"
-          />
+        <TabPanel px={0} pt={{ base: 3, md: 4 }}>
+          <HorizontalTabs tabIndex={utilsTabIndex} onTabChange={onUtilsTabChange} content={utilsContent} type="utils" />
         </TabPanel>
       </MainTabs>
     </>
