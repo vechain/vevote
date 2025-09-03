@@ -47,3 +47,11 @@ export const zodFile = z.object({
 });
 
 export type ZodFile = z.infer<typeof zodFile>;
+
+export const isValidAddress = (address: string): boolean => {
+  return /^0x[a-fA-F0-9]{40}$/.test(address);
+};
+
+export const addressSchema = z.string().trim().min(1, { message: LL.field_errors.required() }).refine(isValidAddress, {
+  message: LL.field_errors.invalid_address(),
+});

@@ -500,6 +500,10 @@ type RootTranslation = {
 		 */
 		invalid_format: string
 		/**
+		 * P​l​e​a​s​e​ ​e​n​t​e​r​ ​a​ ​v​a​l​i​d​ ​a​d​d​r​e​s​s
+		 */
+		invalid_address: string
+		/**
 		 * T​h​e​ ​e​n​d​ ​d​a​t​e​ ​m​u​s​t​ ​b​e​ ​a​f​t​e​r​ ​t​h​e​ ​s​t​a​r​t​ ​d​a​t​e
 		 */
 		end_before_start: string
@@ -1780,56 +1784,6 @@ type RootTranslation = {
 			 */
 			role_placeholder: string
 			/**
-			 * A​c​t​i​o​n
-			 */
-			action_label: string
-			roles: {
-				/**
-				 * D​e​f​a​u​l​t​ ​A​d​m​i​n
-				 */
-				DEFAULT_ADMIN_ROLE: string
-				/**
-				 * E​x​e​c​u​t​o​r
-				 */
-				EXECUTOR_ROLE: string
-				/**
-				 * S​e​t​t​i​n​g​s​ ​M​a​n​a​g​e​r
-				 */
-				SETTINGS_MANAGER_ROLE: string
-				/**
-				 * N​o​d​e​ ​W​e​i​g​h​t​ ​M​a​n​a​g​e​r
-				 */
-				NODE_WEIGHT_MANAGER_ROLE: string
-				/**
-				 * U​p​g​r​a​d​e​r
-				 */
-				UPGRADER_ROLE: string
-				/**
-				 * W​h​i​t​e​l​i​s​t​e​d
-				 */
-				WHITELISTED_ROLE: string
-				/**
-				 * W​h​i​t​e​l​i​s​t​ ​A​d​m​i​n
-				 */
-				WHITELIST_ADMIN_ROLE: string
-			}
-			/**
-			 * G​r​a​n​t​ ​R​o​l​e
-			 */
-			grant_role: string
-			/**
-			 * R​e​v​o​k​e​ ​R​o​l​e
-			 */
-			revoke_role: string
-			/**
-			 * G​r​a​n​t​i​n​g​.​.​.
-			 */
-			granting: string
-			/**
-			 * R​e​v​o​k​i​n​g​.​.​.
-			 */
-			revoking: string
-			/**
 			 * C​u​r​r​e​n​t​ ​R​o​l​e​s​:
 			 */
 			current_roles_label: string
@@ -1841,39 +1795,6 @@ type RootTranslation = {
 			 * N​o​ ​r​o​l​e​s​ ​a​s​s​i​g​n​e​d
 			 */
 			no_roles_assigned: string
-			/**
-			 * R​o​l​e​ ​G​r​a​n​t​e​d​ ​S​u​c​c​e​s​s​f​u​l​l​y
-			 */
-			grant_success_title: string
-			/**
-			 * T​h​e​ ​r​o​l​e​ ​h​a​s​ ​b​e​e​n​ ​g​r​a​n​t​e​d​ ​t​o​ ​t​h​e​ ​u​s​e​r​.
-			 */
-			grant_success_description: string
-			/**
-			 * R​o​l​e​ ​R​e​v​o​k​e​d​ ​S​u​c​c​e​s​s​f​u​l​l​y
-			 */
-			revoke_success_title: string
-			/**
-			 * T​h​e​ ​r​o​l​e​ ​h​a​s​ ​b​e​e​n​ ​r​e​v​o​k​e​d​ ​f​r​o​m​ ​t​h​e​ ​u​s​e​r​.
-			 */
-			revoke_success_description: string
-			/**
-			 * T​h​e​r​e​ ​w​a​s​ ​a​n​ ​e​r​r​o​r​ ​w​i​t​h​ ​t​h​e​ ​r​o​l​e​ ​o​p​e​r​a​t​i​o​n​:​ ​{​e​r​r​o​r​}
-			 * @param {string} error
-			 */
-			error_description: RequiredParams<'error'>
-			/**
-			 * P​l​e​a​s​e​ ​e​n​t​e​r​ ​a​ ​v​a​l​i​d​ ​a​d​d​r​e​s​s
-			 */
-			invalid_address: string
-			/**
-			 * P​l​e​a​s​e​ ​s​e​l​e​c​t​ ​a​ ​r​o​l​e
-			 */
-			role_required: string
-			/**
-			 * U​s​e​r​ ​a​d​d​r​e​s​s​ ​i​s​ ​r​e​q​u​i​r​e​d
-			 */
-			address_required: string
 		}
 		user_role_checker: {
 			/**
@@ -2474,6 +2395,10 @@ JPG, PNG or SVG of maximum of {size}MB.
 		 * Invalid format
 		 */
 		invalid_format: () => LocalizedString
+		/**
+		 * Please enter a valid address
+		 */
+		invalid_address: () => LocalizedString
 		/**
 		 * The end date must be after the start date
 		 */
@@ -3722,56 +3647,6 @@ JPG, PNG or SVG of maximum of {size}MB.
 			 */
 			role_placeholder: () => LocalizedString
 			/**
-			 * Action
-			 */
-			action_label: () => LocalizedString
-			roles: {
-				/**
-				 * Default Admin
-				 */
-				DEFAULT_ADMIN_ROLE: () => LocalizedString
-				/**
-				 * Executor
-				 */
-				EXECUTOR_ROLE: () => LocalizedString
-				/**
-				 * Settings Manager
-				 */
-				SETTINGS_MANAGER_ROLE: () => LocalizedString
-				/**
-				 * Node Weight Manager
-				 */
-				NODE_WEIGHT_MANAGER_ROLE: () => LocalizedString
-				/**
-				 * Upgrader
-				 */
-				UPGRADER_ROLE: () => LocalizedString
-				/**
-				 * Whitelisted
-				 */
-				WHITELISTED_ROLE: () => LocalizedString
-				/**
-				 * Whitelist Admin
-				 */
-				WHITELIST_ADMIN_ROLE: () => LocalizedString
-			}
-			/**
-			 * Grant Role
-			 */
-			grant_role: () => LocalizedString
-			/**
-			 * Revoke Role
-			 */
-			revoke_role: () => LocalizedString
-			/**
-			 * Granting...
-			 */
-			granting: () => LocalizedString
-			/**
-			 * Revoking...
-			 */
-			revoking: () => LocalizedString
-			/**
 			 * Current Roles:
 			 */
 			current_roles_label: () => LocalizedString
@@ -3783,38 +3658,6 @@ JPG, PNG or SVG of maximum of {size}MB.
 			 * No roles assigned
 			 */
 			no_roles_assigned: () => LocalizedString
-			/**
-			 * Role Granted Successfully
-			 */
-			grant_success_title: () => LocalizedString
-			/**
-			 * The role has been granted to the user.
-			 */
-			grant_success_description: () => LocalizedString
-			/**
-			 * Role Revoked Successfully
-			 */
-			revoke_success_title: () => LocalizedString
-			/**
-			 * The role has been revoked from the user.
-			 */
-			revoke_success_description: () => LocalizedString
-			/**
-			 * There was an error with the role operation: {error}
-			 */
-			error_description: (arg: { error: string }) => LocalizedString
-			/**
-			 * Please enter a valid address
-			 */
-			invalid_address: () => LocalizedString
-			/**
-			 * Please select a role
-			 */
-			role_required: () => LocalizedString
-			/**
-			 * User address is required
-			 */
-			address_required: () => LocalizedString
 		}
 		user_role_checker: {
 			/**

@@ -6,6 +6,7 @@ import {
   Button,
   FormControl,
   FormLabel,
+  FormErrorMessage,
   Alert,
   AlertIcon,
   Spinner,
@@ -14,20 +15,18 @@ import { useMemo, useState } from "react";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { useUserNodeInfo } from "../../../hooks";
 import { AdminCard } from "../../common/AdminCard";
+import { FormSkeleton } from "@/components/ui/FormSkeleton";
 import { formatAddress } from "@/utils/address";
+import { nodeInfoSchema, type NodeInfoSchema } from "@/schema/adminSchema";
 
 export function NodeManagementContractInfo() {
   const { LL } = useI18nContext();
-  const [userAddress, setUserAddress] = useState("");
   const [searchAddress, setSearchAddress] = useState("");
 
   const { data: userNodeInfo, isLoading, error } = useUserNodeInfo(searchAddress);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (userAddress.trim()) {
-      setSearchAddress(userAddress.trim());
-    }
+  const handleFormSubmit = async (values: NodeInfoSchema) => {
+    setSearchAddress(values.userAddress.trim());
   };
 
   const nodeData = useMemo(
@@ -58,27 +57,33 @@ export function NodeManagementContractInfo() {
   return (
     <AdminCard title={LL.admin.node_management.card_title()}>
       <VStack spacing={4} align="stretch">
-        <form onSubmit={handleSubmit}>
-          <VStack spacing={3}>
-            <FormControl>
-              <FormLabel fontSize="sm">{LL.admin.node_management.user_address_label()}</FormLabel>
-              <Input
+        <FormSkeleton<NodeInfoSchema>
+          schema={nodeInfoSchema}
+          onSubmit={handleFormSubmit}
+          defaultValues={{ userAddress: "" }}>
+          {({ register, errors, isValid }) => (
+            <VStack spacing={3}>
+              <FormControl isInvalid={!!errors.userAddress}>
+                <FormLabel fontSize="sm">{LL.admin.node_management.user_address_label()}</FormLabel>
+                <Input
+                  size="sm"
+                  placeholder={LL.admin.node_management.user_address_placeholder()}
+                  {...register("userAddress")}
+                />
+                <FormErrorMessage>{errors.userAddress?.message}</FormErrorMessage>
+              </FormControl>
+              <Button
+                type="submit"
                 size="sm"
-                placeholder={LL.admin.node_management.user_address_placeholder()}
-                value={userAddress}
-                onChange={e => setUserAddress(e.target.value)}
-              />
-            </FormControl>
-            <Button
-              type="submit"
-              size="sm"
-              width="full"
-              isLoading={isLoading}
-              loadingText={LL.admin.node_management.loading_button()}>
-              {LL.admin.node_management.load_button()}
-            </Button>
-          </VStack>
-        </form>
+                width="full"
+                isLoading={isLoading}
+                isDisabled={!isValid}
+                loadingText={LL.admin.node_management.loading_button()}>
+                {LL.admin.node_management.load_button()}
+              </Button>
+            </VStack>
+          )}
+        </FormSkeleton>
 
         {error && (
           <Alert status="error" size="sm">
