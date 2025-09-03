@@ -21,7 +21,7 @@ export function MainTabs({ mainTabIndex, onMainTabChange, children }: MainTabsPr
   const { LL } = useI18nContext();
 
   return (
-    <Tabs colorScheme="blue" variant="enclosed" index={mainTabIndex} onChange={onMainTabChange}>
+    <Tabs variant="enclosed" index={mainTabIndex} onChange={onMainTabChange}>
       <TabList>
         <Tab>{LL.admin.tabs.contracts()}</Tab>
         <Tab>{LL.admin.tabs.utils()}</Tab>
@@ -54,7 +54,7 @@ export function VerticalTabs({
   const tabLabels = useMemo(() => getTabLabels(type, LL), [LL, type]);
 
   return (
-    <Tabs orientation="vertical" variant="line" colorScheme="gray" index={tabIndex} onChange={onTabChange}>
+    <Tabs orientation="vertical" variant="line" index={tabIndex} onChange={onTabChange}>
       <TabList minW={sidebarWidth} mr={sidebarMargin}>
         {tabLabels.map(label => (
           <Tab key={label} justifyContent="flex-start">
@@ -86,7 +86,7 @@ export function HorizontalTabs({ tabIndex, onTabChange, content, type }: Horizon
   const tabLabels = useMemo(() => getTabLabels(type, LL), [LL, type]);
 
   return (
-    <Tabs variant="line" colorScheme="gray" index={tabIndex} onChange={onTabChange}>
+    <Tabs variant="line" index={tabIndex} onChange={onTabChange}>
       <TabList flexWrap="wrap" mb={4}>
         {tabLabels.map(label => (
           <Tab key={label}>{label}</Tab>

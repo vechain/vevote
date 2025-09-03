@@ -29,30 +29,32 @@ export function NodeManagementContractInfo() {
     setSearchAddress(values.userAddress.trim());
   };
 
-  const nodeData = useMemo(
-    () =>
-      userNodeInfo
-        ? [
-            {
-              label: LL.admin.node_management.is_node_holder(),
-              value: userNodeInfo.isNodeHolder ? LL.admin.node_management.yes() : LL.admin.node_management.no(),
-            },
-            {
-              label: LL.admin.node_management.is_node_delegator(),
-              value: userNodeInfo.isNodeDelegator ? LL.admin.node_management.yes() : LL.admin.node_management.no(),
-            },
-            {
-              label: LL.admin.node_management.owned_nodes(),
-              value: `${userNodeInfo.ownedNodes.length}${userNodeInfo.ownedNodes.length > 0 ? ` (${userNodeInfo.ownedNodes.map(id => id.toString()).join(", ")})` : ""}`,
-            },
-            {
-              label: LL.admin.node_management.managed_nodes(),
-              value: `${userNodeInfo.managedNodes.length}${userNodeInfo.managedNodes.length > 0 ? ` (${userNodeInfo.managedNodes.map(id => id.toString()).join(", ")})` : ""}`,
-            },
-          ]
-        : [],
-    [userNodeInfo, LL],
-  );
+  const nodeData = useMemo(() => {
+    if (!userNodeInfo) return [];
+
+    const ownedNodes =
+      userNodeInfo.ownedNodes.length > 0 ? ` (${userNodeInfo.ownedNodes.map(id => id.toString()).join(", ")})` : "";
+    const managedNodes =
+      userNodeInfo.managedNodes.length > 0 ? ` (${userNodeInfo.managedNodes.map(id => id.toString()).join(", ")})` : "";
+    return [
+      {
+        label: LL.admin.node_management.is_node_holder(),
+        value: userNodeInfo.isNodeHolder ? LL.admin.node_management.yes() : LL.admin.node_management.no(),
+      },
+      {
+        label: LL.admin.node_management.is_node_delegator(),
+        value: userNodeInfo.isNodeDelegator ? LL.admin.node_management.yes() : LL.admin.node_management.no(),
+      },
+      {
+        label: LL.admin.node_management.owned_nodes(),
+        value: `${userNodeInfo.ownedNodes.length}${ownedNodes}`,
+      },
+      {
+        label: LL.admin.node_management.managed_nodes(),
+        value: `${userNodeInfo.managedNodes.length}${managedNodes}`,
+      },
+    ];
+  }, [userNodeInfo, LL]);
 
   return (
     <AdminCard title={LL.admin.node_management.card_title()}>
