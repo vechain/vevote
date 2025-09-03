@@ -3,10 +3,11 @@ import { VeVote__factory } from "@repo/contracts";
 import { EnhancedClause } from "@vechain/vechain-kit";
 import { useVevoteSendTransaction } from "@/utils/hooks/useVevoteSendTransaction";
 import { useCallback } from "react";
+import { ROLES } from "@/pages/Admin/components/Utils/UserManagement";
 
 type RoleManagementProps = {
   action: "grant" | "revoke";
-  role: string;
+  role: (typeof ROLES)[number];
   account: string;
 };
 

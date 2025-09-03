@@ -28,8 +28,11 @@ import { CheckIcon } from "@/icons";
 import { AdminCard } from "../common/AdminCard";
 import { userManagementSchema, type UserManagementSchema } from "@/schema/adminSchema";
 import { isValidAddress } from "@/utils/zod";
+import { executeCall } from "@/utils/contract";
+import { getConfig } from "@repo/config";
+import { VeVote__factory } from "@repo/contracts";
 
-const ROLES = [
+export const ROLES = [
   "DEFAULT_ADMIN_ROLE",
   "EXECUTOR_ROLE",
   "SETTINGS_MANAGER_ROLE",
@@ -38,6 +41,9 @@ const ROLES = [
   "WHITELISTED_ROLE",
   "WHITELIST_ADMIN_ROLE",
 ] as const;
+
+const contractAddress = getConfig(import.meta.env.VITE_APP_ENV).vevoteContractAddress;
+const contractInterface = VeVote__factory.createInterface();
 
 export function UserManagement() {
   const { LL } = useI18nContext();
@@ -53,10 +59,23 @@ export function UserManagement() {
 
   const handleRoleAction = useCallback(
     async (action: "grant" | "revoke", values: UserManagementSchema) => {
+      const nodeRes = await executeCall({
+        contractAddress,
+        contractInterface,
+        method: values.selectedRole as (typeof ROLES)[number],
+        args: [],
+      });
+
+      if (!nodeRes.success) {
+        throw new Error(LL.admin.common_roles.error_description({ error: LL.admin.unknown_error() }));
+      }
+
+      const role = nodeRes.result.plain as (typeof ROLES)[number];
+
       try {
         await sendTransaction({
           action,
-          role: values.selectedRole,
+          role,
           account: values.userAddress,
         });
 
