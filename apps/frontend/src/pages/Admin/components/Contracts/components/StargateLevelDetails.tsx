@@ -1,6 +1,7 @@
 import { Box, Heading, Table, Thead, Tbody, Tr, Th, Td, TableContainer } from "@chakra-ui/react";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { StargateLevelSupply } from "@/pages/Admin/services";
+import { FixedPointNumber, Units } from "@vechain/sdk-core";
 
 interface Level {
   name: string;
@@ -17,11 +18,6 @@ interface StargateLevelDetailsProps {
 
 export function StargateLevelDetails({ levels, levelIds, supplies }: StargateLevelDetailsProps) {
   const { LL } = useI18nContext();
-
-  const formatVET = (wei: bigint) => {
-    const vet = Number(wei) / 1e18;
-    return LL.admin.stargate_nodes.vet_format({ amount: vet.toLocaleString() });
-  };
 
   if (levels.length === 0) {
     return null;
@@ -54,7 +50,11 @@ export function StargateLevelDetails({ levels, levelIds, supplies }: StargateLev
                   <Td>{level.name}</Td>
                   <Td>{level.isX ? LL.admin.stargate_nodes.yes() : LL.admin.stargate_nodes.no()}</Td>
                   <Td>{level.maturityBlocks.toString()}</Td>
-                  <Td>{formatVET(level.vetAmountRequiredToStake)}</Td>
+                  <Td>
+                    {LL.admin.vet_format({
+                      amount: Units.formatEther(FixedPointNumber.of(level.vetAmountRequiredToStake)),
+                    })}
+                  </Td>
                   <Td>{supply ? supply.circulating.toString() : LL.admin.stargate_nodes.not_available()}</Td>
                   <Td>{supply ? supply.cap.toString() : LL.admin.stargate_nodes.not_available()}</Td>
                 </Tr>

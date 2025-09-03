@@ -1489,6 +1489,10 @@ type RootTranslation = {
 			 */
 			max_voting_duration: string
 			/**
+			 * M​i​n​ ​S​t​a​k​e​d​ ​A​m​o​u​n​t
+			 */
+			min_staked_amount: string
+			/**
 			 * {​p​e​r​c​e​n​t​a​g​e​}​%​ ​r​e​q​u​i​r​e​d
 			 * @param {number} percentage
 			 */
@@ -1658,11 +1662,6 @@ type RootTranslation = {
 			 */
 			not_available: string
 			/**
-			 * {​a​m​o​u​n​t​}​ ​V​E​T
-			 * @param {string} amount
-			 */
-			vet_format: RequiredParams<'amount'>
-			/**
 			 * C​o​n​t​r​a​c​t​ ​I​n​f​o​r​m​a​t​i​o​n
 			 */
 			contract_info_title: string
@@ -1687,6 +1686,11 @@ type RootTranslation = {
 		 * @param {number} number
 		 */
 		format_days: RequiredParams<'number'>
+		/**
+		 * {​a​m​o​u​n​t​}​ ​V​E​T
+		 * @param {string} amount
+		 */
+		vet_format: RequiredParams<'amount'>
 		governance_settings: {
 			/**
 			 * G​o​v​e​r​n​a​n​c​e​ ​S​e​t​t​i​n​g​s
@@ -1710,7 +1714,7 @@ type RootTranslation = {
 			 */
 			min_voting_delay_label: string
 			/**
-			 * M​i​n​i​m​u​m​ ​d​e​l​a​y​ ​b​e​f​o​r​e​ ​v​o​t​i​n​g​ ​s​t​a​r​t​s​ ​(​i​n​ ​s​e​c​o​n​d​s​)
+			 * M​i​n​i​m​u​m​ ​d​e​l​a​y​ ​b​e​f​o​r​e​ ​v​o​t​i​n​g​ ​s​t​a​r​t​s​ ​(​i​n​ ​b​l​o​c​k​s​)
 			 */
 			min_voting_delay_help: string
 			/**
@@ -1718,7 +1722,7 @@ type RootTranslation = {
 			 */
 			min_voting_duration_label: string
 			/**
-			 * M​i​n​i​m​u​m​ ​v​o​t​i​n​g​ ​d​u​r​a​t​i​o​n​ ​(​i​n​ ​s​e​c​o​n​d​s​)
+			 * M​i​n​i​m​u​m​ ​v​o​t​i​n​g​ ​d​u​r​a​t​i​o​n​ ​(​i​n​ ​b​l​o​c​k​s​)
 			 */
 			min_voting_duration_help: string
 			/**
@@ -1726,13 +1730,97 @@ type RootTranslation = {
 			 */
 			max_voting_duration_label: string
 			/**
-			 * M​a​x​i​m​u​m​ ​v​o​t​i​n​g​ ​d​u​r​a​t​i​o​n​ ​(​i​n​ ​s​e​c​o​n​d​s​)
+			 * M​a​x​i​m​u​m​ ​v​o​t​i​n​g​ ​d​u​r​a​t​i​o​n​ ​(​i​n​ ​b​l​o​c​k​s​)
 			 */
 			max_voting_duration_help: string
+			/**
+			 * M​i​n​ ​S​t​a​k​e​d​ ​V​E​T​ ​A​m​o​u​n​t
+			 */
+			min_staked_vet_amount_label: string
+			/**
+			 * M​i​n​i​m​u​m​ ​V​E​T​ ​a​m​o​u​n​t​ ​r​e​q​u​i​r​e​d​ ​t​o​ ​s​t​a​k​e
+			 */
+			min_staked_vet_amount_help: string
+			/**
+			 * L​e​v​e​l​ ​I​D​ ​M​u​l​t​i​p​l​i​e​r​s
+			 */
+			level_multipliers_label: string
+			/**
+			 * V​o​t​i​n​g​ ​w​e​i​g​h​t​ ​m​u​l​t​i​p​l​i​e​r​s​ ​f​o​r​ ​e​a​c​h​ ​l​e​v​e​l​ ​I​D​ ​(​s​c​a​l​e​d​ ​b​y​ ​1​0​0​)
+			 */
+			level_multipliers_help: string
+			/**
+			 * V​a​l​i​d​a​t​o​r​ ​(​L​e​v​e​l​ ​0​)
+			 */
+			validator_multiplier: string
+			/**
+			 * S​t​r​e​n​g​t​h​ ​N​o​d​e​ ​(​L​e​v​e​l​ ​1​)
+			 */
+			strength_node_multiplier: string
+			/**
+			 * T​h​u​n​d​e​r​ ​N​o​d​e​ ​(​L​e​v​e​l​ ​2​)
+			 */
+			thunder_node_multiplier: string
+			/**
+			 * M​j​o​l​n​i​r​ ​N​o​d​e​ ​(​L​e​v​e​l​ ​3​)
+			 */
+			mjolnir_node_multiplier: string
+			/**
+			 * V​e​T​h​o​r​ ​X​ ​N​o​d​e​ ​(​L​e​v​e​l​ ​4​)
+			 */
+			vethor_x_node_multiplier: string
+			/**
+			 * S​t​r​e​n​g​t​h​ ​X​ ​N​o​d​e​ ​(​L​e​v​e​l​ ​5​)
+			 */
+			strength_x_node_multiplier: string
+			/**
+			 * T​h​u​n​d​e​r​ ​X​ ​N​o​d​e​ ​(​L​e​v​e​l​ ​6​)
+			 */
+			thunder_x_node_multiplier: string
+			/**
+			 * M​j​o​l​n​i​r​ ​X​ ​N​o​d​e​ ​(​L​e​v​e​l​ ​7​)
+			 */
+			mjolnir_x_node_multiplier: string
+			/**
+			 * D​a​w​n​ ​N​o​d​e​ ​(​L​e​v​e​l​ ​8​)
+			 */
+			dawn_node_multiplier: string
+			/**
+			 * L​i​g​h​t​n​i​n​g​ ​N​o​d​e​ ​(​L​e​v​e​l​ ​9​)
+			 */
+			lightning_node_multiplier: string
+			/**
+			 * F​l​a​s​h​ ​N​o​d​e​ ​(​L​e​v​e​l​ ​1​0​)
+			 */
+			flash_node_multiplier: string
+			/**
+			 * L​e​v​e​l​ ​I​D
+			 */
+			level_id: string
+			/**
+			 * N​o​d​e​ ​T​y​p​e
+			 */
+			node_type: string
+			/**
+			 * C​u​r​r​e​n​t
+			 */
+			current_multiplier: string
+			/**
+			 * N​e​w​ ​V​a​l​u​e
+			 */
+			new_multiplier: string
 			/**
 			 * U​p​d​a​t​e​ ​S​e​t​t​i​n​g​s
 			 */
 			update_settings: string
+			/**
+			 * U​p​d​a​t​e​ ​G​o​v​e​r​n​a​n​c​e​ ​S​e​t​t​i​n​g​s
+			 */
+			update_governance_settings: string
+			/**
+			 * U​p​d​a​t​e​ ​M​u​l​t​i​p​l​i​e​r​s
+			 */
+			update_multipliers: string
 			/**
 			 * U​p​d​a​t​i​n​g​.​.​.
 			 */
@@ -3381,6 +3469,10 @@ JPG, PNG or SVG of maximum of {size}MB.
 			 */
 			max_voting_duration: () => LocalizedString
 			/**
+			 * Min Staked Amount
+			 */
+			min_staked_amount: () => LocalizedString
+			/**
 			 * {percentage}% required
 			 */
 			quorum_percentage: (arg: { percentage: number }) => LocalizedString
@@ -3543,10 +3635,6 @@ JPG, PNG or SVG of maximum of {size}MB.
 			 */
 			not_available: () => LocalizedString
 			/**
-			 * {amount} VET
-			 */
-			vet_format: (arg: { amount: string }) => LocalizedString
-			/**
 			 * Contract Information
 			 */
 			contract_info_title: () => LocalizedString
@@ -3567,6 +3655,10 @@ JPG, PNG or SVG of maximum of {size}MB.
 		 * {number} days
 		 */
 		format_days: (arg: { number: number }) => LocalizedString
+		/**
+		 * {amount} VET
+		 */
+		vet_format: (arg: { amount: string }) => LocalizedString
 		governance_settings: {
 			/**
 			 * Governance Settings
@@ -3589,7 +3681,7 @@ JPG, PNG or SVG of maximum of {size}MB.
 			 */
 			min_voting_delay_label: () => LocalizedString
 			/**
-			 * Minimum delay before voting starts (in seconds)
+			 * Minimum delay before voting starts (in blocks)
 			 */
 			min_voting_delay_help: () => LocalizedString
 			/**
@@ -3597,7 +3689,7 @@ JPG, PNG or SVG of maximum of {size}MB.
 			 */
 			min_voting_duration_label: () => LocalizedString
 			/**
-			 * Minimum voting duration (in seconds)
+			 * Minimum voting duration (in blocks)
 			 */
 			min_voting_duration_help: () => LocalizedString
 			/**
@@ -3605,13 +3697,97 @@ JPG, PNG or SVG of maximum of {size}MB.
 			 */
 			max_voting_duration_label: () => LocalizedString
 			/**
-			 * Maximum voting duration (in seconds)
+			 * Maximum voting duration (in blocks)
 			 */
 			max_voting_duration_help: () => LocalizedString
+			/**
+			 * Min Staked VET Amount
+			 */
+			min_staked_vet_amount_label: () => LocalizedString
+			/**
+			 * Minimum VET amount required to stake
+			 */
+			min_staked_vet_amount_help: () => LocalizedString
+			/**
+			 * Level ID Multipliers
+			 */
+			level_multipliers_label: () => LocalizedString
+			/**
+			 * Voting weight multipliers for each level ID (scaled by 100)
+			 */
+			level_multipliers_help: () => LocalizedString
+			/**
+			 * Validator (Level 0)
+			 */
+			validator_multiplier: () => LocalizedString
+			/**
+			 * Strength Node (Level 1)
+			 */
+			strength_node_multiplier: () => LocalizedString
+			/**
+			 * Thunder Node (Level 2)
+			 */
+			thunder_node_multiplier: () => LocalizedString
+			/**
+			 * Mjolnir Node (Level 3)
+			 */
+			mjolnir_node_multiplier: () => LocalizedString
+			/**
+			 * VeThor X Node (Level 4)
+			 */
+			vethor_x_node_multiplier: () => LocalizedString
+			/**
+			 * Strength X Node (Level 5)
+			 */
+			strength_x_node_multiplier: () => LocalizedString
+			/**
+			 * Thunder X Node (Level 6)
+			 */
+			thunder_x_node_multiplier: () => LocalizedString
+			/**
+			 * Mjolnir X Node (Level 7)
+			 */
+			mjolnir_x_node_multiplier: () => LocalizedString
+			/**
+			 * Dawn Node (Level 8)
+			 */
+			dawn_node_multiplier: () => LocalizedString
+			/**
+			 * Lightning Node (Level 9)
+			 */
+			lightning_node_multiplier: () => LocalizedString
+			/**
+			 * Flash Node (Level 10)
+			 */
+			flash_node_multiplier: () => LocalizedString
+			/**
+			 * Level ID
+			 */
+			level_id: () => LocalizedString
+			/**
+			 * Node Type
+			 */
+			node_type: () => LocalizedString
+			/**
+			 * Current
+			 */
+			current_multiplier: () => LocalizedString
+			/**
+			 * New Value
+			 */
+			new_multiplier: () => LocalizedString
 			/**
 			 * Update Settings
 			 */
 			update_settings: () => LocalizedString
+			/**
+			 * Update Governance Settings
+			 */
+			update_governance_settings: () => LocalizedString
+			/**
+			 * Update Multipliers
+			 */
+			update_multipliers: () => LocalizedString
 			/**
 			 * Updating...
 			 */

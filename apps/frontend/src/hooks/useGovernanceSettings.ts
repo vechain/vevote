@@ -9,6 +9,7 @@ type GovernanceSettingsProps = {
   setMinVotingDelay?: number;
   setMinVotingDuration?: number;
   setMaxVotingDuration?: number;
+  setMinStakedVetAmount?: bigint;
 };
 
 const contractAddress = getConfig(import.meta.env.VITE_APP_ENV).vevoteContractAddress;
@@ -63,6 +64,16 @@ export const useGovernanceSettings = () => {
           data: contractInterface.encodeFunctionData("setMaxVotingDuration", [blocksValue]),
           abi: JSON.parse(JSON.stringify(contractInterface.getFunction("setMaxVotingDuration"))),
           comment: `Set max voting duration to ${props.setMaxVotingDuration} seconds (${blocksValue} blocks)`,
+        };
+        clauses.push(clause as EnhancedClause);
+      }
+
+      if (props.setMinStakedVetAmount !== undefined) {
+        const clause = {
+          ...baseClause,
+          data: contractInterface.encodeFunctionData("setMinStakedVetAmount", [props.setMinStakedVetAmount]),
+          abi: JSON.parse(JSON.stringify(contractInterface.getFunction("setMinStakedVetAmount"))),
+          comment: `Set minimum staked VET amount to ${props.setMinStakedVetAmount.toString()}`,
         };
         clauses.push(clause as EnhancedClause);
       }

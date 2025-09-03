@@ -9,6 +9,7 @@ export interface VeVoteInfo {
   minVotingDelay: number;
   minVotingDuration: number;
   maxVotingDuration: number;
+  minStakedAmount: bigint;
   version: bigint;
 }
 
@@ -41,6 +42,7 @@ export class VeVoteService {
       { method: "getMinVotingDelay" as const, args: [] },
       { method: "getMinVotingDuration" as const, args: [] },
       { method: "getMaxVotingDuration" as const, args: [] },
+      { method: "getMinStakedAmount" as const, args: [] },
       { method: "version" as const, args: [] },
     ];
 
@@ -53,10 +55,11 @@ export class VeVoteService {
     return {
       quorumNumerator: BigInt(results[0]?.success ? String(results[0].result.plain) : "0"),
       quorumDenominator: BigInt(results[1]?.success ? String(results[1].result.plain) : "0"),
-      minVotingDelay: Number(results[2]?.success ? results[2].result.plain : 0) * 10,
-      minVotingDuration: Number(results[3]?.success ? results[3].result.plain : 0) * 10,
-      maxVotingDuration: Number(results[4]?.success ? results[4].result.plain : 0) * 10,
-      version: BigInt(results[5]?.success ? String(results[5].result.plain) : "0"),
+      minVotingDelay: Number(results[2]?.success ? results[2].result.plain : 0),
+      minVotingDuration: Number(results[3]?.success ? results[3].result.plain : 0),
+      maxVotingDuration: Number(results[4]?.success ? results[4].result.plain : 0),
+      minStakedAmount: BigInt(results[5]?.success ? String(results[5].result.plain) : "0"),
+      version: BigInt(results[6]?.success ? String(results[6].result.plain) : "0"),
     };
   }
 
@@ -81,6 +84,27 @@ export class VeVoteService {
     } catch (error) {
       console.error("Error fetching contract addresses:", error);
       throw error;
+    }
+  }
+
+  async getLevelMultipliers(): Promise<number[]> {
+    const DEFAULT_MULTIPLIERS = [200, 100, 100, 100, 150, 150, 150, 150, 100, 100, 100];
+    const methodsWithArgs = Array.from({ length: 11 }, (_, index) => ({
+      method: "levelIdMultiplier" as const,
+      args: [index],
+    }));
+
+    try {
+      const results = await executeMultipleClauses({
+        contractAddress: this.contractAddress,
+        contractInterface: this.contractInterface,
+        methodsWithArgs,
+      });
+
+      return results.map(result => (result?.success ? Number(result.result.plain) : 100)) || DEFAULT_MULTIPLIERS;
+    } catch (error) {
+      console.error("Error fetching level multipliers:", error);
+      return DEFAULT_MULTIPLIERS;
     }
   }
 }

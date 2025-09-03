@@ -3,6 +3,7 @@ import { useI18nContext } from "@/i18n/i18n-react";
 import { useFormatTime } from "@/hooks/useFormatTime";
 import { VeVoteInfo } from "../../../services";
 import { AdminCard } from "../../common/AdminCard";
+import { FixedPointNumber, Units } from "@vechain/sdk-core";
 
 interface VevoteContractInfoProps {
   readonly veVoteInfo: VeVoteInfo;
@@ -27,15 +28,19 @@ export function VevoteContractInfo({ veVoteInfo }: VevoteContractInfoProps) {
     },
     {
       label: LL.admin.vevote_contract.min_voting_delay(),
-      value: formatTime(veVoteInfo.minVotingDelay),
+      value: `${veVoteInfo.minVotingDelay} (${formatTime(veVoteInfo.minVotingDelay * 10)})`,
     },
     {
       label: LL.admin.vevote_contract.min_voting_duration(),
-      value: formatTime(veVoteInfo.minVotingDuration),
+      value: `${veVoteInfo.minVotingDuration} (${formatTime(veVoteInfo.minVotingDuration * 10)})`,
     },
     {
       label: LL.admin.vevote_contract.max_voting_duration(),
-      value: formatTime(veVoteInfo.maxVotingDuration),
+      value: `${veVoteInfo.maxVotingDuration} (${formatTime(veVoteInfo.maxVotingDuration * 10)})`,
+    },
+    {
+      label: LL.admin.vevote_contract.min_staked_amount(),
+      value: LL.admin.vet_format({ amount: Units.formatEther(FixedPointNumber.of(veVoteInfo.minStakedAmount)) }),
     },
   ];
 
