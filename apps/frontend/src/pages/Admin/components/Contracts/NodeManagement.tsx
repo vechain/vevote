@@ -4,6 +4,7 @@ import {
   Text,
   HStack,
   VStack,
+  useBreakpointValue,
 } from "@chakra-ui/react";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { CopyLink } from "@/components/ui/CopyLink";
@@ -17,6 +18,11 @@ const nodeManagementContractAddress = getConfig(import.meta.env.VITE_APP_ENV).no
 
 export function NodeManagement() {
   const { LL } = useI18nContext();
+  
+  const stackSpacing = useBreakpointValue({
+    base: 4,
+    md: 6,
+  });
 
   return (
     <Box>
@@ -38,7 +44,7 @@ export function NodeManagement() {
           </HStack>
         </Box>
 
-        <HStack spacing={6} align="flex-start" wrap="wrap">
+        <HStack spacing={stackSpacing} align="flex-start" wrap="wrap">
           <UserRoleChecker contractType="nodeManagement" />
           <NodeManagementContractInfo />
         </HStack>

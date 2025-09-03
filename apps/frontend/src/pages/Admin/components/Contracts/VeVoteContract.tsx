@@ -1,7 +1,7 @@
 import { CopyLink } from "@/components/ui/CopyLink";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { formatAddress } from "@/utils/address";
-import { Alert, AlertIcon, Box, Heading, HStack, Spinner, Text, VStack } from "@chakra-ui/react";
+import { Alert, AlertIcon, Box, Heading, HStack, Spinner, Text, VStack, useBreakpointValue } from "@chakra-ui/react";
 import { getConfig } from "@repo/config";
 import { useVeVoteInfo } from "../../hooks";
 import { UserRoleChecker } from "../common/UserRoleChecker";
@@ -13,6 +13,11 @@ const contractAddress = getConfig(import.meta.env.VITE_APP_ENV).vevoteContractAd
 export function VeVoteContract() {
   const { LL } = useI18nContext();
   const { data: veVoteInfo, isLoading, error } = useVeVoteInfo();
+  
+  const stackSpacing = useBreakpointValue({
+    base: 4,
+    md: 6,
+  });
 
   if (isLoading) {
     return (
@@ -61,7 +66,7 @@ export function VeVoteContract() {
           </HStack>
         </Box>
 
-        <HStack spacing={6} align="flex-start" wrap="wrap">
+        <HStack spacing={stackSpacing} align="flex-start" wrap="wrap">
           <UserRoleChecker contractType="vevote" />
           <VevoteContractInfo veVoteInfo={veVoteInfo} />
         </HStack>

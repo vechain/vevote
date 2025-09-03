@@ -1,4 +1,4 @@
-import { Box, Heading, Spinner, Alert, AlertIcon, VStack, Text, HStack } from "@chakra-ui/react";
+import { Box, Heading, Spinner, Alert, AlertIcon, VStack, Text, HStack, useBreakpointValue } from "@chakra-ui/react";
 import { useStargateStats } from "../../hooks";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { getConfig } from "@repo/config";
@@ -14,6 +14,11 @@ const stargateNFTContractAddress = getConfig(import.meta.env.VITE_APP_ENV).starg
 export function StargateNodes() {
   const { LL } = useI18nContext();
   const { data: stargateStats, isLoading, error } = useStargateStats();
+  
+  const stackSpacing = useBreakpointValue({
+    base: 4,
+    md: 6,
+  });
 
   if (isLoading) {
     return (
@@ -62,7 +67,7 @@ export function StargateNodes() {
           </HStack>
         </Box>
 
-        <HStack spacing={6} align="flex-start" wrap="wrap">
+        <HStack spacing={stackSpacing} align="flex-start" wrap="wrap">
           <UserRoleChecker contractType="stargate" />
           <StargateContractInfo totalSupply={stargateStats.totalSupply} levelIds={stargateStats.levelIds} />
         </HStack>
