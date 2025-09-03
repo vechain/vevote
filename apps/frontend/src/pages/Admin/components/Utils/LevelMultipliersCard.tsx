@@ -1,17 +1,4 @@
-import {
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  TableContainer,
-  Text,
-  Button,
-  Box,
-  FormControl,
-  Input,
-} from "@chakra-ui/react";
+import { Text, Button, Box } from "@chakra-ui/react";
 import { useCallback, useMemo } from "react";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { useLevelMultipliers } from "@/hooks/useLevelMultipliers";
@@ -19,6 +6,9 @@ import { AdminCard } from "../common/AdminCard";
 import { GenericInfoBox } from "@/components/ui/GenericInfoBox";
 import { useLevelMultipliersInfo } from "../../hooks/useLevelMultipliersInfo";
 import { FormSkeleton } from "@/components/ui/FormSkeleton";
+import { DataTable } from "@/components/ui/TableSkeleton";
+import { createColumnHelper } from "@tanstack/react-table";
+import { TableHeader, BaseCell, NodeTypeCell, MultiplierInputCell } from "../common/AdminTableCells";
 import { z } from "zod";
 
 interface LevelMultipliersCardProps {
@@ -45,6 +35,15 @@ const multiplierSchema = z.object({
 });
 
 type MultiplierSchema = z.infer<typeof multiplierSchema>;
+
+interface LevelMultiplierRow {
+  id: number;
+  name: string;
+  type: "regular" | "x-node";
+  currentMultiplier: number;
+}
+
+const columnHelper = createColumnHelper<LevelMultiplierRow>();
 
 export function LevelMultipliersCard({ onSuccess }: LevelMultipliersCardProps) {
   const { LL } = useI18nContext();
@@ -94,16 +93,16 @@ export function LevelMultipliersCard({ onSuccess }: LevelMultipliersCardProps) {
 
   const levelData = useMemo(
     () => [
-      { id: 1, name: LL.admin.governance_settings.strength_node_multiplier(), type: "regular" },
-      { id: 2, name: LL.admin.governance_settings.thunder_node_multiplier(), type: "regular" },
-      { id: 3, name: LL.admin.governance_settings.mjolnir_node_multiplier(), type: "regular" },
-      { id: 4, name: LL.admin.governance_settings.vethor_x_node_multiplier(), type: "x-node" },
-      { id: 5, name: LL.admin.governance_settings.strength_x_node_multiplier(), type: "x-node" },
-      { id: 6, name: LL.admin.governance_settings.thunder_x_node_multiplier(), type: "x-node" },
-      { id: 7, name: LL.admin.governance_settings.mjolnir_x_node_multiplier(), type: "x-node" },
-      { id: 8, name: LL.admin.governance_settings.dawn_node_multiplier(), type: "regular" },
-      { id: 9, name: LL.admin.governance_settings.lightning_node_multiplier(), type: "regular" },
-      { id: 10, name: LL.admin.governance_settings.flash_node_multiplier(), type: "regular" },
+      { id: 1, name: LL.admin.governance_settings.strength_node_multiplier(), type: "regular" as const },
+      { id: 2, name: LL.admin.governance_settings.thunder_node_multiplier(), type: "regular" as const },
+      { id: 3, name: LL.admin.governance_settings.mjolnir_node_multiplier(), type: "regular" as const },
+      { id: 4, name: LL.admin.governance_settings.vethor_x_node_multiplier(), type: "x-node" as const },
+      { id: 5, name: LL.admin.governance_settings.strength_x_node_multiplier(), type: "x-node" as const },
+      { id: 6, name: LL.admin.governance_settings.thunder_x_node_multiplier(), type: "x-node" as const },
+      { id: 7, name: LL.admin.governance_settings.mjolnir_x_node_multiplier(), type: "x-node" as const },
+      { id: 8, name: LL.admin.governance_settings.dawn_node_multiplier(), type: "regular" as const },
+      { id: 9, name: LL.admin.governance_settings.lightning_node_multiplier(), type: "regular" as const },
+      { id: 10, name: LL.admin.governance_settings.flash_node_multiplier(), type: "regular" as const },
     ],
     [LL.admin.governance_settings],
   );
@@ -113,6 +112,15 @@ export function LevelMultipliersCard({ onSuccess }: LevelMultipliersCardProps) {
       return currentMultipliers?.[index] ?? getDefaultMultiplierForLevel(index);
     },
     [currentMultipliers],
+  );
+
+  const tableData: LevelMultiplierRow[] = useMemo(
+    () =>
+      levelData.map(level => ({
+        ...level,
+        currentMultiplier: getCurrentMultiplier(level.id),
+      })),
+    [levelData, getCurrentMultiplier],
   );
 
   if (isLoadingMultipliers) {
@@ -146,49 +154,37 @@ export function LevelMultipliersCard({ onSuccess }: LevelMultipliersCardProps) {
             value => value !== undefined && value !== null && value !== "",
           );
 
+          const columns = [
+            columnHelper.accessor("name", {
+              cell: data => <NodeTypeCell name={data.getValue()} type={data.row.original.type} />,
+              header: () => <TableHeader label={LL.admin.governance_settings.node_type()} />,
+              id: "NODE_TYPE",
+              size: 200,
+            }),
+            columnHelper.accessor("currentMultiplier", {
+              cell: data => <BaseCell value={data.getValue().toString()} />,
+              header: () => <TableHeader label={LL.admin.governance_settings.current_multiplier()} />,
+              id: "CURRENT_MULTIPLIER",
+              size: 140,
+            }),
+            columnHelper.accessor("id", {
+              cell: data => (
+                <MultiplierInputCell
+                  fieldName={`multiplier${data.getValue()}`}
+                  placeholder={data.row.original.currentMultiplier.toString()}
+                  register={register}
+                  errors={errors}
+                />
+              ),
+              header: () => <TableHeader label={LL.admin.governance_settings.new_multiplier()} />,
+              id: "NEW_MULTIPLIER",
+              size: 120,
+            }),
+          ];
+
           return (
             <>
-              <TableContainer>
-                <Table variant="simple" size="sm">
-                  <Thead>
-                    <Tr>
-                      <Th>{LL.admin.governance_settings.node_type()}</Th>
-                      <Th>{LL.admin.governance_settings.current_multiplier()}</Th>
-                      <Th>{LL.admin.governance_settings.new_multiplier()}</Th>
-                    </Tr>
-                  </Thead>
-                  <Tbody>
-                    {levelData.map(({ id, name, type }) => (
-                      <Tr key={id} bg={type === "x-node" ? "green.50" : undefined}>
-                        <Td>
-                          <Text fontSize="sm" fontWeight="medium">
-                            {name}
-                          </Text>
-                        </Td>
-                        <Td>
-                          <Text fontSize="sm" color="gray.600">
-                            {getCurrentMultiplier(id)}
-                          </Text>
-                        </Td>
-                        <Td>
-                          <FormControl isInvalid={!!errors[`multiplier${id}` as keyof MultiplierSchema]}>
-                            <Input
-                              type="number"
-                              placeholder={getCurrentMultiplier(id).toString()}
-                              min={0}
-                              max={1000}
-                              step={10}
-                              size="sm"
-                              width="100px"
-                              {...register(`multiplier${id}` as keyof MultiplierSchema)}
-                            />
-                          </FormControl>
-                        </Td>
-                      </Tr>
-                    ))}
-                  </Tbody>
-                </Table>
-              </TableContainer>
+              <DataTable columns={columns} data={tableData} />
 
               <Box mt={6}>
                 <Button
