@@ -1,4 +1,4 @@
-import { Text, useDisclosure } from "@chakra-ui/react";
+import { Text, useDisclosure, VStack } from "@chakra-ui/react";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { useVeVoteInfo } from "../../hooks";
 import { MessageModal } from "@/components/ui/ModalSkeleton";
@@ -26,16 +26,14 @@ export function GovernanceSettings() {
     return (
       <AdminCard title={LL.admin.governance_settings.title()}>
         <GenericInfoBox variant="error">
-          <Text color="red.700">
-            {error instanceof Error ? error.message : LL.admin.vevote_contract.no_data()}
-          </Text>
+          <Text color="red.700">{error instanceof Error ? error.message : LL.admin.vevote_contract.no_data()}</Text>
         </GenericInfoBox>
       </AdminCard>
     );
   }
 
   return (
-    <>
+    <VStack spacing={4} align="stretch">
       <GovernanceSettingsForm veVoteInfo={veVoteInfo} onSuccess={onSuccessOpen} />
       <LevelMultipliersCard onSuccess={onSuccessOpen} />
       <MessageModal
@@ -48,6 +46,6 @@ export function GovernanceSettings() {
           {LL.admin.governance_settings.success_description()}
         </Text>
       </MessageModal>
-    </>
+    </VStack>
   );
 }

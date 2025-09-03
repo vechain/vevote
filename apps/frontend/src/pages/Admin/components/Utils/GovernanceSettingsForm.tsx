@@ -1,8 +1,6 @@
 import {
   SimpleGrid,
   FormControl,
-  FormLabel,
-  FormHelperText,
   NumberInput,
   NumberInputField,
   NumberInputStepper,
@@ -13,14 +11,17 @@ import {
   Box,
   Text,
 } from "@chakra-ui/react";
-import { useState, useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { useGovernanceSettings } from "@/hooks/useGovernanceSettings";
 import { useFormatTime } from "@/hooks/useFormatTime";
 import { FixedPointNumber, Units } from "@vechain/sdk-core";
 import { AdminCard } from "../common/AdminCard";
 import { VeVoteInfo } from "../../services";
-import { GenericInfoBox } from "@/components/ui/GenericInfoBox";
+import { FormSkeleton } from "@/components/ui/FormSkeleton";
+import { Label } from "@/components/ui/Label";
+import { InputMessage } from "@/components/ui/InputMessage";
+import { governanceSettingsSchema, GovernanceSettingsSchema } from "@/schema/adminSchema";
 
 interface GovernanceSettingsFormProps {
   veVoteInfo: VeVoteInfo;
@@ -41,26 +42,19 @@ export function GovernanceSettingsForm({ veVoteInfo, onSuccess }: GovernanceSett
   const { sendTransaction, isTransactionPending } = useGovernanceSettings();
   const { formatTime } = useFormatTime();
 
-  const [errorMessage, setErrorMessage] = useState<string>("");
-  const [formValues, setFormValues] = useState({
-    quorumNumerator: "",
-    minVotingDelay: "",
-    minVotingDuration: "",
-    maxVotingDuration: "",
-    minStakedVetAmount: "",
-  });
+  const defaultValues = useMemo(
+    () => ({
+      quorumNumerator: undefined,
+      minVotingDelay: undefined,
+      minVotingDuration: undefined,
+      maxVotingDuration: undefined,
+      minStakedVetAmount: undefined,
+    }),
+    [],
+  );
 
-  const hasChanges =
-    formValues.quorumNumerator !== "" ||
-    formValues.minVotingDelay !== "" ||
-    formValues.minVotingDuration !== "" ||
-    formValues.maxVotingDuration !== "" ||
-    formValues.minStakedVetAmount !== "";
-
-  const handleSubmit = useCallback(async () => {
-    try {
-      setErrorMessage("");
-
+  const onSubmit = useCallback(
+    async (values: GovernanceSettingsSchema) => {
       const updateParams: {
         updateQuorumNumerator?: number;
         setMinVotingDelay?: number;
@@ -69,24 +63,24 @@ export function GovernanceSettingsForm({ veVoteInfo, onSuccess }: GovernanceSett
         setMinStakedVetAmount?: bigint;
       } = {};
 
-      if (formValues.quorumNumerator && Number(formValues.quorumNumerator) !== Number(veVoteInfo.quorumNumerator)) {
-        updateParams.updateQuorumNumerator = Number(formValues.quorumNumerator);
+      if (values.quorumNumerator && values.quorumNumerator !== Number(veVoteInfo.quorumNumerator)) {
+        updateParams.updateQuorumNumerator = values.quorumNumerator;
       }
 
-      if (formValues.minVotingDelay && Number(formValues.minVotingDelay) !== veVoteInfo.minVotingDelay) {
-        updateParams.setMinVotingDelay = Number(formValues.minVotingDelay);
+      if (values.minVotingDelay && values.minVotingDelay !== veVoteInfo.minVotingDelay) {
+        updateParams.setMinVotingDelay = values.minVotingDelay;
       }
 
-      if (formValues.minVotingDuration && Number(formValues.minVotingDuration) !== veVoteInfo.minVotingDuration) {
-        updateParams.setMinVotingDuration = Number(formValues.minVotingDuration);
+      if (values.minVotingDuration && values.minVotingDuration !== veVoteInfo.minVotingDuration) {
+        updateParams.setMinVotingDuration = values.minVotingDuration;
       }
 
-      if (formValues.maxVotingDuration && Number(formValues.maxVotingDuration) !== veVoteInfo.maxVotingDuration) {
-        updateParams.setMaxVotingDuration = Number(formValues.maxVotingDuration);
+      if (values.maxVotingDuration && values.maxVotingDuration !== veVoteInfo.maxVotingDuration) {
+        updateParams.setMaxVotingDuration = values.maxVotingDuration;
       }
 
-      if (formValues.minStakedVetAmount) {
-        const newValue = BigInt(formValues.minStakedVetAmount);
+      if (values.minStakedVetAmount) {
+        const newValue = BigInt(values.minStakedVetAmount);
         if (newValue !== veVoteInfo.minStakedAmount) {
           updateParams.setMinStakedVetAmount = newValue;
         }
@@ -96,141 +90,117 @@ export function GovernanceSettingsForm({ veVoteInfo, onSuccess }: GovernanceSett
 
       await sendTransaction(updateParams);
       onSuccess?.();
-
-      setFormValues({
-        quorumNumerator: "",
-        minVotingDelay: "",
-        minVotingDuration: "",
-        maxVotingDuration: "",
-        minStakedVetAmount: "",
-      });
-    } catch (err) {
-      const error = err as { error?: { message: string }; message: string };
-      setErrorMessage(
-        error?.error?.message ||
-          error?.message ||
-          LL.admin.governance_settings.error_description({ error: LL.admin.unknown_error() }),
-      );
-    }
-  }, [
-    veVoteInfo,
-    formValues.quorumNumerator,
-    formValues.minVotingDelay,
-    formValues.minVotingDuration,
-    formValues.maxVotingDuration,
-    formValues.minStakedVetAmount,
-    sendTransaction,
-    onSuccess,
-    LL.admin,
-  ]);
+    },
+    [veVoteInfo, sendTransaction, onSuccess],
+  );
 
   return (
-    <AdminCard title={LL.admin.governance_settings.title()} maxW={"full"}>
-      <VStack spacing={6} align="stretch">
-        <Text fontSize="sm" color="gray.600">
-          {LL.admin.governance_settings.description()}
-        </Text>
+    <AdminCard title={LL.admin.governance_settings.title()} maxW={850}>
+      <Text fontSize="sm" color="gray.600" mb={6}>
+        {LL.admin.governance_settings.description()}
+      </Text>
 
-        {errorMessage && (
-          <GenericInfoBox variant="error">
-            <Text color="red.700">{errorMessage}</Text>
-          </GenericInfoBox>
-        )}
+      <FormSkeleton schema={governanceSettingsSchema} defaultValues={defaultValues} onSubmit={onSubmit}>
+        {({ register, errors, watch }) => {
+          const watchedValues = watch();
+          const hasChanges = Object.values(watchedValues).some(value => value !== undefined && value !== null);
 
-        <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6}>
-          <FormControl>
-            <FormLabel>{LL.admin.governance_settings.quorum_numerator_label()}</FormLabel>
-            <NumberInput
-              value={formValues.quorumNumerator}
-              onChange={value => setFormValues(prev => ({ ...prev, quorumNumerator: value }))}
-              min={1}>
-              <NumberInputField placeholder={veVoteInfo.quorumNumerator.toString()} />
-              <BaseNumberInputStepper />
-            </NumberInput>
-            <FormHelperText>
-              {LL.admin.governance_settings.quorum_numerator_help({ current: Number(veVoteInfo.quorumNumerator) })}
-            </FormHelperText>
-          </FormControl>
+          return (
+            <VStack spacing={6} align="stretch">
+              <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6}>
+                <FormControl isInvalid={!!errors.quorumNumerator}>
+                  <Label label={LL.admin.governance_settings.quorum_numerator_label()} />
+                  <NumberInput min={1}>
+                    <NumberInputField
+                      placeholder={veVoteInfo.quorumNumerator.toString()}
+                      {...register("quorumNumerator")}
+                    />
+                    <BaseNumberInputStepper />
+                  </NumberInput>
+                  <InputMessage
+                    error={errors.quorumNumerator?.message}
+                    message={LL.admin.governance_settings.quorum_numerator_help({
+                      current: Number(veVoteInfo.quorumNumerator),
+                    })}
+                  />
+                </FormControl>
 
-          <FormControl>
-            <FormLabel>{LL.admin.governance_settings.min_voting_delay_label()}</FormLabel>
-            <NumberInput
-              value={formValues.minVotingDelay}
-              onChange={value => setFormValues(prev => ({ ...prev, minVotingDelay: value }))}
-              min={0}>
-              <NumberInputField placeholder={veVoteInfo.minVotingDelay.toString()} />
-              <BaseNumberInputStepper />
-            </NumberInput>
-            <FormHelperText>
-              {LL.admin.governance_settings.min_voting_delay_help()}
-              <br />
-              Current: {`${veVoteInfo.minVotingDelay} (${formatTime(veVoteInfo.minVotingDelay * 10)})`}
-            </FormHelperText>
-          </FormControl>
+                <FormControl isInvalid={!!errors.minVotingDelay}>
+                  <Label label={LL.admin.governance_settings.min_voting_delay_label()} />
+                  <NumberInput min={0}>
+                    <NumberInputField
+                      placeholder={veVoteInfo.minVotingDelay.toString()}
+                      {...register("minVotingDelay")}
+                    />
+                    <BaseNumberInputStepper />
+                  </NumberInput>
+                  <InputMessage
+                    error={errors.minVotingDelay?.message}
+                    message={`${LL.admin.governance_settings.min_voting_delay_help()}\nCurrent: ${veVoteInfo.minVotingDelay} (${formatTime(veVoteInfo.minVotingDelay * 10)})`}
+                  />
+                </FormControl>
 
-          <FormControl>
-            <FormLabel>{LL.admin.governance_settings.min_voting_duration_label()}</FormLabel>
-            <NumberInput
-              value={formValues.minVotingDuration}
-              onChange={value => setFormValues(prev => ({ ...prev, minVotingDuration: value }))}
-              min={1}>
-              <NumberInputField placeholder={veVoteInfo.minVotingDuration.toString()} />
-              <BaseNumberInputStepper />
-            </NumberInput>
-            <FormHelperText>
-              {LL.admin.governance_settings.min_voting_duration_help()}
-              <br />
-              Current: {`${veVoteInfo.minVotingDuration} (${formatTime(veVoteInfo.minVotingDuration * 10)})`}
-            </FormHelperText>
-          </FormControl>
+                <FormControl isInvalid={!!errors.minVotingDuration}>
+                  <Label label={LL.admin.governance_settings.min_voting_duration_label()} />
+                  <NumberInput min={1}>
+                    <NumberInputField
+                      placeholder={veVoteInfo.minVotingDuration.toString()}
+                      {...register("minVotingDuration")}
+                    />
+                    <BaseNumberInputStepper />
+                  </NumberInput>
+                  <InputMessage
+                    error={errors.minVotingDuration?.message}
+                    message={`${LL.admin.governance_settings.min_voting_duration_help()}\nCurrent: ${veVoteInfo.minVotingDuration} (${formatTime(veVoteInfo.minVotingDuration * 10)})`}
+                  />
+                </FormControl>
 
-          <FormControl>
-            <FormLabel>{LL.admin.governance_settings.max_voting_duration_label()}</FormLabel>
-            <NumberInput
-              value={formValues.maxVotingDuration}
-              onChange={value => setFormValues(prev => ({ ...prev, maxVotingDuration: value }))}
-              min={1}>
-              <NumberInputField placeholder={veVoteInfo.maxVotingDuration.toString()} />
-              <BaseNumberInputStepper />
-            </NumberInput>
-            <FormHelperText>
-              {LL.admin.governance_settings.max_voting_duration_help()}
-              <br />
-              Current: {`${veVoteInfo.maxVotingDuration} (${formatTime(veVoteInfo.maxVotingDuration * 10)})`}
-            </FormHelperText>
-          </FormControl>
+                <FormControl isInvalid={!!errors.maxVotingDuration}>
+                  <Label label={LL.admin.governance_settings.max_voting_duration_label()} />
+                  <NumberInput min={1}>
+                    <NumberInputField
+                      placeholder={veVoteInfo.maxVotingDuration.toString()}
+                      {...register("maxVotingDuration")}
+                    />
+                    <BaseNumberInputStepper />
+                  </NumberInput>
+                  <InputMessage
+                    error={errors.maxVotingDuration?.message}
+                    message={`${LL.admin.governance_settings.max_voting_duration_help()}\nCurrent: ${veVoteInfo.maxVotingDuration} (${formatTime(veVoteInfo.maxVotingDuration * 10)})`}
+                  />
+                </FormControl>
 
-          <FormControl>
-            <FormLabel>{LL.admin.governance_settings.min_staked_vet_amount_label()}</FormLabel>
-            <NumberInput
-              value={formValues.minStakedVetAmount}
-              onChange={value => setFormValues(prev => ({ ...prev, minStakedVetAmount: value }))}
-              min={0}
-              step={1000}>
-              <NumberInputField placeholder={Units.formatEther(FixedPointNumber.of(veVoteInfo.minStakedAmount))} />
-              <BaseNumberInputStepper />
-            </NumberInput>
-            <FormHelperText>
-              {LL.admin.governance_settings.min_staked_vet_amount_help()}
-              <br />
-              Current:{" "}
-              {LL.admin.vet_format({ amount: Units.formatEther(FixedPointNumber.of(veVoteInfo.minStakedAmount)) })}
-            </FormHelperText>
-          </FormControl>
-        </SimpleGrid>
+                <FormControl isInvalid={!!errors.minStakedVetAmount}>
+                  <Label label={LL.admin.governance_settings.min_staked_vet_amount_label()} />
+                  <NumberInput min={0} step={1000}>
+                    <NumberInputField
+                      placeholder={Units.formatEther(FixedPointNumber.of(veVoteInfo.minStakedAmount))}
+                      {...register("minStakedVetAmount")}
+                    />
+                    <BaseNumberInputStepper />
+                  </NumberInput>
+                  <InputMessage
+                    error={errors.minStakedVetAmount?.message}
+                    message={`${LL.admin.governance_settings.min_staked_vet_amount_help()}\nCurrent: ${LL.admin.vet_format({ amount: Units.formatEther(FixedPointNumber.of(veVoteInfo.minStakedAmount)) })}`}
+                  />
+                </FormControl>
+              </SimpleGrid>
 
-        <Box>
-          <Button
-            colorScheme="blue"
-            size="lg"
-            onClick={handleSubmit}
-            isLoading={isTransactionPending}
-            loadingText={LL.admin.governance_settings.updating()}
-            isDisabled={!hasChanges}>
-            {LL.admin.governance_settings.update_governance_settings()}
-          </Button>
-        </Box>
-      </VStack>
+              <Box>
+                <Button
+                  type="submit"
+                  colorScheme="blue"
+                  size="lg"
+                  isLoading={isTransactionPending}
+                  loadingText={LL.admin.governance_settings.updating()}
+                  isDisabled={!hasChanges}>
+                  {LL.admin.governance_settings.update_governance_settings()}
+                </Button>
+              </Box>
+            </VStack>
+          );
+        }}
+      </FormSkeleton>
     </AdminCard>
   );
 }

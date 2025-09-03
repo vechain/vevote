@@ -1,15 +1,4 @@
-import {
-  Box,
-  Button,
-  FormControl,
-  FormLabel,
-  Input,
-  Text,
-  VStack,
-  HStack,
-  Divider,
-  FormErrorMessage,
-} from "@chakra-ui/react";
+import { Box, Button, FormControl, Input, Text, VStack, HStack, Divider } from "@chakra-ui/react";
 import { useState, useCallback, useMemo } from "react";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { AdminCard } from "../common/AdminCard";
@@ -18,86 +7,43 @@ import { useVotingPowerAtTimepoint } from "../../hooks/useVotingPowerAtTimepoint
 import { useVechainDomainOrAddress } from "@/hooks/useVechainDomainOrAddress";
 import { CopyLink } from "@/components/ui/CopyLink";
 import { getConfig } from "@repo/config";
+import { FormSkeleton } from "@/components/ui/FormSkeleton";
+import { Label } from "@/components/ui/Label";
+import { InputMessage } from "@/components/ui/InputMessage";
+import { votingPowerQuerySchema, VotingPowerQuerySchema } from "@/schema/adminSchema";
 
 const EXPLORER_URL = getConfig(import.meta.env.VITE_APP_ENV).network.explorerUrl;
-
-interface FormData {
-  address: string;
-  timepoint: string;
-  masterAddress: string;
-}
-
-interface FormErrors {
-  address?: string;
-  timepoint?: string;
-  masterAddress?: string;
-}
 
 export function VotingPowerAtTimepointCard() {
   const { LL } = useI18nContext();
 
-  const [formData, setFormData] = useState<FormData>({
-    address: "",
-    timepoint: "",
-    masterAddress: "",
-  });
+  const [queryParams, setQueryParams] = useState<{
+    address?: string;
+    timepoint?: number;
+    masterAddress?: string;
+  }>({ address: undefined, timepoint: undefined, masterAddress: undefined });
 
-  const [errors, setErrors] = useState<FormErrors>({});
-  const [hasQueried, setHasQueried] = useState(false);
+  const defaultValues = useMemo(
+    () => ({
+      address: "",
+      timepoint: undefined,
+      masterAddress: "",
+    }),
+    [],
+  );
 
-  const queryParams = useMemo(() => {
-    if (!hasQueried || !formData.address || !formData.timepoint) {
-      return { address: undefined, timepoint: undefined, masterAddress: undefined };
-    }
-
-    return {
-      address: formData.address.trim(),
-      timepoint: parseInt(formData.timepoint),
-      masterAddress: formData.masterAddress.trim() || undefined,
-    };
-  }, [hasQueried, formData]);
+  const onSubmit = useCallback(async (values: VotingPowerQuerySchema) => {
+    setQueryParams({
+      address: values.address,
+      timepoint: values.timepoint,
+      masterAddress: values.masterAddress || undefined,
+    });
+  }, []);
 
   const { data: votingPowerData, isLoading, error } = useVotingPowerAtTimepoint(queryParams);
   const { addressOrDomain } = useVechainDomainOrAddress(queryParams.address);
 
-  const validateForm = useCallback((): boolean => {
-    const newErrors: FormErrors = {};
-
-    if (!formData.address.trim()) {
-      newErrors.address = LL.admin.voting_power_timepoint.address_required();
-    } else if (!/^0x[a-fA-F0-9]{40}$/.test(formData.address.trim())) {
-      newErrors.address = LL.admin.voting_power_timepoint.invalid_address();
-    }
-
-    if (!formData.timepoint.trim()) {
-      newErrors.timepoint = LL.admin.voting_power_timepoint.timepoint_required();
-    } else if (isNaN(parseInt(formData.timepoint)) || parseInt(formData.timepoint) < 0) {
-      newErrors.timepoint = LL.admin.voting_power_timepoint.invalid_timepoint();
-    }
-
-    if (formData.masterAddress.trim() && !/^0x[a-fA-F0-9]{40}$/.test(formData.masterAddress.trim())) {
-      newErrors.masterAddress = LL.admin.voting_power_timepoint.invalid_address();
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  }, [formData, LL.admin.voting_power_timepoint]);
-
-  const handleInputChange = useCallback(
-    (field: keyof FormData, value: string) => {
-      setFormData(prev => ({ ...prev, [field]: value }));
-      if (errors[field]) {
-        setErrors(prev => ({ ...prev, [field]: undefined }));
-      }
-    },
-    [errors],
-  );
-
-  const handleQuery = useCallback(() => {
-    if (validateForm()) {
-      setHasQueried(true);
-    }
-  }, [validateForm]);
+  const hasQueried = Boolean(queryParams.address && queryParams.timepoint !== undefined);
 
   const formatVotingPower = useCallback((power: bigint): string => {
     return (Number(power) / 100).toLocaleString();
@@ -110,53 +56,52 @@ export function VotingPowerAtTimepointCard() {
           {LL.admin.voting_power_timepoint.help_text()}
         </Text>
 
-        <Box>
-          <VStack spacing={4}>
-            <FormControl isInvalid={!!errors.address}>
-              <FormLabel>{LL.admin.voting_power_timepoint.address_label()}</FormLabel>
-              <Input
-                value={formData.address}
-                onChange={e => handleInputChange("address", e.target.value)}
-                placeholder={LL.admin.voting_power_timepoint.address_placeholder()}
-                size="md"
-              />
-              <FormErrorMessage>{errors.address}</FormErrorMessage>
-            </FormControl>
+        <FormSkeleton schema={votingPowerQuerySchema} defaultValues={defaultValues} onSubmit={onSubmit}>
+          {({ register, errors }) => (
+            <VStack spacing={4}>
+              <FormControl isInvalid={!!errors.address}>
+                <Label label={LL.admin.voting_power_timepoint.address_label()} />
+                <Input
+                  placeholder={LL.admin.voting_power_timepoint.address_placeholder()}
+                  size="md"
+                  {...register("address")}
+                />
+                <InputMessage error={errors.address?.message} />
+              </FormControl>
 
-            <FormControl isInvalid={!!errors.timepoint}>
-              <FormLabel>{LL.admin.voting_power_timepoint.timepoint_label()}</FormLabel>
-              <Input
-                value={formData.timepoint}
-                onChange={e => handleInputChange("timepoint", e.target.value)}
-                placeholder={LL.admin.voting_power_timepoint.timepoint_placeholder()}
-                type="number"
-                size="md"
-              />
-              <FormErrorMessage>{errors.timepoint}</FormErrorMessage>
-            </FormControl>
+              <FormControl isInvalid={!!errors.timepoint}>
+                <Label label={LL.admin.voting_power_timepoint.timepoint_label()} />
+                <Input
+                  placeholder={LL.admin.voting_power_timepoint.timepoint_placeholder()}
+                  type="number"
+                  size="md"
+                  {...register("timepoint")}
+                />
+                <InputMessage error={errors.timepoint?.message} />
+              </FormControl>
 
-            <FormControl isInvalid={!!errors.masterAddress}>
-              <FormLabel>{LL.admin.voting_power_timepoint.master_address_label()}</FormLabel>
-              <Input
-                value={formData.masterAddress}
-                onChange={e => handleInputChange("masterAddress", e.target.value)}
-                placeholder={LL.admin.voting_power_timepoint.master_address_placeholder()}
-                size="md"
-              />
-              <FormErrorMessage>{errors.masterAddress}</FormErrorMessage>
-            </FormControl>
+              <FormControl isInvalid={!!errors.masterAddress}>
+                <Label label={LL.admin.voting_power_timepoint.master_address_label()} isOptional />
+                <Input
+                  placeholder={LL.admin.voting_power_timepoint.master_address_placeholder()}
+                  size="md"
+                  {...register("masterAddress")}
+                />
+                <InputMessage error={errors.masterAddress?.message} />
+              </FormControl>
 
-            <Button
-              colorScheme="blue"
-              size="lg"
-              onClick={handleQuery}
-              isLoading={isLoading}
-              loadingText={LL.admin.voting_power_timepoint.querying()}
-              width="full">
-              {LL.admin.voting_power_timepoint.query_button()}
-            </Button>
-          </VStack>
-        </Box>
+              <Button
+                type="submit"
+                colorScheme="blue"
+                size="lg"
+                isLoading={isLoading}
+                loadingText={LL.admin.voting_power_timepoint.querying()}
+                width="full">
+                {LL.admin.voting_power_timepoint.query_button()}
+              </Button>
+            </VStack>
+          )}
+        </FormSkeleton>
 
         {hasQueried && (
           <>

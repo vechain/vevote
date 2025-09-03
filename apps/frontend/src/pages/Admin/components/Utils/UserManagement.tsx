@@ -5,8 +5,6 @@ import {
   Select,
   Button,
   useDisclosure,
-  Alert,
-  AlertIcon,
   Divider,
   Badge,
   Wrap,
@@ -15,10 +13,8 @@ import {
   Box,
   Input,
   FormControl,
-  FormLabel,
-  FormErrorMessage,
 } from "@chakra-ui/react";
-import { useState, useCallback, useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { useRoleManagement } from "@/hooks/useRoleManagement";
 import { useUserRoles } from "@/hooks/useUserRoles";
@@ -31,6 +27,9 @@ import { isValidAddress } from "@/utils/zod";
 import { executeCall } from "@/utils/contract";
 import { getConfig } from "@repo/config";
 import { VeVote__factory } from "@repo/contracts";
+import { Label } from "@/components/ui/Label";
+import { InputMessage } from "@/components/ui/InputMessage";
+import { GenericInfoBox } from "@/components/ui/GenericInfoBox";
 
 export const ROLES = [
   "DEFAULT_ADMIN_ROLE",
@@ -50,12 +49,14 @@ export function UserManagement() {
   const { sendTransaction, isTransactionPending } = useRoleManagement();
 
   const { isOpen: isSuccessOpen, onClose: onSuccessClose, onOpen: onSuccessOpen } = useDisclosure();
-  const [successMessage, setSuccessMessage] = useState<string>("");
-  const [currentUserAddress, setCurrentUserAddress] = useState<string>("");
 
-  const { data: userRoles, isLoading: isLoadingRoles, refetch: refetchRoles } = useUserRoles(currentUserAddress);
-
-  const isUserRoles = useMemo(() => Boolean(userRoles && userRoles.length > 0), [userRoles]);
+  const defaultValues = useMemo(
+    () => ({
+      userAddress: "",
+      selectedRole: "",
+    }),
+    [],
+  );
 
   const handleRoleAction = useCallback(
     async (action: "grant" | "revoke", values: UserManagementSchema) => {
@@ -72,33 +73,15 @@ export function UserManagement() {
 
       const role = nodeRes.result.plain as (typeof ROLES)[number];
 
-      try {
-        await sendTransaction({
-          action,
-          role,
-          account: values.userAddress,
-        });
+      await sendTransaction({
+        action,
+        role,
+        account: values.userAddress,
+      });
 
-        const actionMessage =
-          action === "grant"
-            ? LL.admin.common_roles.grant_success_description()
-            : LL.admin.common_roles.revoke_success_description();
-
-        setSuccessMessage(actionMessage);
-        onSuccessOpen();
-
-        setCurrentUserAddress(values.userAddress);
-        await refetchRoles();
-      } catch (err) {
-        const error = err as { error?: { message: string }; message: string };
-        throw new Error(
-          error?.error?.message ||
-            error?.message ||
-            LL.admin.common_roles.error_description({ error: LL.admin.unknown_error() }),
-        );
-      }
+      onSuccessOpen();
     },
-    [LL.admin, sendTransaction, onSuccessOpen, refetchRoles],
+    [LL.admin, sendTransaction, onSuccessOpen],
   );
 
   const handleFormSubmit: FormSkeletonProps<UserManagementSchema>["onSubmit"] = useCallback(
@@ -117,50 +100,39 @@ export function UserManagement() {
   return (
     <>
       <AdminCard title={LL.admin.user_management.title()}>
+        <Text fontSize="sm" color="gray.600" mb={6}>
+          {LL.admin.user_management.description()}
+        </Text>
+
         <FormSkeleton<UserManagementSchema>
           schema={userManagementSchema}
           onSubmit={handleFormSubmit}
-          defaultValues={{ userAddress: "", selectedRole: "" }}>
+          defaultValues={defaultValues}>
           {({ register, errors, watch, isValid }) => {
             const watchedAddress = watch("userAddress");
-            const isAddressValid = watchedAddress && isValidAddress(watchedAddress);
-
-            if (isAddressValid && watchedAddress !== currentUserAddress) {
-              setCurrentUserAddress(watchedAddress);
-            }
 
             return (
               <VStack spacing={6} align="stretch">
-                <Text fontSize="sm" color="gray.600">
-                  {LL.admin.user_management.description()}
-                </Text>
-
                 {errors.root && (
-                  <Alert status="error">
-                    <AlertIcon />
-                    {errors.root.message}
-                  </Alert>
+                  <GenericInfoBox variant="error">
+                    <Text color="red.700">{errors.root.message}</Text>
+                  </GenericInfoBox>
                 )}
 
                 <VStack spacing={4} align="stretch">
                   <FormControl isInvalid={!!errors.userAddress}>
-                    <FormLabel>{LL.admin.user_management.user_address_label()}</FormLabel>
+                    <Label label={LL.admin.user_management.user_address_label()} />
                     <Input
                       {...register("userAddress")}
                       placeholder={LL.admin.user_management.user_address_placeholder()}
                     />
-                    <FormErrorMessage>{errors.userAddress?.message}</FormErrorMessage>
+                    <InputMessage error={errors.userAddress?.message} />
                   </FormControl>
 
-                  <Box>
-                    <Text fontSize="sm" fontWeight="medium" mb={2}>
-                      {LL.admin.user_management.current_roles_label()}
-                    </Text>
-                    <RoleSection isLoadingRoles={isLoadingRoles} isUserRoles={isUserRoles} userRoles={userRoles} />
-                  </Box>
+                  <UserRolesSection userAddress={watchedAddress} />
 
                   <FormControl isInvalid={!!errors.selectedRole}>
-                    <FormLabel>{LL.admin.user_management.role_label()}</FormLabel>
+                    <Label label={LL.admin.user_management.role_label()} />
                     <Select {...register("selectedRole")} placeholder={LL.admin.user_management.role_placeholder()}>
                       {ROLES.map(role => (
                         <option key={role} value={role}>
@@ -168,7 +140,7 @@ export function UserManagement() {
                         </option>
                       ))}
                     </Select>
-                    <FormErrorMessage>{errors.selectedRole?.message}</FormErrorMessage>
+                    <InputMessage error={errors.selectedRole?.message} />
                   </FormControl>
 
                   <Divider />
@@ -210,18 +182,36 @@ export function UserManagement() {
         onClose={onSuccessClose}
         icon={CheckIcon}
         iconColor="primary.500"
-        title={
-          successMessage.includes("granted")
-            ? LL.admin.common_roles.grant_success_title()
-            : LL.admin.common_roles.revoke_success_title()
-        }>
+        title={LL.admin.common_roles.grant_success_title()}>
         <Text textAlign="center" fontSize={14} color="gray.600">
-          {successMessage}
+          {LL.admin.common_roles.grant_success_description()}
         </Text>
       </MessageModal>
     </>
   );
 }
+
+const UserRolesSection = ({ userAddress }: { userAddress: string }) => {
+  const { LL } = useI18nContext();
+  const { data: userRoles, isLoading: isLoadingRoles } = useUserRoles(
+    userAddress && isValidAddress(userAddress) ? userAddress : "",
+  );
+
+  const isUserRoles = useMemo(() => Boolean(userRoles && userRoles.length > 0), [userRoles]);
+
+  if (!userAddress || !isValidAddress(userAddress)) {
+    return null;
+  }
+
+  return (
+    <Box>
+      <Text fontSize="sm" fontWeight="medium" mb={2}>
+        {LL.admin.user_management.current_roles_label()}
+      </Text>
+      <RoleSection isLoadingRoles={isLoadingRoles} isUserRoles={isUserRoles} userRoles={userRoles} />
+    </Box>
+  );
+};
 
 const RoleSection = ({
   isLoadingRoles,

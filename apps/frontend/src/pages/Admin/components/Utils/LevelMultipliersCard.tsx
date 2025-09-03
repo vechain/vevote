@@ -6,21 +6,20 @@ import {
   Th,
   Td,
   TableContainer,
-  NumberInput,
-  NumberInputField,
-  NumberInputStepper,
-  NumberIncrementStepper,
-  NumberDecrementStepper,
   Text,
   Button,
   Box,
+  FormControl,
+  Input,
 } from "@chakra-ui/react";
-import { useState, useCallback, useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { useLevelMultipliers } from "@/hooks/useLevelMultipliers";
 import { AdminCard } from "../common/AdminCard";
 import { GenericInfoBox } from "@/components/ui/GenericInfoBox";
 import { useLevelMultipliersInfo } from "../../hooks/useLevelMultipliersInfo";
+import { FormSkeleton } from "@/components/ui/FormSkeleton";
+import { z } from "zod";
 
 interface LevelMultipliersCardProps {
   onSuccess?: () => void;
@@ -31,6 +30,22 @@ const getDefaultMultiplierForLevel = (levelId: number): number => {
   return defaults[levelId] || 100;
 };
 
+const multiplierSchema = z.object({
+  multiplier0: z.coerce.number().min(0).max(1000).optional(),
+  multiplier1: z.coerce.number().min(0).max(1000).optional(),
+  multiplier2: z.coerce.number().min(0).max(1000).optional(),
+  multiplier3: z.coerce.number().min(0).max(1000).optional(),
+  multiplier4: z.coerce.number().min(0).max(1000).optional(),
+  multiplier5: z.coerce.number().min(0).max(1000).optional(),
+  multiplier6: z.coerce.number().min(0).max(1000).optional(),
+  multiplier7: z.coerce.number().min(0).max(1000).optional(),
+  multiplier8: z.coerce.number().min(0).max(1000).optional(),
+  multiplier9: z.coerce.number().min(0).max(1000).optional(),
+  multiplier10: z.coerce.number().min(0).max(1000).optional(),
+});
+
+type MultiplierSchema = z.infer<typeof multiplierSchema>;
+
 export function LevelMultipliersCard({ onSuccess }: LevelMultipliersCardProps) {
   const { LL } = useI18nContext();
   const { sendTransaction, isTransactionPending } = useLevelMultipliers();
@@ -40,64 +55,69 @@ export function LevelMultipliersCard({ onSuccess }: LevelMultipliersCardProps) {
     error: multipliersError,
   } = useLevelMultipliersInfo();
 
-  const [levelMultipliers, setLevelMultipliers] = useState<string[]>(Array(11).fill(""));
-  const [errorMessage, setErrorMessage] = useState<string>("");
-
-  const hasChanges = useMemo(() => 
-    levelMultipliers.some(val => val !== ""), 
-    [levelMultipliers]
+  const defaultValues = useMemo(
+    () => ({
+      multiplier0: undefined,
+      multiplier1: undefined,
+      multiplier2: undefined,
+      multiplier3: undefined,
+      multiplier4: undefined,
+      multiplier5: undefined,
+      multiplier6: undefined,
+      multiplier7: undefined,
+      multiplier8: undefined,
+      multiplier9: undefined,
+      multiplier10: undefined,
+    }),
+    [],
   );
 
-  const handleMultiplierChange = (index: number, value: string) => {
-    setLevelMultipliers(prev => prev.map((v, i) => (i === index ? value : v)));
-  };
+  const onSubmit = useCallback(
+    async (values: MultiplierSchema) => {
+      const multipliers = Array.from({ length: 11 }, (_, index) => {
+        const fieldKey = `multiplier${index}` as keyof MultiplierSchema;
+        const formValue = values[fieldKey];
 
-  const handleSubmit = useCallback(async () => {
-    try {
-      setErrorMessage("");
-
-      if (!hasChanges) return;
-
-      const multipliers = levelMultipliers.map((val, index) =>
-        val !== "" ? Number(val) : (currentMultipliers?.[index] ?? getDefaultMultiplierForLevel(index)),
-      );
+        return formValue !== undefined
+          ? formValue
+          : (currentMultipliers?.[index] ?? getDefaultMultiplierForLevel(index));
+      });
 
       await sendTransaction({
         updateLevelIdMultipliers: multipliers,
       });
+
       onSuccess?.();
+    },
+    [currentMultipliers, sendTransaction, onSuccess],
+  );
 
-      setLevelMultipliers(Array(11).fill(""));
-    } catch (err) {
-      const error = err as { error?: { message: string }; message: string };
-      setErrorMessage(
-        error?.error?.message ||
-          error?.message ||
-          LL.admin.governance_settings.error_description({ error: LL.admin.unknown_error() }),
-      );
-    }
-  }, [hasChanges, levelMultipliers, sendTransaction, onSuccess, currentMultipliers, LL.admin]);
+  const levelData = useMemo(
+    () => [
+      { id: 1, name: LL.admin.governance_settings.strength_node_multiplier(), type: "regular" },
+      { id: 2, name: LL.admin.governance_settings.thunder_node_multiplier(), type: "regular" },
+      { id: 3, name: LL.admin.governance_settings.mjolnir_node_multiplier(), type: "regular" },
+      { id: 4, name: LL.admin.governance_settings.vethor_x_node_multiplier(), type: "x-node" },
+      { id: 5, name: LL.admin.governance_settings.strength_x_node_multiplier(), type: "x-node" },
+      { id: 6, name: LL.admin.governance_settings.thunder_x_node_multiplier(), type: "x-node" },
+      { id: 7, name: LL.admin.governance_settings.mjolnir_x_node_multiplier(), type: "x-node" },
+      { id: 8, name: LL.admin.governance_settings.dawn_node_multiplier(), type: "regular" },
+      { id: 9, name: LL.admin.governance_settings.lightning_node_multiplier(), type: "regular" },
+      { id: 10, name: LL.admin.governance_settings.flash_node_multiplier(), type: "regular" },
+    ],
+    [LL.admin.governance_settings],
+  );
 
-  const levelData = useMemo(() => [
-    { id: 1, name: LL.admin.governance_settings.strength_node_multiplier(), type: "regular" },
-    { id: 2, name: LL.admin.governance_settings.thunder_node_multiplier(), type: "regular" },
-    { id: 3, name: LL.admin.governance_settings.mjolnir_node_multiplier(), type: "regular" },
-    { id: 4, name: LL.admin.governance_settings.vethor_x_node_multiplier(), type: "x-node" },
-    { id: 5, name: LL.admin.governance_settings.strength_x_node_multiplier(), type: "x-node" },
-    { id: 6, name: LL.admin.governance_settings.thunder_x_node_multiplier(), type: "x-node" },
-    { id: 7, name: LL.admin.governance_settings.mjolnir_x_node_multiplier(), type: "x-node" },
-    { id: 8, name: LL.admin.governance_settings.dawn_node_multiplier(), type: "regular" },
-    { id: 9, name: LL.admin.governance_settings.lightning_node_multiplier(), type: "regular" },
-    { id: 10, name: LL.admin.governance_settings.flash_node_multiplier(), type: "regular" },
-  ], [LL.admin.governance_settings]);
-
-  const getCurrentMultiplier = useCallback((index: number) => {
-    return currentMultipliers?.[index] ?? getDefaultMultiplierForLevel(index);
-  }, [currentMultipliers]);
+  const getCurrentMultiplier = useCallback(
+    (index: number) => {
+      return currentMultipliers?.[index] ?? getDefaultMultiplierForLevel(index);
+    },
+    [currentMultipliers],
+  );
 
   if (isLoadingMultipliers) {
     return (
-      <AdminCard title={LL.admin.governance_settings.level_multipliers_label()} maxW={800}>
+      <AdminCard title={LL.admin.governance_settings.level_multipliers_label()} maxW={850}>
         <Text>{LL.admin.vevote_contract.loading()}</Text>
       </AdminCard>
     );
@@ -105,7 +125,7 @@ export function LevelMultipliersCard({ onSuccess }: LevelMultipliersCardProps) {
 
   if (multipliersError) {
     return (
-      <AdminCard title={LL.admin.governance_settings.level_multipliers_label()} maxW={800}>
+      <AdminCard title={LL.admin.governance_settings.level_multipliers_label()} maxW={850}>
         <GenericInfoBox variant="error">
           <Text color="red.700">Error loading multipliers</Text>
         </GenericInfoBox>
@@ -114,72 +134,77 @@ export function LevelMultipliersCard({ onSuccess }: LevelMultipliersCardProps) {
   }
 
   return (
-    <AdminCard title={LL.admin.governance_settings.level_multipliers_label()} maxW={800}>
+    <AdminCard title={LL.admin.governance_settings.level_multipliers_label()} maxW={850}>
       <Text fontSize="sm" color="gray.600" mb={4}>
         {LL.admin.governance_settings.level_multipliers_help()}
       </Text>
 
-      {errorMessage && (
-        <GenericInfoBox variant="error" mb={4}>
-          <Text color="red.700">{errorMessage}</Text>
-        </GenericInfoBox>
-      )}
+      <FormSkeleton schema={multiplierSchema} defaultValues={defaultValues} onSubmit={onSubmit}>
+        {({ register, errors, watch }) => {
+          const watchedValues = watch();
+          const hasChanges = Object.values(watchedValues).some(
+            value => value !== undefined && value !== null && value !== "",
+          );
 
-      <TableContainer>
-        <Table variant="simple" size="sm">
-          <Thead>
-            <Tr>
-              <Th>{LL.admin.governance_settings.node_type()}</Th>
-              <Th>{LL.admin.governance_settings.current_multiplier()}</Th>
-              <Th>{LL.admin.governance_settings.new_multiplier()}</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {levelData.map(({ id, name, type }) => (
-              <Tr key={id} bg={type === "x-node" ? "green.50" : undefined}>
-                <Td>
-                  <Text fontSize="sm" fontWeight="medium">
-                    {name}
-                  </Text>
-                </Td>
-                <Td>
-                  <Text fontSize="sm" color="gray.600">
-                    {getCurrentMultiplier(id)}
-                  </Text>
-                </Td>
-                <Td>
-                  <NumberInput
-                    value={levelMultipliers[id]}
-                    onChange={value => handleMultiplierChange(id, value)}
-                    min={0}
-                    max={1000}
-                    step={10}
-                    size="sm"
-                    width="100px">
-                    <NumberInputField placeholder={getCurrentMultiplier(id).toString()} />
-                    <NumberInputStepper>
-                      <NumberIncrementStepper />
-                      <NumberDecrementStepper />
-                    </NumberInputStepper>
-                  </NumberInput>
-                </Td>
-              </Tr>
-            ))}
-          </Tbody>
-        </Table>
-      </TableContainer>
+          return (
+            <>
+              <TableContainer>
+                <Table variant="simple" size="sm">
+                  <Thead>
+                    <Tr>
+                      <Th>{LL.admin.governance_settings.node_type()}</Th>
+                      <Th>{LL.admin.governance_settings.current_multiplier()}</Th>
+                      <Th>{LL.admin.governance_settings.new_multiplier()}</Th>
+                    </Tr>
+                  </Thead>
+                  <Tbody>
+                    {levelData.map(({ id, name, type }) => (
+                      <Tr key={id} bg={type === "x-node" ? "green.50" : undefined}>
+                        <Td>
+                          <Text fontSize="sm" fontWeight="medium">
+                            {name}
+                          </Text>
+                        </Td>
+                        <Td>
+                          <Text fontSize="sm" color="gray.600">
+                            {getCurrentMultiplier(id)}
+                          </Text>
+                        </Td>
+                        <Td>
+                          <FormControl isInvalid={!!errors[`multiplier${id}` as keyof MultiplierSchema]}>
+                            <Input
+                              type="number"
+                              placeholder={getCurrentMultiplier(id).toString()}
+                              min={0}
+                              max={1000}
+                              step={10}
+                              size="sm"
+                              width="100px"
+                              {...register(`multiplier${id}` as keyof MultiplierSchema)}
+                            />
+                          </FormControl>
+                        </Td>
+                      </Tr>
+                    ))}
+                  </Tbody>
+                </Table>
+              </TableContainer>
 
-      <Box mt={6}>
-        <Button
-          colorScheme="green"
-          size="lg"
-          onClick={handleSubmit}
-          isLoading={isTransactionPending}
-          loadingText={LL.admin.governance_settings.updating()}
-          isDisabled={!hasChanges}>
-          {LL.admin.governance_settings.update_multipliers()}
-        </Button>
-      </Box>
+              <Box mt={6}>
+                <Button
+                  type="submit"
+                  colorScheme="green"
+                  size="lg"
+                  isLoading={isTransactionPending}
+                  loadingText={LL.admin.governance_settings.updating()}
+                  isDisabled={!hasChanges}>
+                  {LL.admin.governance_settings.update_multipliers()}
+                </Button>
+              </Box>
+            </>
+          );
+        }}
+      </FormSkeleton>
     </AdminCard>
   );
 }
