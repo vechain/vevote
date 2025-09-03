@@ -2,6 +2,7 @@
 import { VeVote__factory } from "@repo/contracts";
 import { getConfig } from "@repo/config";
 import { executeMultipleClauses } from "../../../utils/contract";
+import { ZERO_ADDRESS } from "@vechain/sdk-core";
 
 export interface VeVoteInfo {
   quorumNumerator: bigint;
@@ -105,6 +106,24 @@ export class VeVoteService {
     } catch (error) {
       console.error("Error fetching level multipliers:", error);
       return DEFAULT_MULTIPLIERS;
+    }
+  }
+
+  async getVotingPowerAtTimepoint(address: string, timepoint: number, masterAddress?: string): Promise<bigint> {
+    try {
+      const result = await executeMultipleClauses({
+        contractAddress: this.contractAddress,
+        contractInterface: this.contractInterface,
+        methodsWithArgs: [{
+          method: "getVoteWeightAtTimepoint" as const,
+          args: [address, timepoint, masterAddress || ZERO_ADDRESS],
+        }],
+      });
+
+      return result[0]?.success ? BigInt(result[0].result.plain as string) : BigInt(0);
+    } catch (error) {
+      console.error("Error fetching voting power at timepoint:", error);
+      return BigInt(0);
     }
   }
 }

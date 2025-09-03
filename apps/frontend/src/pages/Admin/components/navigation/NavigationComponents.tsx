@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import { TranslationFunctions } from "@/i18n/i18n-types";
 
 const contractKeys = ["vevote-contract", "node-management", "stargate-nodes"];
-const utilsKeys = ["user-management", "governance-settings"];
+const utilsKeys = ["user-management", "governance-settings", "voting-power-timepoint"];
 
 interface MainTabsProps {
   readonly mainTabIndex: number;
@@ -15,7 +15,7 @@ interface MainTabsProps {
 const getTabLabels = (type: "contracts" | "utils", LL: TranslationFunctions) =>
   type === "contracts"
     ? [LL.admin.contracts.vevote(), LL.admin.contracts.node_management(), LL.admin.contracts.stargate_nodes()]
-    : [LL.admin.tabs.users(), LL.admin.tabs.governance_settings()];
+    : [LL.admin.tabs.users(), LL.admin.tabs.governance_settings(), LL.admin.tabs.voting_power_timepoint()];
 
 export function MainTabs({ mainTabIndex, onMainTabChange, children }: MainTabsProps) {
   const { LL } = useI18nContext();

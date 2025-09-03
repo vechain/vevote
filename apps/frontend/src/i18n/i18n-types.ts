@@ -1427,6 +1427,10 @@ type RootTranslation = {
 			 * G​o​v​e​r​n​a​n​c​e​ ​S​e​t​t​i​n​g​s
 			 */
 			governance_settings: string
+			/**
+			 * V​o​t​i​n​g​ ​P​o​w​e​r​ ​Q​u​e​r​y
+			 */
+			voting_power_timepoint: string
 		}
 		contracts: {
 			/**
@@ -1909,6 +1913,97 @@ type RootTranslation = {
 			 * C​h​e​c​k​i​n​g​ ​y​o​u​r​ ​r​o​l​e​s​.​.​.
 			 */
 			checking_roles: string
+		}
+		voting_power_timepoint: {
+			/**
+			 * V​o​t​i​n​g​ ​P​o​w​e​r​ ​a​t​ ​T​i​m​e​p​o​i​n​t
+			 */
+			title: string
+			/**
+			 * Q​u​e​r​y​ ​h​i​s​t​o​r​i​c​a​l​ ​v​o​t​i​n​g​ ​p​o​w​e​r​ ​f​o​r​ ​a​n​y​ ​w​a​l​l​e​t​ ​a​t​ ​a​ ​s​p​e​c​i​f​i​c​ ​t​i​m​e​p​o​i​n​t
+			 */
+			description: string
+			/**
+			 * W​a​l​l​e​t​ ​A​d​d​r​e​s​s
+			 */
+			address_label: string
+			/**
+			 * E​n​t​e​r​ ​w​a​l​l​e​t​ ​a​d​d​r​e​s​s​ ​(​0​x​.​.​.​)
+			 */
+			address_placeholder: string
+			/**
+			 * T​i​m​e​p​o​i​n​t​/​B​l​o​c​k​ ​N​u​m​b​e​r
+			 */
+			timepoint_label: string
+			/**
+			 * E​n​t​e​r​ ​t​i​m​e​p​o​i​n​t​ ​o​r​ ​b​l​o​c​k​ ​n​u​m​b​e​r
+			 */
+			timepoint_placeholder: string
+			/**
+			 * M​a​s​t​e​r​ ​A​d​d​r​e​s​s​ ​(​O​p​t​i​o​n​a​l​)
+			 */
+			master_address_label: string
+			/**
+			 * E​n​t​e​r​ ​m​a​s​t​e​r​ ​a​d​d​r​e​s​s​ ​f​o​r​ ​v​a​l​i​d​a​t​o​r​ ​p​o​w​e​r​ ​(​0​x​.​.​.​)
+			 */
+			master_address_placeholder: string
+			/**
+			 * Q​u​e​r​y​ ​V​o​t​i​n​g​ ​P​o​w​e​r
+			 */
+			query_button: string
+			/**
+			 * Q​u​e​r​y​i​n​g​.​.​.
+			 */
+			querying: string
+			/**
+			 * V​o​t​i​n​g​ ​P​o​w​e​r​ ​R​e​s​u​l​t​s
+			 */
+			results_title: string
+			/**
+			 * N​o​d​e​-​b​a​s​e​d​ ​P​o​w​e​r​:
+			 */
+			node_power_label: string
+			/**
+			 * V​a​l​i​d​a​t​o​r​ ​P​o​w​e​r​:
+			 */
+			validator_power_label: string
+			/**
+			 * T​o​t​a​l​ ​P​o​w​e​r​:
+			 */
+			total_power_label: string
+			/**
+			 * N​o​ ​r​e​s​u​l​t​s​ ​t​o​ ​d​i​s​p​l​a​y
+			 */
+			no_results: string
+			/**
+			 * P​l​e​a​s​e​ ​e​n​t​e​r​ ​a​ ​v​a​l​i​d​ ​a​d​d​r​e​s​s
+			 */
+			invalid_address: string
+			/**
+			 * P​l​e​a​s​e​ ​e​n​t​e​r​ ​a​ ​v​a​l​i​d​ ​t​i​m​e​p​o​i​n​t​/​b​l​o​c​k​ ​n​u​m​b​e​r
+			 */
+			invalid_timepoint: string
+			/**
+			 * W​a​l​l​e​t​ ​a​d​d​r​e​s​s​ ​i​s​ ​r​e​q​u​i​r​e​d
+			 */
+			address_required: string
+			/**
+			 * T​i​m​e​p​o​i​n​t​ ​i​s​ ​r​e​q​u​i​r​e​d
+			 */
+			timepoint_required: string
+			/**
+			 * Q​u​e​r​y​ ​F​a​i​l​e​d
+			 */
+			error_title: string
+			/**
+			 * T​h​e​r​e​ ​w​a​s​ ​a​n​ ​e​r​r​o​r​ ​q​u​e​r​y​i​n​g​ ​v​o​t​i​n​g​ ​p​o​w​e​r​:​ ​{​e​r​r​o​r​}
+			 * @param {string} error
+			 */
+			error_description: RequiredParams<'error'>
+			/**
+			 * E​n​t​e​r​ ​a​ ​w​a​l​l​e​t​ ​a​d​d​r​e​s​s​ ​a​n​d​ ​t​i​m​e​p​o​i​n​t​ ​t​o​ ​v​i​e​w​ ​h​i​s​t​o​r​i​c​a​l​ ​v​o​t​i​n​g​ ​p​o​w​e​r​.​ ​O​p​t​i​o​n​a​l​l​y​ ​p​r​o​v​i​d​e​ ​a​ ​m​a​s​t​e​r​ ​a​d​d​r​e​s​s​ ​t​o​ ​c​h​e​c​k​ ​v​a​l​i​d​a​t​o​r​-​d​e​l​e​g​a​t​e​d​ ​p​o​w​e​r​.
+			 */
+			help_text: string
 		}
 		/**
 		 * U​n​k​n​o​w​n​ ​e​r​r​o​r
@@ -3408,6 +3503,10 @@ JPG, PNG or SVG of maximum of {size}MB.
 			 * Governance Settings
 			 */
 			governance_settings: () => LocalizedString
+			/**
+			 * Voting Power Query
+			 */
+			voting_power_timepoint: () => LocalizedString
 		}
 		contracts: {
 			/**
@@ -3872,6 +3971,96 @@ JPG, PNG or SVG of maximum of {size}MB.
 			 * Checking your roles...
 			 */
 			checking_roles: () => LocalizedString
+		}
+		voting_power_timepoint: {
+			/**
+			 * Voting Power at Timepoint
+			 */
+			title: () => LocalizedString
+			/**
+			 * Query historical voting power for any wallet at a specific timepoint
+			 */
+			description: () => LocalizedString
+			/**
+			 * Wallet Address
+			 */
+			address_label: () => LocalizedString
+			/**
+			 * Enter wallet address (0x...)
+			 */
+			address_placeholder: () => LocalizedString
+			/**
+			 * Timepoint/Block Number
+			 */
+			timepoint_label: () => LocalizedString
+			/**
+			 * Enter timepoint or block number
+			 */
+			timepoint_placeholder: () => LocalizedString
+			/**
+			 * Master Address (Optional)
+			 */
+			master_address_label: () => LocalizedString
+			/**
+			 * Enter master address for validator power (0x...)
+			 */
+			master_address_placeholder: () => LocalizedString
+			/**
+			 * Query Voting Power
+			 */
+			query_button: () => LocalizedString
+			/**
+			 * Querying...
+			 */
+			querying: () => LocalizedString
+			/**
+			 * Voting Power Results
+			 */
+			results_title: () => LocalizedString
+			/**
+			 * Node-based Power:
+			 */
+			node_power_label: () => LocalizedString
+			/**
+			 * Validator Power:
+			 */
+			validator_power_label: () => LocalizedString
+			/**
+			 * Total Power:
+			 */
+			total_power_label: () => LocalizedString
+			/**
+			 * No results to display
+			 */
+			no_results: () => LocalizedString
+			/**
+			 * Please enter a valid address
+			 */
+			invalid_address: () => LocalizedString
+			/**
+			 * Please enter a valid timepoint/block number
+			 */
+			invalid_timepoint: () => LocalizedString
+			/**
+			 * Wallet address is required
+			 */
+			address_required: () => LocalizedString
+			/**
+			 * Timepoint is required
+			 */
+			timepoint_required: () => LocalizedString
+			/**
+			 * Query Failed
+			 */
+			error_title: () => LocalizedString
+			/**
+			 * There was an error querying voting power: {error}
+			 */
+			error_description: (arg: { error: string }) => LocalizedString
+			/**
+			 * Enter a wallet address and timepoint to view historical voting power. Optionally provide a master address to check validator-delegated power.
+			 */
+			help_text: () => LocalizedString
 		}
 		/**
 		 * Unknown error

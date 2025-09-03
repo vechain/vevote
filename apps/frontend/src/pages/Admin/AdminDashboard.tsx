@@ -4,6 +4,7 @@ import { NodeManagement } from "./components/Contracts/NodeManagement";
 import { StargateNodes } from "./components/Contracts/StargateNodes";
 import { UserManagement } from "./components/Utils/UserManagement";
 import { GovernanceSettings } from "./components/Utils/GovernanceSettings";
+import { VotingPowerAtTimepointCard } from "./components/Utils/VotingPowerAtTimepointCard";
 import { ResponsiveNavigation } from "./components/navigation/ResponsiveNavigation";
 
 export function AdminDashboard() {
@@ -21,6 +22,7 @@ export function AdminDashboard() {
   const utilsContent = [
     <UserManagement key="user-management" />,
     <GovernanceSettings key="governance-settings" />,
+    <VotingPowerAtTimepointCard key="voting-power-timepoint" />,
   ];
 
   return (

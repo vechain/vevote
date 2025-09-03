@@ -49,6 +49,7 @@ export function MobileNavDrawer({
   const utilsSubTabs = [
     { label: LL.admin.tabs.users(), index: 0, id: 'users' },
     { label: LL.admin.tabs.governance_settings(), index: 1, id: 'governance-settings' },
+    { label: LL.admin.tabs.voting_power_timepoint(), index: 2, id: 'voting-power-timepoint' },
   ];
 
   const handleNavigation = (mainTabIndex: number, subTabIndex: number) => {
