@@ -1820,9 +1820,29 @@ type RootTranslation = {
 			 */
 			DEFAULT_ADMIN_ROLE: string
 			/**
+			 * E​x​e​c​u​t​o​r
+			 */
+			EXECUTOR_ROLE: string
+			/**
+			 * S​e​t​t​i​n​g​s​ ​M​a​n​a​g​e​r
+			 */
+			SETTINGS_MANAGER_ROLE: string
+			/**
+			 * N​o​d​e​ ​W​e​i​g​h​t​ ​M​a​n​a​g​e​r
+			 */
+			NODE_WEIGHT_MANAGER_ROLE: string
+			/**
 			 * U​p​g​r​a​d​e​r
 			 */
 			UPGRADER_ROLE: string
+			/**
+			 * W​h​i​t​e​l​i​s​t​e​d
+			 */
+			WHITELISTED_ROLE: string
+			/**
+			 * W​h​i​t​e​l​i​s​t​ ​A​d​m​i​n
+			 */
+			WHITELIST_ADMIN_ROLE: string
 			/**
 			 * P​a​u​s​e​r
 			 */
@@ -1839,26 +1859,6 @@ type RootTranslation = {
 			 * W​h​i​t​e​l​i​s​t​e​r
 			 */
 			WHITELISTER_ROLE: string
-			/**
-			 * E​x​e​c​u​t​o​r
-			 */
-			EXECUTOR_ROLE: string
-			/**
-			 * S​e​t​t​i​n​g​s​ ​M​a​n​a​g​e​r
-			 */
-			SETTINGS_MANAGER_ROLE: string
-			/**
-			 * N​o​d​e​ ​W​e​i​g​h​t​ ​M​a​n​a​g​e​r
-			 */
-			NODE_WEIGHT_MANAGER_ROLE: string
-			/**
-			 * W​h​i​t​e​l​i​s​t​ ​A​d​m​i​n
-			 */
-			WHITELIST_ADMIN_ROLE: string
-			/**
-			 * W​h​i​t​e​l​i​s​t​e​d
-			 */
-			WHITELISTED_ROLE: string
 			/**
 			 * G​r​a​n​t​ ​R​o​l​e
 			 */
@@ -3683,9 +3683,29 @@ JPG, PNG or SVG of maximum of {size}MB.
 			 */
 			DEFAULT_ADMIN_ROLE: () => LocalizedString
 			/**
+			 * Executor
+			 */
+			EXECUTOR_ROLE: () => LocalizedString
+			/**
+			 * Settings Manager
+			 */
+			SETTINGS_MANAGER_ROLE: () => LocalizedString
+			/**
+			 * Node Weight Manager
+			 */
+			NODE_WEIGHT_MANAGER_ROLE: () => LocalizedString
+			/**
 			 * Upgrader
 			 */
 			UPGRADER_ROLE: () => LocalizedString
+			/**
+			 * Whitelisted
+			 */
+			WHITELISTED_ROLE: () => LocalizedString
+			/**
+			 * Whitelist Admin
+			 */
+			WHITELIST_ADMIN_ROLE: () => LocalizedString
 			/**
 			 * Pauser
 			 */
@@ -3702,26 +3722,6 @@ JPG, PNG or SVG of maximum of {size}MB.
 			 * Whitelister
 			 */
 			WHITELISTER_ROLE: () => LocalizedString
-			/**
-			 * Executor
-			 */
-			EXECUTOR_ROLE: () => LocalizedString
-			/**
-			 * Settings Manager
-			 */
-			SETTINGS_MANAGER_ROLE: () => LocalizedString
-			/**
-			 * Node Weight Manager
-			 */
-			NODE_WEIGHT_MANAGER_ROLE: () => LocalizedString
-			/**
-			 * Whitelist Admin
-			 */
-			WHITELIST_ADMIN_ROLE: () => LocalizedString
-			/**
-			 * Whitelisted
-			 */
-			WHITELISTED_ROLE: () => LocalizedString
 			/**
 			 * Grant Role
 			 */

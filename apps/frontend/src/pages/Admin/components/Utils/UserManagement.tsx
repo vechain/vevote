@@ -66,10 +66,10 @@ export function UserManagement() {
         setSuccessMessage(actionMessage);
         onSuccessOpen();
 
-        // Update current user address for roles display
         setCurrentUserAddress(values.userAddress);
         await refetchRoles();
-      } catch (error: any) {
+      } catch (err) {
+        const error = err as { error?: { message: string }; message: string };
         throw new Error(
           error?.error?.message ||
             error?.message ||
@@ -104,7 +104,6 @@ export function UserManagement() {
             const watchedAddress = watch("userAddress");
             const isAddressValid = watchedAddress && isValidAddress(watchedAddress);
 
-            // Update current address when valid
             if (isAddressValid && watchedAddress !== currentUserAddress) {
               setCurrentUserAddress(watchedAddress);
             }
@@ -208,7 +207,6 @@ export function UserManagement() {
         </FormSkeleton>
       </AdminCard>
 
-      {/* Success Modal */}
       <MessageModal
         isOpen={isSuccessOpen}
         onClose={onSuccessClose}
