@@ -12,9 +12,9 @@ export function AdminCard({ title, children, ...boxProps }: AdminCardProps) {
     md: "fit-content",
   });
 
-  const minWidth = useBreakpointValue({
+  const width = useBreakpointValue({
     base: "auto",
-    md: 300,
+    md: 400,
   });
 
   const padding = useBreakpointValue({
@@ -23,15 +23,15 @@ export function AdminCard({ title, children, ...boxProps }: AdminCardProps) {
   });
 
   return (
-    <Box 
-      border="1px" 
-      borderColor="gray.200" 
-      borderRadius="md" 
-      p={padding} 
+    <Box
+      border="1px"
+      borderColor="gray.200"
+      borderRadius="md"
+      p={padding}
       w={cardWidth}
-      minW={minWidth}
-      {...boxProps}
-    >
+      minW={width}
+      maxW={width}
+      {...boxProps}>
       <Heading size="sm" mb={3}>
         {title}
       </Heading>

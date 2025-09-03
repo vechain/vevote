@@ -23,7 +23,7 @@ import { useI18nContext } from "@/i18n/i18n-react";
 import { useRoleManagement } from "@/hooks/useRoleManagement";
 import { useUserRoles } from "@/hooks/useUserRoles";
 import { MessageModal } from "@/components/ui/ModalSkeleton";
-import { FormSkeleton } from "@/components/ui/FormSkeleton";
+import { FormSkeleton, FormSkeletonProps } from "@/components/ui/FormSkeleton";
 import { CheckIcon } from "@/icons";
 import { AdminCard } from "../common/AdminCard";
 import { userManagementSchema, type UserManagementSchema } from "@/schema/adminSchema";
@@ -80,12 +80,13 @@ export function UserManagement() {
     [LL.admin, sendTransaction, onSuccessOpen, refetchRoles],
   );
 
-  const handleFormSubmit = useCallback(
-    async (values: UserManagementSchema, { setError }: any, action?: string) => {
+  const handleFormSubmit: FormSkeletonProps<UserManagementSchema>["onSubmit"] = useCallback(
+    async (values, { setError }, action) => {
       try {
         const roleAction = action === "revoke" ? "revoke" : "grant";
         await handleRoleAction(roleAction, values);
-      } catch (error: any) {
+      } catch (err) {
+        const error = err as Error;
         setError("root", { message: error.message });
       }
     },
