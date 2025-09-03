@@ -24,10 +24,6 @@ export const CONTRACT_CONFIGS = {
     roles: [
       "DEFAULT_ADMIN_ROLE",
       "UPGRADER_ROLE",
-      "PAUSER_ROLE",
-      "LEVEL_OPERATOR_ROLE",
-      "MANAGER_ROLE",
-      "WHITELISTER_ROLE",
     ],
     addressKey: "stargateNFTContractAddress" as const,
   },

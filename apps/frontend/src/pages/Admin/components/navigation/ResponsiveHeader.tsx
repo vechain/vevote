@@ -10,8 +10,8 @@ import { ConnectButton } from "@/components/ui/ConnectButton";
 import { useI18nContext } from "@/i18n/i18n-react";
 
 interface ResponsiveHeaderProps {
-  showMenuButton: boolean;
-  onMenuToggle: () => void;
+  readonly showMenuButton: boolean;
+  readonly onMenuToggle: () => void;
 }
 
 export function ResponsiveHeader({ showMenuButton, onMenuToggle }: ResponsiveHeaderProps) {

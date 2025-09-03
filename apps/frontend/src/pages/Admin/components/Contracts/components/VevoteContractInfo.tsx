@@ -5,7 +5,7 @@ import { VeVoteInfo } from "../../../services";
 import { AdminCard } from "../../common/AdminCard";
 
 interface VevoteContractInfoProps {
-  veVoteInfo: VeVoteInfo;
+  readonly veVoteInfo: VeVoteInfo;
 }
 
 export function VevoteContractInfo({ veVoteInfo }: VevoteContractInfoProps) {

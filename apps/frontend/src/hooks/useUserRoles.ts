@@ -19,13 +19,9 @@ const contractInterface = VeVote__factory.createInterface();
 
 export const useUserRoles = (userAddress: string) => {
   const checkUserRoles = useCallback(async () => {
-    if (!userAddress || !userAddress.match(/^0x[a-fA-F0-9]{40}$/)) {
-      return [];
-    }
-
     try {
       const roleHashMethods = ROLES.map(role => ({
-        method: role as any,
+        method: role,
         args: [],
       }));
 
@@ -43,7 +39,7 @@ export const useUserRoles = (userAddress: string) => {
         .filter(role => role.hash);
 
       const hasRoleMethods = roleHashes.map(role => ({
-        method: "hasRole" as any,
+        method: "hasRole" as const,
         args: [role.hash, userAddress],
       }));
 
@@ -67,7 +63,7 @@ export const useUserRoles = (userAddress: string) => {
   return useQuery({
     queryKey: ["userRoles", userAddress],
     queryFn: checkUserRoles,
-    enabled: Boolean(!!userAddress && userAddress.match(/^0x[a-fA-F0-9]{40}$/)),
+    enabled: Boolean(userAddress),
     staleTime: 30000,
   });
 };

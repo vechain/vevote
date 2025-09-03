@@ -10,9 +10,9 @@ interface Level {
 }
 
 interface StargateLevelDetailsProps {
-  levels: Level[];
-  levelIds: number[];
-  supplies: StargateLevelSupply[];
+  readonly levels: readonly Level[];
+  readonly levelIds: readonly number[];
+  readonly supplies: readonly StargateLevelSupply[];
 }
 
 export function StargateLevelDetails({ levels, levelIds, supplies }: StargateLevelDetailsProps) {
@@ -49,7 +49,7 @@ export function StargateLevelDetails({ levels, levelIds, supplies }: StargateLev
             {levels.map((level, index) => {
               const supply = supplies[index];
               return (
-                <Tr key={index}>
+                <Tr key={levelIds[index]}>
                   <Td>{levelIds[index]}</Td>
                   <Td>{level.name}</Td>
                   <Td>{level.isX ? LL.admin.stargate_nodes.yes() : LL.admin.stargate_nodes.no()}</Td>

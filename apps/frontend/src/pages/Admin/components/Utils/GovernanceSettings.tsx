@@ -47,7 +47,12 @@ export function GovernanceSettings() {
     try {
       setErrorMessage("");
 
-      const updateParams: any = {};
+      const updateParams: {
+        updateQuorumNumerator?: number;
+        setMinVotingDelay?: number;
+        setMinVotingDuration?: number;
+        setMaxVotingDuration?: number;
+      } = {};
 
       if (formValues.quorumNumerator && Number(formValues.quorumNumerator) !== Number(veVoteInfo.quorumNumerator)) {
         updateParams.updateQuorumNumerator = Number(formValues.quorumNumerator);
@@ -65,9 +70,7 @@ export function GovernanceSettings() {
         updateParams.setMaxVotingDuration = Number(formValues.maxVotingDuration);
       }
 
-      if (Object.keys(updateParams).length === 0) {
-        return; // No changes to update
-      }
+      if (Object.keys(updateParams).length === 0) return;
 
       await sendTransaction(updateParams);
       onSuccessOpen();
@@ -78,14 +81,24 @@ export function GovernanceSettings() {
         minVotingDuration: "",
         maxVotingDuration: "",
       });
-    } catch (error: any) {
+    } catch (err) {
+      const error = err as { error?: { message: string }; message: string };
       setErrorMessage(
         error?.error?.message ||
           error?.message ||
           LL.admin.governance_settings.error_description({ error: LL.admin.unknown_error() }),
       );
     }
-  }, [formValues, veVoteInfo, sendTransaction, onSuccessOpen, LL.admin.governance_settings]);
+  }, [
+    veVoteInfo,
+    formValues.quorumNumerator,
+    formValues.minVotingDelay,
+    formValues.minVotingDuration,
+    formValues.maxVotingDuration,
+    sendTransaction,
+    onSuccessOpen,
+    LL.admin,
+  ]);
 
   if (isLoading) {
     return (
@@ -110,110 +123,98 @@ export function GovernanceSettings() {
 
   return (
     <>
-    <AdminCard title={LL.admin.governance_settings.title()}>
-      <VStack spacing={6} align="stretch">
-        <Text fontSize="sm" color="gray.600">
-          {LL.admin.governance_settings.description()}
-        </Text>
+      <AdminCard title={LL.admin.governance_settings.title()} maxW={"full"}>
+        <VStack spacing={6} align="stretch">
+          <Text fontSize="sm" color="gray.600">
+            {LL.admin.governance_settings.description()}
+          </Text>
 
-        {errorMessage && (
-          <Alert status="error">
-            <AlertIcon />
-            {errorMessage}
-          </Alert>
-        )}
+          {errorMessage && (
+            <Alert status="error">
+              <AlertIcon />
+              {errorMessage}
+            </Alert>
+          )}
 
-        <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6}>
-          <FormControl>
-            <FormLabel>{LL.admin.governance_settings.quorum_numerator_label()}</FormLabel>
-            <NumberInput
-              value={formValues.quorumNumerator}
-              onChange={value => setFormValues(prev => ({ ...prev, quorumNumerator: value }))}
-              min={1}>
-              <NumberInputField placeholder={veVoteInfo.quorumNumerator.toString()} />
-              <NumberInputStepper>
-                <NumberIncrementStepper />
-                <NumberDecrementStepper />
-              </NumberInputStepper>
-            </NumberInput>
-            <FormHelperText>
-              {LL.admin.governance_settings.quorum_numerator_help({ current: Number(veVoteInfo.quorumNumerator) })}
-            </FormHelperText>
-          </FormControl>
+          <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6}>
+            <FormControl>
+              <FormLabel>{LL.admin.governance_settings.quorum_numerator_label()}</FormLabel>
+              <NumberInput
+                value={formValues.quorumNumerator}
+                onChange={value => setFormValues(prev => ({ ...prev, quorumNumerator: value }))}
+                min={1}>
+                <NumberInputField placeholder={veVoteInfo.quorumNumerator.toString()} />
+                <BaseNumberInputStepper />
+              </NumberInput>
+              <FormHelperText>
+                {LL.admin.governance_settings.quorum_numerator_help({ current: Number(veVoteInfo.quorumNumerator) })}
+              </FormHelperText>
+            </FormControl>
 
-          <FormControl>
-            <FormLabel>{LL.admin.governance_settings.min_voting_delay_label()}</FormLabel>
-            <NumberInput
-              value={formValues.minVotingDelay}
-              onChange={value => setFormValues(prev => ({ ...prev, minVotingDelay: value }))}
-              min={0}>
-              <NumberInputField placeholder={veVoteInfo.minVotingDelay.toString()} />
-              <NumberInputStepper>
-                <NumberIncrementStepper />
-                <NumberDecrementStepper />
-              </NumberInputStepper>
-            </NumberInput>
-            <FormHelperText>
-              {LL.admin.governance_settings.min_voting_delay_help()}
-              <br />
-              Current: {formatTime(veVoteInfo.minVotingDelay)}
-            </FormHelperText>
-          </FormControl>
+            <FormControl>
+              <FormLabel>{LL.admin.governance_settings.min_voting_delay_label()}</FormLabel>
+              <NumberInput
+                value={formValues.minVotingDelay}
+                onChange={value => setFormValues(prev => ({ ...prev, minVotingDelay: value }))}
+                min={0}>
+                <NumberInputField placeholder={veVoteInfo.minVotingDelay.toString()} />
+                <BaseNumberInputStepper />
+              </NumberInput>
+              <FormHelperText>
+                {LL.admin.governance_settings.min_voting_delay_help()}
+                <br />
+                Current: {formatTime(veVoteInfo.minVotingDelay)}
+              </FormHelperText>
+            </FormControl>
 
-          <FormControl>
-            <FormLabel>{LL.admin.governance_settings.min_voting_duration_label()}</FormLabel>
-            <NumberInput
-              value={formValues.minVotingDuration}
-              onChange={value => setFormValues(prev => ({ ...prev, minVotingDuration: value }))}
-              min={1}>
-              <NumberInputField placeholder={veVoteInfo.minVotingDuration.toString()} />
-              <NumberInputStepper>
-                <NumberIncrementStepper />
-                <NumberDecrementStepper />
-              </NumberInputStepper>
-            </NumberInput>
-            <FormHelperText>
-              {LL.admin.governance_settings.min_voting_duration_help()}
-              <br />
-              Current: {formatTime(veVoteInfo.minVotingDuration)}
-            </FormHelperText>
-          </FormControl>
+            <FormControl>
+              <FormLabel>{LL.admin.governance_settings.min_voting_duration_label()}</FormLabel>
+              <NumberInput
+                value={formValues.minVotingDuration}
+                onChange={value => setFormValues(prev => ({ ...prev, minVotingDuration: value }))}
+                min={1}>
+                <NumberInputField placeholder={veVoteInfo.minVotingDuration.toString()} />
+                <BaseNumberInputStepper />
+              </NumberInput>
+              <FormHelperText>
+                {LL.admin.governance_settings.min_voting_duration_help()}
+                <br />
+                Current: {formatTime(veVoteInfo.minVotingDuration)}
+              </FormHelperText>
+            </FormControl>
 
-          <FormControl>
-            <FormLabel>{LL.admin.governance_settings.max_voting_duration_label()}</FormLabel>
-            <NumberInput
-              value={formValues.maxVotingDuration}
-              onChange={value => setFormValues(prev => ({ ...prev, maxVotingDuration: value }))}
-              min={1}>
-              <NumberInputField placeholder={veVoteInfo.maxVotingDuration.toString()} />
-              <NumberInputStepper>
-                <NumberIncrementStepper />
-                <NumberDecrementStepper />
-              </NumberInputStepper>
-            </NumberInput>
-            <FormHelperText>
-              {LL.admin.governance_settings.max_voting_duration_help()}
-              <br />
-              Current: {formatTime(veVoteInfo.maxVotingDuration)}
-            </FormHelperText>
-          </FormControl>
-        </SimpleGrid>
+            <FormControl>
+              <FormLabel>{LL.admin.governance_settings.max_voting_duration_label()}</FormLabel>
+              <NumberInput
+                value={formValues.maxVotingDuration}
+                onChange={value => setFormValues(prev => ({ ...prev, maxVotingDuration: value }))}
+                min={1}>
+                <NumberInputField placeholder={veVoteInfo.maxVotingDuration.toString()} />
+                <BaseNumberInputStepper />
+              </NumberInput>
+              <FormHelperText>
+                {LL.admin.governance_settings.max_voting_duration_help()}
+                <br />
+                Current: {formatTime(veVoteInfo.maxVotingDuration)}
+              </FormHelperText>
+            </FormControl>
+          </SimpleGrid>
 
-        <Box>
-          <Button
-            colorScheme="blue"
-            size="lg"
-            onClick={handleSubmit}
-            isLoading={isTransactionPending}
-            loadingText={LL.admin.governance_settings.updating()}
-            isDisabled={!hasChanges}>
-            {LL.admin.governance_settings.update_settings()}
-          </Button>
-        </Box>
-      </VStack>
-    </AdminCard>
+          <Box>
+            <Button
+              colorScheme="blue"
+              size="lg"
+              onClick={handleSubmit}
+              isLoading={isTransactionPending}
+              loadingText={LL.admin.governance_settings.updating()}
+              isDisabled={!hasChanges}>
+              {LL.admin.governance_settings.update_settings()}
+            </Button>
+          </Box>
+        </VStack>
+      </AdminCard>
 
-    <MessageModal
+      <MessageModal
         isOpen={isSuccessOpen}
         onClose={onSuccessClose}
         icon={CheckIcon}
@@ -226,3 +227,12 @@ export function GovernanceSettings() {
     </>
   );
 }
+
+const BaseNumberInputStepper = () => {
+  return (
+    <NumberInputStepper>
+      <NumberIncrementStepper h={2} />
+      <NumberDecrementStepper h={2} />
+    </NumberInputStepper>
+  );
+};

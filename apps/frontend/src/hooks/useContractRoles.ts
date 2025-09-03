@@ -73,7 +73,7 @@ export const useContractRoles = (contractType: ContractType = "vevote") => {
   const query = useQuery({
     queryKey: ["contractRoles", contractType, account?.address],
     queryFn: checkUserRoles,
-    enabled: Boolean(account?.address && account.address.match(/^0x[a-fA-F0-9]{40}$/)),
+    enabled: Boolean(account?.address),
     staleTime: 30000,
   });
 

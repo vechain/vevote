@@ -14,15 +14,13 @@ export interface VeVoteInfo {
 
 type VevoteContractInterface = ReturnType<typeof VeVote__factory.createInterface>;
 
-type ContractInterfaceFixed = VevoteContractInterface;
-
 export interface VotingMultipliers {
   [levelId: number]: bigint;
 }
 
 export class VeVoteService {
   private readonly contractAddress: string;
-  private readonly contractInterface: ContractInterfaceFixed;
+  private readonly contractInterface: VevoteContractInterface;
 
   constructor() {
     const config = getConfig(import.meta.env.VITE_APP_ENV);

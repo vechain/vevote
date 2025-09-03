@@ -1,29 +1,29 @@
-import {
-  VStack,
-  HStack,
-  Text,
-} from "@chakra-ui/react";
+import { VStack, HStack, Text } from "@chakra-ui/react";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { AdminCard } from "../../common/AdminCard";
+import { useMemo } from "react";
 
 interface StargateContractInfoProps {
-  totalSupply: bigint;
-  levelIds: number[];
+  readonly totalSupply: bigint;
+  readonly levelIds: readonly number[];
 }
 
 export function StargateContractInfo({ totalSupply, levelIds }: StargateContractInfoProps) {
   const { LL } = useI18nContext();
 
-  const contractData = [
-    {
-      label: LL.admin.stargate_nodes.total_supply(),
-      value: totalSupply.toString(),
-    },
-    {
-      label: LL.admin.stargate_nodes.available_levels(),
-      value: `${levelIds.length} (${levelIds.join(", ")})`,
-    },
-  ];
+  const contractData = useMemo(
+    () => [
+      {
+        label: LL.admin.stargate_nodes.total_supply(),
+        value: totalSupply.toString(),
+      },
+      {
+        label: LL.admin.stargate_nodes.available_levels(),
+        value: `${levelIds.length} (${levelIds.join(", ")})`,
+      },
+    ],
+    [LL, totalSupply, levelIds],
+  );
 
   return (
     <AdminCard title={LL.admin.stargate_nodes.contract_info_title()}>

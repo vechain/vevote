@@ -7,7 +7,7 @@ import { ContractType } from "@/pages/Admin/constants/contracts";
 import { AdminCard } from "./AdminCard";
 
 interface UserRoleCheckerProps {
-  contractType?: ContractType;
+  readonly contractType?: ContractType;
 }
 
 export function UserRoleChecker({ contractType }: UserRoleCheckerProps) {

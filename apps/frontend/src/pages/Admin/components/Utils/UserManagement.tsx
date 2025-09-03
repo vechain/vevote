@@ -18,7 +18,7 @@ import {
   FormLabel,
   FormErrorMessage,
 } from "@chakra-ui/react";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { useRoleManagement } from "@/hooks/useRoleManagement";
 import { useUserRoles } from "@/hooks/useUserRoles";
@@ -48,6 +48,8 @@ export function UserManagement() {
   const [currentUserAddress, setCurrentUserAddress] = useState<string>("");
 
   const { data: userRoles, isLoading: isLoadingRoles, refetch: refetchRoles } = useUserRoles(currentUserAddress);
+
+  const isUserRoles = useMemo(() => Boolean(userRoles && userRoles.length > 0), [userRoles]);
 
   const handleRoleAction = useCallback(
     async (action: "grant" | "revoke", values: UserManagementSchema) => {
@@ -143,9 +145,9 @@ export function UserManagement() {
                             {LL.admin.user_management.checking_roles()}
                           </Text>
                         </HStack>
-                      ) : userRoles && userRoles.length > 0 ? (
+                      ) : isUserRoles ? (
                         <Wrap>
-                          {userRoles.map(role => (
+                          {userRoles?.map(role => (
                             <WrapItem key={role}>
                               <Badge colorScheme="blue" variant="solid">
                                 {LL.admin.common_roles[role]()}
