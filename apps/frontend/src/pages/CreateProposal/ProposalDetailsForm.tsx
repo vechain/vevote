@@ -53,6 +53,7 @@ export const ProposalDetailsForm = () => {
     <FormSkeleton schema={schema} defaultValues={defaultValues} onSubmit={onSubmit}>
       {({ register, errors, watch }) => {
         const title = watch("title");
+
         return (
           <>
             <CreateFormWrapper>

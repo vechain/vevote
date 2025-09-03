@@ -1,6 +1,5 @@
 import { Sort } from "@/components/ui/SortDropdown";
 import { useVoteCastResults } from "@/hooks/useCastVote";
-import { useVotersNodes } from "@/hooks/useUserQueries";
 import { VoteItem } from "@/pages/Proposal/components/VotingAndTimeline/components/VotingCard/components/ResultsSection/components/AllVotersModal/components/VotersTable";
 import { getSingleChoiceFromIndex } from "@/utils/proposals/helpers";
 import { useMemo } from "react";
@@ -28,34 +27,19 @@ export const useVotersData = ({
     error: votesError,
   } = useVoteCastResults({ proposalIds: [proposalId], enabled: proposalId !== "draft" });
 
-  const {
-    nodes,
-    isLoading: isNodesLoading,
-    isError: nodesError,
-  } = useVotersNodes({
-    nodeIds: votedInfo?.flatMap(vote => vote.stargateNFTs) || [],
-  });
-
   const votes = useMemo(() => {
     if (!votedInfo) return [];
 
     return votedInfo.map(vote => {
-      const totalVotingPowerPerVoter = nodes.reduce((acc, node) => {
-        if (vote.stargateNFTs.includes(node.id)) {
-          return acc + node.votingPower;
-        }
-        return acc;
-      }, 0);
-
       return {
         date: vote.date,
         voter: vote.voter,
-        votingPower: totalVotingPowerPerVoter,
+        votingPower: Number(vote.weight) / 100,
         votedOption: getSingleChoiceFromIndex(vote.choice),
         transactionId: vote.transactionId,
       };
     });
-  }, [nodes, votedInfo]);
+  }, [votedInfo]);
 
   const filterOptions = useMemo(() => {
     const optionsSet = new Set<string>();
@@ -87,7 +71,7 @@ export const useVotersData = ({
       return acc;
     }, []);
 
-    if (sort === Sort.Oldest) {
+    if (sort === Sort.Newest) {
       return [...filtered].reverse();
     }
 
@@ -119,7 +103,7 @@ export const useVotersData = ({
     totalVotes: votes.length,
     pagination: paginationData.pagination,
     filterOptions,
-    isLoading: isVotesLoading || isNodesLoading,
-    error: votesError || nodesError,
+    isLoading: isVotesLoading,
+    error: votesError,
   };
 };

@@ -59,7 +59,7 @@ const ProposalNavbarActions = () => {
   return (
     <Flex alignItems={"center"} gap={2} marginLeft={"auto"}>
       {canEditDraft && <DeleteEditProposal />}
-      {canCancel && <CancelProposal proposalId={proposal?.id} />}
+      <CancelProposal proposalId={proposal?.id} showButton={canCancel} />
       {isExecutor && proposal?.status === "approved" && <ExecuteModal proposalId={proposal?.id} />}
     </Flex>
   );

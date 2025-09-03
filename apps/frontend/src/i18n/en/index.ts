@@ -145,6 +145,7 @@ const en = {
         "Please replace placeholder text with your own content before submitting the proposal.",
       empty_description: "Description cannot be empty. Please provide content for your proposal.",
     },
+    discourse_topic_not_exist: "The Discourse topic does not exist or is not accessible",
   },
   voting_list: {
     voting_options: "Voting options:",
@@ -180,6 +181,8 @@ const en = {
         "Canceling the proposal means it the voting will not take place and the proposal will not have no results.",
       reason: "Reason",
       reason_placeholder: "Write the reason for cancellation...",
+      success_title: "Proposal canceled successfully",
+      success_description: "The proposal has been canceled successfully. Voting will not take place.",
     },
     execute_proposal: {
       title: "Mark as Executed",

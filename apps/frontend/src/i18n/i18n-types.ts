@@ -534,6 +534,10 @@ type RootTranslation = {
 			 */
 			empty_description: string
 		}
+		/**
+		 * T​h​e​ ​D​i​s​c​o​u​r​s​e​ ​t​o​p​i​c​ ​d​o​e​s​ ​n​o​t​ ​e​x​i​s​t​ ​o​r​ ​i​s​ ​n​o​t​ ​a​c​c​e​s​s​i​b​l​e
+		 */
+		discourse_topic_not_exist: string
 	}
 	voting_list: {
 		/**
@@ -647,6 +651,14 @@ type RootTranslation = {
 			 * W​r​i​t​e​ ​t​h​e​ ​r​e​a​s​o​n​ ​f​o​r​ ​c​a​n​c​e​l​l​a​t​i​o​n​.​.​.
 			 */
 			reason_placeholder: string
+			/**
+			 * P​r​o​p​o​s​a​l​ ​c​a​n​c​e​l​e​d​ ​s​u​c​c​e​s​s​f​u​l​l​y
+			 */
+			success_title: string
+			/**
+			 * T​h​e​ ​p​r​o​p​o​s​a​l​ ​h​a​s​ ​b​e​e​n​ ​c​a​n​c​e​l​e​d​ ​s​u​c​c​e​s​s​f​u​l​l​y​.​ ​V​o​t​i​n​g​ ​w​i​l​l​ ​n​o​t​ ​t​a​k​e​ ​p​l​a​c​e​.
+			 */
+			success_description: string
 		}
 		execute_proposal: {
 			/**
@@ -2429,6 +2441,10 @@ JPG, PNG or SVG of maximum of {size}MB.
 			 */
 			empty_description: () => LocalizedString
 		}
+		/**
+		 * The Discourse topic does not exist or is not accessible
+		 */
+		discourse_topic_not_exist: () => LocalizedString
 	}
 	voting_list: {
 		/**
@@ -2540,6 +2556,14 @@ JPG, PNG or SVG of maximum of {size}MB.
 			 * Write the reason for cancellation...
 			 */
 			reason_placeholder: () => LocalizedString
+			/**
+			 * Proposal canceled successfully
+			 */
+			success_title: () => LocalizedString
+			/**
+			 * The proposal has been canceled successfully. Voting will not take place.
+			 */
+			success_description: () => LocalizedString
 		}
 		execute_proposal: {
 			/**

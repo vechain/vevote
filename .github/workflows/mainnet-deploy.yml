@@ -1,0 +1,125 @@
+name: Mainnet — Preview or Release
+
+permissions:
+  contents: write
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: 'Deploy as preview or release to production'
+        required: true
+        type: choice
+        options: [preview, release]
+        default: preview
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: prod
+    if: startsWith(github.ref, 'refs/tags/')
+
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+          ref: ${{ github.ref_name }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 22
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Install dependencies
+        run: npm i -g vercel@latest
+
+      - name: Vercel pull (config + env)
+        run: |
+          ENVIRONMENT=${{ inputs.target == 'release' && 'production' || 'preview' }}
+          vercel pull --yes --environment="$ENVIRONMENT" \
+            --token "$VERCEL_TOKEN"
+
+      - name: Build (debug)
+        env:
+          VERCEL_DEBUG: 1
+        run: |
+          PROD_FLAG="${{ inputs.target == 'release' && '--prod' || '' }}"
+          vercel build $PROD_FLAG --token "$VERCEL_TOKEN"
+      - name: Deploy
+        id: deploy
+        run: |
+          PROD_FLAG="${{ inputs.target == 'release' && '--prod' || '' }}"
+          URL=$(npx -y vercel@latest deploy --prebuilt $PROD_FLAG --yes \
+            --token "$VERCEL_TOKEN")
+          echo "url=$URL" >> "$GITHUB_OUTPUT"
+          echo "🌐 Deployed: $URL" | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: Create GitHub Release
+        if: ${{ inputs.target == 'release' }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          DEPLOY_URL: ${{ steps.deploy.outputs.url }}
+        run: |
+          set -euo pipefail
+          
+          # Get the current ref and SHA
+          REF="${{ github.ref }}"
+          SHA="${{ github.sha }}"
+          
+          # Check if this is a tag or branch
+          if [[ "$REF" == refs/tags/* ]]; then
+            TAG="${REF#refs/tags/}"
+            echo "🎯 Creating release for tag: $TAG"
+          else
+            echo "⚠️ Ref '$REF' is not a tag. Skipping GitHub Release."
+            echo "To create a release, either:"
+            echo "1. Run this workflow on a tag, or"
+            echo "2. Create a tag first: git tag v1.0.0 && git push origin v1.0.0"
+            exit 0
+          fi
+          
+          # Check if release already exists
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "🔄 Release for tag $TAG already exists. Updating..."
+            gh release edit "$TAG" \
+              --title "Release $TAG" \
+              --notes "Deployed to Vercel: ${DEPLOY_URL}"
+          else
+            echo "✨ Creating new release for tag $TAG"
+            
+            # Get the latest release tag to use as starting point for notes
+            LATEST_RELEASE=$(curl -s -H "Authorization: token ${{ github.token }}" \
+              https://api.github.com/repos/${{ github.repository }}/releases/latest | jq -r '.tag_name')
+            
+            if [[ "$LATEST_RELEASE" == "null" ]]; then
+              echo "📝 This is the first release, generating notes from initial commit"
+              gh release create "$TAG" \
+                --target "$SHA" \
+                --title "Release $TAG" \
+                --generate-notes
+            else
+              echo "📝 Generating release notes from $LATEST_RELEASE to $TAG"
+              gh release create "$TAG" \
+                --target "$SHA" \
+                --title "Release $TAG" \
+                --generate-notes \
+                --notes-start-tag "$LATEST_RELEASE"
+            fi
+            
+            # Add deployment info to the release notes
+            sleep 2  # Wait for release to be created
+            gh release edit "$TAG" \
+              --notes "$(gh release view "$TAG" --json body --jq '.body')"$'\n\n## Deployment\nDeployed to Vercel: '"${DEPLOY_URL}"
+          fi
+          
+          echo "✅ Release created/updated successfully for tag: $TAG"

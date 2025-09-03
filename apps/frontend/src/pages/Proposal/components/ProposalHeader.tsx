@@ -5,12 +5,17 @@ import { useVechainDomainOrAddress } from "@/hooks/useVechainDomainOrAddress";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { getPicassoImgSrc } from "@/utils/picasso";
 import { Avatar, Divider, Flex, HStack, Text } from "@chakra-ui/react";
+import { useGetAvatarOfAddress } from "@vechain/vechain-kit";
+import { useMemo } from "react";
 
 export const ProposalHeader = () => {
   const { LL } = useI18nContext();
   const { proposal } = useProposal();
 
+  const { data: avatar } = useGetAvatarOfAddress(proposal.proposer || "");
   const { addressOrDomain } = useVechainDomainOrAddress(proposal.proposer);
+
+  const imageUrl = useMemo(() => avatar || getPicassoImgSrc(proposal.proposer || ""), [avatar, proposal.proposer]);
 
   return (
     <Flex flexDirection={"column"} gap={4} width={"full"}>
@@ -31,12 +36,7 @@ export const ProposalHeader = () => {
             <Text color={"gray.800"} fontSize={{ base: "14px", md: "16px" }} fontWeight={400}>
               {addressOrDomain}
             </Text>
-            <Avatar
-              height={{ base: 4, md: 6 }}
-              width={{ base: 4, md: 6 }}
-              src={getPicassoImgSrc(proposal.proposer)}
-              borderRadius="full"
-            />
+            <Avatar boxSize={{ base: 4, md: 6 }} src={imageUrl} borderRadius="full" />
             <Divider orientation="vertical" borderColor={"gray.100"} height={"24px"} mx={1} />
             {proposal.discourseUrl && <DiscourseLink src={proposal.discourseUrl} />}
           </Flex>

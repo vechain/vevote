@@ -1,7 +1,7 @@
-import { ProposalCardType } from "@/types/proposal";
+import { ProposalCardType, SingleChoiceEnum } from "@/types/proposal";
 import { useVevoteSendTransaction } from "@/utils/hooks/useVevoteSendTransaction";
 import { fromStringToUint256, getSingleChoiceFromIndex } from "@/utils/proposals/helpers";
-import { getHasVoted, getVoteCastResults, getIndexerVoteResults } from "@/utils/proposals/votedQueries";
+import { getHasVoted, getVoteCastResults, getIndexerVoteResults, getTotalVotes } from "@/utils/proposals/votedQueries";
 import { getConfig } from "@repo/config";
 import { VeVote__factory } from "@repo/contracts";
 import { useQuery } from "@tanstack/react-query";
@@ -102,6 +102,19 @@ export const useIndexerVoteResults = ({ proposalId, size }: { proposalId?: strin
   };
 };
 
+export const useTotalVotes = ({ proposalId }: { proposalId: string }) => {
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["totalVotes", proposalId],
+    queryFn: async () => await getTotalVotes(proposalId),
+  });
+
+  return {
+    totalVotes: Number(data) / 100,
+    isLoading,
+    error,
+  };
+};
+
 export const useVoteByProposalId = ({ proposalId, enabled }: { proposalId: string; enabled?: boolean }) => {
   const { account } = useWallet();
   const { votes, isLoading, error } = useVoteCastResults({
@@ -115,6 +128,62 @@ export const useVoteByProposalId = ({ proposalId, enabled }: { proposalId: strin
   return {
     voteData,
     vote: getSingleChoiceFromIndex(voteData?.choice || 0),
+    isLoading,
+    error,
+  };
+};
+
+export const useVoteCastPercentages = ({ proposalId }: { proposalId?: string }) => {
+  const thor = useThor();
+
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["voteCastPercentages", proposalId],
+    queryFn: async () => await getVoteCastResults(thor, { proposalIds: [proposalId!] }),
+    enabled: !!proposalId && !!thor,
+    refetchInterval: 10000,
+  });
+
+  const votePercentages = useMemo(() => {
+    if (!data?.votes) {
+      return {
+        [SingleChoiceEnum.FOR]: 0,
+        [SingleChoiceEnum.AGAINST]: 0,
+        [SingleChoiceEnum.ABSTAIN]: 0,
+      };
+    }
+
+    const voteTotals = data.votes.reduce(
+      (acc, vote) => {
+        const weight = parseFloat(vote.weight);
+        switch (vote.choice) {
+          case 1:
+            acc.for += weight;
+            break;
+          case 0:
+            acc.against += weight;
+            break;
+          case 2:
+            acc.abstain += weight;
+            break;
+        }
+        return acc;
+      },
+      { for: 0, against: 0, abstain: 0 },
+    );
+
+    const totalVotes = voteTotals.against + voteTotals.for + voteTotals.abstain;
+
+    return {
+      [SingleChoiceEnum.FOR]: totalVotes ? (voteTotals.for / totalVotes) * 100 : 0,
+
+      [SingleChoiceEnum.AGAINST]: totalVotes ? (voteTotals.against / totalVotes) * 100 : 0,
+      [SingleChoiceEnum.ABSTAIN]: totalVotes ? (voteTotals.abstain / totalVotes) * 100 : 0,
+    };
+  }, [data?.votes]);
+
+  return {
+    votePercentages,
+    votes: data?.votes,
     isLoading,
     error,
   };
