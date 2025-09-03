@@ -53,16 +53,6 @@ export class NodeManagementService {
     };
   }
 
-  async getNodeManager(nodeId: bigint): Promise<string> {
-    const result = await executeCall({
-      contractAddress: this.contractAddress,
-      contractInterface: this.contractInterface,
-      method: "getNodeManager",
-      args: [nodeId],
-    });
-    return result?.success ? String(result.result.plain) : "";
-  }
-
   async getNodeLevel(nodeId: bigint): Promise<number> {
     const result = await executeCall({
       contractAddress: this.contractAddress,
@@ -71,38 +61,6 @@ export class NodeManagementService {
       args: [nodeId],
     });
     return result?.success ? Number(result.result.plain) : 0;
-  }
-
-  async getUsersNodeLevels(userAddress: string): Promise<number[]> {
-    const result = await executeCall({
-      contractAddress: this.contractAddress,
-      contractInterface: this.contractInterface,
-      method: "getUsersNodeLevels",
-      args: [userAddress],
-    });
-    return result?.success && Array.isArray(result.result.plain)
-      ? result.result.plain.map((level: unknown) => Number(level))
-      : [];
-  }
-
-  async isNodeDelegated(nodeId: bigint): Promise<boolean> {
-    const result = await executeCall({
-      contractAddress: this.contractAddress,
-      contractInterface: this.contractInterface,
-      method: "isNodeDelegated",
-      args: [nodeId],
-    });
-    return Boolean(result?.success ? result.result.plain : false);
-  }
-
-  async isNodeManager(userAddress: string, nodeId: bigint): Promise<boolean> {
-    const result = await executeCall({
-      contractAddress: this.contractAddress,
-      contractInterface: this.contractInterface,
-      method: "isNodeManager",
-      args: [userAddress, nodeId],
-    });
-    return Boolean(result?.success ? result.result.plain : false);
   }
 
   async isNodeHolder(userAddress: string): Promise<boolean> {
@@ -123,39 +81,6 @@ export class NodeManagementService {
       args: [userAddress],
     });
     return Boolean(result?.success ? result.result.plain : false);
-  }
-
-  async isLegacyNode(nodeId: bigint): Promise<boolean> {
-    const result = await executeCall({
-      contractAddress: this.contractAddress,
-      contractInterface: this.contractInterface,
-      method: "isLegacyNode",
-      args: [nodeId],
-    });
-    return Boolean(result?.success ? result.result.plain : false);
-  }
-
-  async nodeExists(nodeId: bigint): Promise<[boolean, number]> {
-    const result = await executeCall({
-      contractAddress: this.contractAddress,
-      contractInterface: this.contractInterface,
-      method: "exists",
-      args: [nodeId],
-    });
-    if (result?.success && Array.isArray(result.result.plain)) {
-      return [Boolean(result.result.plain[0]), Number(result.result.plain[1])];
-    }
-    return [false, 0];
-  }
-
-  async getDirectNodeOwnership(userAddress: string): Promise<bigint> {
-    const result = await executeCall({
-      contractAddress: this.contractAddress,
-      contractInterface: this.contractInterface,
-      method: "getDirectNodeOwnership",
-      args: [userAddress],
-    });
-    return BigInt(result?.success ? String(result.result.plain) : "0");
   }
 
   async getDirectNodesOwnership(userAddress: string): Promise<bigint[]> {
@@ -181,17 +106,6 @@ export class NodeManagementService {
       ? result.result.plain.map((id: unknown) => BigInt(String(id)))
       : [];
   }
-
-  async getUserStargateNFTsInfo(userAddress: string): Promise<unknown[]> {
-    const result = await executeCall({
-      contractAddress: this.contractAddress,
-      contractInterface: this.contractInterface,
-      method: "getUserStargateNFTsInfo",
-      args: [userAddress],
-    });
-    return result?.success && Array.isArray(result.result.plain) ? result.result.plain : [];
-  }
 }
 
-// Singleton instance
 export const nodeManagementService = new NodeManagementService();

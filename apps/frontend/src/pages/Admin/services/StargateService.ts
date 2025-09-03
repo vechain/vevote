@@ -86,16 +86,6 @@ export class StargateService {
       : [];
   }
 
-  async getLevel(levelId: number): Promise<StargateLevel> {
-    const result = await executeCall({
-      contractAddress: this.contractAddress,
-      contractInterface: this.contractInterface,
-      method: "getLevel",
-      args: [levelId],
-    });
-    return (result?.success ? result.result.plain : {}) as StargateLevel;
-  }
-
   async getLevels(): Promise<StargateLevel[]> {
     const result = await executeCall({
       contractAddress: this.contractAddress,
@@ -132,26 +122,6 @@ export class StargateService {
     return BigInt(result?.success ? String(result.result.plain) : "0");
   }
 
-  async getTokenLevel(tokenId: bigint): Promise<number> {
-    const result = await executeCall({
-      contractAddress: this.contractAddress,
-      contractInterface: this.contractInterface,
-      method: "getTokenLevel",
-      args: [tokenId],
-    });
-    return Number(result?.success ? result.result.plain : 0);
-  }
-
-  async getToken(tokenId: bigint): Promise<StargateToken> {
-    const result = await executeCall({
-      contractAddress: this.contractAddress,
-      contractInterface: this.contractInterface,
-      method: "getToken",
-      args: [tokenId],
-    });
-    return (result?.success ? result.result.plain : {}) as StargateToken;
-  }
-
   async getTokensOwnedBy(owner: string): Promise<StargateToken[]> {
     const result = await executeCall({
       contractAddress: this.contractAddress,
@@ -162,89 +132,6 @@ export class StargateService {
     return result?.success && Array.isArray(result.result.plain) ? result.result.plain : [];
   }
 
-  async getIdsOwnedBy(owner: string): Promise<bigint[]> {
-    const result = await executeCall({
-      contractAddress: this.contractAddress,
-      contractInterface: this.contractInterface,
-      method: "idsOwnedBy",
-      args: [owner],
-    });
-    return result?.success && Array.isArray(result.result.plain)
-      ? result.result.plain.map((id: unknown) => BigInt(String(id)))
-      : [];
-  }
-
-  async tokenExists(tokenId: bigint): Promise<boolean> {
-    const result = await executeCall({
-      contractAddress: this.contractAddress,
-      contractInterface: this.contractInterface,
-      method: "tokenExists",
-      args: [tokenId],
-    });
-    return Boolean(result?.success ? result.result.plain : false);
-  }
-
-  async isUnderMaturityPeriod(tokenId: bigint): Promise<boolean> {
-    const result = await executeCall({
-      contractAddress: this.contractAddress,
-      contractInterface: this.contractInterface,
-      method: "isUnderMaturityPeriod",
-      args: [tokenId],
-    });
-    return Boolean(result?.success ? result.result.plain : false);
-  }
-
-  async canTransfer(tokenId: bigint): Promise<boolean> {
-    const result = await executeCall({
-      contractAddress: this.contractAddress,
-      contractInterface: this.contractInterface,
-      method: "canTransfer",
-      args: [tokenId],
-    });
-    return Boolean(result?.success ? result.result.plain : false);
-  }
-
-  async maturityPeriodEndBlock(tokenId: bigint): Promise<bigint> {
-    const result = await executeCall({
-      contractAddress: this.contractAddress,
-      contractInterface: this.contractInterface,
-      method: "maturityPeriodEndBlock",
-      args: [tokenId],
-    });
-    return BigInt(result?.success ? String(result.result.plain) : "0");
-  }
-
-  async claimableVetGeneratedVtho(tokenId: bigint): Promise<bigint> {
-    const result = await executeCall({
-      contractAddress: this.contractAddress,
-      contractInterface: this.contractInterface,
-      method: "claimableVetGeneratedVtho",
-      args: [tokenId],
-    });
-    return BigInt(result?.success ? String(result.result.plain) : "0");
-  }
-
-  async getLevelsCirculatingSuppliesAtBlock(blockNumber: bigint): Promise<bigint[]> {
-    const result = await executeCall({
-      contractAddress: this.contractAddress,
-      contractInterface: this.contractInterface,
-      method: "getLevelsCirculatingSuppliesAtBlock",
-      args: [blockNumber],
-    });
-    return result?.success && Array.isArray(result.result.plain)
-      ? result.result.plain.map((supply: unknown) => BigInt(String(supply)))
-      : [];
-  }
-
-  async getVersion(): Promise<bigint> {
-    const result = await executeCall({
-      contractAddress: this.contractAddress,
-      contractInterface: this.contractInterface,
-      method: "version",
-      args: [],
-    });
-    return BigInt(result?.success ? String(result.result.plain) : "0");
-  }
 }
 
 export const stargateService = new StargateService();
