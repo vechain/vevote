@@ -105,7 +105,7 @@ export class VeVoteService {
       const result = await executeCall({
         contractAddress: this.contractAddress,
         contractInterface: this.contractInterface,
-        method: "quorumNumerator" as any,
+        method: "quorumNumerator()" as const,
         args: [],
       });
       return result?.success ? BigInt(result.result.plain as string) : BigInt(0);
