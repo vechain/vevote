@@ -31,6 +31,8 @@ export interface RoleUserInfo {
   address: string;
   grantedAt: Date;
   transactionId: string;
+  isCurrentlyGranted: boolean;
+  lastActionAt: Date;
 }
 
 export class VeVoteService {
@@ -144,36 +146,87 @@ export class VeVoteService {
     }
 
     try {
-      const eventAbi = thor.contracts.load(this.contractAddress, VeVote__factory.abi).getEventAbi("RoleGranted");
+      const roleGrantedAbi = thor.contracts.load(this.contractAddress, VeVote__factory.abi).getEventAbi("RoleGranted");
+      const roleRevokedAbi = thor.contracts.load(this.contractAddress, VeVote__factory.abi).getEventAbi("RoleRevoked");
 
       const filterCriteria = [
         {
           criteria: {
             address: this.contractAddress,
-            topic0: eventAbi.signatureHash,
+            topic0: roleGrantedAbi.signatureHash,
             topic1: roleHash,
           },
-          eventAbi,
+          eventAbi: roleGrantedAbi,
+        },
+        {
+          criteria: {
+            address: this.contractAddress,
+            topic0: roleRevokedAbi.signatureHash,
+            topic1: roleHash,
+          },
+          eventAbi: roleRevokedAbi,
         },
       ];
 
-      const events = await getAllEventLogs({ thor, nodeUrl: this.nodeUrl, filterCriteria });
+      const allEvents = await getAllEventLogs({ thor, nodeUrl: this.nodeUrl, filterCriteria });
 
-      const userMap = new Map<string, RoleUserInfo>();
+      const userEventsMap = new Map<
+        string,
+        Array<{
+          type: "granted" | "revoked";
+          timestamp: number;
+          blockNumber: number;
+          transactionId: string;
+          grantedAt?: Date;
+        }>
+      >();
 
-      events.forEach(event => {
+      allEvents.forEach(event => {
         if (event.decodedData) {
           const [_role, account, _sender] = event.decodedData as [string, string, string];
 
-          userMap.set(account, {
-            address: account,
-            grantedAt: new Date(event.meta.blockTimestamp * 1000),
+          if (!userEventsMap.has(account)) {
+            userEventsMap.set(account, []);
+          }
+
+          const eventType = event.topics[0] === roleGrantedAbi.signatureHash ? "granted" : "revoked";
+
+          userEventsMap.get(account)!.push({
+            type: eventType,
+            timestamp: event.meta.blockTimestamp,
+            blockNumber: event.meta.blockNumber,
             transactionId: event.meta.txID,
+            grantedAt: eventType === "granted" ? new Date(event.meta.blockTimestamp * 1000) : undefined,
           });
         }
       });
 
-      return Array.from(userMap.values()).sort((a, b) => b.grantedAt.getTime() - a.grantedAt.getTime());
+      const currentUsers: RoleUserInfo[] = [];
+
+      userEventsMap.forEach((events, address) => {
+        events.sort((a, b) => {
+          if (a.blockNumber !== b.blockNumber) {
+            return a.blockNumber - b.blockNumber;
+          }
+          return a.timestamp - b.timestamp;
+        });
+
+        const lastEvent = events[events.length - 1];
+
+        if (lastEvent.type === "granted") {
+          const currentGrantEvent = lastEvent;
+
+          currentUsers.push({
+            address,
+            grantedAt: new Date(currentGrantEvent.timestamp * 1000),
+            transactionId: currentGrantEvent.transactionId,
+            isCurrentlyGranted: true,
+            lastActionAt: new Date(lastEvent.timestamp * 1000),
+          });
+        }
+      });
+
+      return currentUsers.sort((a, b) => b.lastActionAt.getTime() - a.lastActionAt.getTime());
     } catch (error) {
       console.error("Error fetching role users:", error);
       return [];

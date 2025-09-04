@@ -25,14 +25,15 @@ export function AdminCard({ title, children, ...boxProps }: AdminCardProps) {
   return (
     <Box
       border="1px"
-      borderColor="primary.700"
-      borderRadius="md"
+      borderColor="gray.200"
+      borderRadius="8px"
       p={padding}
       w={cardWidth}
       minW={width}
       maxW={width}
+      bg={"white"}
       {...boxProps}>
-      <Heading size="md" mb={3}>
+      <Heading size="md" mb={3} color={"primary.700"}>
         {title}
       </Heading>
       {children}
