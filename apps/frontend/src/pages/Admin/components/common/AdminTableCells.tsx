@@ -1,7 +1,7 @@
 import { Text, TextProps, FormControl, Input } from "@chakra-ui/react";
 import { FixedPointNumber, Units } from "@vechain/sdk-core";
 import { useI18nContext } from "@/i18n/i18n-react";
-import { UseFormRegister, FieldErrors } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 
 export const TableHeader = ({ label }: { label: string }) => {
   return (
@@ -65,14 +65,12 @@ export const NumberCell = ({ value, suffix }: { value: number | bigint; suffix?:
 export const MultiplierInputCell = ({
   fieldName,
   placeholder,
-  register,
-  errors,
 }: {
   fieldName: string;
   placeholder: string;
-  register: UseFormRegister<any>;
-  errors: FieldErrors<any>;
 }) => {
+  const { register, formState: { errors } } = useFormContext();
+
   return (
     <FormControl isInvalid={!!errors[fieldName]} display="flex" justifyContent="center">
       <Input

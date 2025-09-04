@@ -124,6 +124,36 @@ export function LevelMultipliersCard({ onSuccess }: LevelMultipliersCardProps) {
     [levelData, getCurrentMultiplier],
   );
 
+  const columns = useMemo(
+    () => [
+      columnHelper.accessor("name", {
+        cell: data => <NodeTypeCell name={data.getValue()} type={data.row.original.type} />,
+        header: () => <TableHeader label={LL.admin.governance_settings.node_type()} />,
+        id: "NODE_TYPE",
+        size: 200,
+      }),
+      columnHelper.accessor("currentMultiplier", {
+        cell: data => <BaseCell value={data.getValue().toString()} />,
+        header: () => <TableHeader label={LL.admin.governance_settings.current_multiplier()} />,
+        id: "CURRENT_MULTIPLIER",
+        size: 140,
+      }),
+      columnHelper.accessor("id", {
+        cell: data => (
+          <MultiplierInputCell
+            fieldName={`multiplier${data.getValue()}`}
+            placeholder={data.row.original.currentMultiplier.toString()}
+          />
+        ),
+        header: () => <TableHeader label={LL.admin.governance_settings.new_multiplier()} />,
+        id: "NEW_MULTIPLIER",
+        size: 120,
+      }),
+    ],
+    [LL.admin.governance_settings],
+  );
+
+
   if (isLoadingMultipliers) {
     return (
       <AdminCard title={LL.admin.governance_settings.level_multipliers_label()} maxW={"full"}>
@@ -149,39 +179,11 @@ export function LevelMultipliersCard({ onSuccess }: LevelMultipliersCardProps) {
       </Text>
 
       <FormSkeleton schema={multiplierSchema} defaultValues={defaultValues} onSubmit={onSubmit}>
-        {({ register, errors, watch }) => {
+        {({ watch }) => {
           const watchedValues = watch();
           const hasChanges = Object.values(watchedValues).some(
             value => value !== undefined && value !== null && value !== "",
           );
-
-          const columns = [
-            columnHelper.accessor("name", {
-              cell: data => <NodeTypeCell name={data.getValue()} type={data.row.original.type} />,
-              header: () => <TableHeader label={LL.admin.governance_settings.node_type()} />,
-              id: "NODE_TYPE",
-              size: 200,
-            }),
-            columnHelper.accessor("currentMultiplier", {
-              cell: data => <BaseCell value={data.getValue().toString()} />,
-              header: () => <TableHeader label={LL.admin.governance_settings.current_multiplier()} />,
-              id: "CURRENT_MULTIPLIER",
-              size: 140,
-            }),
-            columnHelper.accessor("id", {
-              cell: data => (
-                <MultiplierInputCell
-                  fieldName={`multiplier${data.getValue()}`}
-                  placeholder={data.row.original.currentMultiplier.toString()}
-                  register={register}
-                  errors={errors}
-                />
-              ),
-              header: () => <TableHeader label={LL.admin.governance_settings.new_multiplier()} />,
-              id: "NEW_MULTIPLIER",
-              size: 120,
-            }),
-          ];
 
           return (
             <Flex direction="column" width="100%">
