@@ -97,12 +97,7 @@ export function VotingPowerAtTimepointCard() {
             </VStack>
           )}
         </FormSkeleton>
-        <QueryResults
-          queryParams={queryParams}
-          error={error}
-          votingPowerData={votingPowerData!}
-          isLoading={isLoading}
-        />
+        <QueryResults queryParams={queryParams} error={error} votingPowerData={votingPowerData} isLoading={isLoading} />
       </VStack>
     </AdminCard>
   );
@@ -116,7 +111,7 @@ const QueryResults = ({
 }: {
   queryParams: { address?: string; timepoint?: number; masterAddress?: string };
   error: Error | null;
-  votingPowerData: VotingPowerAtTimepointResult;
+  votingPowerData?: VotingPowerAtTimepointResult;
   isLoading: boolean;
 }) => {
   const { LL } = useI18nContext();
