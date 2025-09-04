@@ -20,6 +20,8 @@ const EXPLORER_URL = getConfig(import.meta.env.VITE_APP_ENV).network.explorerUrl
 const contractAddress = getConfig(import.meta.env.VITE_APP_ENV).vevoteContractAddress;
 const contractInterface = VeVote__factory.createInterface();
 
+const MAX_VISIBLE_USERS = 6;
+
 const roleUsersQuerySchema = z.object({
   selectedRole: z.enum(ROLES).or(z.literal("")),
 });
@@ -78,9 +80,8 @@ export function RoleUsersCard() {
     [thor, LL],
   );
 
-  const hasQueried = Boolean(selectedRole);
-  const maxVisibleUsers = 10;
-  const showScrollableList = roleUsers.length > maxVisibleUsers;
+  const hasQueried = useMemo(() => Boolean(selectedRole), [selectedRole]);
+  const showScrollableList = useMemo(() => roleUsers.length > MAX_VISIBLE_USERS, [roleUsers.length]);
 
   return (
     <AdminCard title={LL.admin.role_users.title()}>
@@ -90,32 +91,35 @@ export function RoleUsersCard() {
         </Text>
 
         <FormSkeleton schema={roleUsersQuerySchema} defaultValues={defaultValues} onSubmit={onSubmit}>
-          {({ register, errors, isValid }) => (
-            <VStack spacing={4}>
-              <FormControl isInvalid={!!errors.selectedRole}>
-                <Label label={LL.admin.role_users.role_label()} />
-                <Select {...register("selectedRole")} placeholder={LL.admin.role_users.role_placeholder()} size="md">
-                  {ROLES.map(role => (
-                    <option key={role} value={role}>
-                      {LL.admin.common_roles[role]()}
-                    </option>
-                  ))}
-                </Select>
-                <InputMessage error={errors.selectedRole?.message} />
-              </FormControl>
+          {({ register, errors, watch }) => {
+            const isButtonDisabled = watch("selectedRole") === "";
+            return (
+              <VStack spacing={4}>
+                <FormControl isInvalid={!!errors.selectedRole}>
+                  <Label label={LL.admin.role_users.role_label()} />
+                  <Select {...register("selectedRole")} placeholder={LL.admin.role_users.role_placeholder()} size="md">
+                    {ROLES.map(role => (
+                      <option key={role} value={role}>
+                        {LL.admin.common_roles[role]()}
+                      </option>
+                    ))}
+                  </Select>
+                  <InputMessage error={errors.selectedRole?.message} />
+                </FormControl>
 
-              <Button
-                type="submit"
-                size="lg"
-                width="full"
-                colorScheme="blue"
-                isLoading={isLoading}
-                isDisabled={!isValid}
-                loadingText={LL.admin.role_users.loading()}>
-                {LL.admin.role_users.query_button()}
-              </Button>
-            </VStack>
-          )}
+                <Button
+                  type="submit"
+                  size="lg"
+                  width="full"
+                  colorScheme="blue"
+                  isLoading={isLoading}
+                  isDisabled={isButtonDisabled}
+                  loadingText={LL.admin.role_users.loading()}>
+                  {LL.admin.role_users.query_button()}
+                </Button>
+              </VStack>
+            );
+          }}
         </FormSkeleton>
 
         {hasQueried && (
@@ -186,7 +190,7 @@ const UserWithRoleList = ({
   const { LL } = useI18nContext();
   return (
     <Box
-      maxHeight={showScrollableList ? "300px" : "none"}
+      maxHeight={showScrollableList ? "405px" : "none"}
       overflowY={showScrollableList ? "auto" : "visible"}
       border={showScrollableList ? "1px solid" : "none"}
       borderColor="gray.200"
@@ -198,7 +202,7 @@ const UserWithRoleList = ({
             key={`${user.address}-${index}`}
             justify="space-between"
             align="center"
-            p={3}
+            p={2}
             bg="gray.50"
             borderRadius="md">
             <VStack align="start" spacing={1}>
