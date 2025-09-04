@@ -111,11 +111,13 @@ export function StargateLevelDetails({ levels, levelIds, supplies }: StargateLev
   ];
 
   return (
-    <Box mb={8}>
+    <Box mb={8} overflow={"hidden"}>
       <Heading size="sm" mb={4}>
         {LL.admin.stargate_nodes.level_details_title()}
       </Heading>
-      <DataTable columns={columns} data={tableData} />
+      <Box overflow={"auto"}>
+        <DataTable columns={columns} data={tableData} />
+      </Box>
     </Box>
   );
 }

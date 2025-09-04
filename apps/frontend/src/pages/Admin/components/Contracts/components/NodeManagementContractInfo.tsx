@@ -5,11 +5,8 @@ import {
   Input,
   Button,
   FormControl,
-  FormLabel,
-  FormErrorMessage,
-  Alert,
-  AlertIcon,
   Spinner,
+  Divider,
 } from "@chakra-ui/react";
 import { useMemo, useState } from "react";
 import { useI18nContext } from "@/i18n/i18n-react";
@@ -18,6 +15,9 @@ import { AdminCard } from "../../common/AdminCard";
 import { FormSkeleton } from "@/components/ui/FormSkeleton";
 import { formatAddress } from "@/utils/address";
 import { nodeInfoSchema, type NodeInfoSchema } from "@/schema/adminSchema";
+import { Label } from "@/components/ui/Label";
+import { InputMessage } from "@/components/ui/InputMessage";
+import { GenericInfoBox } from "@/components/ui/GenericInfoBox";
 
 export function NodeManagementContractInfo() {
   const { LL } = useI18nContext();
@@ -58,26 +58,32 @@ export function NodeManagementContractInfo() {
 
   return (
     <AdminCard title={LL.admin.node_management.card_title()}>
-      <VStack spacing={4} align="stretch">
+      <VStack spacing={6} align="stretch">
+        <Text fontSize="sm" color="gray.600">
+          {LL.admin.node_management.help_text()}
+        </Text>
+
         <FormSkeleton<NodeInfoSchema>
           schema={nodeInfoSchema}
           onSubmit={handleFormSubmit}
           defaultValues={{ userAddress: "" }}>
           {({ register, errors, isValid }) => (
-            <VStack spacing={3}>
+            <VStack spacing={4}>
               <FormControl isInvalid={!!errors.userAddress}>
-                <FormLabel fontSize="sm">{LL.admin.node_management.user_address_label()}</FormLabel>
+                <Label label={LL.admin.node_management.user_address_label()} />
                 <Input
-                  size="sm"
+                  size="md"
                   placeholder={LL.admin.node_management.user_address_placeholder()}
                   {...register("userAddress")}
                 />
-                <FormErrorMessage>{errors.userAddress?.message}</FormErrorMessage>
+                <InputMessage error={errors.userAddress?.message} />
               </FormControl>
+              
               <Button
                 type="submit"
-                size="sm"
+                size="lg"
                 width="full"
+                colorScheme="blue"
                 isLoading={isLoading}
                 isDisabled={!isValid}
                 loadingText={LL.admin.node_management.loading_button()}>
@@ -87,44 +93,58 @@ export function NodeManagementContractInfo() {
           )}
         </FormSkeleton>
 
-        {error && (
-          <Alert status="error" size="sm">
-            <AlertIcon />
-            <Text fontSize="xs">
-              {LL.admin.node_management.error({
-                error: error instanceof Error ? error.message : LL.admin.unknown_error(),
-              })}
-            </Text>
-          </Alert>
-        )}
-
-        {isLoading && searchAddress && (
-          <HStack justify="center" py={4}>
-            <Spinner size="sm" />
-            <Text fontSize="sm" color="gray.500">
-              {LL.admin.node_management.loading_text()}
-            </Text>
-          </HStack>
-        )}
-
-        {userNodeInfo && (
-          <VStack spacing={2} align="stretch">
-            <Text fontSize="sm" fontWeight="semibold" color="blue.600" mb={1}>
-              {LL.admin.node_management.results_for({
-                address: formatAddress(searchAddress),
-              })}
-            </Text>
-            {nodeData.map(({ label, value }) => (
-              <HStack key={label} justify="space-between" align="center">
-                <Text fontSize="sm" fontWeight="medium">
-                  {label}
+        {searchAddress && (
+          <>
+            <Divider />
+            
+            {error && (
+              <GenericInfoBox variant="error">
+                <Text color="red.700">
+                  {LL.admin.node_management.error({
+                    error: error instanceof Error ? error.message : LL.admin.unknown_error(),
+                  })}
                 </Text>
-                <Text fontSize="sm" color="gray.600" textAlign="right" maxW="150px" wordBreak="break-word">
-                  {value}
+              </GenericInfoBox>
+            )}
+
+            {isLoading && (
+              <HStack justify="center" py={4}>
+                <Spinner size="md" />
+                <Text fontSize="sm" color="gray.500">
+                  {LL.admin.node_management.loading_text()}
                 </Text>
               </HStack>
-            ))}
-          </VStack>
+            )}
+
+            {!error && userNodeInfo && (
+              <VStack spacing={4} align="stretch">
+                <Text fontSize="lg" fontWeight="bold">
+                  {LL.admin.node_management.results_for({
+                    address: formatAddress(searchAddress),
+                  })}
+                </Text>
+                
+                <VStack spacing={3} align="stretch">
+                  {nodeData.map(({ label, value }) => (
+                    <HStack key={label} justify="space-between" align="center">
+                      <Text fontWeight="medium">
+                        {label}
+                      </Text>
+                      <Text color="gray.600" textAlign="right" wordBreak="break-word">
+                        {value}
+                      </Text>
+                    </HStack>
+                  ))}
+                </VStack>
+              </VStack>
+            )}
+
+            {!error && !userNodeInfo && !isLoading && (
+              <GenericInfoBox variant="info">
+                <Text>{LL.admin.node_management.no_results()}</Text>
+              </GenericInfoBox>
+            )}
+          </>
         )}
       </VStack>
     </AdminCard>

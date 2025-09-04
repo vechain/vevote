@@ -462,6 +462,7 @@ const en = {
     },
     node_management: {
       title: "Node Management Contract Information",
+      help_text: "Enter a wallet address to view detailed node ownership and delegation information for that account.",
       user_address_label: "User Address",
       user_address_placeholder: "Enter user address (0x...)",
       load_button: "Load User Node Info",
@@ -478,6 +479,7 @@ const en = {
       error: "Error loading node data: {error:string}",
       card_title: "Node Information",
       results_for: "Results for {address:string}",
+      no_results: "No node information available for this address",
       methods_title: "Available Methods",
       methods_description:
         "This component demonstrates the NodeManagementService functionality. You can extend it to show additional statistics like total nodes, delegation stats, etc.",

@@ -1512,6 +1512,10 @@ type RootTranslation = {
 			 */
 			title: string
 			/**
+			 * E​n​t​e​r​ ​a​ ​w​a​l​l​e​t​ ​a​d​d​r​e​s​s​ ​t​o​ ​v​i​e​w​ ​d​e​t​a​i​l​e​d​ ​n​o​d​e​ ​o​w​n​e​r​s​h​i​p​ ​a​n​d​ ​d​e​l​e​g​a​t​i​o​n​ ​i​n​f​o​r​m​a​t​i​o​n​ ​f​o​r​ ​t​h​a​t​ ​a​c​c​o​u​n​t​.
+			 */
+			help_text: string
+			/**
 			 * U​s​e​r​ ​A​d​d​r​e​s​s
 			 */
 			user_address_label: string
@@ -1579,6 +1583,10 @@ type RootTranslation = {
 			 * @param {string} address
 			 */
 			results_for: RequiredParams<'address'>
+			/**
+			 * N​o​ ​n​o​d​e​ ​i​n​f​o​r​m​a​t​i​o​n​ ​a​v​a​i​l​a​b​l​e​ ​f​o​r​ ​t​h​i​s​ ​a​d​d​r​e​s​s
+			 */
+			no_results: string
 			/**
 			 * A​v​a​i​l​a​b​l​e​ ​M​e​t​h​o​d​s
 			 */
@@ -3586,6 +3594,10 @@ JPG, PNG or SVG of maximum of {size}MB.
 			 */
 			title: () => LocalizedString
 			/**
+			 * Enter a wallet address to view detailed node ownership and delegation information for that account.
+			 */
+			help_text: () => LocalizedString
+			/**
 			 * User Address
 			 */
 			user_address_label: () => LocalizedString
@@ -3649,6 +3661,10 @@ JPG, PNG or SVG of maximum of {size}MB.
 			 * Results for {address}
 			 */
 			results_for: (arg: { address: string }) => LocalizedString
+			/**
+			 * No node information available for this address
+			 */
+			no_results: () => LocalizedString
 			/**
 			 * Available Methods
 			 */
