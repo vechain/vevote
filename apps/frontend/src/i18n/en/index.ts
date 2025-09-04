@@ -593,8 +593,8 @@ const en = {
       description: "Query historical voting power for any wallet at a specific timepoint",
       address_label: "Wallet Address",
       address_placeholder: "Enter wallet address (0x...)",
-      timepoint_label: "Timepoint/Block Number",
-      timepoint_placeholder: "Enter timepoint or block number",
+      timepoint_label: "Timepoint",
+      timepoint_placeholder: "Enter timepoint",
       master_address_label: "Master Address (Optional)",
       master_address_placeholder: "Enter master address for validator power (0x...)",
       query_button: "Query Voting Power",
@@ -610,7 +610,8 @@ const en = {
       timepoint_required: "Timepoint is required",
       error_title: "Query Failed",
       error_description: "There was an error querying voting power: {error:string}",
-      help_text: "Enter a wallet address and timepoint to view historical voting power. Optionally provide a master address to check validator-delegated power.",
+      help_text:
+        "Enter a wallet address and timepoint to view historical voting power. Optionally provide a master address to check validator-delegated power.",
     },
     unknown_error: "Unknown error",
     common_roles: {

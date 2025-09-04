@@ -1,10 +1,4 @@
-import {
-  Box,
-  Heading,
-  HStack,
-  IconButton,
-  useColorModeValue,
-} from "@chakra-ui/react";
+import { Box, Heading, HStack, IconButton } from "@chakra-ui/react";
 import { MenuIcon } from "@/icons";
 import { ConnectButton } from "@/components/ui/ConnectButton";
 import { useI18nContext } from "@/i18n/i18n-react";
@@ -16,15 +10,9 @@ interface ResponsiveHeaderProps {
 
 export function ResponsiveHeader({ showMenuButton, onMenuToggle }: ResponsiveHeaderProps) {
   const { LL } = useI18nContext();
-  const borderColor = useColorModeValue("gray.200", "gray.600");
 
   return (
-    <Box
-      borderBottomWidth={showMenuButton ? "1px" : "0"}
-      borderColor={borderColor}
-      pb={showMenuButton ? 4 : 0}
-      mb={showMenuButton ? 4 : 8}
-    >
+    <Box borderBottomWidth={showMenuButton ? "1px" : "0"} borderColor={"gray.400"} pb={{ base: 4, md: 0 }}>
       <HStack w="full" alignItems="center">
         {showMenuButton && (
           <IconButton
@@ -35,7 +23,9 @@ export function ResponsiveHeader({ showMenuButton, onMenuToggle }: ResponsiveHea
             onClick={onMenuToggle}
           />
         )}
-        <Heading size="lg">{LL.admin.title()}</Heading>
+        <Heading size="lg" color={"primary.900"}>
+          {LL.admin.title()}
+        </Heading>
         <Box ml="auto">
           <ConnectButton />
         </Box>

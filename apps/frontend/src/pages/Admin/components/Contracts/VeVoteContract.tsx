@@ -13,7 +13,7 @@ const contractAddress = getConfig(import.meta.env.VITE_APP_ENV).vevoteContractAd
 export function VeVoteContract() {
   const { LL } = useI18nContext();
   const { data: veVoteInfo, isLoading, error } = useVeVoteInfo();
-  
+
   const stackSpacing = useBreakpointValue({
     base: 4,
     md: 6,
@@ -50,7 +50,7 @@ export function VeVoteContract() {
     <Box>
       <VStack spacing={6} align="stretch">
         <Box>
-          <Heading size="md" mb={2}>
+          <Heading size="md" mb={2} color={"primary.900"}>
             {LL.admin.vevote_contract.title()}
           </Heading>
           <HStack>

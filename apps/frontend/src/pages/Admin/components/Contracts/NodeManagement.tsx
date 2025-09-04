@@ -28,7 +28,7 @@ export function NodeManagement() {
     <Box>
       <VStack spacing={6} align="stretch">
         <Box>
-          <Heading size="md" mb={2}>
+          <Heading size="md" mb={2} color={"primary.900"}>
             {LL.admin.node_management.title()}
           </Heading>
           {nodeManagementContractAddress && (

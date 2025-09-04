@@ -2006,11 +2006,11 @@ type RootTranslation = {
 			 */
 			address_placeholder: string
 			/**
-			 * T​i​m​e​p​o​i​n​t​/​B​l​o​c​k​ ​N​u​m​b​e​r
+			 * T​i​m​e​p​o​i​n​t
 			 */
 			timepoint_label: string
 			/**
-			 * E​n​t​e​r​ ​t​i​m​e​p​o​i​n​t​ ​o​r​ ​b​l​o​c​k​ ​n​u​m​b​e​r
+			 * E​n​t​e​r​ ​t​i​m​e​p​o​i​n​t
 			 */
 			timepoint_placeholder: string
 			/**
@@ -4134,11 +4134,11 @@ JPG, PNG or SVG of maximum of {size}MB.
 			 */
 			address_placeholder: () => LocalizedString
 			/**
-			 * Timepoint/Block Number
+			 * Timepoint
 			 */
 			timepoint_label: () => LocalizedString
 			/**
-			 * Enter timepoint or block number
+			 * Enter timepoint
 			 */
 			timepoint_placeholder: () => LocalizedString
 			/**
