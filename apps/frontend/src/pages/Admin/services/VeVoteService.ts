@@ -3,6 +3,7 @@ import { VeVote__factory } from "@repo/contracts";
 import { getConfig } from "@repo/config";
 import { executeMultipleClauses } from "../../../utils/contract";
 import { ZERO_ADDRESS } from "@vechain/sdk-core";
+import { getAllEventLogs, ThorClient } from "@vechain/vechain-kit";
 
 export interface VeVoteInfo {
   quorumNumerator: bigint;
@@ -26,14 +27,22 @@ export interface VotingMultipliers {
   [levelId: number]: bigint;
 }
 
+export interface RoleUserInfo {
+  address: string;
+  grantedAt: Date;
+  transactionId: string;
+}
+
 export class VeVoteService {
   private readonly contractAddress: string;
   private readonly contractInterface: VevoteContractInterface;
+  private readonly nodeUrl: string;
 
   constructor() {
     const config = getConfig(import.meta.env.VITE_APP_ENV);
     this.contractAddress = config.vevoteContractAddress;
     this.contractInterface = VeVote__factory.createInterface();
+    this.nodeUrl = config.nodeUrl;
   }
 
   async getVeVoteInfo(): Promise<VeVoteInfo> {
@@ -114,16 +123,60 @@ export class VeVoteService {
       const result = await executeMultipleClauses({
         contractAddress: this.contractAddress,
         contractInterface: this.contractInterface,
-        methodsWithArgs: [{
-          method: "getVoteWeightAtTimepoint" as const,
-          args: [address, timepoint, masterAddress || ZERO_ADDRESS],
-        }],
+        methodsWithArgs: [
+          {
+            method: "getVoteWeightAtTimepoint" as const,
+            args: [address, timepoint, masterAddress || ZERO_ADDRESS],
+          },
+        ],
       });
 
       return result[0]?.success ? BigInt(result[0].result.plain as string) : BigInt(0);
     } catch (error) {
       console.error("Error fetching voting power at timepoint:", error);
       return BigInt(0);
+    }
+  }
+
+  async getRoleUsers(thor: ThorClient, roleHash: string): Promise<RoleUserInfo[]> {
+    if (!thor) {
+      return [];
+    }
+
+    try {
+      const eventAbi = thor.contracts.load(this.contractAddress, VeVote__factory.abi).getEventAbi("RoleGranted");
+
+      const filterCriteria = [
+        {
+          criteria: {
+            address: this.contractAddress,
+            topic0: eventAbi.signatureHash,
+            topic1: roleHash,
+          },
+          eventAbi,
+        },
+      ];
+
+      const events = await getAllEventLogs({ thor, nodeUrl: this.nodeUrl, filterCriteria });
+
+      const userMap = new Map<string, RoleUserInfo>();
+
+      events.forEach(event => {
+        if (event.decodedData) {
+          const [_role, account, _sender] = event.decodedData as [string, string, string];
+
+          userMap.set(account, {
+            address: account,
+            grantedAt: new Date(event.meta.blockTimestamp * 1000),
+            transactionId: event.meta.txID,
+          });
+        }
+      });
+
+      return Array.from(userMap.values()).sort((a, b) => b.grantedAt.getTime() - a.grantedAt.getTime());
+    } catch (error) {
+      console.error("Error fetching role users:", error);
+      return [];
     }
   }
 }

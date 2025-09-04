@@ -1908,6 +1908,72 @@ type RootTranslation = {
 			 */
 			no_roles_assigned: string
 		}
+		role_users: {
+			/**
+			 * R​o​l​e​ ​U​s​e​r​s
+			 */
+			title: string
+			/**
+			 * S​e​l​e​c​t​ ​a​ ​r​o​l​e​ ​t​o​ ​v​i​e​w​ ​a​l​l​ ​u​s​e​r​s​ ​w​h​o​ ​h​a​v​e​ ​b​e​e​n​ ​g​r​a​n​t​e​d​ ​t​h​a​t​ ​s​p​e​c​i​f​i​c​ ​r​o​l​e​.
+			 */
+			help_text: string
+			/**
+			 * R​o​l​e
+			 */
+			role_label: string
+			/**
+			 * S​e​l​e​c​t​ ​a​ ​r​o​l​e​ ​t​o​ ​q​u​e​r​y
+			 */
+			role_placeholder: string
+			/**
+			 * Q​u​e​r​y​ ​R​o​l​e​ ​U​s​e​r​s
+			 */
+			query_button: string
+			/**
+			 * L​o​a​d​i​n​g​.​.​.
+			 */
+			loading: string
+			/**
+			 * F​e​t​c​h​i​n​g​ ​u​s​e​r​s​ ​w​i​t​h​ ​s​e​l​e​c​t​e​d​ ​r​o​l​e​.​.​.
+			 */
+			loading_text: string
+			/**
+			 * U​s​e​r​s​ ​w​i​t​h​ ​R​o​l​e
+			 */
+			results_title: string
+			/**
+			 * {​c​o​u​n​t​}​ ​{​c​o​u​n​t​|​{​1​:​ ​u​s​e​r​,​ ​*​:​ ​u​s​e​r​s​}​}
+			 * @param {number | '1' | string} count
+			 */
+			user_count: RequiredParams<'count' | `count|{1:${string}, *:${string}}`>
+			/**
+			 * R​o​l​e​:​ ​{​r​o​l​e​}
+			 * @param {string} role
+			 */
+			role_selected: RequiredParams<'role'>
+			/**
+			 * G​r​a​n​t​e​d​:​ ​{​d​a​t​e​}
+			 * @param {string} date
+			 */
+			granted_at: RequiredParams<'date'>
+			/**
+			 * V​i​e​w​ ​T​X
+			 */
+			view_tx: string
+			/**
+			 * N​o​ ​u​s​e​r​s​ ​f​o​u​n​d​ ​w​i​t​h​ ​t​h​i​s​ ​r​o​l​e
+			 */
+			no_users: string
+			/**
+			 * S​c​r​o​l​l​ ​t​o​ ​s​e​e​ ​m​o​r​e​ ​u​s​e​r​s
+			 */
+			scrollable_hint: string
+			/**
+			 * E​r​r​o​r​ ​f​e​t​c​h​i​n​g​ ​r​o​l​e​ ​u​s​e​r​s​:​ ​{​e​r​r​o​r​}
+			 * @param {string} error
+			 */
+			error_description: RequiredParams<'error'>
+		}
 		user_role_checker: {
 			/**
 			 * Y​o​u​r​ ​P​e​r​m​i​s​s​i​o​n​s
@@ -3973,6 +4039,68 @@ JPG, PNG or SVG of maximum of {size}MB.
 			 * No roles assigned
 			 */
 			no_roles_assigned: () => LocalizedString
+		}
+		role_users: {
+			/**
+			 * Role Users
+			 */
+			title: () => LocalizedString
+			/**
+			 * Select a role to view all users who have been granted that specific role.
+			 */
+			help_text: () => LocalizedString
+			/**
+			 * Role
+			 */
+			role_label: () => LocalizedString
+			/**
+			 * Select a role to query
+			 */
+			role_placeholder: () => LocalizedString
+			/**
+			 * Query Role Users
+			 */
+			query_button: () => LocalizedString
+			/**
+			 * Loading...
+			 */
+			loading: () => LocalizedString
+			/**
+			 * Fetching users with selected role...
+			 */
+			loading_text: () => LocalizedString
+			/**
+			 * Users with Role
+			 */
+			results_title: () => LocalizedString
+			/**
+			 * {count} {count|{1: user, *: users}}
+			 */
+			user_count: (arg: { count: number | '1' | string }) => LocalizedString
+			/**
+			 * Role: {role}
+			 */
+			role_selected: (arg: { role: string }) => LocalizedString
+			/**
+			 * Granted: {date}
+			 */
+			granted_at: (arg: { date: string }) => LocalizedString
+			/**
+			 * View TX
+			 */
+			view_tx: () => LocalizedString
+			/**
+			 * No users found with this role
+			 */
+			no_users: () => LocalizedString
+			/**
+			 * Scroll to see more users
+			 */
+			scrollable_hint: () => LocalizedString
+			/**
+			 * Error fetching role users: {error}
+			 */
+			error_description: (arg: { error: string }) => LocalizedString
 		}
 		user_role_checker: {
 			/**

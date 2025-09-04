@@ -32,7 +32,7 @@ export function AdminCard({ title, children, ...boxProps }: AdminCardProps) {
       minW={width}
       maxW={width}
       {...boxProps}>
-      <Heading size="sm" mb={3}>
+      <Heading size="md" mb={3}>
         {title}
       </Heading>
       {children}
