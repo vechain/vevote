@@ -1,35 +1,35 @@
-import {
-  Text,
-  VStack,
-  HStack,
-  Select,
-  Button,
-  useDisclosure,
-  Divider,
-  Badge,
-  Wrap,
-  WrapItem,
-  Spinner,
-  Box,
-  Input,
-  FormControl,
-} from "@chakra-ui/react";
-import { useCallback, useMemo } from "react";
-import { useI18nContext } from "@/i18n/i18n-react";
+import { FormSkeleton, FormSkeletonProps } from "@/components/ui/FormSkeleton";
+import { InputMessage } from "@/components/ui/InputMessage";
+import { Label } from "@/components/ui/Label";
+import { MessageModal } from "@/components/ui/ModalSkeleton";
 import { useRoleManagement } from "@/hooks/useRoleManagement";
 import { useUserRoles } from "@/hooks/useUserRoles";
-import { MessageModal } from "@/components/ui/ModalSkeleton";
-import { FormSkeleton, FormSkeletonProps } from "@/components/ui/FormSkeleton";
+import { useI18nContext } from "@/i18n/i18n-react";
 import { CheckIcon } from "@/icons";
-import { AdminCard } from "../common/AdminCard";
 import { userManagementSchema, type UserManagementSchema } from "@/schema/adminSchema";
-import { isValidAddress } from "@/utils/zod";
 import { executeCall } from "@/utils/contract";
+import { isValidAddress } from "@/utils/zod";
+import {
+  Badge,
+  Box,
+  Button,
+  Divider,
+  FormControl,
+  HStack,
+  Input,
+  Select,
+  Spinner,
+  Text,
+  useDisclosure,
+  VStack,
+  Wrap,
+  WrapItem,
+} from "@chakra-ui/react";
 import { getConfig } from "@repo/config";
 import { VeVote__factory } from "@repo/contracts";
-import { Label } from "@/components/ui/Label";
-import { InputMessage } from "@/components/ui/InputMessage";
-import { GenericInfoBox } from "@/components/ui/GenericInfoBox";
+import { useCallback, useMemo } from "react";
+import { AdminCard } from "../common/AdminCard";
+import { SensitiveWarning } from "../common/SensitiveWarning";
 
 export const ROLES = [
   "DEFAULT_ADMIN_ROLE",
@@ -85,13 +85,13 @@ export function UserManagementCard() {
   );
 
   const handleFormSubmit: FormSkeletonProps<UserManagementSchema>["onSubmit"] = useCallback(
-    async (values, { setError }, action) => {
+    async (values, _, action) => {
       try {
         const roleAction = action === "revoke" ? "revoke" : "grant";
         await handleRoleAction(roleAction, values);
       } catch (err) {
         const error = err as Error;
-        setError("root", { message: error.message });
+        console.error(error);
       }
     },
     [handleRoleAction],
@@ -100,7 +100,7 @@ export function UserManagementCard() {
   return (
     <>
       <AdminCard title={LL.admin.user_management.title()}>
-        <Text fontSize="sm" color="gray.600" mb={6}>
+        <Text fontSize="sm" color="gray.600" mb={4}>
           {LL.admin.user_management.description()}
         </Text>
 
@@ -113,12 +113,6 @@ export function UserManagementCard() {
 
             return (
               <VStack spacing={6} align="stretch">
-                {errors.root && (
-                  <GenericInfoBox variant="error">
-                    <Text color="red.700">{errors.root.message}</Text>
-                  </GenericInfoBox>
-                )}
-
                 <VStack spacing={4} align="stretch">
                   <FormControl isInvalid={!!errors.userAddress}>
                     <Label label={LL.admin.user_management.user_address_label()} />
@@ -175,6 +169,8 @@ export function UserManagementCard() {
             );
           }}
         </FormSkeleton>
+
+        <SensitiveWarning />
       </AdminCard>
 
       <MessageModal

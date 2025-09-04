@@ -10,6 +10,7 @@ import { DataTable } from "@/components/ui/TableSkeleton";
 import { createColumnHelper } from "@tanstack/react-table";
 import { TableHeader, BaseCell, NodeTypeCell, MultiplierInputCell } from "../common/AdminTableCells";
 import { z } from "zod";
+import { SensitiveWarning } from "../common/SensitiveWarning";
 
 interface LevelMultipliersCardProps {
   onSuccess?: () => void;
@@ -201,6 +202,7 @@ export function LevelMultipliersCard({ onSuccess }: LevelMultipliersCardProps) {
           );
         }}
       </FormSkeleton>
+      <SensitiveWarning />
     </AdminCard>
   );
 }

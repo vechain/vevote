@@ -10,6 +10,7 @@ import { FixedPointNumber, Units } from "@vechain/sdk-core";
 import { useCallback, useMemo } from "react";
 import { VeVoteInfo } from "../../services";
 import { AdminCard } from "../common/AdminCard";
+import { SensitiveWarning } from "../common/SensitiveWarning";
 
 interface GovernanceSettingsFormProps {
   veVoteInfo: VeVoteInfo;
@@ -168,6 +169,7 @@ export function GovernanceSettingsForm({ veVoteInfo, onSuccess }: GovernanceSett
                   {LL.admin.governance_settings.update_governance_settings()}
                 </Button>
               </Box>
+              <SensitiveWarning />
             </VStack>
           );
         }}

@@ -16,8 +16,8 @@ export function UserManagement() {
       justifyContent={"space-between"}
       flexDirection={{ base: "column", xl: "row" }}>
       <Flex gap={stackSpacing} alignItems={"start"} flexDirection={{ base: "column", md: "row" }}>
-        <UserManagementCard />
         <RoleUsersCard />
+        <UserManagementCard />
       </Flex>
       <VotingPowerAtTimepointCard />
     </Flex>

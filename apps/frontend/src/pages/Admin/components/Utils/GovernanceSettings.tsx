@@ -33,7 +33,7 @@ export function GovernanceSettings() {
   }
 
   return (
-    <Flex gap={4} flexDirection={{ base: "column", lg: "row" }}>
+    <Flex gap={4} flexDirection={{ base: "column", lg: "row" }} align="flex-start">
       <GovernanceSettingsForm veVoteInfo={veVoteInfo} onSuccess={onSuccessOpen} />
       <LevelMultipliersCard onSuccess={onSuccessOpen} />
       <MessageModal
