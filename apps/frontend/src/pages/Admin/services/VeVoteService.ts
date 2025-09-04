@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { VeVote__factory } from "@repo/contracts";
 import { getConfig } from "@repo/config";
-import { executeMultipleClauses } from "../../../utils/contract";
+import { executeCall, executeMultipleClauses } from "../../../utils/contract";
 import { ZERO_ADDRESS } from "@vechain/sdk-core";
 import { getAllEventLogs, ThorClient } from "@vechain/vechain-kit";
 
@@ -49,7 +49,6 @@ export class VeVoteService {
 
   async getVeVoteInfo(): Promise<VeVoteInfo> {
     const methodsWithArgs = [
-      { method: "quorumNumerator" as any, args: [] },
       { method: "quorumDenominator" as const, args: [] },
       { method: "getMinVotingDelay" as const, args: [] },
       { method: "getMinVotingDuration" as const, args: [] },
@@ -64,14 +63,16 @@ export class VeVoteService {
       methodsWithArgs,
     });
 
+    const quorumNumerator = await this.getQuorumNumerator();
+
     return {
-      quorumNumerator: BigInt(results[0]?.success ? String(results[0].result.plain) : "0"),
-      quorumDenominator: BigInt(results[1]?.success ? String(results[1].result.plain) : "0"),
-      minVotingDelay: Number(results[2]?.success ? results[2].result.plain : 0),
-      minVotingDuration: Number(results[3]?.success ? results[3].result.plain : 0),
-      maxVotingDuration: Number(results[4]?.success ? results[4].result.plain : 0),
-      minStakedAmount: BigInt(results[5]?.success ? String(results[5].result.plain) : "0"),
-      version: BigInt(results[6]?.success ? String(results[6].result.plain) : "0"),
+      quorumNumerator,
+      quorumDenominator: BigInt(results[0]?.success ? String(results[0].result.plain) : "0"),
+      minVotingDelay: Number(results[1]?.success ? results[1].result.plain : 0),
+      minVotingDuration: Number(results[2]?.success ? results[2].result.plain : 0),
+      maxVotingDuration: Number(results[3]?.success ? results[3].result.plain : 0),
+      minStakedAmount: BigInt(results[4]?.success ? String(results[4].result.plain) : "0"),
+      version: BigInt(results[5]?.success ? String(results[5].result.plain) : "0"),
     };
   }
 
@@ -96,6 +97,21 @@ export class VeVoteService {
     } catch (error) {
       console.error("Error fetching contract addresses:", error);
       throw error;
+    }
+  }
+
+  async getQuorumNumerator(): Promise<bigint> {
+    try {
+      const result = await executeCall({
+        contractAddress: this.contractAddress,
+        contractInterface: this.contractInterface,
+        method: "quorumNumerator" as any,
+        args: [],
+      });
+      return result?.success ? BigInt(result.result.plain as string) : BigInt(0);
+    } catch (error) {
+      console.error("Error fetching quorum numerator:", error);
+      return BigInt(0);
     }
   }
 
