@@ -11,6 +11,7 @@ import { FormSkeleton } from "@/components/ui/FormSkeleton";
 import { Label } from "@/components/ui/Label";
 import { InputMessage } from "@/components/ui/InputMessage";
 import { votingPowerQuerySchema, VotingPowerQuerySchema } from "@/schema/adminSchema";
+import { formatAddress } from "@/utils/address";
 
 const EXPLORER_URL = getConfig(import.meta.env.VITE_APP_ENV).network.explorerUrl;
 
@@ -46,11 +47,11 @@ export function VotingPowerAtTimepointCard() {
   const hasQueried = Boolean(queryParams.address && queryParams.timepoint !== undefined);
 
   const formatVotingPower = useCallback((power: bigint): string => {
-    return (Number(power) / 100).toLocaleString();
+    return (Number(power) / 100).toString();
   }, []);
 
   return (
-    <AdminCard title={LL.admin.voting_power_timepoint.title()} maxW={800}>
+    <AdminCard title={LL.admin.voting_power_timepoint.title()}>
       <VStack spacing={6} align="stretch">
         <Text fontSize="sm" color="gray.600">
           {LL.admin.voting_power_timepoint.help_text()}
@@ -138,7 +139,7 @@ export function VotingPowerAtTimepointCard() {
 
                   <HStack justify="space-between">
                     <Text fontWeight="medium">Timepoint:</Text>
-                    <Text>{queryParams.timepoint?.toLocaleString()}</Text>
+                    <Text>{queryParams.timepoint?.toString()}</Text>
                   </HStack>
 
                   {queryParams.masterAddress && (
@@ -150,7 +151,7 @@ export function VotingPowerAtTimepointCard() {
                         textToCopy={queryParams.masterAddress}
                         color="primary.700"
                         fontWeight={500}>
-                        {queryParams.masterAddress.slice(0, 6)}...{queryParams.masterAddress.slice(-4)}
+                        {formatAddress(queryParams.masterAddress)}
                       </CopyLink>
                     </HStack>
                   )}

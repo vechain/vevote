@@ -25,7 +25,7 @@ export function AdminCard({ title, children, ...boxProps }: AdminCardProps) {
   return (
     <Box
       border="1px"
-      borderColor="gray.200"
+      borderColor="primary.700"
       borderRadius="md"
       p={padding}
       w={cardWidth}

@@ -3,7 +3,7 @@ import { useI18nContext } from "@/i18n/i18n-react";
 import { useMemo } from "react";
 
 const contractKeys = ["vevote-contract", "node-management", "stargate-nodes"];
-const utilsKeys = ["user-management", "governance-settings", "voting-power-timepoint"];
+const utilsKeys = ["user-management", "governance-settings"];
 
 interface MainTabsProps {
   readonly mainTabIndex: number;
@@ -39,7 +39,7 @@ export function HorizontalTabs({ tabIndex, onTabChange, content, type }: Horizon
     () =>
       type === "contracts"
         ? [LL.admin.contracts.vevote(), LL.admin.contracts.node_management(), LL.admin.contracts.stargate_nodes()]
-        : [LL.admin.tabs.users(), LL.admin.tabs.governance_settings(), LL.admin.tabs.voting_power_timepoint()],
+        : [LL.admin.tabs.users(), LL.admin.tabs.governance_settings()],
     [LL, type],
   );
 
@@ -53,7 +53,7 @@ export function HorizontalTabs({ tabIndex, onTabChange, content, type }: Horizon
 
       <TabPanels>
         {content.map((item, index) => (
-          <TabPanel key={keys[index]} pt={{ base: 3, md: 6 }} px={4}>
+          <TabPanel key={keys[index]} pt={{ base: 3, md: 6 }} pb={4}>
             {item}
           </TabPanel>
         ))}

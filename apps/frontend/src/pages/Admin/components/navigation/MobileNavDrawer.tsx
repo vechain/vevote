@@ -36,20 +36,19 @@ export function MobileNavDrawer({
   onSubTabChange,
 }: MobileNavDrawerProps) {
   const { LL } = useI18nContext();
-  
+
   const bgColor = useColorModeValue("white", "gray.800");
   const borderColor = useColorModeValue("gray.200", "gray.600");
 
   const contractsSubTabs = [
-    { label: LL.admin.contracts.vevote(), index: 0, id: 'vevote' },
-    { label: LL.admin.contracts.node_management(), index: 1, id: 'node-management' },
-    { label: LL.admin.contracts.stargate_nodes(), index: 2, id: 'stargate-nodes' },
+    { label: LL.admin.contracts.vevote(), index: 0, id: "vevote" },
+    { label: LL.admin.contracts.node_management(), index: 1, id: "node-management" },
+    { label: LL.admin.contracts.stargate_nodes(), index: 2, id: "stargate-nodes" },
   ];
 
   const utilsSubTabs = [
-    { label: LL.admin.tabs.users(), index: 0, id: 'users' },
-    { label: LL.admin.tabs.governance_settings(), index: 1, id: 'governance-settings' },
-    { label: LL.admin.tabs.voting_power_timepoint(), index: 2, id: 'voting-power-timepoint' },
+    { label: LL.admin.tabs.users(), index: 0, id: "users" },
+    { label: LL.admin.tabs.governance_settings(), index: 1, id: "governance-settings" },
   ];
 
   const handleNavigation = (mainTabIndex: number, subTabIndex: number) => {
@@ -79,7 +78,7 @@ export function MobileNavDrawer({
               </AccordionButton>
               <AccordionPanel p={0}>
                 <VStack spacing={0} align="stretch">
-                  {contractsSubTabs.map((tab) => (
+                  {contractsSubTabs.map(tab => (
                     <Button
                       key={tab.id}
                       variant="ghost"
@@ -90,8 +89,7 @@ export function MobileNavDrawer({
                       fontWeight="normal"
                       bg={activeMainTab === 0 && activeSubTab === tab.index ? "blue.50" : "transparent"}
                       color={activeMainTab === 0 && activeSubTab === tab.index ? "blue.600" : "inherit"}
-                      onClick={() => handleNavigation(0, tab.index)}
-                    >
+                      onClick={() => handleNavigation(0, tab.index)}>
                       {tab.label}
                     </Button>
                   ))}
@@ -109,7 +107,7 @@ export function MobileNavDrawer({
               </AccordionButton>
               <AccordionPanel p={0}>
                 <VStack spacing={0} align="stretch">
-                  {utilsSubTabs.map((tab) => (
+                  {utilsSubTabs.map(tab => (
                     <Button
                       key={tab.id}
                       variant="ghost"
@@ -120,8 +118,7 @@ export function MobileNavDrawer({
                       fontWeight="normal"
                       bg={activeMainTab === 1 && activeSubTab === tab.index ? "blue.50" : "transparent"}
                       color={activeMainTab === 1 && activeSubTab === tab.index ? "blue.600" : "inherit"}
-                      onClick={() => handleNavigation(1, tab.index)}
-                    >
+                      onClick={() => handleNavigation(1, tab.index)}>
                       {tab.label}
                     </Button>
                   ))}
