@@ -3,18 +3,18 @@ import { ResponsiveHeader } from "../ResponsiveHeader";
 import { MobileContent } from "../NavigationComponents";
 
 interface MobileLayoutProps {
-  readonly mainTabIndex: number;
-  readonly contractsTabIndex: number;
-  readonly utilsTabIndex: number;
-  readonly onMainTabChange: (index: number) => void;
-  readonly onContractsTabChange: (index: number) => void;
-  readonly onUtilsTabChange: (index: number) => void;
-  readonly contractsContent: readonly React.ReactNode[];
-  readonly utilsContent: readonly React.ReactNode[];
-  readonly drawerState: {
-    readonly isOpen: boolean;
-    readonly onClose: () => void;
-    readonly onToggle: () => void;
+  mainTabIndex: number;
+  contractsTabIndex: number;
+  utilsTabIndex: number;
+  onMainTabChange: (index: number) => void;
+  onContractsTabChange: (index: number) => void;
+  onUtilsTabChange: (index: number) => void;
+  contractsContent: React.ReactNode[];
+  utilsContent: React.ReactNode[];
+  drawerState: {
+    isOpen: boolean;
+    onClose: () => void;
+    onToggle: () => void;
   };
 }
 

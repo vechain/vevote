@@ -4,8 +4,8 @@ import { AdminCard } from "../../common/AdminCard";
 import { useMemo } from "react";
 
 interface StargateContractInfoProps {
-  readonly totalSupply: bigint;
-  readonly levelIds: readonly number[];
+  totalSupply: bigint;
+  levelIds: number[];
 }
 
 export function StargateContractInfo({ totalSupply, levelIds }: StargateContractInfoProps) {

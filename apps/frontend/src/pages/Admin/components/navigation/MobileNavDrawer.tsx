@@ -19,12 +19,12 @@ import { ChevronDownIcon } from "@/icons";
 import { useI18nContext } from "@/i18n/i18n-react";
 
 interface MobileNavDrawerProps {
-  readonly isOpen: boolean;
-  readonly onClose: () => void;
-  readonly activeMainTab: number;
-  readonly activeSubTab: number;
-  readonly onMainTabChange: (index: number) => void;
-  readonly onSubTabChange: (index: number) => void;
+  isOpen: boolean;
+  onClose: () => void;
+  activeMainTab: number;
+  activeSubTab: number;
+  onMainTabChange: (index: number) => void;
+  onSubTabChange: (index: number) => void;
 }
 
 export function MobileNavDrawer({

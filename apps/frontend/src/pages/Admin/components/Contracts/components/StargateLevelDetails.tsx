@@ -13,9 +13,9 @@ interface Level {
 }
 
 interface StargateLevelDetailsProps {
-  readonly levels: readonly Level[];
-  readonly levelIds: readonly number[];
-  readonly supplies: readonly StargateLevelSupply[];
+  levels: Level[];
+  levelIds: number[];
+  supplies: StargateLevelSupply[];
 }
 
 interface StargateLevelRow {

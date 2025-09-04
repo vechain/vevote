@@ -4,8 +4,8 @@ import { HorizontalLayout } from "./layouts/HorizontalLayout";
 import { MobileLayout } from "./layouts/MobileLayout";
 
 interface ResponsiveNavigationProps {
-  readonly contractsContent: readonly React.ReactNode[];
-  readonly utilsContent: readonly React.ReactNode[];
+  contractsContent: React.ReactNode[];
+  utilsContent: React.ReactNode[];
 }
 
 export function ResponsiveNavigation({ contractsContent, utilsContent }: ResponsiveNavigationProps) {

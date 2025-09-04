@@ -6,7 +6,7 @@ import { AdminCard } from "../../common/AdminCard";
 import { FixedPointNumber, Units } from "@vechain/sdk-core";
 
 interface VevoteContractInfoProps {
-  readonly veVoteInfo: VeVoteInfo;
+  veVoteInfo: VeVoteInfo;
 }
 
 export function VevoteContractInfo({ veVoteInfo }: VevoteContractInfoProps) {

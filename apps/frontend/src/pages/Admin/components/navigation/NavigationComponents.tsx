@@ -6,9 +6,9 @@ const contractKeys = ["vevote-contract", "node-management", "stargate-nodes"];
 const utilsKeys = ["user-management", "governance-settings"];
 
 interface MainTabsProps {
-  readonly mainTabIndex: number;
-  readonly onMainTabChange: (index: number) => void;
-  readonly children: React.ReactNode;
+  mainTabIndex: number;
+  onMainTabChange: (index: number) => void;
+  children: React.ReactNode;
 }
 
 export function MainTabs({ mainTabIndex, onMainTabChange, children }: MainTabsProps) {
@@ -26,10 +26,10 @@ export function MainTabs({ mainTabIndex, onMainTabChange, children }: MainTabsPr
 }
 
 interface HorizontalTabsProps {
-  readonly tabIndex: number;
-  readonly onTabChange: (index: number) => void;
-  readonly content: readonly React.ReactNode[];
-  readonly type: "contracts" | "utils";
+  tabIndex: number;
+  onTabChange: (index: number) => void;
+  content: React.ReactNode[];
+  type: "contracts" | "utils";
 }
 
 export function HorizontalTabs({ tabIndex, onTabChange, content, type }: HorizontalTabsProps) {
@@ -63,11 +63,11 @@ export function HorizontalTabs({ tabIndex, onTabChange, content, type }: Horizon
 }
 
 interface MobileContentProps {
-  readonly mainTabIndex: number;
-  readonly contractsTabIndex: number;
-  readonly utilsTabIndex: number;
-  readonly contractsContent: readonly React.ReactNode[];
-  readonly utilsContent: readonly React.ReactNode[];
+  mainTabIndex: number;
+  contractsTabIndex: number;
+  utilsTabIndex: number;
+  contractsContent: React.ReactNode[];
+  utilsContent: React.ReactNode[];
 }
 
 export function MobileContent({

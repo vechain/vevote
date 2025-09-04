@@ -2,8 +2,8 @@ import { Box, Heading, BoxProps, useBreakpointValue } from "@chakra-ui/react";
 import { ReactNode } from "react";
 
 interface AdminCardProps extends BoxProps {
-  readonly title: string;
-  readonly children: ReactNode;
+  title: string;
+  children: ReactNode;
 }
 
 export function AdminCard({ title, children, ...boxProps }: AdminCardProps) {

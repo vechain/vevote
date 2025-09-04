@@ -3,14 +3,14 @@ import { MainTabs, HorizontalTabs } from "../NavigationComponents";
 import { ResponsiveHeader } from "../ResponsiveHeader";
 
 interface HorizontalLayoutProps {
-  readonly mainTabIndex: number;
-  readonly contractsTabIndex: number;
-  readonly utilsTabIndex: number;
-  readonly onMainTabChange: (index: number) => void;
-  readonly onContractsTabChange: (index: number) => void;
-  readonly onUtilsTabChange: (index: number) => void;
-  readonly contractsContent: readonly React.ReactNode[];
-  readonly utilsContent: readonly React.ReactNode[];
+  mainTabIndex: number;
+  contractsTabIndex: number;
+  utilsTabIndex: number;
+  onMainTabChange: (index: number) => void;
+  onContractsTabChange: (index: number) => void;
+  onUtilsTabChange: (index: number) => void;
+  contractsContent: React.ReactNode[];
+  utilsContent: React.ReactNode[];
 }
 
 export function HorizontalLayout({
