@@ -3,7 +3,7 @@ import { InputMessage } from "@/components/ui/InputMessage";
 import { Label } from "@/components/ui/Label";
 import { MessageModal } from "@/components/ui/ModalSkeleton";
 import { useRoleManagement } from "@/hooks/useRoleManagement";
-import { useUserRoles } from "@/hooks/useUserRoles";
+import { useUserAdminRoles } from "@/hooks/useAdminUserRoles";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { CheckIcon } from "@/icons";
 import { userManagementSchema, type UserManagementSchema } from "@/schema/adminSchema";
@@ -142,7 +142,6 @@ export function UserManagementCard() {
                   <HStack spacing={4}>
                     <Button
                       type="submit"
-                      colorScheme="green"
                       size="lg"
                       value="grant"
                       isLoading={isTransactionPending}
@@ -154,7 +153,6 @@ export function UserManagementCard() {
 
                     <Button
                       type="submit"
-                      colorScheme="red"
                       size="lg"
                       value="revoke"
                       isLoading={isTransactionPending}
@@ -189,7 +187,7 @@ export function UserManagementCard() {
 
 const UserRolesSection = ({ userAddress }: { userAddress: string }) => {
   const { LL } = useI18nContext();
-  const { data: userRoles, isLoading: isLoadingRoles } = useUserRoles(
+  const { data: userRoles, isLoading: isLoadingRoles } = useUserAdminRoles(
     userAddress && isValidAddress(userAddress) ? userAddress : "",
   );
 

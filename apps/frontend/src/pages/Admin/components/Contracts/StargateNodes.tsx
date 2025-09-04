@@ -1,13 +1,14 @@
-import { Box, Heading, Spinner, Alert, AlertIcon, VStack, Text, HStack, useBreakpointValue } from "@chakra-ui/react";
-import { useStargateStats } from "../../hooks";
-import { useI18nContext } from "@/i18n/i18n-react";
-import { getConfig } from "@repo/config";
 import { CopyLink } from "@/components/ui/CopyLink";
+import { GenericInfoBox } from "@/components/ui/GenericInfoBox";
+import { useI18nContext } from "@/i18n/i18n-react";
 import { formatAddress } from "@/utils/address";
+import { Box, Heading, HStack, Spinner, Text, useBreakpointValue, VStack } from "@chakra-ui/react";
+import { getConfig } from "@repo/config";
+import { useMemo } from "react";
+import { useStargateStats } from "../../hooks";
+import { useContractAddresses } from "../../hooks/useContractAddresses";
 import { StargateContractInfo } from "./components/StargateContractInfo";
 import { StargateLevelDetails } from "./components/StargateLevelDetails";
-import { useContractAddresses } from "../../hooks/useContractAddresses";
-import { useMemo } from "react";
 
 const EXPLORER_URL = getConfig(import.meta.env.VITE_APP_ENV).network.explorerUrl;
 
@@ -35,21 +36,11 @@ export function StargateNodes() {
     );
   }
 
-  if (error) {
+  if (error || !stargateStats) {
     return (
-      <Alert status="error">
-        <AlertIcon />
-        {LL.admin.stargate_nodes.error({ error: error instanceof Error ? error.message : LL.admin.unknown_error() })}
-      </Alert>
-    );
-  }
-
-  if (!stargateStats) {
-    return (
-      <Alert status="warning">
-        <AlertIcon />
-        {LL.admin.stargate_nodes.no_data()}
-      </Alert>
+      <GenericInfoBox variant="error">
+        <Text color={"red.700"}>{LL.admin.stargate_nodes.no_data()}</Text>
+      </GenericInfoBox>
     );
   }
 

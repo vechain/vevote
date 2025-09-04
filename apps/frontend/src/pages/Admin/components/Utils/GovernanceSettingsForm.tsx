@@ -5,7 +5,7 @@ import { useFormatTime } from "@/hooks/useFormatTime";
 import { useGovernanceSettings } from "@/hooks/useGovernanceSettings";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { governanceSettingsSchema, GovernanceSettingsSchema } from "@/schema/adminSchema";
-import { Box, Button, FormControl, NumberInput, NumberInputField, SimpleGrid, Text, VStack } from "@chakra-ui/react";
+import { Button, Flex, FormControl, NumberInput, NumberInputField, SimpleGrid, Text } from "@chakra-ui/react";
 import { FixedPointNumber, Units } from "@vechain/sdk-core";
 import { useCallback, useMemo } from "react";
 import { VeVoteInfo } from "../../services";
@@ -35,6 +35,7 @@ export function GovernanceSettingsForm({ veVoteInfo, onSuccess }: GovernanceSett
 
   const onSubmit = useCallback(
     async (values: GovernanceSettingsSchema) => {
+      const { quorumNumerator, minVotingDelay, minVotingDuration, maxVotingDuration, minStakedVetAmount } = values;
       const updateParams: {
         updateQuorumNumerator?: number;
         setMinVotingDelay?: number;
@@ -43,24 +44,24 @@ export function GovernanceSettingsForm({ veVoteInfo, onSuccess }: GovernanceSett
         setMinStakedVetAmount?: bigint;
       } = {};
 
-      if (values.quorumNumerator && values.quorumNumerator !== Number(veVoteInfo.quorumNumerator)) {
-        updateParams.updateQuorumNumerator = values.quorumNumerator;
+      if (quorumNumerator && quorumNumerator !== Number(veVoteInfo.quorumNumerator)) {
+        updateParams.updateQuorumNumerator = quorumNumerator;
       }
 
-      if (values.minVotingDelay && values.minVotingDelay !== veVoteInfo.minVotingDelay) {
-        updateParams.setMinVotingDelay = values.minVotingDelay;
+      if (minVotingDelay && minVotingDelay !== veVoteInfo.minVotingDelay) {
+        updateParams.setMinVotingDelay = minVotingDelay;
       }
 
-      if (values.minVotingDuration && values.minVotingDuration !== veVoteInfo.minVotingDuration) {
-        updateParams.setMinVotingDuration = values.minVotingDuration;
+      if (minVotingDuration && minVotingDuration !== veVoteInfo.minVotingDuration) {
+        updateParams.setMinVotingDuration = minVotingDuration;
       }
 
-      if (values.maxVotingDuration && values.maxVotingDuration !== veVoteInfo.maxVotingDuration) {
-        updateParams.setMaxVotingDuration = values.maxVotingDuration;
+      if (maxVotingDuration && maxVotingDuration !== veVoteInfo.maxVotingDuration) {
+        updateParams.setMaxVotingDuration = maxVotingDuration;
       }
 
-      if (values.minStakedVetAmount) {
-        const newValue = BigInt(values.minStakedVetAmount);
+      if (minStakedVetAmount) {
+        const newValue = BigInt(minStakedVetAmount);
         if (newValue !== veVoteInfo.minStakedAmount) {
           updateParams.setMinStakedVetAmount = newValue;
         }
@@ -83,7 +84,7 @@ export function GovernanceSettingsForm({ veVoteInfo, onSuccess }: GovernanceSett
       <FormSkeleton schema={governanceSettingsSchema} defaultValues={defaultValues} onSubmit={onSubmit}>
         {({ register, errors, isDirty }) => {
           return (
-            <VStack spacing={6} align="stretch">
+            <Flex direction="column" width="100%">
               <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6}>
                 <FormControl isInvalid={!!errors.quorumNumerator}>
                   <Label label={LL.admin.governance_settings.quorum_numerator_label()} />
@@ -158,19 +159,17 @@ export function GovernanceSettingsForm({ veVoteInfo, onSuccess }: GovernanceSett
                 </FormControl>
               </SimpleGrid>
 
-              <Box>
-                <Button
-                  type="submit"
-                  colorScheme="blue"
-                  size="lg"
-                  isLoading={isTransactionPending}
-                  loadingText={LL.admin.governance_settings.updating()}
-                  isDisabled={!isDirty}>
-                  {LL.admin.governance_settings.update_governance_settings()}
-                </Button>
-              </Box>
+              <Button
+                mt={6}
+                type="submit"
+                size="lg"
+                isLoading={isTransactionPending}
+                loadingText={LL.admin.governance_settings.updating()}
+                isDisabled={!isDirty}>
+                {LL.admin.governance_settings.update_governance_settings()}
+              </Button>
               <SensitiveWarning />
-            </VStack>
+            </Flex>
           );
         }}
       </FormSkeleton>

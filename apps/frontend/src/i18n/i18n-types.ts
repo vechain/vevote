@@ -1990,6 +1990,18 @@ type RootTranslation = {
 		}
 		voting_power_timepoint: {
 			/**
+			 * A​d​d​r​e​s​s​:
+			 */
+			address: string
+			/**
+			 * T​i​m​e​p​o​i​n​t​:
+			 */
+			timepoint: string
+			/**
+			 * M​a​s​t​e​r​ ​A​d​d​r​e​s​s​:
+			 */
+			master_address: string
+			/**
 			 * V​o​t​i​n​g​ ​P​o​w​e​r​ ​a​t​ ​T​i​m​e​p​o​i​n​t
 			 */
 			title: string
@@ -2083,6 +2095,14 @@ type RootTranslation = {
 		 * U​n​k​n​o​w​n​ ​e​r​r​o​r
 		 */
 		unknown_error: string
+		/**
+		 * T​h​i​s​ ​o​p​e​r​a​t​i​o​n​ ​i​s​ ​s​e​n​s​i​t​i​v​e​.​ ​P​l​e​a​s​e​ ​u​s​e​ ​w​i​t​h​ ​c​a​u​t​i​o​n​.
+		 */
+		sensitive_operation_warning: string
+		/**
+		 * Y​o​u​r​ ​P​e​r​m​i​s​s​i​o​n​s
+		 */
+		your_permissions: string
 		common_roles: {
 			/**
 			 * D​e​f​a​u​l​t​ ​A​d​m​i​n
@@ -4118,6 +4138,18 @@ JPG, PNG or SVG of maximum of {size}MB.
 		}
 		voting_power_timepoint: {
 			/**
+			 * Address:
+			 */
+			address: () => LocalizedString
+			/**
+			 * Timepoint:
+			 */
+			timepoint: () => LocalizedString
+			/**
+			 * Master Address:
+			 */
+			master_address: () => LocalizedString
+			/**
 			 * Voting Power at Timepoint
 			 */
 			title: () => LocalizedString
@@ -4210,6 +4242,14 @@ JPG, PNG or SVG of maximum of {size}MB.
 		 * Unknown error
 		 */
 		unknown_error: () => LocalizedString
+		/**
+		 * This operation is sensitive. Please use with caution.
+		 */
+		sensitive_operation_warning: () => LocalizedString
+		/**
+		 * Your Permissions
+		 */
+		your_permissions: () => LocalizedString
 		common_roles: {
 			/**
 			 * Default Admin

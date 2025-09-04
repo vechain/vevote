@@ -17,7 +17,7 @@ const ROLES = [
 const contractAddress = getConfig(import.meta.env.VITE_APP_ENV).vevoteContractAddress;
 const contractInterface = VeVote__factory.createInterface();
 
-export const useUserRoles = (userAddress: string) => {
+export const useUserAdminRoles = (userAddress: string) => {
   const checkUserRoles = useCallback(async () => {
     try {
       const roleHashMethods = ROLES.map(role => ({

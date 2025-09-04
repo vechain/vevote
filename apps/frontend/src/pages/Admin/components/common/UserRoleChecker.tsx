@@ -39,7 +39,7 @@ export function UserRoleChecker({ contractType }: UserRoleCheckerProps) {
   }
 
   return (
-    <AdminCard title="Your Permissions">
+    <AdminCard title={LL.admin.your_permissions()}>
       <VStack spacing={2} align="stretch">
         {defaultRoles.map(role => {
           const hasRole = roles?.includes(role) || false;

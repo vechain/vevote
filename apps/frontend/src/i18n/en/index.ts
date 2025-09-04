@@ -589,6 +589,9 @@ const en = {
       checking_roles: "Checking your roles...",
     },
     voting_power_timepoint: {
+      address: "Address:",
+      timepoint: "Timepoint:",
+      master_address: "Master Address:",
       title: "Voting Power at Timepoint",
       description: "Query historical voting power for any wallet at a specific timepoint",
       address_label: "Wallet Address",
@@ -614,6 +617,8 @@ const en = {
         "Enter a wallet address and timepoint to view historical voting power. Optionally provide a master address to check validator-delegated power.",
     },
     unknown_error: "Unknown error",
+    sensitive_operation_warning: "This operation is sensitive. Please use with caution.",
+    your_permissions: "Your Permissions",
     common_roles: {
       DEFAULT_ADMIN_ROLE: "Default Admin",
       EXECUTOR_ROLE: "Executor",

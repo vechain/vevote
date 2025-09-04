@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { veVoteService } from "../services/VeVoteService";
 import { ZERO_ADDRESS } from "@vechain/sdk-core";
 
-interface VotingPowerAtTimepointResult {
+export interface VotingPowerAtTimepointResult {
   nodePower: bigint;
   validatorPower: bigint;
   totalPower: bigint;

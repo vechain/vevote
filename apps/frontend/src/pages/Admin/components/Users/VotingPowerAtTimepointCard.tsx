@@ -3,7 +3,7 @@ import { useState, useCallback, useMemo } from "react";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { AdminCard } from "../common/AdminCard";
 import { GenericInfoBox } from "@/components/ui/GenericInfoBox";
-import { useVotingPowerAtTimepoint } from "../../hooks/useVotingPowerAtTimepoint";
+import { useVotingPowerAtTimepoint, VotingPowerAtTimepointResult } from "../../hooks/useVotingPowerAtTimepoint";
 import { useVechainDomainOrAddress } from "@/hooks/useVechainDomainOrAddress";
 import { CopyLink } from "@/components/ui/CopyLink";
 import { getConfig } from "@repo/config";
@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/Label";
 import { InputMessage } from "@/components/ui/InputMessage";
 import { votingPowerQuerySchema, VotingPowerQuerySchema } from "@/schema/adminSchema";
 import { formatAddress } from "@/utils/address";
+import { formatVotingPower } from "@/utils/proposals/helpers";
 
 const EXPLORER_URL = getConfig(import.meta.env.VITE_APP_ENV).network.explorerUrl;
 
@@ -42,13 +43,6 @@ export function VotingPowerAtTimepointCard() {
   }, []);
 
   const { data: votingPowerData, isLoading, error } = useVotingPowerAtTimepoint(queryParams);
-  const { addressOrDomain } = useVechainDomainOrAddress(queryParams.address);
-
-  const hasQueried = Boolean(queryParams.address && queryParams.timepoint !== undefined);
-
-  const formatVotingPower = useCallback((power: bigint): string => {
-    return (Number(power) / 100).toString();
-  }, []);
 
   return (
     <AdminCard title={LL.admin.voting_power_timepoint.title()}>
@@ -103,97 +97,122 @@ export function VotingPowerAtTimepointCard() {
             </VStack>
           )}
         </FormSkeleton>
-
-        {hasQueried && (
-          <>
-            <Divider />
-
-            {error && (
-              <GenericInfoBox variant="error">
-                <Text color="red.700">
-                  {LL.admin.voting_power_timepoint.error_description({
-                    error: error instanceof Error ? error.message : LL.admin.unknown_error(),
-                  })}
-                </Text>
-              </GenericInfoBox>
-            )}
-
-            {!error && votingPowerData && (
-              <Box>
-                <Text fontSize="lg" fontWeight="bold" mb={4}>
-                  {LL.admin.voting_power_timepoint.results_title()}
-                </Text>
-
-                <VStack spacing={3} align="stretch">
-                  <HStack justify="space-between">
-                    <Text fontWeight="medium">Address:</Text>
-                    <CopyLink
-                      href={`${EXPLORER_URL}/accounts/${queryParams.address}`}
-                      isExternal
-                      textToCopy={queryParams.address}
-                      color="primary.700"
-                      fontWeight={500}>
-                      {addressOrDomain}
-                    </CopyLink>
-                  </HStack>
-
-                  <HStack justify="space-between">
-                    <Text fontWeight="medium">Timepoint:</Text>
-                    <Text>{queryParams.timepoint?.toString()}</Text>
-                  </HStack>
-
-                  {queryParams.masterAddress && (
-                    <HStack justify="space-between">
-                      <Text fontWeight="medium">Master Address:</Text>
-                      <CopyLink
-                        href={`${EXPLORER_URL}/accounts/${queryParams.masterAddress}`}
-                        isExternal
-                        textToCopy={queryParams.masterAddress}
-                        color="primary.700"
-                        fontWeight={500}>
-                        {formatAddress(queryParams.masterAddress)}
-                      </CopyLink>
-                    </HStack>
-                  )}
-
-                  <Divider />
-
-                  <HStack justify="space-between">
-                    <Text fontWeight="medium" color="blue.600">
-                      {LL.admin.voting_power_timepoint.node_power_label()}
-                    </Text>
-                    <Text fontWeight="bold">{formatVotingPower(votingPowerData.nodePower)}</Text>
-                  </HStack>
-
-                  <HStack justify="space-between">
-                    <Text fontWeight="medium" color="green.600">
-                      {LL.admin.voting_power_timepoint.validator_power_label()}
-                    </Text>
-                    <Text fontWeight="bold">{formatVotingPower(votingPowerData.validatorPower)}</Text>
-                  </HStack>
-
-                  <Divider />
-
-                  <HStack justify="space-between">
-                    <Text fontWeight="bold" fontSize="lg" color="purple.600">
-                      {LL.admin.voting_power_timepoint.total_power_label()}
-                    </Text>
-                    <Text fontWeight="bold" fontSize="lg">
-                      {formatVotingPower(votingPowerData.totalPower)}
-                    </Text>
-                  </HStack>
-                </VStack>
-              </Box>
-            )}
-
-            {!error && !votingPowerData && !isLoading && (
-              <GenericInfoBox variant="info">
-                <Text>{LL.admin.voting_power_timepoint.no_results()}</Text>
-              </GenericInfoBox>
-            )}
-          </>
-        )}
+        <QueryResults
+          queryParams={queryParams}
+          error={error}
+          votingPowerData={votingPowerData!}
+          isLoading={isLoading}
+        />
       </VStack>
     </AdminCard>
   );
 }
+
+const QueryResults = ({
+  queryParams,
+  error,
+  votingPowerData,
+  isLoading,
+}: {
+  queryParams: { address?: string; timepoint?: number; masterAddress?: string };
+  error: Error | null;
+  votingPowerData: VotingPowerAtTimepointResult;
+  isLoading: boolean;
+}) => {
+  const { LL } = useI18nContext();
+
+  const { addressOrDomain } = useVechainDomainOrAddress(queryParams.address);
+
+  const hasQueried = useMemo(() => Boolean(queryParams.address && queryParams.timepoint !== undefined), [queryParams]);
+
+  if (!hasQueried) return null;
+  return (
+    <>
+      <Divider />
+
+      {error && (
+        <GenericInfoBox variant="error">
+          <Text color="red.700">
+            {LL.admin.voting_power_timepoint.error_description({
+              error: error instanceof Error ? error.message : LL.admin.unknown_error(),
+            })}
+          </Text>
+        </GenericInfoBox>
+      )}
+
+      {!error && votingPowerData && (
+        <Box>
+          <Text fontSize="lg" fontWeight="bold" mb={4}>
+            {LL.admin.voting_power_timepoint.results_title()}
+          </Text>
+
+          <VStack spacing={3} align="stretch">
+            <HStack justify="space-between">
+              <Text fontWeight="medium">{LL.admin.voting_power_timepoint.address()}</Text>
+              <CopyLink
+                href={`${EXPLORER_URL}/accounts/${queryParams.address}`}
+                isExternal
+                textToCopy={queryParams.address}
+                color="primary.700"
+                fontWeight={500}>
+                {addressOrDomain}
+              </CopyLink>
+            </HStack>
+
+            <HStack justify="space-between">
+              <Text fontWeight="medium">{LL.admin.voting_power_timepoint.timepoint()}</Text>
+              <Text>{queryParams.timepoint?.toString()}</Text>
+            </HStack>
+
+            {queryParams.masterAddress && (
+              <HStack justify="space-between">
+                <Text fontWeight="medium">{LL.admin.voting_power_timepoint.master_address()}</Text>
+                <CopyLink
+                  href={`${EXPLORER_URL}/accounts/${queryParams.masterAddress}`}
+                  isExternal
+                  textToCopy={queryParams.masterAddress}
+                  color="primary.700"
+                  fontWeight={500}>
+                  {formatAddress(queryParams.masterAddress)}
+                </CopyLink>
+              </HStack>
+            )}
+
+            <Divider />
+
+            <HStack justify="space-between">
+              <Text fontWeight="medium" color="blue.600">
+                {LL.admin.voting_power_timepoint.node_power_label()}
+              </Text>
+              <Text fontWeight="bold">{formatVotingPower(votingPowerData.nodePower)}</Text>
+            </HStack>
+
+            <HStack justify="space-between">
+              <Text fontWeight="medium" color="green.600">
+                {LL.admin.voting_power_timepoint.validator_power_label()}
+              </Text>
+              <Text fontWeight="bold">{formatVotingPower(votingPowerData.validatorPower)}</Text>
+            </HStack>
+
+            <Divider />
+
+            <HStack justify="space-between">
+              <Text fontWeight="bold" fontSize="lg" color="purple.600">
+                {LL.admin.voting_power_timepoint.total_power_label()}
+              </Text>
+              <Text fontWeight="bold" fontSize="lg">
+                {formatVotingPower(votingPowerData.totalPower)}
+              </Text>
+            </HStack>
+          </VStack>
+        </Box>
+      )}
+
+      {!error && !votingPowerData && !isLoading && (
+        <GenericInfoBox variant="info">
+          <Text>{LL.admin.voting_power_timepoint.no_results()}</Text>
+        </GenericInfoBox>
+      )}
+    </>
+  );
+};

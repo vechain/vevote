@@ -1,15 +1,15 @@
-import { Text, Button, Box } from "@chakra-ui/react";
-import { useCallback, useMemo } from "react";
-import { useI18nContext } from "@/i18n/i18n-react";
-import { useLevelMultipliers } from "@/hooks/useLevelMultipliers";
-import { AdminCard } from "../common/AdminCard";
-import { GenericInfoBox } from "@/components/ui/GenericInfoBox";
-import { useLevelMultipliersInfo } from "../../hooks/useLevelMultipliersInfo";
 import { FormSkeleton } from "@/components/ui/FormSkeleton";
+import { GenericInfoBox } from "@/components/ui/GenericInfoBox";
 import { DataTable } from "@/components/ui/TableSkeleton";
+import { useLevelMultipliers } from "@/hooks/useLevelMultipliers";
+import { useI18nContext } from "@/i18n/i18n-react";
+import { Button, Flex, Text } from "@chakra-ui/react";
 import { createColumnHelper } from "@tanstack/react-table";
-import { TableHeader, BaseCell, NodeTypeCell, MultiplierInputCell } from "../common/AdminTableCells";
+import { useCallback, useMemo } from "react";
 import { z } from "zod";
+import { useLevelMultipliersInfo } from "../../hooks/useLevelMultipliersInfo";
+import { AdminCard } from "../common/AdminCard";
+import { BaseCell, MultiplierInputCell, NodeTypeCell, TableHeader } from "../common/AdminTableCells";
 import { SensitiveWarning } from "../common/SensitiveWarning";
 
 interface LevelMultipliersCardProps {
@@ -184,21 +184,17 @@ export function LevelMultipliersCard({ onSuccess }: LevelMultipliersCardProps) {
           ];
 
           return (
-            <>
+            <Flex direction="column" width="100%">
               <DataTable columns={columns} data={tableData} />
-
-              <Box mt={6}>
-                <Button
-                  type="submit"
-                  colorScheme="green"
-                  size="lg"
-                  isLoading={isTransactionPending}
-                  loadingText={LL.admin.governance_settings.updating()}
-                  isDisabled={!hasChanges}>
-                  {LL.admin.governance_settings.update_multipliers()}
-                </Button>
-              </Box>
-            </>
+              <Button
+                mt={6}
+                type="submit"
+                isLoading={isTransactionPending}
+                loadingText={LL.admin.governance_settings.updating()}
+                isDisabled={!hasChanges}>
+                {LL.admin.governance_settings.update_multipliers()}
+              </Button>
+            </Flex>
           );
         }}
       </FormSkeleton>

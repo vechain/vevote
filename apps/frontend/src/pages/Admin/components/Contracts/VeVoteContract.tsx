@@ -1,7 +1,8 @@
 import { CopyLink } from "@/components/ui/CopyLink";
+import { GenericInfoBox } from "@/components/ui/GenericInfoBox";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { formatAddress } from "@/utils/address";
-import { Alert, AlertIcon, Box, Heading, HStack, Spinner, Text, VStack, useBreakpointValue } from "@chakra-ui/react";
+import { Box, Heading, HStack, Spinner, Text, useBreakpointValue, VStack } from "@chakra-ui/react";
 import { getConfig } from "@repo/config";
 import { useVeVoteInfo } from "../../hooks";
 import { UserRoleChecker } from "../common/UserRoleChecker";
@@ -28,21 +29,11 @@ export function VeVoteContract() {
     );
   }
 
-  if (error) {
+  if (error || !veVoteInfo) {
     return (
-      <Alert status="error">
-        <AlertIcon />
-        {LL.admin.vevote_contract.error({ error: error instanceof Error ? error.message : LL.admin.unknown_error() })}
-      </Alert>
-    );
-  }
-
-  if (!veVoteInfo) {
-    return (
-      <Alert status="warning">
-        <AlertIcon />
-        {LL.admin.vevote_contract.no_data()}
-      </Alert>
+      <GenericInfoBox variant="error">
+        <Text color={"red.700"}>{LL.admin.vevote_contract.no_data()}</Text>
+      </GenericInfoBox>
     );
   }
 

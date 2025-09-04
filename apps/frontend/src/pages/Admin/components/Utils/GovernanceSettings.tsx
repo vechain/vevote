@@ -3,7 +3,6 @@ import { useI18nContext } from "@/i18n/i18n-react";
 import { useVeVoteInfo } from "../../hooks";
 import { MessageModal } from "@/components/ui/ModalSkeleton";
 import { CheckIcon } from "@/icons";
-import { AdminCard } from "../common/AdminCard";
 import { GovernanceSettingsForm } from "./GovernanceSettingsForm";
 import { LevelMultipliersCard } from "./LevelMultipliersCard";
 import { GenericInfoBox } from "@/components/ui/GenericInfoBox";
@@ -14,21 +13,13 @@ export function GovernanceSettings() {
 
   const { isOpen: isSuccessOpen, onClose: onSuccessClose, onOpen: onSuccessOpen } = useDisclosure();
 
-  if (isLoading) {
-    return (
-      <AdminCard title={LL.admin.governance_settings.title()}>
-        <Text>{LL.admin.vevote_contract.loading()}</Text>
-      </AdminCard>
-    );
-  }
+  if (isLoading) return <Text>{LL.admin.vevote_contract.loading()}</Text>;
 
   if (error || !veVoteInfo) {
     return (
-      <AdminCard title={LL.admin.governance_settings.title()}>
-        <GenericInfoBox variant="error">
-          <Text color="red.700">{error instanceof Error ? error.message : LL.admin.vevote_contract.no_data()}</Text>
-        </GenericInfoBox>
-      </AdminCard>
+      <GenericInfoBox variant="error">
+        <Text color="red.700">{LL.admin.vevote_contract.no_data()}</Text>
+      </GenericInfoBox>
     );
   }
 
