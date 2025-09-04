@@ -125,7 +125,7 @@ export function LevelMultipliersCard({ onSuccess }: LevelMultipliersCardProps) {
 
   if (isLoadingMultipliers) {
     return (
-      <AdminCard title={LL.admin.governance_settings.level_multipliers_label()} maxW={850}>
+      <AdminCard title={LL.admin.governance_settings.level_multipliers_label()} maxW={"full"}>
         <Text>{LL.admin.vevote_contract.loading()}</Text>
       </AdminCard>
     );
@@ -133,7 +133,7 @@ export function LevelMultipliersCard({ onSuccess }: LevelMultipliersCardProps) {
 
   if (multipliersError) {
     return (
-      <AdminCard title={LL.admin.governance_settings.level_multipliers_label()} maxW={850}>
+      <AdminCard title={LL.admin.governance_settings.level_multipliers_label()} maxW={"full"}>
         <GenericInfoBox variant="error">
           <Text color="red.700">Error loading multipliers</Text>
         </GenericInfoBox>
@@ -142,7 +142,7 @@ export function LevelMultipliersCard({ onSuccess }: LevelMultipliersCardProps) {
   }
 
   return (
-    <AdminCard title={LL.admin.governance_settings.level_multipliers_label()} maxW={850}>
+    <AdminCard title={LL.admin.governance_settings.level_multipliers_label()} maxW={"full"}>
       <Text fontSize="sm" color="gray.600" mb={4}>
         {LL.admin.governance_settings.level_multipliers_help()}
       </Text>

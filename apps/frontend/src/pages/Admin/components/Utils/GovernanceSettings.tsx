@@ -1,4 +1,4 @@
-import { Text, useDisclosure, VStack } from "@chakra-ui/react";
+import { Flex, Text, useDisclosure } from "@chakra-ui/react";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { useVeVoteInfo } from "../../hooks";
 import { MessageModal } from "@/components/ui/ModalSkeleton";
@@ -33,7 +33,7 @@ export function GovernanceSettings() {
   }
 
   return (
-    <VStack spacing={4} align="stretch">
+    <Flex gap={4} flexDirection={{ base: "column", lg: "row" }}>
       <GovernanceSettingsForm veVoteInfo={veVoteInfo} onSuccess={onSuccessOpen} />
       <LevelMultipliersCard onSuccess={onSuccessOpen} />
       <MessageModal
@@ -46,6 +46,6 @@ export function GovernanceSettings() {
           {LL.admin.governance_settings.success_description()}
         </Text>
       </MessageModal>
-    </VStack>
+    </Flex>
   );
 }

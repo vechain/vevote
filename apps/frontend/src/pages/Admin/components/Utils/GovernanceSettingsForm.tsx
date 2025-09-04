@@ -1,41 +1,20 @@
-import {
-  SimpleGrid,
-  FormControl,
-  NumberInput,
-  NumberInputField,
-  NumberInputStepper,
-  NumberIncrementStepper,
-  NumberDecrementStepper,
-  Button,
-  VStack,
-  Box,
-  Text,
-} from "@chakra-ui/react";
-import { useCallback, useMemo } from "react";
-import { useI18nContext } from "@/i18n/i18n-react";
-import { useGovernanceSettings } from "@/hooks/useGovernanceSettings";
-import { useFormatTime } from "@/hooks/useFormatTime";
-import { FixedPointNumber, Units } from "@vechain/sdk-core";
-import { AdminCard } from "../common/AdminCard";
-import { VeVoteInfo } from "../../services";
 import { FormSkeleton } from "@/components/ui/FormSkeleton";
-import { Label } from "@/components/ui/Label";
 import { InputMessage } from "@/components/ui/InputMessage";
+import { Label } from "@/components/ui/Label";
+import { useFormatTime } from "@/hooks/useFormatTime";
+import { useGovernanceSettings } from "@/hooks/useGovernanceSettings";
+import { useI18nContext } from "@/i18n/i18n-react";
 import { governanceSettingsSchema, GovernanceSettingsSchema } from "@/schema/adminSchema";
+import { Box, Button, FormControl, NumberInput, NumberInputField, SimpleGrid, Text, VStack } from "@chakra-ui/react";
+import { FixedPointNumber, Units } from "@vechain/sdk-core";
+import { useCallback, useMemo } from "react";
+import { VeVoteInfo } from "../../services";
+import { AdminCard } from "../common/AdminCard";
 
 interface GovernanceSettingsFormProps {
   veVoteInfo: VeVoteInfo;
   onSuccess?: () => void;
 }
-
-const BaseNumberInputStepper = () => {
-  return (
-    <NumberInputStepper>
-      <NumberIncrementStepper h={2} />
-      <NumberDecrementStepper h={2} />
-    </NumberInputStepper>
-  );
-};
 
 export function GovernanceSettingsForm({ veVoteInfo, onSuccess }: GovernanceSettingsFormProps) {
   const { LL } = useI18nContext();
@@ -95,16 +74,13 @@ export function GovernanceSettingsForm({ veVoteInfo, onSuccess }: GovernanceSett
   );
 
   return (
-    <AdminCard title={LL.admin.governance_settings.title()} maxW={850}>
+    <AdminCard title={LL.admin.governance_settings.title()} maxWidth={"full"} minWidth={{ base: "100%", lg: "600px" }}>
       <Text fontSize="sm" color="gray.600" mb={6}>
         {LL.admin.governance_settings.description()}
       </Text>
 
       <FormSkeleton schema={governanceSettingsSchema} defaultValues={defaultValues} onSubmit={onSubmit}>
-        {({ register, errors, watch }) => {
-          const watchedValues = watch();
-          const hasChanges = Object.values(watchedValues).some(value => value !== undefined && value !== null);
-
+        {({ register, errors, isDirty }) => {
           return (
             <VStack spacing={6} align="stretch">
               <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6}>
@@ -115,7 +91,6 @@ export function GovernanceSettingsForm({ veVoteInfo, onSuccess }: GovernanceSett
                       placeholder={veVoteInfo.quorumNumerator.toString()}
                       {...register("quorumNumerator")}
                     />
-                    <BaseNumberInputStepper />
                   </NumberInput>
                   <InputMessage
                     error={errors.quorumNumerator?.message}
@@ -132,7 +107,6 @@ export function GovernanceSettingsForm({ veVoteInfo, onSuccess }: GovernanceSett
                       placeholder={veVoteInfo.minVotingDelay.toString()}
                       {...register("minVotingDelay")}
                     />
-                    <BaseNumberInputStepper />
                   </NumberInput>
                   <InputMessage
                     error={errors.minVotingDelay?.message}
@@ -147,7 +121,6 @@ export function GovernanceSettingsForm({ veVoteInfo, onSuccess }: GovernanceSett
                       placeholder={veVoteInfo.minVotingDuration.toString()}
                       {...register("minVotingDuration")}
                     />
-                    <BaseNumberInputStepper />
                   </NumberInput>
                   <InputMessage
                     error={errors.minVotingDuration?.message}
@@ -162,7 +135,6 @@ export function GovernanceSettingsForm({ veVoteInfo, onSuccess }: GovernanceSett
                       placeholder={veVoteInfo.maxVotingDuration.toString()}
                       {...register("maxVotingDuration")}
                     />
-                    <BaseNumberInputStepper />
                   </NumberInput>
                   <InputMessage
                     error={errors.maxVotingDuration?.message}
@@ -177,7 +149,6 @@ export function GovernanceSettingsForm({ veVoteInfo, onSuccess }: GovernanceSett
                       placeholder={Units.formatEther(FixedPointNumber.of(veVoteInfo.minStakedAmount))}
                       {...register("minStakedVetAmount")}
                     />
-                    <BaseNumberInputStepper />
                   </NumberInput>
                   <InputMessage
                     error={errors.minStakedVetAmount?.message}
@@ -193,7 +164,7 @@ export function GovernanceSettingsForm({ veVoteInfo, onSuccess }: GovernanceSett
                   size="lg"
                   isLoading={isTransactionPending}
                   loadingText={LL.admin.governance_settings.updating()}
-                  isDisabled={!hasChanges}>
+                  isDisabled={!isDirty}>
                   {LL.admin.governance_settings.update_governance_settings()}
                 </Button>
               </Box>

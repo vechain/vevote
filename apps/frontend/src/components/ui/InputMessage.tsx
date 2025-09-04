@@ -15,5 +15,9 @@ export const InputMessage = ({ error, message }: InputMessageProps) => {
         <Text fontSize={"12px"}>{error}</Text>
       </FormErrorMessage>
     );
-  return <FormHelperText fontSize={"12px"}>{message}</FormHelperText>;
+  return (
+    <FormHelperText fontSize={"12px"} whiteSpace={"pre"}>
+      {message}
+    </FormHelperText>
+  );
 };
