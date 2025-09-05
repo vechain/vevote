@@ -1,15 +1,13 @@
-import { Box, Heading } from "@chakra-ui/react";
-import { useI18nContext } from "@/i18n/i18n-react";
-import { StargateLevelSupply } from "@/pages/Admin/services";
 import { DataTable } from "@/components/ui/TableSkeleton";
-import { createColumnHelper } from "@tanstack/react-table";
-import { TableHeader, BaseCell, VETAmountCell, BooleanCell, NumberCell } from "../../common/AdminTableCells";
+import { useI18nContext } from "@/i18n/i18n-react";
 import { TranslationFunctions } from "@/i18n/i18n-types";
+import { Box, Heading } from "@chakra-ui/react";
+import { createColumnHelper } from "@tanstack/react-table";
 import { useMemo } from "react";
+import { BaseCell, NumberCell, TableHeader, VETAmountCell } from "../../common/AdminTableCells";
 
 interface Level {
   name: string;
-  isX: boolean;
   maturityBlocks: bigint;
   vetAmountRequiredToStake: bigint;
 }
@@ -17,39 +15,23 @@ interface Level {
 interface StargateLevelDetailsProps {
   levels: Level[];
   levelIds: number[];
-  supplies: StargateLevelSupply[];
 }
 
 interface StargateLevelRow {
   levelId: number;
   name: string;
-  isX: boolean;
   maturityBlocks: bigint;
   vetAmountRequiredToStake: bigint;
-  circulating: bigint | null;
-  cap: number | null;
 }
 
 const columnHelper = createColumnHelper<StargateLevelRow>();
 
 const columns = (LL: TranslationFunctions) => [
-  columnHelper.accessor("levelId", {
-    cell: data => <BaseCell value={data.getValue().toString()} fontWeight="bold" />,
-    header: () => <TableHeader label={LL.admin.stargate_nodes.table.level()} />,
-    id: "LEVEL",
-    size: 80,
-  }),
   columnHelper.accessor("name", {
-    cell: data => <BaseCell value={data.getValue()} textAlign="left" fontWeight="medium" />,
+    cell: data => <BaseCell value={data.getValue()} textAlign="center" fontWeight="medium" />,
     header: () => <TableHeader label={LL.admin.stargate_nodes.table.name()} />,
     id: "NAME",
     size: 160,
-  }),
-  columnHelper.accessor("isX", {
-    cell: data => <BooleanCell value={data.getValue()} />,
-    header: () => <TableHeader label={LL.admin.stargate_nodes.table.is_x_node()} />,
-    id: "IS_X_NODE",
-    size: 100,
   }),
   columnHelper.accessor("maturityBlocks", {
     cell: data => <NumberCell value={data.getValue()} />,
@@ -63,39 +45,9 @@ const columns = (LL: TranslationFunctions) => [
     id: "VET_REQUIRED",
     size: 140,
   }),
-  columnHelper.accessor("circulating", {
-    cell: data => {
-      const value = data.getValue();
-      return (
-        <BaseCell
-          value={value !== null ? value.toString() : LL.admin.stargate_nodes.not_available()}
-          color={value !== null ? "gray.600" : "gray.400"}
-          fontStyle={value !== null ? "normal" : "italic"}
-        />
-      );
-    },
-    header: () => <TableHeader label={LL.admin.stargate_nodes.table.circulating()} />,
-    id: "CIRCULATING",
-    size: 120,
-  }),
-  columnHelper.accessor("cap", {
-    cell: data => {
-      const value = data.getValue();
-      return (
-        <BaseCell
-          value={value !== null ? value.toString() : LL.admin.stargate_nodes.not_available()}
-          color={value !== null ? "gray.600" : "gray.400"}
-          fontStyle={value !== null ? "normal" : "italic"}
-        />
-      );
-    },
-    header: () => <TableHeader label={LL.admin.stargate_nodes.table.cap()} />,
-    id: "CAP",
-    size: 120,
-  }),
 ];
 
-export function StargateLevelDetails({ levels, levelIds, supplies }: StargateLevelDetailsProps) {
+export function StargateLevelDetails({ levels, levelIds }: StargateLevelDetailsProps) {
   const { LL } = useI18nContext();
 
   const tableData: StargateLevelRow[] = useMemo(
@@ -103,13 +55,10 @@ export function StargateLevelDetails({ levels, levelIds, supplies }: StargateLev
       levels.map((level, index) => ({
         levelId: levelIds[index],
         name: level.name,
-        isX: level.isX,
         maturityBlocks: level.maturityBlocks,
         vetAmountRequiredToStake: level.vetAmountRequiredToStake,
-        circulating: supplies[index]?.circulating ?? null,
-        cap: supplies[index]?.cap ?? null,
       })),
-    [levels, levelIds, supplies],
+    [levels, levelIds],
   );
 
   if (levels.length === 0) {
@@ -121,7 +70,7 @@ export function StargateLevelDetails({ levels, levelIds, supplies }: StargateLev
       <Heading size="sm" mb={4}>
         {LL.admin.stargate_nodes.level_details_title()}
       </Heading>
-      <Box overflow={"auto"}>
+      <Box overflow={"auto"} maxW={600}>
         <DataTable columns={columns(LL)} data={tableData} />
       </Box>
     </Box>

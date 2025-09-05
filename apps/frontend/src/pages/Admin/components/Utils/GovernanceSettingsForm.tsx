@@ -61,7 +61,8 @@ export function GovernanceSettingsForm({ veVoteInfo, onSuccess }: GovernanceSett
       }
 
       if (minStakedVetAmount) {
-        const newValue = BigInt(minStakedVetAmount);
+        // Convert VET to wei using parseEther
+        const newValue = BigInt(Units.parseEther(minStakedVetAmount.toString()).toString());
         if (newValue !== veVoteInfo.minStakedAmount) {
           updateParams.setMinStakedVetAmount = newValue;
         }
@@ -146,7 +147,7 @@ export function GovernanceSettingsForm({ veVoteInfo, onSuccess }: GovernanceSett
 
                 <FormControl isInvalid={!!errors.minStakedVetAmount}>
                   <Label label={LL.admin.governance_settings.min_staked_vet_amount_label()} />
-                  <NumberInput min={0} step={1000}>
+                  <NumberInput min={0.001} step={1000}>
                     <NumberInputField
                       placeholder={Units.formatEther(FixedPointNumber.of(veVoteInfo.minStakedAmount))}
                       {...register("minStakedVetAmount")}

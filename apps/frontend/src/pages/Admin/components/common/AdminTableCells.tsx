@@ -39,37 +39,16 @@ export const VETAmountCell = ({ amount }: { amount: bigint }) => {
   );
 };
 
-export const BooleanCell = ({ value }: { value: boolean }) => {
-  const { LL } = useI18nContext();
-
-  return (
-    <Text
-      textAlign="center"
-      fontWeight={500}
-      fontSize={12}
-      borderRadius={4}
-      p={1}
-      minWidth="60px"
-      bg={value ? "green.100" : "red.100"}
-      color={value ? "green.700" : "red.700"}>
-      {value ? LL.admin.stargate_nodes.yes() : LL.admin.stargate_nodes.no()}
-    </Text>
-  );
-};
-
 export const NumberCell = ({ value, suffix }: { value: number | bigint; suffix?: string }) => {
   const displayValue = typeof value === "bigint" ? value.toString() : value.toLocaleString();
   return <BaseCell value={suffix ? `${displayValue} ${suffix}` : displayValue} fontWeight={500} />;
 };
 
-export const MultiplierInputCell = ({
-  fieldName,
-  placeholder,
-}: {
-  fieldName: string;
-  placeholder: string;
-}) => {
-  const { register, formState: { errors } } = useFormContext();
+export const MultiplierInputCell = ({ fieldName, placeholder }: { fieldName: string; placeholder: string }) => {
+  const {
+    register,
+    formState: { errors },
+  } = useFormContext();
 
   return (
     <FormControl isInvalid={!!errors[fieldName]} display="flex" justifyContent="center">
@@ -85,20 +64,5 @@ export const MultiplierInputCell = ({
         {...register(fieldName)}
       />
     </FormControl>
-  );
-};
-
-export const NodeTypeCell = ({ name, type }: { name: string; type: "regular" | "x-node" }) => {
-  return (
-    <Text
-      fontSize="sm"
-      fontWeight="medium"
-      textAlign="left"
-      color={type === "x-node" ? "green.700" : "gray.700"}
-      bg={type === "x-node" ? "green.50" : "transparent"}
-      p={2}
-      borderRadius={4}>
-      {name}
-    </Text>
   );
 };

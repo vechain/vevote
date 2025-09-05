@@ -1766,53 +1766,53 @@ type RootTranslation = {
 			 */
 			validator_multiplier: string
 			/**
-			 * S​t​r​e​n​g​t​h​ ​N​o​d​e​ ​(​L​e​v​e​l​ ​1​)
+			 * S​t​r​e​n​g​t​h
 			 */
-			strength_node_multiplier: string
+			strength: string
 			/**
-			 * T​h​u​n​d​e​r​ ​N​o​d​e​ ​(​L​e​v​e​l​ ​2​)
+			 * T​h​u​n​d​e​r
 			 */
-			thunder_node_multiplier: string
+			thunder: string
 			/**
-			 * M​j​o​l​n​i​r​ ​N​o​d​e​ ​(​L​e​v​e​l​ ​3​)
+			 * M​j​o​l​n​i​r
 			 */
-			mjolnir_node_multiplier: string
+			mjolnir: string
 			/**
-			 * V​e​T​h​o​r​ ​X​ ​N​o​d​e​ ​(​L​e​v​e​l​ ​4​)
+			 * V​e​T​h​o​r​ ​X
 			 */
-			vethor_x_node_multiplier: string
+			vethor_x: string
 			/**
-			 * S​t​r​e​n​g​t​h​ ​X​ ​N​o​d​e​ ​(​L​e​v​e​l​ ​5​)
+			 * S​t​r​e​n​g​t​h​ ​X
 			 */
-			strength_x_node_multiplier: string
+			strength_x: string
 			/**
-			 * T​h​u​n​d​e​r​ ​X​ ​N​o​d​e​ ​(​L​e​v​e​l​ ​6​)
+			 * T​h​u​n​d​e​r​ ​X
 			 */
-			thunder_x_node_multiplier: string
+			thunder_x: string
 			/**
-			 * M​j​o​l​n​i​r​ ​X​ ​N​o​d​e​ ​(​L​e​v​e​l​ ​7​)
+			 * M​j​o​l​n​i​r​ ​X
 			 */
-			mjolnir_x_node_multiplier: string
+			mjolnir_x: string
 			/**
-			 * D​a​w​n​ ​N​o​d​e​ ​(​L​e​v​e​l​ ​8​)
+			 * D​a​w​n​ ​N​o​d​e
 			 */
-			dawn_node_multiplier: string
+			dawn: string
 			/**
-			 * L​i​g​h​t​n​i​n​g​ ​N​o​d​e​ ​(​L​e​v​e​l​ ​9​)
+			 * L​i​g​h​t​n​i​n​g​ ​N​o​d​e
 			 */
-			lightning_node_multiplier: string
+			lightning: string
 			/**
-			 * F​l​a​s​h​ ​N​o​d​e​ ​(​L​e​v​e​l​ ​1​0​)
+			 * F​l​a​s​h​ ​N​o​d​e
 			 */
-			flash_node_multiplier: string
+			flash: string
 			/**
 			 * L​e​v​e​l​ ​I​D
 			 */
 			level_id: string
 			/**
-			 * N​o​d​e​ ​T​y​p​e
+			 * N​o​d​e​ ​N​a​m​e
 			 */
-			node_type: string
+			node_name: string
 			/**
 			 * C​u​r​r​e​n​t
 			 */
@@ -2026,7 +2026,7 @@ type RootTranslation = {
 			 */
 			timepoint_placeholder: string
 			/**
-			 * M​a​s​t​e​r​ ​A​d​d​r​e​s​s​ ​(​O​p​t​i​o​n​a​l​)
+			 * M​a​s​t​e​r​ ​A​d​d​r​e​s​s
 			 */
 			master_address_label: string
 			/**
@@ -3922,53 +3922,53 @@ JPG, PNG or SVG of maximum of {size}MB.
 			 */
 			validator_multiplier: () => LocalizedString
 			/**
-			 * Strength Node (Level 1)
+			 * Strength
 			 */
-			strength_node_multiplier: () => LocalizedString
+			strength: () => LocalizedString
 			/**
-			 * Thunder Node (Level 2)
+			 * Thunder
 			 */
-			thunder_node_multiplier: () => LocalizedString
+			thunder: () => LocalizedString
 			/**
-			 * Mjolnir Node (Level 3)
+			 * Mjolnir
 			 */
-			mjolnir_node_multiplier: () => LocalizedString
+			mjolnir: () => LocalizedString
 			/**
-			 * VeThor X Node (Level 4)
+			 * VeThor X
 			 */
-			vethor_x_node_multiplier: () => LocalizedString
+			vethor_x: () => LocalizedString
 			/**
-			 * Strength X Node (Level 5)
+			 * Strength X
 			 */
-			strength_x_node_multiplier: () => LocalizedString
+			strength_x: () => LocalizedString
 			/**
-			 * Thunder X Node (Level 6)
+			 * Thunder X
 			 */
-			thunder_x_node_multiplier: () => LocalizedString
+			thunder_x: () => LocalizedString
 			/**
-			 * Mjolnir X Node (Level 7)
+			 * Mjolnir X
 			 */
-			mjolnir_x_node_multiplier: () => LocalizedString
+			mjolnir_x: () => LocalizedString
 			/**
-			 * Dawn Node (Level 8)
+			 * Dawn Node
 			 */
-			dawn_node_multiplier: () => LocalizedString
+			dawn: () => LocalizedString
 			/**
-			 * Lightning Node (Level 9)
+			 * Lightning Node
 			 */
-			lightning_node_multiplier: () => LocalizedString
+			lightning: () => LocalizedString
 			/**
-			 * Flash Node (Level 10)
+			 * Flash Node
 			 */
-			flash_node_multiplier: () => LocalizedString
+			flash: () => LocalizedString
 			/**
 			 * Level ID
 			 */
 			level_id: () => LocalizedString
 			/**
-			 * Node Type
+			 * Node Name
 			 */
-			node_type: () => LocalizedString
+			node_name: () => LocalizedString
 			/**
 			 * Current
 			 */
@@ -4174,7 +4174,7 @@ JPG, PNG or SVG of maximum of {size}MB.
 			 */
 			timepoint_placeholder: () => LocalizedString
 			/**
-			 * Master Address (Optional)
+			 * Master Address
 			 */
 			master_address_label: () => LocalizedString
 			/**

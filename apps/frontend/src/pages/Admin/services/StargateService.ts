@@ -4,9 +4,7 @@ import { executeCall, executeMultipleClauses } from "../../../utils/contract";
 
 export interface StargateLevel {
   name: string;
-  isX: boolean;
   maturityBlocks: bigint;
-  scaledRewardFactor: bigint;
   vetAmountRequiredToStake: bigint;
 }
 
@@ -26,7 +24,6 @@ export interface StargateStats {
   totalSupply: bigint;
   levelIds: number[];
   levels: StargateLevel[];
-  supplies: StargateLevelSupply[];
 }
 
 export class StargateService {
@@ -45,7 +42,6 @@ export class StargateService {
     const methodsWithArgs = [
       { method: "totalSupply" as const, args: [] },
       { method: "getLevels" as const, args: [] },
-      ...levelIds.map(levelId => ({ method: "getLevelSupply" as const, args: [levelId] })),
     ];
 
     const results = await executeMultipleClauses({
@@ -56,21 +52,11 @@ export class StargateService {
 
     const totalSupply = BigInt(results[0]?.success ? String(results[0].result.plain) : "0");
     const levels = (results[1]?.success ? results[1].result.plain : []) as StargateLevel[];
-    const supplies = results.slice(2).map(result => {
-      if (result?.success && Array.isArray(result.result.plain)) {
-        return {
-          circulating: BigInt(String(result.result.plain[0] || "0")),
-          cap: Number(result.result.plain[1] || 0),
-        };
-      }
-      return { circulating: BigInt("0"), cap: 0 };
-    });
 
     return {
       totalSupply,
       levelIds,
       levels,
-      supplies,
     };
   }
 
@@ -131,7 +117,6 @@ export class StargateService {
     });
     return result?.success && Array.isArray(result.result.plain) ? result.result.plain : [];
   }
-
 }
 
 export const stargateService = new StargateService();

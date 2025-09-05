@@ -9,7 +9,7 @@ import { useCallback, useMemo } from "react";
 import { z } from "zod";
 import { useLevelMultipliersInfo } from "../../hooks/useLevelMultipliersInfo";
 import { AdminCard } from "../common/AdminCard";
-import { BaseCell, MultiplierInputCell, NodeTypeCell, TableHeader } from "../common/AdminTableCells";
+import { BaseCell, MultiplierInputCell, TableHeader } from "../common/AdminTableCells";
 import { SensitiveWarning } from "../common/SensitiveWarning";
 
 interface LevelMultipliersCardProps {
@@ -40,7 +40,6 @@ type MultiplierSchema = z.infer<typeof multiplierSchema>;
 interface LevelMultiplierRow {
   id: number;
   name: string;
-  type: "regular" | "x-node";
   currentMultiplier: number;
 }
 
@@ -94,16 +93,16 @@ export function LevelMultipliersCard({ onSuccess }: LevelMultipliersCardProps) {
 
   const levelData = useMemo(
     () => [
-      { id: 1, name: LL.admin.governance_settings.strength_node_multiplier(), type: "regular" as const },
-      { id: 2, name: LL.admin.governance_settings.thunder_node_multiplier(), type: "regular" as const },
-      { id: 3, name: LL.admin.governance_settings.mjolnir_node_multiplier(), type: "regular" as const },
-      { id: 4, name: LL.admin.governance_settings.vethor_x_node_multiplier(), type: "x-node" as const },
-      { id: 5, name: LL.admin.governance_settings.strength_x_node_multiplier(), type: "x-node" as const },
-      { id: 6, name: LL.admin.governance_settings.thunder_x_node_multiplier(), type: "x-node" as const },
-      { id: 7, name: LL.admin.governance_settings.mjolnir_x_node_multiplier(), type: "x-node" as const },
-      { id: 8, name: LL.admin.governance_settings.dawn_node_multiplier(), type: "regular" as const },
-      { id: 9, name: LL.admin.governance_settings.lightning_node_multiplier(), type: "regular" as const },
-      { id: 10, name: LL.admin.governance_settings.flash_node_multiplier(), type: "regular" as const },
+      { id: 1, name: LL.admin.governance_settings.strength() },
+      { id: 2, name: LL.admin.governance_settings.thunder() },
+      { id: 3, name: LL.admin.governance_settings.mjolnir() },
+      { id: 4, name: LL.admin.governance_settings.vethor_x() },
+      { id: 5, name: LL.admin.governance_settings.strength_x() },
+      { id: 6, name: LL.admin.governance_settings.thunder_x() },
+      { id: 7, name: LL.admin.governance_settings.mjolnir_x() },
+      { id: 8, name: LL.admin.governance_settings.dawn() },
+      { id: 9, name: LL.admin.governance_settings.lightning() },
+      { id: 10, name: LL.admin.governance_settings.flash() },
     ],
     [LL.admin.governance_settings],
   );
@@ -127,9 +126,9 @@ export function LevelMultipliersCard({ onSuccess }: LevelMultipliersCardProps) {
   const columns = useMemo(
     () => [
       columnHelper.accessor("name", {
-        cell: data => <NodeTypeCell name={data.getValue()} type={data.row.original.type} />,
-        header: () => <TableHeader label={LL.admin.governance_settings.node_type()} />,
-        id: "NODE_TYPE",
+        cell: data => <BaseCell value={data.getValue()} />,
+        header: () => <TableHeader label={LL.admin.governance_settings.node_name()} />,
+        id: "NODE_NAME",
         size: 200,
       }),
       columnHelper.accessor("currentMultiplier", {
@@ -152,7 +151,6 @@ export function LevelMultipliersCard({ onSuccess }: LevelMultipliersCardProps) {
     ],
     [LL.admin.governance_settings],
   );
-
 
   if (isLoadingMultipliers) {
     return (

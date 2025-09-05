@@ -70,11 +70,7 @@ export function StargateNodes() {
           <StargateContractInfo totalSupply={stargateStats.totalSupply} levelIds={stargateStats.levelIds} />
         </HStack>
 
-        <StargateLevelDetails
-          levels={stargateStats.levels}
-          levelIds={stargateStats.levelIds}
-          supplies={stargateStats.supplies}
-        />
+        <StargateLevelDetails levels={stargateStats.levels} levelIds={stargateStats.levelIds} />
       </VStack>
     </Box>
   );
