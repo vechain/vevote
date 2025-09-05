@@ -282,6 +282,30 @@ type RootTranslation = {
 	 * J​o​i​n​ ​t​h​e​ ​d​i​s​c​u​s​s​i​o​n​ ​o​n​ ​D​i​s​c​o​u​r​s​e
 	 */
 	discuss_on_discourse: string
+	common: {
+		time: {
+			/**
+			 * {​c​o​u​n​t​}​ ​{​c​o​u​n​t​|​{​1​:​ ​s​e​c​o​n​d​,​ ​*​:​ ​s​e​c​o​n​d​s​}​}
+			 * @param {number | '1' | string} count
+			 */
+			seconds: RequiredParams<'count' | `count|{1:${string}, *:${string}}`>
+			/**
+			 * {​c​o​u​n​t​}​ ​{​c​o​u​n​t​|​{​1​:​ ​m​i​n​u​t​e​,​ ​*​:​ ​m​i​n​u​t​e​s​}​}
+			 * @param {number | '1' | string} count
+			 */
+			minutes: RequiredParams<'count' | `count|{1:${string}, *:${string}}`>
+			/**
+			 * {​c​o​u​n​t​}​ ​{​c​o​u​n​t​|​{​1​:​ ​h​o​u​r​,​ ​*​:​ ​h​o​u​r​s​}​}
+			 * @param {number | '1' | string} count
+			 */
+			hours: RequiredParams<'count' | `count|{1:${string}, *:${string}}`>
+			/**
+			 * {​c​o​u​n​t​}​ ​{​c​o​u​n​t​|​{​1​:​ ​d​a​y​,​ ​*​:​ ​d​a​y​s​}​}
+			 * @param {number | '1' | string} count
+			 */
+			days: RequiredParams<'count' | `count|{1:${string}, *:${string}}`>
+		}
+	}
 	datepicker: {
 		/**
 		 * S​e​l​e​c​t​ ​d​a​t​e
@@ -475,6 +499,10 @@ type RootTranslation = {
 		 * I​n​v​a​l​i​d​ ​f​o​r​m​a​t
 		 */
 		invalid_format: string
+		/**
+		 * P​l​e​a​s​e​ ​e​n​t​e​r​ ​a​ ​v​a​l​i​d​ ​a​d​d​r​e​s​s
+		 */
+		invalid_address: string
 		/**
 		 * T​h​e​ ​e​n​d​ ​d​a​t​e​ ​m​u​s​t​ ​b​e​ ​a​f​t​e​r​ ​t​h​e​ ​s​t​a​r​t​ ​d​a​t​e
 		 */
@@ -1377,6 +1405,804 @@ type RootTranslation = {
 			support: string
 		}
 	}
+	admin: {
+		/**
+		 * A​d​m​i​n​ ​D​a​s​h​b​o​a​r​d
+		 */
+		title: string
+		tabs: {
+			/**
+			 * C​o​n​t​r​a​c​t​s
+			 */
+			contracts: string
+			/**
+			 * U​t​i​l​s
+			 */
+			utils: string
+			/**
+			 * U​s​e​r​s
+			 */
+			users: string
+			/**
+			 * G​o​v​e​r​n​a​n​c​e​ ​S​e​t​t​i​n​g​s
+			 */
+			governance_settings: string
+			/**
+			 * V​o​t​i​n​g​ ​P​o​w​e​r​ ​Q​u​e​r​y
+			 */
+			voting_power_timepoint: string
+		}
+		contracts: {
+			/**
+			 * V​e​V​o​t​e
+			 */
+			vevote: string
+			/**
+			 * N​o​d​e​ ​M​a​n​a​g​e​m​e​n​t
+			 */
+			node_management: string
+			/**
+			 * S​t​a​r​g​a​t​e​ ​N​o​d​e​s
+			 */
+			stargate_nodes: string
+		}
+		vevote_contract: {
+			/**
+			 * C​o​n​t​r​a​c​t​ ​A​d​d​r​e​s​s​:
+			 */
+			contract_address: string
+			/**
+			 * V​e​V​o​t​e​ ​C​o​n​t​r​a​c​t​ ​I​n​f​o​r​m​a​t​i​o​n
+			 */
+			title: string
+			/**
+			 * L​o​a​d​i​n​g​ ​V​e​V​o​t​e​ ​C​o​n​t​r​a​c​t​ ​I​n​f​o​r​m​a​t​i​o​n​.​.​.
+			 */
+			loading: string
+			/**
+			 * E​r​r​o​r​ ​l​o​a​d​i​n​g​ ​V​e​V​o​t​e​ ​c​o​n​t​r​a​c​t​ ​d​a​t​a​:​ ​{​e​r​r​o​r​}
+			 * @param {string} error
+			 */
+			error: RequiredParams<'error'>
+			/**
+			 * N​o​ ​V​e​V​o​t​e​ ​c​o​n​t​r​a​c​t​ ​d​a​t​a​ ​a​v​a​i​l​a​b​l​e
+			 */
+			no_data: string
+			/**
+			 * C​o​n​t​r​a​c​t​ ​V​e​r​s​i​o​n
+			 */
+			contract_version: string
+			/**
+			 * Q​u​o​r​u​m​ ​N​u​m​e​r​a​t​o​r
+			 */
+			quorum_numerator: string
+			/**
+			 * Q​u​o​r​u​m​ ​D​e​n​o​m​i​n​a​t​o​r
+			 */
+			quorum_denominator: string
+			/**
+			 * M​i​n​ ​V​o​t​i​n​g​ ​D​e​l​a​y
+			 */
+			min_voting_delay: string
+			/**
+			 * M​i​n​ ​V​o​t​i​n​g​ ​D​u​r​a​t​i​o​n
+			 */
+			min_voting_duration: string
+			/**
+			 * M​a​x​ ​V​o​t​i​n​g​ ​D​u​r​a​t​i​o​n
+			 */
+			max_voting_duration: string
+			/**
+			 * M​i​n​ ​S​t​a​k​e​d​ ​A​m​o​u​n​t
+			 */
+			min_staked_amount: string
+			/**
+			 * {​p​e​r​c​e​n​t​a​g​e​}​%​ ​r​e​q​u​i​r​e​d
+			 * @param {number} percentage
+			 */
+			quorum_percentage: RequiredParams<'percentage'>
+			/**
+			 * C​o​n​t​r​a​c​t​ ​I​n​f​o​r​m​a​t​i​o​n
+			 */
+			contract_info_title: string
+		}
+		node_management: {
+			/**
+			 * N​o​d​e​ ​M​a​n​a​g​e​m​e​n​t​ ​C​o​n​t​r​a​c​t​ ​I​n​f​o​r​m​a​t​i​o​n
+			 */
+			title: string
+			/**
+			 * E​n​t​e​r​ ​a​ ​w​a​l​l​e​t​ ​a​d​d​r​e​s​s​ ​t​o​ ​v​i​e​w​ ​d​e​t​a​i​l​e​d​ ​n​o​d​e​ ​o​w​n​e​r​s​h​i​p​ ​a​n​d​ ​d​e​l​e​g​a​t​i​o​n​ ​i​n​f​o​r​m​a​t​i​o​n​ ​f​o​r​ ​t​h​a​t​ ​a​c​c​o​u​n​t​.
+			 */
+			help_text: string
+			/**
+			 * U​s​e​r​ ​A​d​d​r​e​s​s
+			 */
+			user_address_label: string
+			/**
+			 * E​n​t​e​r​ ​u​s​e​r​ ​a​d​d​r​e​s​s​ ​(​0​x​.​.​.​)
+			 */
+			user_address_placeholder: string
+			/**
+			 * L​o​a​d​ ​U​s​e​r​ ​N​o​d​e​ ​I​n​f​o
+			 */
+			load_button: string
+			/**
+			 * L​o​a​d​i​n​g​.​.​.
+			 */
+			loading_button: string
+			/**
+			 * L​o​a​d​i​n​g​ ​u​s​e​r​ ​n​o​d​e​ ​i​n​f​o​r​m​a​t​i​o​n​.​.​.
+			 */
+			loading_text: string
+			/**
+			 * N​o​d​e​ ​I​n​f​o​r​m​a​t​i​o​n​ ​f​o​r​ ​{​a​d​d​r​e​s​s​}
+			 * @param {string} address
+			 */
+			node_info_title: RequiredParams<'address'>
+			/**
+			 * I​s​ ​N​o​d​e​ ​H​o​l​d​e​r
+			 */
+			is_node_holder: string
+			/**
+			 * I​s​ ​N​o​d​e​ ​D​e​l​e​g​a​t​o​r
+			 */
+			is_node_delegator: string
+			/**
+			 * O​w​n​e​d​ ​N​o​d​e​s
+			 */
+			owned_nodes: string
+			/**
+			 * M​a​n​a​g​e​d​ ​N​o​d​e​s
+			 */
+			managed_nodes: string
+			/**
+			 * I​D​s​:​ ​{​i​d​s​}
+			 * @param {string} ids
+			 */
+			ids_label: RequiredParams<'ids'>
+			/**
+			 * Y​e​s
+			 */
+			yes: string
+			/**
+			 * N​o
+			 */
+			no: string
+			/**
+			 * E​r​r​o​r​ ​l​o​a​d​i​n​g​ ​n​o​d​e​ ​d​a​t​a​:​ ​{​e​r​r​o​r​}
+			 * @param {string} error
+			 */
+			error: RequiredParams<'error'>
+			/**
+			 * N​o​d​e​ ​I​n​f​o​r​m​a​t​i​o​n
+			 */
+			card_title: string
+			/**
+			 * R​e​s​u​l​t​s​ ​f​o​r​ ​{​a​d​d​r​e​s​s​}
+			 * @param {string} address
+			 */
+			results_for: RequiredParams<'address'>
+			/**
+			 * N​o​ ​n​o​d​e​ ​i​n​f​o​r​m​a​t​i​o​n​ ​a​v​a​i​l​a​b​l​e​ ​f​o​r​ ​t​h​i​s​ ​a​d​d​r​e​s​s
+			 */
+			no_results: string
+			/**
+			 * A​v​a​i​l​a​b​l​e​ ​M​e​t​h​o​d​s
+			 */
+			methods_title: string
+			/**
+			 * T​h​i​s​ ​c​o​m​p​o​n​e​n​t​ ​d​e​m​o​n​s​t​r​a​t​e​s​ ​t​h​e​ ​N​o​d​e​M​a​n​a​g​e​m​e​n​t​S​e​r​v​i​c​e​ ​f​u​n​c​t​i​o​n​a​l​i​t​y​.​ ​Y​o​u​ ​c​a​n​ ​e​x​t​e​n​d​ ​i​t​ ​t​o​ ​s​h​o​w​ ​a​d​d​i​t​i​o​n​a​l​ ​s​t​a​t​i​s​t​i​c​s​ ​l​i​k​e​ ​t​o​t​a​l​ ​n​o​d​e​s​,​ ​d​e​l​e​g​a​t​i​o​n​ ​s​t​a​t​s​,​ ​e​t​c​.
+			 */
+			methods_description: string
+		}
+		stargate_nodes: {
+			/**
+			 * S​t​a​r​g​a​t​e​ ​N​F​T​ ​C​o​n​t​r​a​c​t​ ​I​n​f​o​r​m​a​t​i​o​n
+			 */
+			title: string
+			/**
+			 * L​o​a​d​i​n​g​ ​S​t​a​r​g​a​t​e​ ​N​F​T​ ​I​n​f​o​r​m​a​t​i​o​n​.​.​.
+			 */
+			loading: string
+			/**
+			 * E​r​r​o​r​ ​l​o​a​d​i​n​g​ ​S​t​a​r​g​a​t​e​ ​N​F​T​ ​d​a​t​a​:​ ​{​e​r​r​o​r​}
+			 * @param {string} error
+			 */
+			error: RequiredParams<'error'>
+			/**
+			 * N​o​ ​S​t​a​r​g​a​t​e​ ​N​F​T​ ​d​a​t​a​ ​a​v​a​i​l​a​b​l​e
+			 */
+			no_data: string
+			/**
+			 * T​o​t​a​l​ ​S​u​p​p​l​y
+			 */
+			total_supply: string
+			/**
+			 * A​v​a​i​l​a​b​l​e​ ​L​e​v​e​l​s
+			 */
+			available_levels: string
+			/**
+			 * L​e​v​e​l​ ​I​D​s​:​ ​{​i​d​s​}
+			 * @param {string} ids
+			 */
+			level_ids: RequiredParams<'ids'>
+			/**
+			 * L​e​v​e​l​ ​D​e​t​a​i​l​s
+			 */
+			level_details_title: string
+			table: {
+				/**
+				 * L​e​v​e​l
+				 */
+				level: string
+				/**
+				 * N​a​m​e
+				 */
+				name: string
+				/**
+				 * I​s​ ​X​-​N​o​d​e
+				 */
+				is_x_node: string
+				/**
+				 * M​a​t​u​r​i​t​y​ ​B​l​o​c​k​s
+				 */
+				maturity_blocks: string
+				/**
+				 * V​E​T​ ​R​e​q​u​i​r​e​d
+				 */
+				vet_required: string
+				/**
+				 * C​i​r​c​u​l​a​t​i​n​g
+				 */
+				circulating: string
+				/**
+				 * C​a​p
+				 */
+				cap: string
+			}
+			/**
+			 * Y​e​s
+			 */
+			yes: string
+			/**
+			 * N​o
+			 */
+			no: string
+			/**
+			 * N​/​A
+			 */
+			not_available: string
+			/**
+			 * C​o​n​t​r​a​c​t​ ​I​n​f​o​r​m​a​t​i​o​n
+			 */
+			contract_info_title: string
+			/**
+			 * T​h​i​s​ ​d​i​s​p​l​a​y​s​ ​c​o​m​p​r​e​h​e​n​s​i​v​e​ ​i​n​f​o​r​m​a​t​i​o​n​ ​a​b​o​u​t​ ​t​h​e​ ​S​t​a​r​g​a​t​e​ ​N​F​T​ ​c​o​n​t​r​a​c​t​ ​i​n​c​l​u​d​i​n​g​ ​l​e​v​e​l​ ​c​o​n​f​i​g​u​r​a​t​i​o​n​s​,​ ​s​u​p​p​l​y​ ​i​n​f​o​r​m​a​t​i​o​n​,​ ​a​n​d​ ​s​t​a​k​i​n​g​ ​r​e​q​u​i​r​e​m​e​n​t​s​.
+			 */
+			contract_description: string
+		}
+		/**
+		 * {​n​u​m​b​e​r​}​s
+		 * @param {number} number
+		 */
+		format_seconds: RequiredParams<'number'>
+		/**
+		 * {​m​i​n​u​t​e​s​}​ ​m​i​n​ ​(​{​s​e​c​o​n​d​s​}​s​)
+		 * @param {number} minutes
+		 * @param {number} seconds
+		 */
+		format_minutes_seconds: RequiredParams<'minutes' | 'seconds'>
+		/**
+		 * {​n​u​m​b​e​r​}​ ​d​a​y​s
+		 * @param {number} number
+		 */
+		format_days: RequiredParams<'number'>
+		/**
+		 * {​a​m​o​u​n​t​}​ ​V​E​T
+		 * @param {string} amount
+		 */
+		vet_format: RequiredParams<'amount'>
+		governance_settings: {
+			/**
+			 * G​o​v​e​r​n​a​n​c​e​ ​S​e​t​t​i​n​g​s
+			 */
+			title: string
+			/**
+			 * C​o​n​f​i​g​u​r​e​ ​V​e​V​o​t​e​ ​g​o​v​e​r​n​a​n​c​e​ ​p​a​r​a​m​e​t​e​r​s
+			 */
+			description: string
+			/**
+			 * Q​u​o​r​u​m​ ​N​u​m​e​r​a​t​o​r
+			 */
+			quorum_numerator_label: string
+			/**
+			 * R​e​q​u​i​r​e​d​ ​v​o​t​e​s​ ​n​u​m​e​r​a​t​o​r​ ​(​c​u​r​r​e​n​t​:​ ​{​c​u​r​r​e​n​t​}​)
+			 * @param {number} current
+			 */
+			quorum_numerator_help: RequiredParams<'current'>
+			/**
+			 * M​i​n​ ​V​o​t​i​n​g​ ​D​e​l​a​y
+			 */
+			min_voting_delay_label: string
+			/**
+			 * M​i​n​i​m​u​m​ ​d​e​l​a​y​ ​b​e​f​o​r​e​ ​v​o​t​i​n​g​ ​s​t​a​r​t​s​ ​(​i​n​ ​b​l​o​c​k​s​)
+			 */
+			min_voting_delay_help: string
+			/**
+			 * M​i​n​ ​V​o​t​i​n​g​ ​D​u​r​a​t​i​o​n
+			 */
+			min_voting_duration_label: string
+			/**
+			 * M​i​n​i​m​u​m​ ​v​o​t​i​n​g​ ​d​u​r​a​t​i​o​n​ ​(​i​n​ ​b​l​o​c​k​s​)
+			 */
+			min_voting_duration_help: string
+			/**
+			 * M​a​x​ ​V​o​t​i​n​g​ ​D​u​r​a​t​i​o​n
+			 */
+			max_voting_duration_label: string
+			/**
+			 * M​a​x​i​m​u​m​ ​v​o​t​i​n​g​ ​d​u​r​a​t​i​o​n​ ​(​i​n​ ​b​l​o​c​k​s​)
+			 */
+			max_voting_duration_help: string
+			/**
+			 * M​i​n​ ​S​t​a​k​e​d​ ​V​E​T​ ​A​m​o​u​n​t
+			 */
+			min_staked_vet_amount_label: string
+			/**
+			 * M​i​n​i​m​u​m​ ​V​E​T​ ​a​m​o​u​n​t​ ​r​e​q​u​i​r​e​d​ ​t​o​ ​s​t​a​k​e
+			 */
+			min_staked_vet_amount_help: string
+			/**
+			 * L​e​v​e​l​ ​I​D​ ​M​u​l​t​i​p​l​i​e​r​s
+			 */
+			level_multipliers_label: string
+			/**
+			 * V​o​t​i​n​g​ ​w​e​i​g​h​t​ ​m​u​l​t​i​p​l​i​e​r​s​ ​f​o​r​ ​e​a​c​h​ ​l​e​v​e​l​ ​I​D​ ​(​s​c​a​l​e​d​ ​b​y​ ​1​0​0​)
+			 */
+			level_multipliers_help: string
+			/**
+			 * V​a​l​i​d​a​t​o​r​ ​(​L​e​v​e​l​ ​0​)
+			 */
+			validator_multiplier: string
+			/**
+			 * S​t​r​e​n​g​t​h
+			 */
+			strength: string
+			/**
+			 * T​h​u​n​d​e​r
+			 */
+			thunder: string
+			/**
+			 * M​j​o​l​n​i​r
+			 */
+			mjolnir: string
+			/**
+			 * V​e​T​h​o​r​ ​X
+			 */
+			vethor_x: string
+			/**
+			 * S​t​r​e​n​g​t​h​ ​X
+			 */
+			strength_x: string
+			/**
+			 * T​h​u​n​d​e​r​ ​X
+			 */
+			thunder_x: string
+			/**
+			 * M​j​o​l​n​i​r​ ​X
+			 */
+			mjolnir_x: string
+			/**
+			 * D​a​w​n​ ​N​o​d​e
+			 */
+			dawn: string
+			/**
+			 * L​i​g​h​t​n​i​n​g​ ​N​o​d​e
+			 */
+			lightning: string
+			/**
+			 * F​l​a​s​h​ ​N​o​d​e
+			 */
+			flash: string
+			/**
+			 * L​e​v​e​l​ ​I​D
+			 */
+			level_id: string
+			/**
+			 * N​o​d​e​ ​N​a​m​e
+			 */
+			node_name: string
+			/**
+			 * C​u​r​r​e​n​t
+			 */
+			current_multiplier: string
+			/**
+			 * N​e​w​ ​V​a​l​u​e
+			 */
+			new_multiplier: string
+			/**
+			 * U​p​d​a​t​e​ ​S​e​t​t​i​n​g​s
+			 */
+			update_settings: string
+			/**
+			 * U​p​d​a​t​e​ ​G​o​v​e​r​n​a​n​c​e​ ​S​e​t​t​i​n​g​s
+			 */
+			update_governance_settings: string
+			/**
+			 * U​p​d​a​t​e​ ​M​u​l​t​i​p​l​i​e​r​s
+			 */
+			update_multipliers: string
+			/**
+			 * U​p​d​a​t​i​n​g​.​.​.
+			 */
+			updating: string
+			/**
+			 * S​e​t​t​i​n​g​s​ ​U​p​d​a​t​e​d​ ​S​u​c​c​e​s​s​f​u​l​l​y
+			 */
+			success_title: string
+			/**
+			 * G​o​v​e​r​n​a​n​c​e​ ​s​e​t​t​i​n​g​s​ ​h​a​v​e​ ​b​e​e​n​ ​u​p​d​a​t​e​d​ ​a​n​d​ ​a​r​e​ ​n​o​w​ ​a​c​t​i​v​e​.
+			 */
+			success_description: string
+			/**
+			 * F​a​i​l​e​d​ ​t​o​ ​U​p​d​a​t​e​ ​S​e​t​t​i​n​g​s
+			 */
+			error_title: string
+			/**
+			 * T​h​e​r​e​ ​w​a​s​ ​a​n​ ​e​r​r​o​r​ ​u​p​d​a​t​i​n​g​ ​t​h​e​ ​g​o​v​e​r​n​a​n​c​e​ ​s​e​t​t​i​n​g​s​:​ ​{​e​r​r​o​r​}
+			 * @param {string} error
+			 */
+			error_description: RequiredParams<'error'>
+			/**
+			 * V​a​l​u​e​ ​m​u​s​t​ ​b​e​ ​b​e​t​w​e​e​n​ ​{​m​i​n​}​ ​a​n​d​ ​{​m​a​x​}
+			 * @param {number} max
+			 * @param {number} min
+			 */
+			invalid_range: RequiredParams<'max' | 'min'>
+			/**
+			 * T​h​i​s​ ​f​i​e​l​d​ ​i​s​ ​r​e​q​u​i​r​e​d
+			 */
+			required_field: string
+			/**
+			 * C​u​r​r​e​n​t​:​ ​{​v​a​l​u​e​}
+			 * @param {string} value
+			 */
+			current_value: RequiredParams<'value'>
+		}
+		user_management: {
+			/**
+			 * U​s​e​r​ ​M​a​n​a​g​e​m​e​n​t
+			 */
+			title: string
+			/**
+			 * G​r​a​n​t​ ​o​r​ ​r​e​v​o​k​e​ ​r​o​l​e​s​ ​f​o​r​ ​V​e​V​o​t​e​ ​g​o​v​e​r​n​a​n​c​e
+			 */
+			description: string
+			/**
+			 * U​s​e​r​ ​A​d​d​r​e​s​s
+			 */
+			user_address_label: string
+			/**
+			 * E​n​t​e​r​ ​u​s​e​r​ ​a​d​d​r​e​s​s​ ​(​0​x​.​.​.​)
+			 */
+			user_address_placeholder: string
+			/**
+			 * R​o​l​e
+			 */
+			role_label: string
+			/**
+			 * S​e​l​e​c​t​ ​a​ ​r​o​l​e
+			 */
+			role_placeholder: string
+			/**
+			 * C​u​r​r​e​n​t​ ​R​o​l​e​s​:
+			 */
+			current_roles_label: string
+			/**
+			 * C​h​e​c​k​i​n​g​ ​r​o​l​e​s​.​.​.
+			 */
+			checking_roles: string
+			/**
+			 * N​o​ ​r​o​l​e​s​ ​a​s​s​i​g​n​e​d
+			 */
+			no_roles_assigned: string
+		}
+		role_users: {
+			/**
+			 * R​o​l​e​ ​U​s​e​r​s
+			 */
+			title: string
+			/**
+			 * S​e​l​e​c​t​ ​a​ ​r​o​l​e​ ​t​o​ ​v​i​e​w​ ​a​l​l​ ​u​s​e​r​s​ ​w​h​o​ ​h​a​v​e​ ​b​e​e​n​ ​g​r​a​n​t​e​d​ ​t​h​a​t​ ​s​p​e​c​i​f​i​c​ ​r​o​l​e​.
+			 */
+			help_text: string
+			/**
+			 * R​o​l​e
+			 */
+			role_label: string
+			/**
+			 * S​e​l​e​c​t​ ​a​ ​r​o​l​e​ ​t​o​ ​q​u​e​r​y
+			 */
+			role_placeholder: string
+			/**
+			 * Q​u​e​r​y​ ​R​o​l​e​ ​U​s​e​r​s
+			 */
+			query_button: string
+			/**
+			 * L​o​a​d​i​n​g​.​.​.
+			 */
+			loading: string
+			/**
+			 * F​e​t​c​h​i​n​g​ ​u​s​e​r​s​ ​w​i​t​h​ ​s​e​l​e​c​t​e​d​ ​r​o​l​e​.​.​.
+			 */
+			loading_text: string
+			/**
+			 * U​s​e​r​s​ ​w​i​t​h​ ​R​o​l​e
+			 */
+			results_title: string
+			/**
+			 * {​c​o​u​n​t​}​ ​{​c​o​u​n​t​|​{​1​:​ ​u​s​e​r​,​ ​*​:​ ​u​s​e​r​s​}​}
+			 * @param {number | '1' | string} count
+			 */
+			user_count: RequiredParams<'count' | `count|{1:${string}, *:${string}}`>
+			/**
+			 * R​o​l​e​:​ ​{​r​o​l​e​}
+			 * @param {string} role
+			 */
+			role_selected: RequiredParams<'role'>
+			/**
+			 * G​r​a​n​t​e​d​:​ ​{​d​a​t​e​}
+			 * @param {string} date
+			 */
+			granted_at: RequiredParams<'date'>
+			/**
+			 * V​i​e​w​ ​T​X
+			 */
+			view_tx: string
+			/**
+			 * N​o​ ​u​s​e​r​s​ ​f​o​u​n​d​ ​w​i​t​h​ ​t​h​i​s​ ​r​o​l​e
+			 */
+			no_users: string
+			/**
+			 * S​c​r​o​l​l​ ​t​o​ ​s​e​e​ ​m​o​r​e​ ​u​s​e​r​s
+			 */
+			scrollable_hint: string
+			/**
+			 * E​r​r​o​r​ ​f​e​t​c​h​i​n​g​ ​r​o​l​e​ ​u​s​e​r​s​:​ ​{​e​r​r​o​r​}
+			 * @param {string} error
+			 */
+			error_description: RequiredParams<'error'>
+		}
+		user_role_checker: {
+			/**
+			 * Y​o​u​r​ ​P​e​r​m​i​s​s​i​o​n​s
+			 */
+			title: string
+			/**
+			 * C​o​n​n​e​c​t​ ​w​a​l​l​e​t​ ​t​o​ ​s​e​e​ ​y​o​u​r​ ​r​o​l​e​s
+			 */
+			connect_wallet_message: string
+			/**
+			 * C​h​e​c​k​i​n​g​ ​y​o​u​r​ ​r​o​l​e​s​.​.​.
+			 */
+			checking_roles: string
+		}
+		voting_power_timepoint: {
+			/**
+			 * A​d​d​r​e​s​s​:
+			 */
+			address: string
+			/**
+			 * T​i​m​e​p​o​i​n​t​:
+			 */
+			timepoint: string
+			/**
+			 * M​a​s​t​e​r​ ​A​d​d​r​e​s​s​:
+			 */
+			master_address: string
+			/**
+			 * V​o​t​i​n​g​ ​P​o​w​e​r​ ​a​t​ ​T​i​m​e​p​o​i​n​t
+			 */
+			title: string
+			/**
+			 * Q​u​e​r​y​ ​h​i​s​t​o​r​i​c​a​l​ ​v​o​t​i​n​g​ ​p​o​w​e​r​ ​f​o​r​ ​a​n​y​ ​w​a​l​l​e​t​ ​a​t​ ​a​ ​s​p​e​c​i​f​i​c​ ​t​i​m​e​p​o​i​n​t
+			 */
+			description: string
+			/**
+			 * W​a​l​l​e​t​ ​A​d​d​r​e​s​s
+			 */
+			address_label: string
+			/**
+			 * E​n​t​e​r​ ​w​a​l​l​e​t​ ​a​d​d​r​e​s​s​ ​(​0​x​.​.​.​)
+			 */
+			address_placeholder: string
+			/**
+			 * T​i​m​e​p​o​i​n​t
+			 */
+			timepoint_label: string
+			/**
+			 * E​n​t​e​r​ ​t​i​m​e​p​o​i​n​t
+			 */
+			timepoint_placeholder: string
+			/**
+			 * M​a​s​t​e​r​ ​A​d​d​r​e​s​s
+			 */
+			master_address_label: string
+			/**
+			 * E​n​t​e​r​ ​m​a​s​t​e​r​ ​a​d​d​r​e​s​s​ ​f​o​r​ ​v​a​l​i​d​a​t​o​r​ ​p​o​w​e​r​ ​(​0​x​.​.​.​)
+			 */
+			master_address_placeholder: string
+			/**
+			 * Q​u​e​r​y​ ​V​o​t​i​n​g​ ​P​o​w​e​r
+			 */
+			query_button: string
+			/**
+			 * Q​u​e​r​y​i​n​g​.​.​.
+			 */
+			querying: string
+			/**
+			 * V​o​t​i​n​g​ ​P​o​w​e​r​ ​R​e​s​u​l​t​s
+			 */
+			results_title: string
+			/**
+			 * N​o​d​e​-​b​a​s​e​d​ ​P​o​w​e​r​:
+			 */
+			node_power_label: string
+			/**
+			 * V​a​l​i​d​a​t​o​r​ ​P​o​w​e​r​:
+			 */
+			validator_power_label: string
+			/**
+			 * T​o​t​a​l​ ​P​o​w​e​r​:
+			 */
+			total_power_label: string
+			/**
+			 * N​o​ ​r​e​s​u​l​t​s​ ​t​o​ ​d​i​s​p​l​a​y
+			 */
+			no_results: string
+			/**
+			 * P​l​e​a​s​e​ ​e​n​t​e​r​ ​a​ ​v​a​l​i​d​ ​a​d​d​r​e​s​s
+			 */
+			invalid_address: string
+			/**
+			 * P​l​e​a​s​e​ ​e​n​t​e​r​ ​a​ ​v​a​l​i​d​ ​t​i​m​e​p​o​i​n​t​/​b​l​o​c​k​ ​n​u​m​b​e​r
+			 */
+			invalid_timepoint: string
+			/**
+			 * W​a​l​l​e​t​ ​a​d​d​r​e​s​s​ ​i​s​ ​r​e​q​u​i​r​e​d
+			 */
+			address_required: string
+			/**
+			 * T​i​m​e​p​o​i​n​t​ ​i​s​ ​r​e​q​u​i​r​e​d
+			 */
+			timepoint_required: string
+			/**
+			 * Q​u​e​r​y​ ​F​a​i​l​e​d
+			 */
+			error_title: string
+			/**
+			 * T​h​e​r​e​ ​w​a​s​ ​a​n​ ​e​r​r​o​r​ ​q​u​e​r​y​i​n​g​ ​v​o​t​i​n​g​ ​p​o​w​e​r​:​ ​{​e​r​r​o​r​}
+			 * @param {string} error
+			 */
+			error_description: RequiredParams<'error'>
+			/**
+			 * E​n​t​e​r​ ​a​ ​w​a​l​l​e​t​ ​a​d​d​r​e​s​s​ ​a​n​d​ ​t​i​m​e​p​o​i​n​t​ ​t​o​ ​v​i​e​w​ ​h​i​s​t​o​r​i​c​a​l​ ​v​o​t​i​n​g​ ​p​o​w​e​r​.​ ​O​p​t​i​o​n​a​l​l​y​ ​p​r​o​v​i​d​e​ ​a​ ​m​a​s​t​e​r​ ​a​d​d​r​e​s​s​ ​t​o​ ​c​h​e​c​k​ ​v​a​l​i​d​a​t​o​r​-​d​e​l​e​g​a​t​e​d​ ​p​o​w​e​r​.
+			 */
+			help_text: string
+		}
+		/**
+		 * U​n​k​n​o​w​n​ ​e​r​r​o​r
+		 */
+		unknown_error: string
+		/**
+		 * T​h​i​s​ ​o​p​e​r​a​t​i​o​n​ ​i​s​ ​s​e​n​s​i​t​i​v​e​.​ ​P​l​e​a​s​e​ ​u​s​e​ ​w​i​t​h​ ​c​a​u​t​i​o​n​.
+		 */
+		sensitive_operation_warning: string
+		/**
+		 * Y​o​u​r​ ​P​e​r​m​i​s​s​i​o​n​s
+		 */
+		your_permissions: string
+		common_roles: {
+			/**
+			 * D​e​f​a​u​l​t​ ​A​d​m​i​n
+			 */
+			DEFAULT_ADMIN_ROLE: string
+			/**
+			 * E​x​e​c​u​t​o​r
+			 */
+			EXECUTOR_ROLE: string
+			/**
+			 * S​e​t​t​i​n​g​s​ ​M​a​n​a​g​e​r
+			 */
+			SETTINGS_MANAGER_ROLE: string
+			/**
+			 * N​o​d​e​ ​W​e​i​g​h​t​ ​M​a​n​a​g​e​r
+			 */
+			NODE_WEIGHT_MANAGER_ROLE: string
+			/**
+			 * U​p​g​r​a​d​e​r
+			 */
+			UPGRADER_ROLE: string
+			/**
+			 * W​h​i​t​e​l​i​s​t​e​d
+			 */
+			WHITELISTED_ROLE: string
+			/**
+			 * W​h​i​t​e​l​i​s​t​ ​A​d​m​i​n
+			 */
+			WHITELIST_ADMIN_ROLE: string
+			/**
+			 * P​a​u​s​e​r
+			 */
+			PAUSER_ROLE: string
+			/**
+			 * L​e​v​e​l​ ​O​p​e​r​a​t​o​r
+			 */
+			LEVEL_OPERATOR_ROLE: string
+			/**
+			 * M​a​n​a​g​e​r
+			 */
+			MANAGER_ROLE: string
+			/**
+			 * W​h​i​t​e​l​i​s​t​e​r
+			 */
+			WHITELISTER_ROLE: string
+			/**
+			 * G​r​a​n​t​ ​R​o​l​e
+			 */
+			grant_role: string
+			/**
+			 * R​e​v​o​k​e​ ​R​o​l​e
+			 */
+			revoke_role: string
+			/**
+			 * G​r​a​n​t​i​n​g​.​.​.
+			 */
+			granting: string
+			/**
+			 * R​e​v​o​k​i​n​g​.​.​.
+			 */
+			revoking: string
+			/**
+			 * R​o​l​e​ ​G​r​a​n​t​e​d​ ​S​u​c​c​e​s​s​f​u​l​l​y
+			 */
+			grant_success_title: string
+			/**
+			 * T​h​e​ ​r​o​l​e​ ​h​a​s​ ​b​e​e​n​ ​g​r​a​n​t​e​d​ ​t​o​ ​t​h​e​ ​u​s​e​r​.
+			 */
+			grant_success_description: string
+			/**
+			 * R​o​l​e​ ​R​e​v​o​k​e​d​ ​S​u​c​c​e​s​s​f​u​l​l​y
+			 */
+			revoke_success_title: string
+			/**
+			 * T​h​e​ ​r​o​l​e​ ​h​a​s​ ​b​e​e​n​ ​r​e​v​o​k​e​d​ ​f​r​o​m​ ​t​h​e​ ​u​s​e​r​.
+			 */
+			revoke_success_description: string
+			/**
+			 * R​o​l​e​ ​O​p​e​r​a​t​i​o​n​ ​F​a​i​l​e​d
+			 */
+			error_title: string
+			/**
+			 * T​h​e​r​e​ ​w​a​s​ ​a​n​ ​e​r​r​o​r​ ​w​i​t​h​ ​t​h​e​ ​r​o​l​e​ ​o​p​e​r​a​t​i​o​n​:​ ​{​e​r​r​o​r​}
+			 * @param {string} error
+			 */
+			error_description: RequiredParams<'error'>
+			/**
+			 * P​l​e​a​s​e​ ​e​n​t​e​r​ ​a​ ​v​a​l​i​d​ ​a​d​d​r​e​s​s
+			 */
+			invalid_address: string
+			/**
+			 * P​l​e​a​s​e​ ​s​e​l​e​c​t​ ​a​ ​r​o​l​e
+			 */
+			role_required: string
+			/**
+			 * U​s​e​r​ ​a​d​d​r​e​s​s​ ​i​s​ ​r​e​q​u​i​r​e​d
+			 */
+			address_required: string
+		}
+	}
 }
 
 export type TranslationFunctions = {
@@ -1645,6 +2471,26 @@ JPG, PNG or SVG of maximum of {size}MB.
 	 * Join the discussion on Discourse
 	 */
 	discuss_on_discourse: () => LocalizedString
+	common: {
+		time: {
+			/**
+			 * {count} {count|{1: second, *: seconds}}
+			 */
+			seconds: (arg: { count: number | '1' | string }) => LocalizedString
+			/**
+			 * {count} {count|{1: minute, *: minutes}}
+			 */
+			minutes: (arg: { count: number | '1' | string }) => LocalizedString
+			/**
+			 * {count} {count|{1: hour, *: hours}}
+			 */
+			hours: (arg: { count: number | '1' | string }) => LocalizedString
+			/**
+			 * {count} {count|{1: day, *: days}}
+			 */
+			days: (arg: { count: number | '1' | string }) => LocalizedString
+		}
+	}
 	datepicker: {
 		/**
 		 * Select date
@@ -1838,6 +2684,10 @@ JPG, PNG or SVG of maximum of {size}MB.
 		 * Invalid format
 		 */
 		invalid_format: () => LocalizedString
+		/**
+		 * Please enter a valid address
+		 */
+		invalid_address: () => LocalizedString
 		/**
 		 * The end date must be after the start date
 		 */
@@ -2723,6 +3573,780 @@ JPG, PNG or SVG of maximum of {size}MB.
 			 * Support
 			 */
 			support: () => LocalizedString
+		}
+	}
+	admin: {
+		/**
+		 * Admin Dashboard
+		 */
+		title: () => LocalizedString
+		tabs: {
+			/**
+			 * Contracts
+			 */
+			contracts: () => LocalizedString
+			/**
+			 * Utils
+			 */
+			utils: () => LocalizedString
+			/**
+			 * Users
+			 */
+			users: () => LocalizedString
+			/**
+			 * Governance Settings
+			 */
+			governance_settings: () => LocalizedString
+			/**
+			 * Voting Power Query
+			 */
+			voting_power_timepoint: () => LocalizedString
+		}
+		contracts: {
+			/**
+			 * VeVote
+			 */
+			vevote: () => LocalizedString
+			/**
+			 * Node Management
+			 */
+			node_management: () => LocalizedString
+			/**
+			 * Stargate Nodes
+			 */
+			stargate_nodes: () => LocalizedString
+		}
+		vevote_contract: {
+			/**
+			 * Contract Address:
+			 */
+			contract_address: () => LocalizedString
+			/**
+			 * VeVote Contract Information
+			 */
+			title: () => LocalizedString
+			/**
+			 * Loading VeVote Contract Information...
+			 */
+			loading: () => LocalizedString
+			/**
+			 * Error loading VeVote contract data: {error}
+			 */
+			error: (arg: { error: string }) => LocalizedString
+			/**
+			 * No VeVote contract data available
+			 */
+			no_data: () => LocalizedString
+			/**
+			 * Contract Version
+			 */
+			contract_version: () => LocalizedString
+			/**
+			 * Quorum Numerator
+			 */
+			quorum_numerator: () => LocalizedString
+			/**
+			 * Quorum Denominator
+			 */
+			quorum_denominator: () => LocalizedString
+			/**
+			 * Min Voting Delay
+			 */
+			min_voting_delay: () => LocalizedString
+			/**
+			 * Min Voting Duration
+			 */
+			min_voting_duration: () => LocalizedString
+			/**
+			 * Max Voting Duration
+			 */
+			max_voting_duration: () => LocalizedString
+			/**
+			 * Min Staked Amount
+			 */
+			min_staked_amount: () => LocalizedString
+			/**
+			 * {percentage}% required
+			 */
+			quorum_percentage: (arg: { percentage: number }) => LocalizedString
+			/**
+			 * Contract Information
+			 */
+			contract_info_title: () => LocalizedString
+		}
+		node_management: {
+			/**
+			 * Node Management Contract Information
+			 */
+			title: () => LocalizedString
+			/**
+			 * Enter a wallet address to view detailed node ownership and delegation information for that account.
+			 */
+			help_text: () => LocalizedString
+			/**
+			 * User Address
+			 */
+			user_address_label: () => LocalizedString
+			/**
+			 * Enter user address (0x...)
+			 */
+			user_address_placeholder: () => LocalizedString
+			/**
+			 * Load User Node Info
+			 */
+			load_button: () => LocalizedString
+			/**
+			 * Loading...
+			 */
+			loading_button: () => LocalizedString
+			/**
+			 * Loading user node information...
+			 */
+			loading_text: () => LocalizedString
+			/**
+			 * Node Information for {address}
+			 */
+			node_info_title: (arg: { address: string }) => LocalizedString
+			/**
+			 * Is Node Holder
+			 */
+			is_node_holder: () => LocalizedString
+			/**
+			 * Is Node Delegator
+			 */
+			is_node_delegator: () => LocalizedString
+			/**
+			 * Owned Nodes
+			 */
+			owned_nodes: () => LocalizedString
+			/**
+			 * Managed Nodes
+			 */
+			managed_nodes: () => LocalizedString
+			/**
+			 * IDs: {ids}
+			 */
+			ids_label: (arg: { ids: string }) => LocalizedString
+			/**
+			 * Yes
+			 */
+			yes: () => LocalizedString
+			/**
+			 * No
+			 */
+			no: () => LocalizedString
+			/**
+			 * Error loading node data: {error}
+			 */
+			error: (arg: { error: string }) => LocalizedString
+			/**
+			 * Node Information
+			 */
+			card_title: () => LocalizedString
+			/**
+			 * Results for {address}
+			 */
+			results_for: (arg: { address: string }) => LocalizedString
+			/**
+			 * No node information available for this address
+			 */
+			no_results: () => LocalizedString
+			/**
+			 * Available Methods
+			 */
+			methods_title: () => LocalizedString
+			/**
+			 * This component demonstrates the NodeManagementService functionality. You can extend it to show additional statistics like total nodes, delegation stats, etc.
+			 */
+			methods_description: () => LocalizedString
+		}
+		stargate_nodes: {
+			/**
+			 * Stargate NFT Contract Information
+			 */
+			title: () => LocalizedString
+			/**
+			 * Loading Stargate NFT Information...
+			 */
+			loading: () => LocalizedString
+			/**
+			 * Error loading Stargate NFT data: {error}
+			 */
+			error: (arg: { error: string }) => LocalizedString
+			/**
+			 * No Stargate NFT data available
+			 */
+			no_data: () => LocalizedString
+			/**
+			 * Total Supply
+			 */
+			total_supply: () => LocalizedString
+			/**
+			 * Available Levels
+			 */
+			available_levels: () => LocalizedString
+			/**
+			 * Level IDs: {ids}
+			 */
+			level_ids: (arg: { ids: string }) => LocalizedString
+			/**
+			 * Level Details
+			 */
+			level_details_title: () => LocalizedString
+			table: {
+				/**
+				 * Level
+				 */
+				level: () => LocalizedString
+				/**
+				 * Name
+				 */
+				name: () => LocalizedString
+				/**
+				 * Is X-Node
+				 */
+				is_x_node: () => LocalizedString
+				/**
+				 * Maturity Blocks
+				 */
+				maturity_blocks: () => LocalizedString
+				/**
+				 * VET Required
+				 */
+				vet_required: () => LocalizedString
+				/**
+				 * Circulating
+				 */
+				circulating: () => LocalizedString
+				/**
+				 * Cap
+				 */
+				cap: () => LocalizedString
+			}
+			/**
+			 * Yes
+			 */
+			yes: () => LocalizedString
+			/**
+			 * No
+			 */
+			no: () => LocalizedString
+			/**
+			 * N/A
+			 */
+			not_available: () => LocalizedString
+			/**
+			 * Contract Information
+			 */
+			contract_info_title: () => LocalizedString
+			/**
+			 * This displays comprehensive information about the Stargate NFT contract including level configurations, supply information, and staking requirements.
+			 */
+			contract_description: () => LocalizedString
+		}
+		/**
+		 * {number}s
+		 */
+		format_seconds: (arg: { number: number }) => LocalizedString
+		/**
+		 * {minutes} min ({seconds}s)
+		 */
+		format_minutes_seconds: (arg: { minutes: number, seconds: number }) => LocalizedString
+		/**
+		 * {number} days
+		 */
+		format_days: (arg: { number: number }) => LocalizedString
+		/**
+		 * {amount} VET
+		 */
+		vet_format: (arg: { amount: string }) => LocalizedString
+		governance_settings: {
+			/**
+			 * Governance Settings
+			 */
+			title: () => LocalizedString
+			/**
+			 * Configure VeVote governance parameters
+			 */
+			description: () => LocalizedString
+			/**
+			 * Quorum Numerator
+			 */
+			quorum_numerator_label: () => LocalizedString
+			/**
+			 * Required votes numerator (current: {current})
+			 */
+			quorum_numerator_help: (arg: { current: number }) => LocalizedString
+			/**
+			 * Min Voting Delay
+			 */
+			min_voting_delay_label: () => LocalizedString
+			/**
+			 * Minimum delay before voting starts (in blocks)
+			 */
+			min_voting_delay_help: () => LocalizedString
+			/**
+			 * Min Voting Duration
+			 */
+			min_voting_duration_label: () => LocalizedString
+			/**
+			 * Minimum voting duration (in blocks)
+			 */
+			min_voting_duration_help: () => LocalizedString
+			/**
+			 * Max Voting Duration
+			 */
+			max_voting_duration_label: () => LocalizedString
+			/**
+			 * Maximum voting duration (in blocks)
+			 */
+			max_voting_duration_help: () => LocalizedString
+			/**
+			 * Min Staked VET Amount
+			 */
+			min_staked_vet_amount_label: () => LocalizedString
+			/**
+			 * Minimum VET amount required to stake
+			 */
+			min_staked_vet_amount_help: () => LocalizedString
+			/**
+			 * Level ID Multipliers
+			 */
+			level_multipliers_label: () => LocalizedString
+			/**
+			 * Voting weight multipliers for each level ID (scaled by 100)
+			 */
+			level_multipliers_help: () => LocalizedString
+			/**
+			 * Validator (Level 0)
+			 */
+			validator_multiplier: () => LocalizedString
+			/**
+			 * Strength
+			 */
+			strength: () => LocalizedString
+			/**
+			 * Thunder
+			 */
+			thunder: () => LocalizedString
+			/**
+			 * Mjolnir
+			 */
+			mjolnir: () => LocalizedString
+			/**
+			 * VeThor X
+			 */
+			vethor_x: () => LocalizedString
+			/**
+			 * Strength X
+			 */
+			strength_x: () => LocalizedString
+			/**
+			 * Thunder X
+			 */
+			thunder_x: () => LocalizedString
+			/**
+			 * Mjolnir X
+			 */
+			mjolnir_x: () => LocalizedString
+			/**
+			 * Dawn Node
+			 */
+			dawn: () => LocalizedString
+			/**
+			 * Lightning Node
+			 */
+			lightning: () => LocalizedString
+			/**
+			 * Flash Node
+			 */
+			flash: () => LocalizedString
+			/**
+			 * Level ID
+			 */
+			level_id: () => LocalizedString
+			/**
+			 * Node Name
+			 */
+			node_name: () => LocalizedString
+			/**
+			 * Current
+			 */
+			current_multiplier: () => LocalizedString
+			/**
+			 * New Value
+			 */
+			new_multiplier: () => LocalizedString
+			/**
+			 * Update Settings
+			 */
+			update_settings: () => LocalizedString
+			/**
+			 * Update Governance Settings
+			 */
+			update_governance_settings: () => LocalizedString
+			/**
+			 * Update Multipliers
+			 */
+			update_multipliers: () => LocalizedString
+			/**
+			 * Updating...
+			 */
+			updating: () => LocalizedString
+			/**
+			 * Settings Updated Successfully
+			 */
+			success_title: () => LocalizedString
+			/**
+			 * Governance settings have been updated and are now active.
+			 */
+			success_description: () => LocalizedString
+			/**
+			 * Failed to Update Settings
+			 */
+			error_title: () => LocalizedString
+			/**
+			 * There was an error updating the governance settings: {error}
+			 */
+			error_description: (arg: { error: string }) => LocalizedString
+			/**
+			 * Value must be between {min} and {max}
+			 */
+			invalid_range: (arg: { max: number, min: number }) => LocalizedString
+			/**
+			 * This field is required
+			 */
+			required_field: () => LocalizedString
+			/**
+			 * Current: {value}
+			 */
+			current_value: (arg: { value: string }) => LocalizedString
+		}
+		user_management: {
+			/**
+			 * User Management
+			 */
+			title: () => LocalizedString
+			/**
+			 * Grant or revoke roles for VeVote governance
+			 */
+			description: () => LocalizedString
+			/**
+			 * User Address
+			 */
+			user_address_label: () => LocalizedString
+			/**
+			 * Enter user address (0x...)
+			 */
+			user_address_placeholder: () => LocalizedString
+			/**
+			 * Role
+			 */
+			role_label: () => LocalizedString
+			/**
+			 * Select a role
+			 */
+			role_placeholder: () => LocalizedString
+			/**
+			 * Current Roles:
+			 */
+			current_roles_label: () => LocalizedString
+			/**
+			 * Checking roles...
+			 */
+			checking_roles: () => LocalizedString
+			/**
+			 * No roles assigned
+			 */
+			no_roles_assigned: () => LocalizedString
+		}
+		role_users: {
+			/**
+			 * Role Users
+			 */
+			title: () => LocalizedString
+			/**
+			 * Select a role to view all users who have been granted that specific role.
+			 */
+			help_text: () => LocalizedString
+			/**
+			 * Role
+			 */
+			role_label: () => LocalizedString
+			/**
+			 * Select a role to query
+			 */
+			role_placeholder: () => LocalizedString
+			/**
+			 * Query Role Users
+			 */
+			query_button: () => LocalizedString
+			/**
+			 * Loading...
+			 */
+			loading: () => LocalizedString
+			/**
+			 * Fetching users with selected role...
+			 */
+			loading_text: () => LocalizedString
+			/**
+			 * Users with Role
+			 */
+			results_title: () => LocalizedString
+			/**
+			 * {count} {count|{1: user, *: users}}
+			 */
+			user_count: (arg: { count: number | '1' | string }) => LocalizedString
+			/**
+			 * Role: {role}
+			 */
+			role_selected: (arg: { role: string }) => LocalizedString
+			/**
+			 * Granted: {date}
+			 */
+			granted_at: (arg: { date: string }) => LocalizedString
+			/**
+			 * View TX
+			 */
+			view_tx: () => LocalizedString
+			/**
+			 * No users found with this role
+			 */
+			no_users: () => LocalizedString
+			/**
+			 * Scroll to see more users
+			 */
+			scrollable_hint: () => LocalizedString
+			/**
+			 * Error fetching role users: {error}
+			 */
+			error_description: (arg: { error: string }) => LocalizedString
+		}
+		user_role_checker: {
+			/**
+			 * Your Permissions
+			 */
+			title: () => LocalizedString
+			/**
+			 * Connect wallet to see your roles
+			 */
+			connect_wallet_message: () => LocalizedString
+			/**
+			 * Checking your roles...
+			 */
+			checking_roles: () => LocalizedString
+		}
+		voting_power_timepoint: {
+			/**
+			 * Address:
+			 */
+			address: () => LocalizedString
+			/**
+			 * Timepoint:
+			 */
+			timepoint: () => LocalizedString
+			/**
+			 * Master Address:
+			 */
+			master_address: () => LocalizedString
+			/**
+			 * Voting Power at Timepoint
+			 */
+			title: () => LocalizedString
+			/**
+			 * Query historical voting power for any wallet at a specific timepoint
+			 */
+			description: () => LocalizedString
+			/**
+			 * Wallet Address
+			 */
+			address_label: () => LocalizedString
+			/**
+			 * Enter wallet address (0x...)
+			 */
+			address_placeholder: () => LocalizedString
+			/**
+			 * Timepoint
+			 */
+			timepoint_label: () => LocalizedString
+			/**
+			 * Enter timepoint
+			 */
+			timepoint_placeholder: () => LocalizedString
+			/**
+			 * Master Address
+			 */
+			master_address_label: () => LocalizedString
+			/**
+			 * Enter master address for validator power (0x...)
+			 */
+			master_address_placeholder: () => LocalizedString
+			/**
+			 * Query Voting Power
+			 */
+			query_button: () => LocalizedString
+			/**
+			 * Querying...
+			 */
+			querying: () => LocalizedString
+			/**
+			 * Voting Power Results
+			 */
+			results_title: () => LocalizedString
+			/**
+			 * Node-based Power:
+			 */
+			node_power_label: () => LocalizedString
+			/**
+			 * Validator Power:
+			 */
+			validator_power_label: () => LocalizedString
+			/**
+			 * Total Power:
+			 */
+			total_power_label: () => LocalizedString
+			/**
+			 * No results to display
+			 */
+			no_results: () => LocalizedString
+			/**
+			 * Please enter a valid address
+			 */
+			invalid_address: () => LocalizedString
+			/**
+			 * Please enter a valid timepoint/block number
+			 */
+			invalid_timepoint: () => LocalizedString
+			/**
+			 * Wallet address is required
+			 */
+			address_required: () => LocalizedString
+			/**
+			 * Timepoint is required
+			 */
+			timepoint_required: () => LocalizedString
+			/**
+			 * Query Failed
+			 */
+			error_title: () => LocalizedString
+			/**
+			 * There was an error querying voting power: {error}
+			 */
+			error_description: (arg: { error: string }) => LocalizedString
+			/**
+			 * Enter a wallet address and timepoint to view historical voting power. Optionally provide a master address to check validator-delegated power.
+			 */
+			help_text: () => LocalizedString
+		}
+		/**
+		 * Unknown error
+		 */
+		unknown_error: () => LocalizedString
+		/**
+		 * This operation is sensitive. Please use with caution.
+		 */
+		sensitive_operation_warning: () => LocalizedString
+		/**
+		 * Your Permissions
+		 */
+		your_permissions: () => LocalizedString
+		common_roles: {
+			/**
+			 * Default Admin
+			 */
+			DEFAULT_ADMIN_ROLE: () => LocalizedString
+			/**
+			 * Executor
+			 */
+			EXECUTOR_ROLE: () => LocalizedString
+			/**
+			 * Settings Manager
+			 */
+			SETTINGS_MANAGER_ROLE: () => LocalizedString
+			/**
+			 * Node Weight Manager
+			 */
+			NODE_WEIGHT_MANAGER_ROLE: () => LocalizedString
+			/**
+			 * Upgrader
+			 */
+			UPGRADER_ROLE: () => LocalizedString
+			/**
+			 * Whitelisted
+			 */
+			WHITELISTED_ROLE: () => LocalizedString
+			/**
+			 * Whitelist Admin
+			 */
+			WHITELIST_ADMIN_ROLE: () => LocalizedString
+			/**
+			 * Pauser
+			 */
+			PAUSER_ROLE: () => LocalizedString
+			/**
+			 * Level Operator
+			 */
+			LEVEL_OPERATOR_ROLE: () => LocalizedString
+			/**
+			 * Manager
+			 */
+			MANAGER_ROLE: () => LocalizedString
+			/**
+			 * Whitelister
+			 */
+			WHITELISTER_ROLE: () => LocalizedString
+			/**
+			 * Grant Role
+			 */
+			grant_role: () => LocalizedString
+			/**
+			 * Revoke Role
+			 */
+			revoke_role: () => LocalizedString
+			/**
+			 * Granting...
+			 */
+			granting: () => LocalizedString
+			/**
+			 * Revoking...
+			 */
+			revoking: () => LocalizedString
+			/**
+			 * Role Granted Successfully
+			 */
+			grant_success_title: () => LocalizedString
+			/**
+			 * The role has been granted to the user.
+			 */
+			grant_success_description: () => LocalizedString
+			/**
+			 * Role Revoked Successfully
+			 */
+			revoke_success_title: () => LocalizedString
+			/**
+			 * The role has been revoked from the user.
+			 */
+			revoke_success_description: () => LocalizedString
+			/**
+			 * Role Operation Failed
+			 */
+			error_title: () => LocalizedString
+			/**
+			 * There was an error with the role operation: {error}
+			 */
+			error_description: (arg: { error: string }) => LocalizedString
+			/**
+			 * Please enter a valid address
+			 */
+			invalid_address: () => LocalizedString
+			/**
+			 * Please select a role
+			 */
+			role_required: () => LocalizedString
+			/**
+			 * User address is required
+			 */
+			address_required: () => LocalizedString
 		}
 	}
 }
