@@ -12,12 +12,14 @@ import { forwardRef } from "react";
 const InputWithIcon = (props: InputGroupProps) => {
   return (
     <InputGroup
-      borderRadius={"8px"}
+      borderRadius={"12px"}
       borderWidth={"1px"}
       borderColor={"gray.200"}
       _groupInvalid={{ borderColor: "red.500", borderWidth: "2px", boxShadow: "none" }}
       alignItems={"center"}
       backgroundColor={"white"}
+      h={{ base: "40px", md: "48px" }}
+      overflow={"hidden"}
       {...props}
     />
   );

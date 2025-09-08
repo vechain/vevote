@@ -60,7 +60,7 @@ export const Proposals = () => {
             gap={4}
             alignItems={"center"}
             justifyContent={{ base: "space-between", md: "flex-end" }}
-            minWidth="0"
+            w={{ base: "100%", md: "auto" }}
             overflow="hidden">
             <SearchInput
               value={searchInput}
