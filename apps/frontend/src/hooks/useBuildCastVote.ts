@@ -17,11 +17,10 @@ export const useBuildCastVote = ({ proposalId, masterNode }: { proposalId?: stri
       const clauses: EnhancedClause[] = [];
 
       try {
-        const functionName = reason && reason.trim() ? "castVoteWithReason" : "castVote";
-        const encodedData =
-          reason && reason.trim()
-            ? [fromStringToUint256(id), selectedOption, reason, masterNode || ZERO_ADDRESS]
-            : [fromStringToUint256(id), selectedOption, masterNode || ZERO_ADDRESS];
+        const functionName = reason?.trim() ? "castVoteWithReason" : "castVote";
+        const encodedData = reason?.trim()
+          ? [fromStringToUint256(id), selectedOption, reason, masterNode || ZERO_ADDRESS]
+          : [fromStringToUint256(id), selectedOption, masterNode || ZERO_ADDRESS];
 
         const interfaceJson = contractInterface.getFunction(functionName)?.format("full");
         if (!interfaceJson) throw new Error(`Method ${functionName} not found`);

@@ -44,6 +44,7 @@ export abstract class BaseWebSocket {
 
       this.ws.onerror = () => {};
     } catch (error) {
+      console.error("WebSocket connection error:", error);
       this.ws = null;
     }
   }
@@ -70,7 +71,7 @@ export abstract class BaseWebSocket {
         });
       }
     } catch (error) {
-      // Ignore JSON parse errors
+      console.error("Error parsing WebSocket message:", error);
     }
   }
 
