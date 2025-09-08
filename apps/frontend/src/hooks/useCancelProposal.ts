@@ -47,7 +47,7 @@ export const useCancelProposal = ({ proposalId }: { proposalId?: string }) => {
 
   return useVevoteSendTransaction({
     clauseBuilder: buildClauses,
-    refetchQueryKeys: [["infiniteProposals"]],
-    delayedRefetchKeys: [["proposalEvent", proposalId]],
+    delayedRefetchKeys: [["infiniteProposals"], ["proposalEvent"]],
+    refetchDelay: 100,
   });
 };

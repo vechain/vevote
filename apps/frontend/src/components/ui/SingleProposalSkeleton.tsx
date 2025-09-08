@@ -69,53 +69,8 @@ export const SingleProposalSkeleton = () => {
 
           {/* Voting card */}
           <VStack gap={6} align="stretch" p={6} border="1px solid" borderColor="gray.200" borderRadius="16px">
-            {/* Countdown section */}
-            <VStack gap={4} align="stretch">
-              <HStack gap={2} alignItems="center">
-                <Skeleton height="16px" width="16px" borderRadius="50%" />
-                <Skeleton height="18px" width="80px" borderRadius="4px" />
-              </HStack>
-
-              <HStack gap={4} justifyContent="space-between">
-                <VStack gap={1}>
-                  <Skeleton height="24px" width="40px" borderRadius="4px" />
-                  <Skeleton height="14px" width="35px" borderRadius="4px" />
-                </VStack>
-                <VStack gap={1}>
-                  <Skeleton height="24px" width="30px" borderRadius="4px" />
-                  <Skeleton height="14px" width="40px" borderRadius="4px" />
-                </VStack>
-                <VStack gap={1}>
-                  <Skeleton height="24px" width="30px" borderRadius="4px" />
-                  <Skeleton height="14px" width="45px" borderRadius="4px" />
-                </VStack>
-              </HStack>
-            </VStack>
-
             {/* Results section */}
-            <VStack gap={4} align="stretch">
-              <HStack gap={2} alignItems="center">
-                <Skeleton height="16px" width="16px" borderRadius="50%" />
-                <Skeleton height="18px" width="60px" borderRadius="4px" />
-              </HStack>
-
-              <HStack gap={4} justifyContent="space-between">
-                <HStack gap={2}>
-                  <Skeleton height="20px" width="20px" borderRadius="4px" />
-                  <Skeleton height="16px" width="40px" borderRadius="4px" />
-                </HStack>
-                <HStack gap={2}>
-                  <Skeleton height="20px" width="20px" borderRadius="50%" />
-                  <Skeleton height="16px" width="40px" borderRadius="4px" />
-                </HStack>
-                <HStack gap={2}>
-                  <Skeleton height="20px" width="20px" borderRadius="4px" />
-                  <Skeleton height="16px" width="40px" borderRadius="4px" />
-                </HStack>
-              </HStack>
-
-              <Skeleton height="14px" width="100%" borderRadius="4px" />
-            </VStack>
+            <ResultSectionSkeleton />
 
             {/* Submit vote button */}
             <Skeleton height="48px" width="100%" borderRadius="24px" />
@@ -181,6 +136,34 @@ export const SingleProposalSkeleton = () => {
         </HStack>
         <Skeleton height="40px" width="120px" borderRadius="20px" />
       </HStack>
+    </VStack>
+  );
+};
+
+export const ResultSectionSkeleton = () => {
+  return (
+    <VStack gap={4} align="stretch">
+      <HStack gap={2} alignItems="center">
+        <Skeleton height="16px" width="16px" borderRadius="50%" />
+        <Skeleton height="18px" width="60px" borderRadius="4px" />
+      </HStack>
+
+      <HStack gap={4} justifyContent="space-between">
+        <HStack gap={2}>
+          <Skeleton height="20px" width="20px" borderRadius="4px" />
+          <Skeleton height="16px" width="40px" borderRadius="4px" />
+        </HStack>
+        <HStack gap={2}>
+          <Skeleton height="20px" width="20px" borderRadius="50%" />
+          <Skeleton height="16px" width="40px" borderRadius="4px" />
+        </HStack>
+        <HStack gap={2}>
+          <Skeleton height="20px" width="20px" borderRadius="4px" />
+          <Skeleton height="16px" width="40px" borderRadius="4px" />
+        </HStack>
+      </HStack>
+
+      <Skeleton height="14px" width="100%" borderRadius="4px" />
     </VStack>
   );
 };

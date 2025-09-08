@@ -19,7 +19,7 @@ The main project is the `apps/frontend` folder. Everytime we start the frontend 
 
 A React-based application using Vite to provide a fast and efficient UI for interacting with VeVote.
 
-- **VeChain dapp-kit:** Used to manage wallet connections and blockchain interactions. [Learn more](https://docs.vechain.org/developer-resources/sdks-and-providers/dapp-kit)
+- **VeChain-kit:** Used to manage wallet connections and blockchain interactions. [Learn more](https://docs.vechainkit.vechain.org/)
 
 ### Contracts (packages/contracts) 📜
 
