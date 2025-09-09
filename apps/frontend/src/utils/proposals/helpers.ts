@@ -6,6 +6,7 @@ import { HexUInt } from "@vechain/sdk-core";
 import { thorClient } from "../thorClient";
 import { ThorClient, vnsUtils } from "@vechain/sdk-network";
 import { getConfig } from "@repo/config";
+import { HistoricalProposalData, HistoricalProposalMerged } from "@/types/historicalProposals";
 
 const nodeUrl = getConfig(import.meta.env.VITE_APP_ENV).nodeUrl;
 
@@ -235,4 +236,22 @@ export const getVetDomainOrAddresses = async (addresses: string[]) => {
       domain,
     };
   });
+};
+
+export const parseHistoricalProposals = (data?: HistoricalProposalData[]): HistoricalProposalMerged[] => {
+  if (!data) return [];
+  return data.map(d => ({
+    id: d.proposalId,
+    proposer: d.proposer,
+    createdAt: dayjs(`${d.createdDate}T${d.createTime}`).toDate(),
+    startDate: dayjs(d.votingStartTime).toDate(),
+    endDate: dayjs(d.votingEndTime).toDate(),
+    description: new Delta([]).ops,
+    title: d.title,
+    votingQuestion: "unknown",
+    status: ProposalStatus.APPROVED,
+    choicesWithVote: d.choices.map((choice, index) => ({ choice, votes: d.voteTallies[index] })),
+    totalVotes: d.totalVotes,
+    ipfsHash: "",
+  }));
 };
