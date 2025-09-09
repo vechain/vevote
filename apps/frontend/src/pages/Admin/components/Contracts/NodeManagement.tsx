@@ -3,7 +3,6 @@ import { useI18nContext } from "@/i18n/i18n-react";
 import { CopyLink } from "@/components/ui/CopyLink";
 import { getConfig } from "@repo/config";
 import { formatAddress } from "@/utils/address";
-import { UserRoleChecker } from "../common/UserRoleChecker";
 import { NodeManagementContractInfo } from "./components/NodeManagementContractInfo";
 import { useMemo } from "react";
 import { useContractAddresses } from "../../hooks/useContractAddresses";
@@ -47,7 +46,6 @@ export function NodeManagement() {
         </Box>
 
         <HStack spacing={stackSpacing} align="flex-start" wrap="wrap">
-          <UserRoleChecker contractType="nodeManagement" />
           <NodeManagementContractInfo />
         </HStack>
       </VStack>

@@ -93,6 +93,7 @@ export function LevelMultipliersCard({ onSuccess }: LevelMultipliersCardProps) {
 
   const levelData = useMemo(
     () => [
+      { id: 0, name: LL.admin.governance_settings.validator_multiplier() },
       { id: 1, name: LL.admin.governance_settings.strength() },
       { id: 2, name: LL.admin.governance_settings.thunder() },
       { id: 3, name: LL.admin.governance_settings.mjolnir() },

@@ -528,7 +528,7 @@ const en = {
       min_staked_vet_amount_help: "Minimum VET amount required to stake",
       level_multipliers_label: "Level ID Multipliers",
       level_multipliers_help: "Voting weight multipliers for each level ID (scaled by 100)",
-      validator_multiplier: "Validator (Level 0)",
+      validator_multiplier: "Validator",
       strength: "Strength",
       thunder: "Thunder",
       mjolnir: "Mjolnir",
