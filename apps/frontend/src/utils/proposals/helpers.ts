@@ -258,7 +258,7 @@ export const parseHistoricalProposals = (data?: HistoricalProposalData[]): Histo
       description: new Delta([]).ops,
       title: d.title,
       votingQuestion: "",
-      status: ProposalStatus.APPROVED,
+      status: d.totalVotes === 0 ? ProposalStatus.MIN_NOT_REACHED : ProposalStatus.APPROVED,
       choicesWithVote,
       totalVotes: d.totalVotes,
       ipfsHash: "",
