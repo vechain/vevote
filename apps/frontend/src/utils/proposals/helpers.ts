@@ -247,12 +247,14 @@ export const parseHistoricalProposals = (data?: HistoricalProposalData[]): Histo
       percentage: d.totalVotes ? (d.voteTallies[index] / d.totalVotes) * 100 : 0,
     }));
 
+    const createdAt = dayjs.unix(Number(d.createdDate)).toDate();
+
     return {
       id: d.proposalId,
       proposer: d.proposer,
-      createdAt: dayjs(`${d.createdDate}T${d.createTime}`).toDate(),
-      startDate: dayjs(d.votingStartTime).toDate(),
-      endDate: dayjs(d.votingEndTime).toDate(),
+      createdAt,
+      startDate: dayjs.unix(d.votingStartTime).toDate(),
+      endDate: dayjs.unix(d.votingEndTime).toDate(),
       description: new Delta([]).ops,
       title: d.title,
       votingQuestion: "",
