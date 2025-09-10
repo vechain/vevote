@@ -1,9 +1,10 @@
-import { ProposalStatus, ProposalCardType } from "@/types/proposal";
+import { ProposalStatus } from "@/types/proposal";
 import { applyFilters, enrichProposalsWithData, paginateProposals } from "@/utils/proposals/proposalQueriesUtils";
 import { getProposalsEvents } from "@/utils/proposals/proposalsQueries";
 import { ThorClient } from "@vechain/vechain-kit";
 import { getHistoricalProposal } from "@/utils/proposals/historicalProposal";
 import { parseHistoricalProposals } from "@/utils/proposals/helpers";
+import { MergedProposal } from "@/types/historicalProposals";
 
 export const SESSION_KEY = Math.random().toString(36);
 
@@ -14,7 +15,7 @@ interface PaginationOptions {
 }
 
 interface PaginatedProposalsResult {
-  proposals: ProposalCardType[];
+  proposals: MergedProposal[];
   nextCursor?: string;
   hasNextPage: boolean;
   totalCount: number;
@@ -41,7 +42,7 @@ export const getProposals = async (
 
     const uniqueHistoricalProposals = historicalProposals.filter(hp => !blockchainIds.has(hp.id));
 
-    const allProposals = [...enrichedBlockchainProposals, ...uniqueHistoricalProposals].sort(
+    const allProposals: MergedProposal[] = [...enrichedBlockchainProposals, ...uniqueHistoricalProposals].sort(
       (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
     );
 

@@ -1,4 +1,4 @@
-import { HistoricalProposalResponse } from "@/types/historicalProposals";
+import { HistoricalProposalMerged, HistoricalProposalResponse, MergedProposal } from "@/types/historicalProposals";
 import axios from "axios";
 
 export const getHistoricalProposal = async (proposalId?: string) => {
@@ -19,3 +19,7 @@ export const getHistoricalProposal = async (proposalId?: string) => {
     return { results: undefined };
   }
 };
+
+export function isHistoricalProposalMerged(proposal: MergedProposal): proposal is HistoricalProposalMerged {
+  return "choicesWithVote" in proposal || "totalVotes" in proposal;
+}

@@ -240,18 +240,26 @@ export const getVetDomainOrAddresses = async (addresses: string[]) => {
 
 export const parseHistoricalProposals = (data?: HistoricalProposalData[]): HistoricalProposalMerged[] => {
   if (!data) return [];
-  return data.map(d => ({
-    id: d.proposalId,
-    proposer: d.proposer,
-    createdAt: dayjs(`${d.createdDate}T${d.createTime}`).toDate(),
-    startDate: dayjs(d.votingStartTime).toDate(),
-    endDate: dayjs(d.votingEndTime).toDate(),
-    description: new Delta([]).ops,
-    title: d.title,
-    votingQuestion: "unknown",
-    status: ProposalStatus.APPROVED,
-    choicesWithVote: d.choices.map((choice, index) => ({ choice, votes: d.voteTallies[index] })),
-    totalVotes: d.totalVotes,
-    ipfsHash: "",
-  }));
+  return data.map(d => {
+    const choicesWithVote = d.choices.map((choice, index) => ({
+      choice,
+      votes: d.voteTallies[index],
+      percentage: d.totalVotes ? (d.voteTallies[index] / d.totalVotes) * 100 : 0,
+    }));
+
+    return {
+      id: d.proposalId,
+      proposer: d.proposer,
+      createdAt: dayjs(`${d.createdDate}T${d.createTime}`).toDate(),
+      startDate: dayjs(d.votingStartTime).toDate(),
+      endDate: dayjs(d.votingEndTime).toDate(),
+      description: new Delta([]).ops,
+      title: d.title,
+      votingQuestion: "",
+      status: ProposalStatus.APPROVED,
+      choicesWithVote,
+      totalVotes: d.totalVotes,
+      ipfsHash: "",
+    };
+  });
 };

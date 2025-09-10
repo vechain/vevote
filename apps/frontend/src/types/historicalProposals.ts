@@ -30,9 +30,12 @@ export type HistoricalProposalResponse = {
 };
 
 export type HistoricalProposalMerged = ProposalCardType & {
-  choicesWithVote: {
+  choicesWithVote?: {
     choice: string;
     votes: number;
+    percentage: number;
   }[];
-  totalVotes: number;
+  totalVotes?: number;
 };
+
+export type MergedProposal = ProposalCardType | HistoricalProposalMerged;
