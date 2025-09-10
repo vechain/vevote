@@ -6,7 +6,6 @@ import { areAddressesEqual } from "@/utils/address";
 import { useMemo } from "react";
 import { useWallet } from "@vechain/vechain-kit";
 import { calculateRefetchInterval } from "@/utils/proposals/helpers";
-import { useHistoricalProposals } from "./useHistoricalProposals";
 
 interface UseProposalsEventsOptions extends PaginationOptions {
   draftProposal?: ProposalCardType | null;
@@ -16,8 +15,6 @@ export const useProposalsEvents = (options: UseProposalsEventsOptions = {}) => {
   const { account } = useWallet();
   const { draftProposal, ...queryOptions } = options;
   const thor = thorClient;
-
-  const { historicalProposals } = useHistoricalProposals();
 
   const { data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage, error } = useInfiniteQuery({
     queryKey: ["infiniteProposals", queryOptions],
