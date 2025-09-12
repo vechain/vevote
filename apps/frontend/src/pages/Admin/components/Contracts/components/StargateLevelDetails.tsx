@@ -4,6 +4,7 @@ import { TranslationFunctions } from "@/i18n/i18n-types";
 import { Box, Heading } from "@chakra-ui/react";
 import { createColumnHelper } from "@tanstack/react-table";
 import { useMemo } from "react";
+import { veVoteService } from "../../../services/VeVoteService";
 import { BaseCell, NumberCell, TableHeader, VETAmountCell } from "../../common/AdminTableCells";
 
 interface Level {
@@ -17,7 +18,7 @@ interface StargateLevelDetailsProps {
   levelIds: number[];
 }
 
-interface StargateLevelRow {
+export interface StargateLevelRow {
   levelId: number;
   name: string;
   maturityBlocks: bigint;
@@ -50,16 +51,16 @@ const columns = (LL: TranslationFunctions) => [
 export function StargateLevelDetails({ levels, levelIds }: StargateLevelDetailsProps) {
   const { LL } = useI18nContext();
 
-  const tableData: StargateLevelRow[] = useMemo(
-    () =>
-      levels.map((level, index) => ({
-        levelId: levelIds[index],
-        name: level.name,
-        maturityBlocks: level.maturityBlocks,
-        vetAmountRequiredToStake: level.vetAmountRequiredToStake,
-      })),
-    [levels, levelIds],
-  );
+  const tableData: StargateLevelRow[] = useMemo(() => {
+    const stargateRows = levels.map((level, index) => ({
+      levelId: levelIds[index],
+      name: level.name,
+      maturityBlocks: level.maturityBlocks,
+      vetAmountRequiredToStake: level.vetAmountRequiredToStake,
+    }));
+
+    return [veVoteService.getValidatorInfo(), ...stargateRows];
+  }, [levels, levelIds]);
 
   if (levels.length === 0) {
     return null;

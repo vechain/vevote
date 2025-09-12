@@ -4,6 +4,8 @@ import { getConfig } from "@repo/config";
 import { executeCall, executeMultipleClauses } from "../../../utils/contract";
 import { ZERO_ADDRESS } from "@vechain/sdk-core";
 import { getAllEventLogs, ThorClient } from "@vechain/vechain-kit";
+import { VALIDATOR_STAKED_VET_REQUIREMENT } from "@/constants";
+import { StargateLevelRow } from "../components/Contracts/components/StargateLevelDetails";
 
 export interface VeVoteInfo {
   quorumNumerator: bigint;
@@ -156,6 +158,15 @@ export class VeVoteService {
     }
   }
 
+  getValidatorInfo(): StargateLevelRow {
+    return {
+      name: "Validator",
+      vetAmountRequiredToStake: VALIDATOR_STAKED_VET_REQUIREMENT,
+      levelId: 0,
+      maturityBlocks: BigInt(0),
+    };
+  }
+
   async getRoleUsers(thor: ThorClient, roleHash: string): Promise<RoleUserInfo[]> {
     if (!thor) {
       return [];
@@ -199,6 +210,7 @@ export class VeVoteService {
 
       allEvents.forEach(event => {
         if (event.decodedData) {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           const [_role, account, _sender] = event.decodedData as [string, string, string];
 
           if (!userEventsMap.has(account)) {
