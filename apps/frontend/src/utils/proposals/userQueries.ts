@@ -133,7 +133,12 @@ export const getNodesNameAndPower = async ({ nodeIds }: { nodeIds: string[] }) =
 export const getAMN = async (address?: string) => {
   if (!address) return { data: undefined };
   try {
-    const res = await axios.get<AmnResponse>(`${indexerUrl}${IndexerRoutes.MASTER_NODE}/${address}`);
+    let res;
+    try {
+      res = await axios.get<AmnResponse>(`${indexerUrl}${IndexerRoutes.MASTER_NODE}/${address}`);
+    } catch (e) {
+      res = await axios.get<AmnResponse>(`${indexerUrl}${IndexerRoutes.MASTER_NODE2}/${address}`);
+    }
 
     if (!res.data || !res.data.nodeMaster) {
       return { data: undefined };
