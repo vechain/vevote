@@ -236,3 +236,7 @@ export const getVetDomainOrAddresses = async (addresses: string[]) => {
     };
   });
 };
+
+export const formatVotingPower = (power: bigint): string => {
+  return (Number(power) / 100).toString();
+};
