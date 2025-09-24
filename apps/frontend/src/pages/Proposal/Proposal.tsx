@@ -16,6 +16,8 @@ import { CanceledProposal } from "./components/CanceledProposal";
 import { DescriptionSection } from "./components/DescriptionSection";
 import { ProposalHeader } from "./components/ProposalHeader";
 import { VotingAndTimeline } from "./components/VotingAndTimeline/VotingAndTimeline";
+import { MergedProposal } from "@/types/historicalProposals";
+import { isHistoricalProposalMerged } from "@/utils/proposals/historicalProposal";
 
 export const Proposal = () => {
   const { LL } = useI18nContext();
@@ -32,12 +34,14 @@ export const Proposal = () => {
 
   const { proposal: proposalData, loading: isLoading, error: proposalError } = useProposalEvent(proposalId);
 
-  const proposal = useMemo(() => {
+  const proposal: MergedProposal | undefined = useMemo(() => {
     if (params.proposalId === "draft") return draftProposal || undefined;
     return proposalData || undefined;
   }, [draftProposal, params.proposalId, proposalData]);
 
   const isCanceled = useMemo(() => proposal?.status === ProposalStatus.CANCELED, [proposal?.status]);
+
+  const showDescription = useMemo(() => proposal && !isHistoricalProposalMerged(proposal), [proposal]);
 
   useEffect(() => {
     const isDraftProposal = params.proposalId === "draft" && !account?.address;
@@ -82,11 +86,11 @@ export const Proposal = () => {
                   fontSize={{ base: "20px", md: "30px" }}>
                   {proposal?.title}
                 </Heading>
-                {!isMobile && <DescriptionSection />}
+                {!isMobile && showDescription && <DescriptionSection />}
               </VStack>
               <VStack gap={10} align="stretch" flex={1}>
                 {!isCanceled ? <VotingAndTimeline /> : <CanceledProposal />}
-                {isMobile && <DescriptionSection />}
+                {isMobile && showDescription && <DescriptionSection />}
                 <BuyNodeCta />
               </VStack>
             </Stack>

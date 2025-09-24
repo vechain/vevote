@@ -1,10 +1,11 @@
 import { IpfsDetails } from "@/types/ipfs";
+import { ProposalStatus } from "@/types/proposal";
 import { getProposalsFromIpfs } from "../ipfs/proposal";
 import { filterStatus, FromEventsToProposalsReturnType, mergeIpfsDetails } from "./helpers";
 import { getProposalsWithState } from "./proposalsQueries";
-import { ProposalStatus, ProposalCardType } from "@/types/proposal";
+import { MergedProposal } from "@/types/historicalProposals";
 
-export const paginateProposals = (proposals: ProposalCardType[], cursor?: string, pageSize = 20) => {
+export const paginateProposals = (proposals: MergedProposal[], cursor?: string, pageSize = 20) => {
   const startIndex = cursor ? parseInt(cursor) : 0;
   const endIndex = startIndex + pageSize;
   const paginatedProposals = proposals.slice(startIndex, endIndex);
@@ -26,7 +27,7 @@ export const enrichProposalsWithData = async (proposals: FromEventsToProposalsRe
   return await getProposalsWithState(merged);
 };
 
-export const applyFilters = (proposals: ProposalCardType[], statuses?: ProposalStatus[], searchQuery?: string) => {
+export const applyFilters = (proposals: MergedProposal[], statuses?: ProposalStatus[], searchQuery?: string) => {
   let filtered = proposals;
 
   if (statuses && statuses.length > 0) {
