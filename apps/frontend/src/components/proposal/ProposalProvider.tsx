@@ -1,4 +1,5 @@
-import { ProposalCardType, ProposalStatus } from "@/types/proposal";
+import { MergedProposal } from "@/types/historicalProposals";
+import { ProposalStatus } from "@/types/proposal";
 import { Delta } from "quill";
 import { createContext, PropsWithChildren, useContext, useMemo } from "react";
 
@@ -20,11 +21,11 @@ const DEFAULT_PROPOSAL = {
   votingQuestion: "",
 };
 
-export const ProposalContext = createContext<{ proposal: ProposalCardType }>({
+export const ProposalContext = createContext<{ proposal: MergedProposal }>({
   proposal: DEFAULT_PROPOSAL,
 });
 
-export const ProposalProvider = ({ children, proposal }: PropsWithChildren<{ proposal?: ProposalCardType }>) => {
+export const ProposalProvider = ({ children, proposal }: PropsWithChildren<{ proposal?: MergedProposal }>) => {
   const value = useMemo(() => ({ proposal: proposal || DEFAULT_PROPOSAL }), [proposal]);
   return <ProposalContext.Provider value={value}>{children}</ProposalContext.Provider>;
 };
