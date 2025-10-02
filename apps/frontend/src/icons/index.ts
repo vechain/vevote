@@ -49,6 +49,7 @@ import { Logout } from "./Logout";
 import { Node } from "./Node";
 import { MessageSquare } from "./MessageSquare";
 import { Discourse } from "./Discourse";
+import { Menu } from "./Menu";
 export * from "./ThumbsUpIcon";
 export * from "./ThumbsDownIcon";
 export * from "./AbstainIcon";
@@ -105,4 +106,5 @@ export {
   Logout as LogoutIcon,
   Node as NodeIcon,
   Discourse as DiscourseIcon,
+  Menu as MenuIcon,
 };
