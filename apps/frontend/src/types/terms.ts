@@ -14,4 +14,5 @@ export enum ResourcesLinks {
 export enum VeVoteLinks {
   VEVOTE_DOCS = "https://docs.vevote.vechain.org",
   SUPPORT = "https://support.vechain.org/support/home",
+  GOVERNANCE_CHARTER = "https://vevote.vechain.org/governance-charter",
 }

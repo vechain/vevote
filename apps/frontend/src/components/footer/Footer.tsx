@@ -69,6 +69,7 @@ const DocLinks = () => {
         <FooterLabel>{LL.footer.resources.support()}</FooterLabel>
         <FooterLink href={VeVoteLinks.VEVOTE_DOCS}>{LL.footer.resources.docs()}</FooterLink>
         <FooterLink href={VeVoteLinks.SUPPORT}>{LL.footer.resources.support()}</FooterLink>
+        <FooterLink href={VeVoteLinks.GOVERNANCE_CHARTER}>{LL.footer.resources.governance_charter()}</FooterLink>
       </Flex>
       <Flex flexDirection={"column"} alignItems={"start"} gap={3} maxWidth={{ base: "90px", md: "fit-content" }}>
         <FooterLabel>{LL.footer.resources.title()}</FooterLabel>
