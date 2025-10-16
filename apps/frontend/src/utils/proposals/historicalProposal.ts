@@ -3,6 +3,7 @@ import { IndexerRoutes } from "@/types/indexer";
 import { getConfig } from "@repo/config";
 import axios from "axios";
 
+// Using mainnet config here because historical proposals are empty on testnet
 const indexerUrl = getConfig("mainnet").indexerUrl;
 
 export const getHistoricalProposal = async (proposalId?: string) => {
