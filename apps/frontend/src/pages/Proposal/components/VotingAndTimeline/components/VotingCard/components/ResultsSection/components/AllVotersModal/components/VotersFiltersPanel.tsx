@@ -18,6 +18,7 @@ export interface VotersFiltersProps {
   onSortChange: (value: Sort) => void;
   searchQuery: string;
   onSearchChange: (value: string) => void;
+  setIsFocused: (value: boolean) => void;
 }
 
 export const VotersFiltersPanel = ({
@@ -28,6 +29,7 @@ export const VotersFiltersPanel = ({
   onSortChange,
   searchQuery,
   onSearchChange,
+  setIsFocused,
 }: VotersFiltersProps) => {
   const { LL } = useI18nContext();
 
@@ -57,19 +59,14 @@ export const VotersFiltersPanel = ({
 
   return (
     <Flex gap={4} alignItems={"center"} pt={8} width={"full"} flexDirection={{ base: "column", md: "row" }}>
-      <div
-        onClick={e => e.stopPropagation()}
-        onMouseDown={e => e.stopPropagation()}
-        onKeyDown={e => e.stopPropagation()}
-        style={{ flex: 1, minWidth: 0 }}>
-        <SearchInput
-          size={"sm"}
-          placeholder={LL.proposal.voters_table.filters.search_by_address()}
-          value={searchQuery}
-          onChange={handleSearchChange}
-          onFocus={e => e.stopPropagation()}
-        />
-      </div>
+      <SearchInput
+        placeholder={LL.proposal.voters_table.filters.search_by_address()}
+        value={searchQuery}
+        onChange={handleSearchChange}
+        onClear={() => onSearchChange("")}
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
+      />
 
       <Flex gap={{ base: 3, md: 4 }} width={{ base: "full", md: "fit-content" }}>
         <VotingBaseDropdown
