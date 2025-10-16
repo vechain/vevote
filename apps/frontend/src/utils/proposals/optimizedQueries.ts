@@ -34,8 +34,8 @@ export const getProposals = async (
     ]);
 
     const blockchainProposals = blockchainData?.proposals || [];
-    const historicalProposals = parseHistoricalProposals(historicalData?.results);
 
+    const historicalProposals = await parseHistoricalProposals(historicalData?.results);
     const enrichedBlockchainProposals = await enrichProposalsWithData(blockchainProposals);
 
     const blockchainIds = new Set(enrichedBlockchainProposals.map(p => p.id));

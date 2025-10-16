@@ -7,6 +7,7 @@ import { thorClient } from "../thorClient";
 import { ThorClient, vnsUtils } from "@vechain/sdk-network";
 import { getConfig } from "@repo/config";
 import { HistoricalProposalData, HistoricalProposalMerged } from "@/types/historicalProposals";
+import { getProposalsFromIpfs } from "../ipfs/proposal";
 
 const nodeUrl = getConfig(import.meta.env.VITE_APP_ENV).nodeUrl;
 
@@ -238,8 +239,14 @@ export const getVetDomainOrAddresses = async (addresses: string[]) => {
   });
 };
 
-export const parseHistoricalProposals = (data?: HistoricalProposalData[]): HistoricalProposalMerged[] => {
+export const parseHistoricalProposals = async (
+  data?: HistoricalProposalData[],
+): Promise<HistoricalProposalMerged[]> => {
   if (!data) return [];
+  const ipfsFetches = data.map(d => getProposalsFromIpfs(d.description));
+
+  const ipfsDetails = await Promise.all(ipfsFetches);
+
   return data.map(d => {
     const choicesWithVote = d.choices.map((choice, index) => ({
       choice,
@@ -255,7 +262,7 @@ export const parseHistoricalProposals = (data?: HistoricalProposalData[]): Histo
       createdAt,
       startDate: dayjs.unix(d.votingStartTime).toDate(),
       endDate: dayjs.unix(d.votingEndTime).toDate(),
-      description: new Delta([]).ops,
+      description: new Delta(ipfsDetails.find(ipfs => ipfs?.ipfsHash === d.description)?.markdownDescription || []).ops,
       title: d.title,
       votingQuestion: "",
       status: d.totalVotes === 0 ? ProposalStatus.MIN_NOT_REACHED : ProposalStatus.APPROVED,

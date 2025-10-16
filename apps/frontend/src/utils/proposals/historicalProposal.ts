@@ -1,17 +1,18 @@
 import { HistoricalProposalMerged, HistoricalProposalResponse, MergedProposal } from "@/types/historicalProposals";
+import { IndexerRoutes } from "@/types/indexer";
+import { getConfig } from "@repo/config";
 import axios from "axios";
+
+const indexerUrl = getConfig("mainnet").indexerUrl;
 
 export const getHistoricalProposal = async (proposalId?: string) => {
   try {
-    const res = await axios.get<HistoricalProposalResponse>(
-      `https://indexer.mainnet.vechain.org/api/v1/vevote/historical_proposals`,
-      {
-        params: {
-          size: 50,
-          proposalId,
-        },
+    const res = await axios.get<HistoricalProposalResponse>(`${indexerUrl}${IndexerRoutes.HISTORIC_PROPOSALS}`, {
+      params: {
+        size: 50,
+        proposalId,
       },
-    );
+    });
 
     return { results: res.data.data || [] };
   } catch (error) {

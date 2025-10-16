@@ -6,6 +6,7 @@ export type HistoricalProposalData = {
   createdDate: string; //timestamp
   proposer: string;
   title: string;
+  description: string;
   proposalType: string | null;
   choices: string[];
   createTime: number;
