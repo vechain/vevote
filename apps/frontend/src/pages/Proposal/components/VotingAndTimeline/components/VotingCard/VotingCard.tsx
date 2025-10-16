@@ -1,11 +1,21 @@
+import { useProposal } from "@/components/proposal/ProposalProvider";
+import { isHistoricalProposalMerged } from "@/utils/proposals/historicalProposal";
 import { Flex, useDisclosure } from "@chakra-ui/react";
+import { useMemo } from "react";
 import { CountdownSection } from "./components/CountdownSection";
 import { ResultsSection } from "./components/ResultsSection/ResultsSection";
-import { VoteSection } from "./components/VoteSection";
 import { SubmitVoteModal } from "./components/SubmitVoteModal";
+import { VoteSection } from "./components/VoteSection";
+import { HistoricalResults } from "./HistoricalResults";
 
 export const VotingCard = () => {
   const submitVoteModal = useDisclosure();
+  const { proposal } = useProposal();
+
+  const isHistorical = useMemo(() => proposal && isHistoricalProposalMerged(proposal), [proposal]);
+
+  if (isHistorical) return <HistoricalResults proposal={proposal} />;
+
   return (
     <Flex
       flexDirection={"column"}

@@ -16,6 +16,7 @@ import { CanceledProposal } from "./components/CanceledProposal";
 import { DescriptionSection } from "./components/DescriptionSection";
 import { ProposalHeader } from "./components/ProposalHeader";
 import { VotingAndTimeline } from "./components/VotingAndTimeline/VotingAndTimeline";
+import { MergedProposal } from "@/types/historicalProposals";
 
 export const Proposal = () => {
   const { LL } = useI18nContext();
@@ -32,7 +33,7 @@ export const Proposal = () => {
 
   const { proposal: proposalData, loading: isLoading, error: proposalError } = useProposalEvent(proposalId);
 
-  const proposal = useMemo(() => {
+  const proposal: MergedProposal | undefined = useMemo(() => {
     if (params.proposalId === "draft") return draftProposal || undefined;
     return proposalData || undefined;
   }, [draftProposal, params.proposalId, proposalData]);
