@@ -39,8 +39,10 @@ jobs:
       - name: Set workflow call variables if available
         if: github.event_name == 'workflow_call'
         run: |
-          echo "DEFAULT_LABEL=${{ inputs.DEFAULT_LABEL }}" >> $GITHUB_ENV
+          echo "DEFAULT_LABEL=${INPUTS_DEFAULT_LABEL}" >> $GITHUB_ENV
           echo "FAIL_IF_MISSING_LABEL=${{ inputs.FAIL_IF_MISSING_LABEL }}" >> $GITHUB_ENV
+        env:
+          INPUTS_DEFAULT_LABEL: ${{ inputs.DEFAULT_LABEL }}
 
       - name: Fail if label is missing and manual selection is required
         if: ${{ env.FAIL_IF_MISSING_LABEL == 'true' && steps.label-check.outputs.label_missing == 'true' }}
