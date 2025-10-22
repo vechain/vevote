@@ -265,7 +265,7 @@ export const parseHistoricalProposals = async (
       description: new Delta(ipfsDetails.find(ipfs => ipfs?.ipfsHash === d.description)?.markdownDescription || []).ops,
       title: d.title,
       votingQuestion: "",
-      status: d.totalVotes === 0 ? ProposalStatus.MIN_NOT_REACHED : ProposalStatus.APPROVED,
+      status: d.totalVotes === 0 ? ProposalStatus.MIN_NOT_REACHED : ProposalStatus.EXECUTED,
       choicesWithVote,
       totalVotes: d.totalVotes,
       ipfsHash: "",
