@@ -139,7 +139,7 @@ export const getProposalsEvents = async (
       })
       .filter(Boolean);
 
-    const mergedProposals: ProposalEvent[] = decodedCreateProposalEvents
+    const MergedProposal: ProposalEvent[] = decodedCreateProposalEvents
       .map(proposal => {
         const canceledProposal = decodedCanceledProposals.find(
           canceled => canceled?.proposalId === proposal?.proposalId,
@@ -164,7 +164,7 @@ export const getProposalsEvents = async (
       })
       .filter(Boolean) as ProposalEvent[];
 
-    const proposals = await fromEventsToProposals(mergedProposals);
+    const proposals = await fromEventsToProposals(MergedProposal);
 
     return { proposals };
   } catch (error) {

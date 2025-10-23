@@ -7,17 +7,23 @@ import { useHasVoted, useVoteByProposalId, useVoteCastPercentages } from "@/hook
 import { useFormatDate } from "@/hooks/useFormatDate";
 import { useVechainDomainOrAddress } from "@/hooks/useVechainDomainOrAddress";
 import { useI18nContext } from "@/i18n/i18n-react";
+import { MergedProposal } from "@/types/historicalProposals";
 import { ProposalCardType, ProposalStatus } from "@/types/proposal";
 import { MixPanelEvent, trackEvent } from "@/utils/mixpanel/utilsMixpanel";
 import { getPicassoImgSrc } from "@/utils/picasso";
+import { isHistoricalProposalMerged } from "@/utils/proposals/historicalProposal";
 import { Flex, HStack, Icon, Stack, Text } from "@chakra-ui/react";
 import { useGetAvatarOfAddress } from "@vechain/vechain-kit";
 import dayjs from "dayjs";
 import { useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 
-export const ProposalCard = ({ status, title, endDate, startDate, id, proposer, discourseUrl }: ProposalCardType) => {
+export const ProposalCard = (proposal: MergedProposal) => {
   const navigate = useNavigate();
+
+  const { id, title, proposer, discourseUrl } = proposal;
+
+  const isHistorical = useMemo(() => isHistoricalProposalMerged(proposal), [proposal]);
 
   const onClick = useCallback(() => {
     trackEvent(MixPanelEvent.CTA_PROPOSAL_CARD_CLICKED, {
@@ -52,8 +58,8 @@ export const ProposalCard = ({ status, title, endDate, startDate, id, proposer, 
       gap={6}
       alignItems={"start"}
       flexDirection={"column"}>
-      <TopBar title={title} proposer={proposer} discourseUrl={discourseUrl} id={id} />
-      <BottomBar status={status} endDate={endDate} startDate={startDate} id={id} />
+      <TopBar title={title} proposer={proposer} discourseUrl={discourseUrl} id={id} isHistorical={isHistorical} />
+      <BottomBar proposal={proposal} isHistorical={isHistorical} />
     </Flex>
   );
 };
@@ -63,11 +69,13 @@ const TopBar = ({
   proposer,
   discourseUrl,
   id,
+  isHistorical,
 }: {
   title: string;
   proposer: string;
   discourseUrl?: string;
   id: string;
+  isHistorical: boolean;
 }) => {
   const { LL } = useI18nContext();
 
@@ -108,7 +116,12 @@ const TopBar = ({
         width={"full"}
         justifyContent={{ base: "flex-start", md: "space-between" }}>
         <Flex alignItems={"center"} gap={4}>
-          <Flex alignItems={"center"} gap={2} borderRightWidth={"1px"} borderColor={"gray.100"} paddingRight={4}>
+          <Flex
+            alignItems={"center"}
+            gap={2}
+            borderRightWidth={isHistorical ? "0px" : "1px"}
+            borderColor={"gray.100"}
+            paddingRight={4}>
             <Text fontSize={{ base: "14px", md: "16px" }} color={"gray.600"}>
               {LL.by()}
             </Text>
@@ -142,13 +155,10 @@ const TopBar = ({
   );
 };
 
-const BottomBar = ({
-  id,
-  startDate,
-  endDate,
-  status,
-}: Pick<ProposalCardType, "endDate" | "startDate" | "status" | "id">) => {
+const BottomBar = ({ proposal, isHistorical }: { proposal: MergedProposal; isHistorical: boolean }) => {
+  const { id, status, startDate, endDate } = proposal;
   const { LL } = useI18nContext();
+
   const { votePercentages, isLoading: isLoadingResults } = useVoteCastPercentages({ proposalId: id });
 
   const showDate = useMemo(() => {
@@ -156,8 +166,8 @@ const BottomBar = ({
   }, [endDate, status]);
 
   const showResults = useMemo(() => {
-    return !isLoadingResults && ["voting", "approved", "executed", "rejected"].includes(status);
-  }, [status, isLoadingResults]);
+    return !isLoadingResults && ["voting", "approved", "executed", "rejected"].includes(status) && !isHistorical;
+  }, [isLoadingResults, status, isHistorical]);
 
   return (
     <Flex

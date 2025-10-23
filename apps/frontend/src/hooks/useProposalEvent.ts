@@ -1,4 +1,4 @@
-import { ProposalCardType } from "@/types/proposal";
+import { MergedProposal } from "@/types/historicalProposals";
 import { calculateRefetchInterval } from "@/utils/proposals/helpers";
 import { getProposals } from "@/utils/proposals/optimizedQueries";
 import { thorClient } from "@/utils/thorClient";
@@ -13,7 +13,7 @@ export const useProposalEvent = (proposalId?: string) => {
     error,
   } = useQuery({
     queryKey: ["proposalEvent", proposalId],
-    queryFn: async (): Promise<ProposalCardType | null> => {
+    queryFn: async (): Promise<MergedProposal | null> => {
       try {
         if (!proposalId) return null;
         const result = await getProposals(thor, { pageSize: 1000 }, proposalId);
