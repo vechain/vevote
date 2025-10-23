@@ -1374,6 +1374,10 @@ type RootTranslation = {
        * S​u​p​p​o​r​t
        */
       support: string;
+      /**
+       * G​o​v​e​r​n​a​n​c​e​ ​C​h​a​r​t​e​r
+       */
+      governance_charter: string;
     };
   };
 };

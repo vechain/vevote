@@ -1,6 +1,7 @@
 import { HardhatUserConfig } from "hardhat/config";
-import "@nomicfoundation/hardhat-toolbox";
-import "@nomiclabs/hardhat-truffle5";
+import "@nomicfoundation/hardhat-ethers";
+import "@nomicfoundation/hardhat-chai-matchers";
+import "@typechain/hardhat";
 import "hardhat-contract-sizer";
 import "@vechain/sdk-hardhat-plugin";
 import "hardhat-ignore-warnings";
@@ -58,7 +59,7 @@ module.exports = {
       gas: 10000000,
     },
     vechain_devnet: {
-      url: process.env.VECHAIN_URL_DEVNET,
+      url: process.env.VECHAIN_URL_DEVNET || "http://localhost:8669",
       accounts: {
         mnemonic: getMnemonic(),
         count: 20,
