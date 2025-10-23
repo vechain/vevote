@@ -80,7 +80,6 @@
     "eslint-plugin-react": "^7.37.5",
     "ethers": "^6.9.0",
     "hardhat": "2.19.1",
-    "nft.storage": "^7.1.1",
     "prettier": "^3.2.4"
   }
 }
