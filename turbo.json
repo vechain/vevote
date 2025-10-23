@@ -1,6 +1,5 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "globalDotEnv": [".env"],
   "globalDependencies": ["**/.env.*local"],
   "globalEnv": [
     "VITE_APP_ENV",
@@ -12,7 +11,7 @@
     "CONTRACT_TO_UPGRADE",
     "CONTRACT_VERSION"
   ],
-  "pipeline": {
+  "tasks": {
     "build": {
       "dependsOn": ["^compile", "@repo/config#check-or-generate-local-config"],
       "outputs": ["dist/**", "!dist/cache/**"]
