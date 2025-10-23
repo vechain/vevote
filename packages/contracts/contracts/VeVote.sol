@@ -9,6 +9,7 @@
 //       `888'   "8b,   ,aa    `888'   "8a,   ,a8"  88,  "8b,   ,aa
 //        `8'     `"Ybbd8"'     `8'     `"YbbdP"'   "Y888 `"Ybbd8"'
 
+
 pragma solidity 0.8.20;
 
 import { IVeVote } from "./interfaces/IVeVote.sol";
