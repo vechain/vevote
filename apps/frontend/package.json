@@ -26,8 +26,6 @@
     "@dnd-kit/utilities": "^3.2.2",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
-    "@fontsource-variable/inter": "^5.2.5",
-    "@fontsource-variable/rubik": "^5.2.5",
     "@hookform/resolvers": "^3.0.1",
     "@originjs/vite-plugin-commonjs": "^1.0.3",
     "@repo/contracts": "*",

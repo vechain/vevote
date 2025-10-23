@@ -9,11 +9,7 @@ export const DateInput = (props: InputProps) => {
       <InputWithIcon.Icon iconPosition="left">
         <Icon as={CalendarIcon} width={4} height={4} color={"gray.500"} />
       </InputWithIcon.Icon>
-      <CustomDatePicker
-        value={props.defaultValue as string}
-        onChange={props.onChange}
-        isDisabled={props.isDisabled}
-      />
+      <CustomDatePicker value={props.defaultValue as string} onChange={props.onChange} isDisabled={props.isDisabled} />
     </InputWithIcon>
   );
 };

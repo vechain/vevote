@@ -22,7 +22,7 @@ export const VotingBaseDropdown = <T extends Option>({
   renderValue?: (value: T) => any;
 }) => {
   return (
-    <Menu>
+    <Menu strategy="fixed" placement="bottom-end" gutter={4} preventOverflow={true}>
       <MenuButton
         as={Button}
         variant={"secondary"}
@@ -45,7 +45,7 @@ export const VotingBaseDropdown = <T extends Option>({
           <Icon as={icon} boxSize={5} />
         </Flex>
       </MenuButton>
-      <MenuList>
+      <MenuList zIndex={10000} maxHeight="300px" overflowY="auto" boxShadow="0 4px 12px 0 rgba(0, 0, 0, 0.15)">
         {options.map((value, id) => (
           <MenuItem
             key={id}

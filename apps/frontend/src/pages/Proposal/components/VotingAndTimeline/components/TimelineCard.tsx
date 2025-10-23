@@ -7,9 +7,9 @@ import { useI18nContext } from "@/i18n/i18n-react";
 import { useMemo } from "react";
 
 enum TimelineItemStatus {
-  COMPLETED = "completed",
-  ACTIVE = "active",
   PENDING = "pending",
+  ACTIVE = "active",
+  COMPLETED = "completed",
 }
 
 export const TimelineCard = () => {
@@ -41,7 +41,6 @@ export const TimelineCard = () => {
         id: "vote",
         label: LL.vote(),
         date: proposal.startDate,
-        endDate: proposal.endDate,
         status: voteStatus,
       },
       {
@@ -50,8 +49,23 @@ export const TimelineCard = () => {
         date: proposal.endDate,
         status: finishedStatus,
       },
+      {
+        id: "executed",
+        label: LL.executed(),
+        date: proposal.executedDate,
+        status: proposal.status === ProposalStatus.EXECUTED ? TimelineItemStatus.COMPLETED : TimelineItemStatus.PENDING,
+      },
     ],
-    [LL, proposal.createdAt, proposal.startDate, proposal.endDate, voteStatus, finishedStatus],
+    [
+      LL,
+      proposal.createdAt,
+      proposal.startDate,
+      proposal.endDate,
+      voteStatus,
+      finishedStatus,
+      proposal.executedDate,
+      proposal.status,
+    ],
   );
 
   return (
@@ -61,8 +75,7 @@ export const TimelineCard = () => {
       border={"1px solid"}
       borderColor={"gray.200"}
       borderRadius={16}
-      width={"100%"}
-      minWidth={{ base: "auto", md: "480px" }}>
+      width={"100%"}>
       <Flex flexDirection={"column"} gap={6} padding={{ base: "16px", md: "24px" }}>
         {/* Header */}
         <Flex alignItems={"center"} gap={3}>
@@ -79,7 +92,6 @@ export const TimelineCard = () => {
               key={item.id}
               label={item.label}
               date={item.date}
-              endDate={item.endDate}
               status={item.status}
               isLast={index === timelineItems.length - 1}
             />
@@ -93,12 +105,11 @@ export const TimelineCard = () => {
 interface TimelineItemProps {
   label: string;
   date?: Date;
-  endDate?: Date;
   status: TimelineItemStatus;
   isLast?: boolean;
 }
 
-const TimelineItem = ({ label, date, endDate, status, isLast }: TimelineItemProps) => {
+const TimelineItem = ({ label, date, status, isLast }: TimelineItemProps) => {
   const { formattedProposalDate } = useFormatDate();
 
   const statusColor = useMemo(() => {
@@ -144,9 +155,9 @@ const TimelineItem = ({ label, date, endDate, status, isLast }: TimelineItemProp
   }, [status]);
 
   return (
-    <Flex alignItems={"center"} gap={4} width={"100%"}>
+    <Flex alignItems={"flex-start"} gap={4} width={"100%"}>
       {/* Timeline icon and line */}
-      <Flex flexDirection={"column"} alignItems={"center"} width={"48px"} height={"48px"}>
+      <Flex flexDirection={"column"} alignItems={"center"} width={"48px"} height={"56px"}>
         <Flex
           width={"20px"}
           height={"20px"}
@@ -161,7 +172,7 @@ const TimelineItem = ({ label, date, endDate, status, isLast }: TimelineItemProp
             <Flex width={"8px"} height={"8px"} backgroundColor={"primary.500"} borderRadius={"full"} />
           )}
         </Flex>
-        {!isLast && <Flex width={"2px"} height={"28px"} backgroundColor={"gray.200"} marginTop={1} />}
+        {!isLast && <Flex width={"2px"} height={"34px"} backgroundColor={"gray.200"} marginTop={1} />}
       </Flex>
 
       {/* Content */}
@@ -170,9 +181,7 @@ const TimelineItem = ({ label, date, endDate, status, isLast }: TimelineItemProp
           {label}
         </Text>
         <Text fontSize={"14px"} color={"gray.500"}>
-          {date && endDate
-            ? `${formattedProposalDate(date)} - ${formattedProposalDate(endDate)}`
-            : formattedProposalDate(date)}
+          {date && formattedProposalDate(date)}
         </Text>
       </Flex>
     </Flex>

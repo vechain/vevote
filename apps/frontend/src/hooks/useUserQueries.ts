@@ -13,13 +13,12 @@ import { useWallet } from "@vechain/vechain-kit";
 const getValidatorNode = (votingPower: bigint): ExtendedStargateNode => {
   return {
     votingPower,
-    nodeName: NodeStrengthLevel.Validator,
+    nodeName: votingPower > BigInt(0) ? NodeStrengthLevel.Validator : NodeStrengthLevel.InactiveValidator,
     levelId: 0,
     mintedAtBlock: BigInt(0),
     tokenId: BigInt(0),
     vetAmountStaked: BigInt(0),
     lastVthoClaimTimestamp: 0,
-    multiplier: BigInt(100),
   };
 };
 
@@ -27,7 +26,7 @@ const getNodes = async ({ address }: { address: string }) => {
   try {
     const { data } = await getAMN(address);
     const masterNode = data?.nodeMaster;
-    const masterNodeVotingPower = data?.votingPower || BigInt(500000);
+    const masterNodeVotingPower = data?.votingPower || BigInt(0);
 
     const r = await getUserNodes({ address });
     const nodes = masterNode ? [getValidatorNode(masterNodeVotingPower), ...(r?.nodes || [])] : r?.nodes || [];

@@ -25,7 +25,6 @@ export const colors = {
     800: "#1B1D1F",
     900: "#171923",
   },
-
   blue: {
     50: "#EBF8FF",
     100: "#BEE3F8",
@@ -78,11 +77,16 @@ export const colors = {
   danger: "#E53E3E",
   info: "#3182CE",
   warning: "#DD6B20",
+  stargate: {
+    black: "#0B0C10",
+    gray: "#4A5568",
+    white: "#ffffffeb",
+  },
 };
 
 export const fonts = {
-  body: `"Inter", sans-serif`,
-  heading: `"Rubik", sans-serif`,
+  body: `"Geist", system-ui, -apple-system, sans-serif`,
+  heading: `"Rubik", system-ui, -apple-system, sans-serif`,
 };
 
 export const fontSizes = defineStyle({

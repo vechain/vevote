@@ -2,10 +2,10 @@ import { AppConfig } from ".";
 const config: AppConfig = {
   environment: "mainnet",
   basePath: "https://governance.vebetterdao.org",
-  vevoteContractAddress: "0xDc9927805Df9075113e9786ADDD793Fc1786A170",
+  vevoteContractAddress: "0x7d812e8e544bb0c7898ea656b70173e7ef426b4c",
   vechainNodesContractAddress: "0x3f5cd240773b04B11a59eD43C267C7F0FEAc2b02",
-  stargateNFTContractAddress: "0xB81E9C5f9644Dec9e5e3Cac86b4461A222072302",
-  nodeManagementContractAddress: "0xb81E9C5f9644Dec9e5e3Cac86b4461A222072302",
+  stargateNFTContractAddress: "0x1856c533ac2d94340aaa8544d35a5c1d4a21dee7",
+  nodeManagementContractAddress: "0xB0EF9D89C6b49CbA6BBF86Bf2FDf0Eee4968c6AB",
   nodeUrl: "https://mainnet.vechain.org",
   network: {
     id: "main",
@@ -18,7 +18,7 @@ const config: AppConfig = {
       "https://mainnet.veblocks.net",
       "https://mainnet.vecha.in",
     ],
-    explorerUrl: "https://insight.vecha.in/#/main",
+    explorerUrl: "https://vechainstats.com",
     blockTime: 10000,
     genesis: {
       number: 0,
@@ -41,7 +41,7 @@ const config: AppConfig = {
   },
   ipfsPinningService: "https://api.gateway-proxy.vechain.org/api/v1/pinning/pinFileToIPFS",
   ipfsFetchingService: "https://api.gateway-proxy.vechain.org/ipfs",
-  indexerUrl: "https://indexer.testnet.vechain.org/api/v1",
+  indexerUrl: "https://indexer.mainnet.vechain.org/api/v1",
   WCProjectId: "ac75393318ee8f3cf0a071978c8dd607",
   mixPanelToken: "bbf0da6a4dcd75432a35e01af6a75d8a",
   discourseBaseUrl: "https://vechain.discourse.group/t/",

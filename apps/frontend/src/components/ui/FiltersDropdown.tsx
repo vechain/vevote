@@ -1,3 +1,6 @@
+import { useI18nContext } from "@/i18n/i18n-react";
+import { FilterIcon } from "@/icons";
+import { ProposalStatus } from "@/types/proposal";
 import {
   Button,
   Checkbox,
@@ -6,50 +9,96 @@ import {
   Menu,
   MenuButton,
   MenuButtonProps,
+  MenuDivider,
   MenuItem,
   MenuList,
   MenuOptionGroup,
   Text,
+  useDisclosure,
 } from "@chakra-ui/react";
-import { useI18nContext } from "@/i18n/i18n-react";
-import { Dispatch, SetStateAction, useCallback, useMemo } from "react";
-import { FilterIcon } from "@/icons";
-import { FilterStatuses } from "@/types/proposal";
+import { useCallback, useEffect, useMemo, useState } from "react";
+
+const DEFAULT_STATUSES: ProposalStatus[] = [
+  ProposalStatus.APPROVED,
+  ProposalStatus.CANCELED,
+  ProposalStatus.DRAFT,
+  ProposalStatus.EXECUTED,
+  ProposalStatus.REJECTED,
+  ProposalStatus.UPCOMING,
+  ProposalStatus.VOTING,
+  ProposalStatus.MIN_NOT_REACHED,
+];
 
 export const FiltersDropdown = ({
   statuses,
   setStatuses,
   ...restProps
 }: Omit<MenuButtonProps, "children"> & {
-  statuses: FilterStatuses[];
-  setStatuses: Dispatch<SetStateAction<FilterStatuses[]>>;
+  statuses: ProposalStatus[];
+  setStatuses: (newStatuses: ProposalStatus[]) => void;
 }) => {
   const { LL } = useI18nContext();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const [tempStatuses, setTempStatuses] = useState<ProposalStatus[]>(statuses);
+
   const onChangeStatus = useCallback(
-    (value: FilterStatuses) => {
-      const values = statuses.includes(value) ? statuses.filter(status => status !== value) : [...statuses, value];
-      setStatuses(values);
+    (value: ProposalStatus) => {
+      const values = tempStatuses.includes(value)
+        ? tempStatuses.filter(status => status !== value)
+        : [...tempStatuses, value];
+      setTempStatuses(values);
     },
-    [setStatuses, statuses],
+    [tempStatuses],
   );
+
+  const handleApply = useCallback(() => {
+    setStatuses(tempStatuses);
+    onClose();
+  }, [tempStatuses, setStatuses, onClose]);
+
+  const handleSelectDeselect = useCallback(() => {
+    const allSelected = DEFAULT_STATUSES.every(status => tempStatuses.includes(status));
+    const newStatuses = allSelected ? [] : DEFAULT_STATUSES;
+    setTempStatuses(newStatuses);
+  }, [tempStatuses]);
+
+  const hasChanges = useMemo(() => {
+    return JSON.stringify(tempStatuses.sort()) !== JSON.stringify(statuses.sort());
+  }, [tempStatuses, statuses]);
+
+  const areAllSelected = useMemo(() => {
+    return DEFAULT_STATUSES.every(status => tempStatuses.includes(status));
+  }, [tempStatuses]);
+
+  const selectDeselectButtonText = useMemo(() => {
+    return areAllSelected ? LL.filters.deselect_all() : LL.filters.select_all();
+  }, [areAllSelected, LL.filters]);
+
   const options = useMemo(() => {
-    return Object.entries(LL.badge).map(opt => ({
-      value: opt[0] as FilterStatuses,
-      label: opt[1](),
-    }));
+    return Object.entries(LL.badge).map(opt => {
+      return {
+        value: opt[0] as ProposalStatus,
+        label: opt[1](),
+      };
+    });
   }, [LL.badge]);
+
+  useEffect(() => {
+    setTempStatuses(statuses);
+  }, [statuses]);
   return (
-    <Menu>
+    <Menu closeOnSelect={false} isOpen={isOpen} onOpen={onOpen} onClose={onClose}>
       <MenuButton as={Button} variant={"secondary"} size={{ base: "md", md: "lg" }} {...restProps}>
         <Flex alignItems={"center"} gap={2}>
-          <Text>{LL.filters.title()}</Text>
+          <Text display={{ base: "none", md: "block" }}>{LL.filters.title()}</Text>
           <Icon as={FilterIcon} />
         </Flex>
       </MenuButton>
       <MenuList>
         <MenuOptionGroup type="checkbox">
           {options.map((option, id) => {
-            const isSelected = statuses.includes(option.value);
+            const isSelected = tempStatuses.includes(option.value);
             return (
               <MenuItem
                 key={id}
@@ -63,6 +112,15 @@ export const FiltersDropdown = ({
             );
           })}
         </MenuOptionGroup>
+        <MenuDivider />
+        <Flex padding={3} gap={2} justifyContent={"space-between"}>
+          <Button size="sm" variant="ghost" onClick={handleSelectDeselect} color="gray.600" _hover={{ bg: "gray.50" }}>
+            {selectDeselectButtonText}
+          </Button>
+          <Button size="sm" variant="solid" colorScheme="primary" onClick={handleApply} isDisabled={!hasChanges}>
+            {LL.filters.apply()}
+          </Button>
+        </Flex>
       </MenuList>
     </Menu>
   );

@@ -17,17 +17,16 @@ export const bgHeaderStyle = defineStyle({
   bgPosition: "top",
   bgRepeat: "no-repeat",
   bgAttachment: "fixed",
-  borderBottom: "1px solid rgba(255, 255, 255, 0.2)",
 });
 
 export const Navbar = () => {
   const { connection } = useWallet();
   return (
     <Box {...bgHeaderStyle} position="fixed" top="0" width="100%" zIndex={1000}>
-      <Container maxWidth={"1440px"} marginX={"auto"}>
-        <Flex justifyContent={"space-between"} alignItems={"center"} gap={6} paddingY={4} paddingX={{ base: 4, md: 4 }}>
+      <Container maxWidth={"1024px"} marginX={"auto"} paddingX={"20px"}>
+        <Flex justifyContent={"space-between"} alignItems={"center"} gap={6} paddingY={4}>
           <Link to="/">
-            <VoteLogo width={{ base: 16, md: 20 }} />
+            <VoteLogo height={{ base: "20px", md: "30px" }} />
           </Link>
 
           <Flex alignItems={"center"} gap={{ base: 3, md: 6 }}>
@@ -60,7 +59,7 @@ const ProposalNavbarActions = () => {
   return (
     <Flex alignItems={"center"} gap={2} marginLeft={"auto"}>
       {canEditDraft && <DeleteEditProposal />}
-      {canCancel && <CancelProposal proposalId={proposal?.id} />}
+      <CancelProposal proposalId={proposal?.id} showButton={canCancel} />
       {isExecutor && proposal?.status === "approved" && <ExecuteModal proposalId={proposal?.id} />}
     </Flex>
   );

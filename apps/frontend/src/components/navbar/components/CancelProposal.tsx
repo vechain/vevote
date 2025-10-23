@@ -1,4 +1,7 @@
+import { useCancelProposal } from "@/hooks/useCancelProposal";
 import { useI18nContext } from "@/i18n/i18n-react";
+import { CheckIcon, DeleteIcon, MinusCircleIcon } from "@/icons";
+import { MixPanelEvent, trackEvent } from "@/utils/mixpanel/utilsMixpanel";
 import {
   Button,
   FormControl,
@@ -10,25 +13,20 @@ import {
   useBreakpointValue,
   useDisclosure,
 } from "@chakra-ui/react";
-import { MessageModal } from "../../ui/ModalSkeleton";
 import { useCallback } from "react";
-import { FormSkeleton } from "../../ui/FormSkeleton";
 import { z } from "zod";
-import { Label } from "../../ui/Label";
+import { FormSkeleton } from "../../ui/FormSkeleton";
 import { InputMessage } from "../../ui/InputMessage";
-import { DeleteIcon, MinusCircleIcon } from "@/icons";
-import { useCancelProposal } from "@/hooks/useCancelProposal";
-import { Routes } from "@/types/routes";
-import { useNavigate } from "react-router-dom";
-import { trackEvent, MixPanelEvent } from "@/utils/mixpanel/utilsMixpanel";
+import { Label } from "../../ui/Label";
+import { MessageModal } from "../../ui/ModalSkeleton";
 
-export const CancelProposal = ({ proposalId }: { proposalId?: string }) => {
+export const CancelProposal = ({ proposalId, showButton }: { proposalId?: string; showButton: boolean }) => {
   const { LL } = useI18nContext();
   const { isOpen, onClose, onOpen } = useDisclosure();
-  const navigate = useNavigate();
+  const { isOpen: isSuccessOpen, onClose: onSuccessClose, onOpen: onSuccessOpen } = useDisclosure();
   const isMobile = useBreakpointValue({ base: true, md: false });
 
-  const { sendTransaction, isTransactionPending } = useCancelProposal();
+  const { sendTransaction, isTransactionPending } = useCancelProposal({ proposalId });
 
   const schema = z.object({
     reason: z.string().optional(),
@@ -51,7 +49,7 @@ export const CancelProposal = ({ proposalId }: { proposalId?: string }) => {
         });
 
         onClose();
-        navigate(Routes.HOME);
+        onSuccessOpen();
       } catch (error) {
         const txError = error as { txId?: string; error?: { message?: string }; message?: string };
 
@@ -62,22 +60,25 @@ export const CancelProposal = ({ proposalId }: { proposalId?: string }) => {
         });
       }
     },
-    [proposalId, sendTransaction, onClose, navigate],
+    [proposalId, sendTransaction, onClose, onSuccessOpen, LL.proposal],
   );
   return (
     <>
-      <Button
-        variant="danger"
-        size={{ base: "md", md: "lg" }}
-        onClick={() => {
-          trackEvent(MixPanelEvent.CTA_CANCEL_CLICKED, {
-            proposalId: proposalId || "",
-          });
-          onOpen();
-        }}
-        leftIcon={<Icon as={MinusCircleIcon} />}>
-        {!isMobile && LL.cancel()}
-      </Button>
+      {showButton && (
+        <Button
+          variant="danger"
+          size={{ base: "md", md: "lg" }}
+          onClick={() => {
+            trackEvent(MixPanelEvent.CTA_CANCEL_CLICKED, {
+              proposalId: proposalId || "",
+            });
+            onOpen();
+          }}
+          leftIcon={<Icon as={MinusCircleIcon} />}>
+          {!isMobile && LL.cancel()}
+        </Button>
+      )}
+
       <MessageModal
         isOpen={isOpen}
         onClose={onClose}
@@ -114,6 +115,22 @@ export const CancelProposal = ({ proposalId }: { proposalId?: string }) => {
             </>
           )}
         </FormSkeleton>
+      </MessageModal>
+      {/* Success modal */}
+      <MessageModal
+        isOpen={isSuccessOpen}
+        onClose={onSuccessClose}
+        icon={CheckIcon}
+        iconColor={"primary.500"}
+        title={LL.proposal.cancel_proposal.success_title()}>
+        <Text textAlign={"center"} fontSize={14} color={"gray.600"}>
+          {LL.proposal.cancel_proposal.success_description()}
+        </Text>
+        <ModalFooter width={"full"} mt={7}>
+          <Button width={"full"} onClick={onSuccessClose} color={"white"}>
+            {LL.continue()}
+          </Button>
+        </ModalFooter>
       </MessageModal>
     </>
   );

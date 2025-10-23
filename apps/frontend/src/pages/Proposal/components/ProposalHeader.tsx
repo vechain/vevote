@@ -1,31 +1,32 @@
-import { Avatar, Divider, Flex, HStack, Text } from "@chakra-ui/react";
+import { DiscourseLink } from "@/components/proposal/DiscourseLink";
 import { useProposal } from "@/components/proposal/ProposalProvider";
 import { IconBadge } from "@/components/ui/IconBadge";
-import { formatAddress } from "@/utils/address";
-import { useMemo } from "react";
-import { getPicassoImgSrc } from "@/utils/picasso";
+import { useVechainDomainOrAddress } from "@/hooks/useVechainDomainOrAddress";
 import { useI18nContext } from "@/i18n/i18n-react";
-import { DiscourseLink } from "@/components/proposal/DiscourseLink";
+import { getPicassoImgSrc } from "@/utils/picasso";
+import { Avatar, Divider, Flex, HStack, Text } from "@chakra-ui/react";
+import { useGetAvatarOfAddress } from "@vechain/vechain-kit";
+import { useMemo } from "react";
 
 export const ProposalHeader = () => {
   const { LL } = useI18nContext();
   const { proposal } = useProposal();
 
-  const infoVariant = useMemo(() => {
-    switch (proposal.status) {
-      case "min-not-reached":
-        return "rejected";
-      default:
-        return proposal.status;
-    }
-  }, [proposal.status]);
+  const { data: avatar } = useGetAvatarOfAddress(proposal.proposer || "");
+  const { addressOrDomain } = useVechainDomainOrAddress(proposal.proposer);
+
+  const imageUrl = useMemo(() => avatar || getPicassoImgSrc(proposal.proposer || ""), [avatar, proposal.proposer]);
 
   return (
     <Flex flexDirection={"column"} gap={4} width={"full"}>
       {/* Status badge and proposer info row */}
-      <HStack justifyContent={"space-between"} alignItems={{ base: "start", md: "center" }} gap={{ base: 2, md: 4 }}>
+      <HStack
+        justifyContent={"space-between"}
+        alignItems={{ base: "start", md: "center" }}
+        gap={{ base: 2, md: 4 }}
+        wrap={"wrap"}>
         {/* Status badge */}
-        <IconBadge variant={infoVariant} />
+        <IconBadge variant={proposal.status} />
 
         <Flex alignItems={"center"} gap={4}>
           <Flex alignItems={"center"} gap={2}>
@@ -33,14 +34,9 @@ export const ProposalHeader = () => {
               {LL.by()}
             </Text>
             <Text color={"gray.800"} fontSize={{ base: "14px", md: "16px" }} fontWeight={400}>
-              {formatAddress(proposal.proposer)}
+              {addressOrDomain}
             </Text>
-            <Avatar
-              height={{ base: 4, md: 6 }}
-              width={{ base: 4, md: 6 }}
-              src={getPicassoImgSrc(proposal.proposer)}
-              borderRadius="full"
-            />
+            <Avatar boxSize={{ base: 4, md: 6 }} src={imageUrl} borderRadius="full" />
             <Divider orientation="vertical" borderColor={"gray.100"} height={"24px"} mx={1} />
             {proposal.discourseUrl && <DiscourseLink src={proposal.discourseUrl} />}
           </Flex>

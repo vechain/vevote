@@ -9,7 +9,7 @@ const baseStyle = definePartsStyle({
     height: "32px",
     borderRadius: "8px",
     fontWeight: "500",
-    fontFamily: "Inter, sans-serif",
+    fontFamily: "body",
     lineHeight: "24px",
     textTransform: "none",
     fontSize: { base: "12px", md: "14px" },

@@ -1,16 +1,6 @@
-@font-face {
-  font-family: "Inter Variable";
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Rubik Variable";
-  font-display: swap;
-}
-
 body {
   margin: 0;
-  font-family: "Inter Variable", "Inter", sans-serif;
+  font-family: "Geist", system-ui, -apple-system, sans-serif;
 }
 
 h1,
@@ -19,7 +9,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: "Rubik Variable", "Rubik", sans-serif;
+  font-family: "Rubik", system-ui, -apple-system, sans-serif;
 }
 
 .ql-toolbar.ql-snow {
@@ -50,7 +40,7 @@ h6 {
 }
 
 .ql-container.ql-snow [data-placeholder]:before {
-  font-family: "Inter", sans-serif;
+  font-family: "Geist", system-ui, -apple-system, sans-serif;
 }
 
 .ql-picker-options {
@@ -182,4 +172,8 @@ h6 {
     width: 24px;
     height: 24px;
   }
+}
+
+iframe[style*="border: none"][style*="position: fixed"][style*="z-index: 9999"][style*="width: 100vw"][style*="height: 110px"][style*="bottom: 0px"][style*="left: 0px"] {
+  z-index: 10001 !important;
 }

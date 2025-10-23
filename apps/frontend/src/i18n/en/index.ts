@@ -12,6 +12,7 @@ const en = {
   on: "On",
   all: "All",
   finished: "Finished",
+  executed: "Executed",
   show_more: "Show more",
   exit: "Exit",
   next: "Next",
@@ -30,7 +31,7 @@ const en = {
   percentage: "%",
   submit: "Submit",
   submit_vote: "Submit Vote",
-  voting_power: "Voting Power",
+  voting_power: "Voting power",
   your_voting_power: "Your voting power",
   voted: "Voted",
   vote: "Vote",
@@ -51,6 +52,7 @@ const en = {
   minimum: "Minimum",
   number_option: "Option {index:number}",
   continue: "Continue",
+  results: "Results",
   description: "Description",
   preview: "Preview",
   close: "Close",
@@ -64,6 +66,8 @@ const en = {
   comment_placeholder: "Add a comment to your vote...",
   migrate: "Migrate",
   stargate: "StarGate",
+  learn_how_voting_power: "How voting power is obtained",
+  discuss_on_discourse: "Join the discussion on Discourse",
   datepicker: {
     select_date: "Select date",
     previous_month: "Previous month",
@@ -105,7 +109,7 @@ const en = {
     go_to_proposals: "Go to proposals",
   },
   node_names: {
-    none: "No Node",
+    none: "not defined",
     strength: "Strength",
     thunder: "Thunder",
     mjolnir: "Mjolnir",
@@ -117,6 +121,7 @@ const en = {
     lightning: "Lightning",
     dawn: "Dawn",
     validator: "Validator",
+    inactive_validator: "Validator (inactive)",
   },
   field_errors: {
     required: "Required",
@@ -125,12 +130,13 @@ const en = {
     end_before_today: "The end date must be in the future",
     start_after_today: "The start date must be in the future",
     end_after_max_duration: "The end date must be within {days:string} days of the start date",
-    failed_load_voters: "Failed to load voters data. Please try again.",
+    failed_load_voters: "No voters found matching your search criteria.",
     descriptions_errors: {
       placeholders_not_replaced:
         "Please replace placeholder text with your own content before submitting the proposal.",
       empty_description: "Description cannot be empty. Please provide content for your proposal.",
     },
+    discourse_topic_not_exist: "The Discourse topic does not exist or is not accessible",
   },
   voting_list: {
     voting_options: "Voting options:",
@@ -150,7 +156,8 @@ const en = {
     node_holders: "Node holders with voting power will be able to vote on this proposal.",
     voting_will_start: "Voting will start {date:string}",
     see_your_vote: "See your vote details",
-    see_all_voters: "See all voters",
+    see_all_voters: "See all ({voters:number}) voters",
+    see_first_voter: "See first voter",
     mark_as_executed: "Mark as executed",
     buy_another_node: "Buy another node to increase your voting power on future proposals.",
     buy_a_node:
@@ -165,6 +172,8 @@ const en = {
         "Canceling the proposal means it the voting will not take place and the proposal will not have no results.",
       reason: "Reason",
       reason_placeholder: "Write the reason for cancellation...",
+      success_title: "Proposal canceled successfully",
+      success_description: "The proposal has been canceled successfully. Voting will not take place.",
     },
     execute_proposal: {
       title: "Mark as Executed",
@@ -210,18 +219,17 @@ const en = {
       },
     },
     voting_power: {
-      get_more_voting_power: "Get more Voting Power",
-      get_voting_power: "Get Voting Power",
-      title: "Voting Power",
-
-      calculation: "Your Voting Power was calculated at the time of the snapshot {snapshot:string}.",
-      total_voting_power: "Total Voting Power",
+      get_more_voting_power: "Get more voting power",
+      get_voting_power: "Get voting power",
+      title: "Voting power",
+      calculation: "Your voting power was calculated at the time of the snapshot {snapshot:string}.",
+      total_voting_power: "Total voting power",
       warnings: {
-        zero_voting_power: "The connected wallet has no Voting Power",
-        legacy_node: "You have legacy nodes that haven’t been migrated yet.  Migrate to get more Voting Power.",
+        zero_voting_power: "The connected wallet has no voting power",
+        legacy_node: "You have legacy nodes that haven’t been migrated yet.  Migrate to get more voting power.",
         delegated: {
-          title: "Your Voting Power is delegated",
-          description: "Your Voting Power is delegated to another node",
+          title: "Your voting power is delegated",
+          description: "Your voting power is delegated to another node",
         },
       },
     },
@@ -237,8 +245,8 @@ const en = {
         address: "Address",
         node: "Node",
         node_id: "Node ID",
-        voting_power: "Voting Power",
-        voted_option: "Voted option",
+        voting_power: "Power",
+        voted_option: "Option",
         transaction_id: "Transaction ID",
       },
     },
@@ -306,8 +314,7 @@ const en = {
           },
         },
         publish_proposal: "Publish Proposal",
-        publish_description:
-          'Please note that once the campaign is published, it can only be edited while on "Draft" state, meaning before the voting calendar starts.',
+        publish_description: "Please note that once the campaign is published, it can't be edited anymore.",
         publish_sub_description: "Are you sure you want to publish this proposal?",
         publish_failed: "Publishing failed",
         publish_failed_description: "The publishing of the proposal couldn’t be completed. Please try again.",
@@ -315,7 +322,7 @@ const en = {
         publish_success_description: "The proposal has been successfully publish and can now be seen publicly.",
       },
     },
-    go_to_stargate: "Go to Stargate",
+    go_to_stargate: "Go to StarGate",
     proposal_not_found: "Proposal not found",
     proposal_not_found_description:
       "The proposal you're looking for doesn't exist or may have been removed. It's possible the URL is incorrect or the proposal has been deleted.",
@@ -331,20 +338,20 @@ const en = {
     unknown_error: "Unknown error",
     failed_to_execute_proposal: "Failed to execute proposal",
     proposal_approved_and_executed: "Proposal Approved and Executed",
+    proposal_approved: "The voting participation reached the minimum quorum to get approval.",
     the_voting_approved_the_proposal_and_the_actions_have_been_executed:
       "The voting approved the proposal and the actions have been executed.",
     see_details: "See details",
     proposal_rejected: "Proposal Rejected",
     the_proposal_didnt_get_enough_votes_in_favor_to_get_approval:
       "The proposal didn't get enough votes in favor to get approval.",
-    minimum_participation_not_reached: "Minimum participation not reached",
-    the_voting_participation_didnt_reached_the_minimum_required_of_30_to_get_approval:
-      "The voting participation didn't reached the minimum required of 30% to get approval.",
-    a_minimum_of_30_participation_must_be_reached_to_validate_the_voting_of_the_proposal_and_get_approval:
-      "A minimum of 30% participation must be reached to validate the voting of the proposal and get approval.",
+    minimum_quorum_not_reached: "Minimum participant not met",
+    quorum_not_reached: "Quorum of {quorum:string} voting power not reached.",
+    quorum_not_reached_yet: "Quorum of {quorum:string} voting power not reached yet.",
+    quorum_reached: "Quorum reached.",
     vote_submission_failed: "Vote submission failed",
     vote_submitted_successfully: "Vote submitted successfully!",
-    submit_your_vote: "Submit your Vote",
+    submit_your_vote: "Submit your vote",
     vote_cannot_be_changed: "Your vote cannot be changed once submitted.",
     waiting_wallet_confirmation: "Waiting wallet confirmation...",
     confirm_vote: "Confirm vote",
@@ -368,9 +375,14 @@ const en = {
     executed: "Executed",
     canceled: "Canceled",
     rejected: "Rejected",
+    "min-not-reached": "Quorum not reached",
   },
   filters: {
     title: "Filters",
+    apply: "Apply",
+    reset: "Reset",
+    select_all: "Select all",
+    deselect_all: "Deselect all",
     sort: {
       newest: "Newest",
       oldest: "Oldest",
@@ -381,11 +393,11 @@ const en = {
   header: {
     title: "VeChainThor Voting Platform",
     description: "Vote to shape the future of VeChainThor",
-    how_to_vote: "How to Vote",
-    how_to_get_voting_power: "How to get Voting Power",
+    how_to_vote: "How to vote",
+    how_to_get_voting_power: "Get voting power",
   },
   stargate_warning: {
-    title: "Stargate Node Migration Required",
+    title: "StarGate Node Migration Required",
     description: "You have 1 or more non-migrated nodes. Please migrate them as soon as possible to continue voting.",
     migration_link: "https://app.stargate.vechain.org/",
     ongoing_proposal_warning:
@@ -404,9 +416,10 @@ const en = {
     },
     resources: {
       title: "Resources",
-      docs: "Documentation",
+      docs: "Docs",
       stargate: "StarGate",
       support: "Support",
+      governance_charter: "Governance Charter",
     },
   },
 } satisfies BaseTranslation;

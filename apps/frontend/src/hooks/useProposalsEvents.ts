@@ -1,41 +1,59 @@
-import { IpfsDetails } from "@/types/ipfs";
-import { getProposalsFromIpfs } from "@/utils/ipfs/proposal";
-import { mergeIpfsDetails } from "@/utils/proposals/helpers";
-import { getProposalsEvents, getProposalsWithState } from "@/utils/proposals/proposalsQueries";
-import { getVoteCastResults } from "@/utils/proposals/votedQueries";
-import { useQuery } from "@tanstack/react-query";
-import { ThorClient, useThor } from "@vechain/vechain-kit";
+import { getProposals, PaginatedProposalsResult, PaginationOptions } from "@/utils/proposals/optimizedQueries";
+import { thorClient } from "@/utils/thorClient";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { ProposalCardType, ProposalStatus } from "@/types/proposal";
+import { areAddressesEqual } from "@/utils/address";
+import { useMemo } from "react";
+import { useWallet } from "@vechain/vechain-kit";
+import { calculateRefetchInterval } from "@/utils/proposals/helpers";
 
-//TODO: Pagination and filtering
-const getProposals = async (thor: ThorClient) => {
-  const data = await getProposalsEvents(thor);
-  const proposals = data?.proposals || [];
+interface UseProposalsEventsOptions extends PaginationOptions {
+  draftProposal?: ProposalCardType | null;
+}
 
-  const { votes } = await getVoteCastResults(thor, { proposalIds: proposals.map(p => p.id) });
+export const useProposalsEvents = (options: UseProposalsEventsOptions = {}) => {
+  const { account } = useWallet();
+  const { draftProposal, ...queryOptions } = options;
+  const thor = thorClient;
 
-  const ipfsFetches = proposals.map(p => getProposalsFromIpfs(p.ipfsHash));
-  const ipfsDetails: IpfsDetails[] = await Promise.all(ipfsFetches);
-
-  const mergedWithIpfs = mergeIpfsDetails(ipfsDetails, proposals);
-  const merged = mergedWithIpfs?.map(p => ({
-    ...p,
-    results: votes?.filter(v => v.proposalId === p.id),
-  }));
-
-  return await getProposalsWithState(merged);
-};
-
-export const useProposalsEvents = () => {
-  const thor = useThor();
-
-  const { data: proposals, isLoading } = useQuery({
-    queryKey: ["proposalsEvents"],
-    queryFn: async () => await getProposals(thor),
+  const { data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage, error } = useInfiniteQuery({
+    queryKey: ["infiniteProposals", queryOptions],
+    queryFn: async ({ pageParam }): Promise<PaginatedProposalsResult> => {
+      return await getProposals(thor, { ...queryOptions, cursor: pageParam as string });
+    },
+    getNextPageParam: (lastPage: PaginatedProposalsResult) => lastPage.nextCursor,
     enabled: !!thor,
+    staleTime: 30 * 1000,
+    gcTime: 5 * 60 * 1000,
+    initialPageParam: undefined,
+    refetchInterval: query => {
+      const proposals = query.state.data?.pages.flatMap(page => page.proposals) || [];
+      return calculateRefetchInterval(proposals);
+    },
   });
 
+  const fetchedProposals = useMemo(() => data?.pages.flatMap(page => page.proposals) || [], [data?.pages]);
+
+  const allProposals = useMemo(() => {
+    const isDraftProposal = draftProposal && areAddressesEqual(draftProposal?.proposer, account?.address);
+    const isDraftFilterActive = queryOptions.statuses?.includes(ProposalStatus.DRAFT);
+
+    return isDraftProposal && isDraftFilterActive ? [draftProposal, ...fetchedProposals] : fetchedProposals;
+  }, [account?.address, draftProposal, fetchedProposals, queryOptions.statuses]);
+
+  const totalCount = useMemo(() => {
+    const baseCount = data?.pages[0]?.totalCount || 0;
+    const isDraftProposal = draftProposal && areAddressesEqual(draftProposal?.proposer, account?.address);
+    return isDraftProposal ? baseCount + 1 : baseCount;
+  }, [data?.pages, draftProposal, account?.address]);
+
   return {
-    proposals: proposals || [],
+    proposals: allProposals,
     loading: isLoading,
+    loadingMore: isFetchingNextPage,
+    hasNextPage: hasNextPage || false,
+    fetchNextPage,
+    error,
+    totalCount,
   };
 };

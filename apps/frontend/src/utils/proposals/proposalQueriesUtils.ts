@@ -1,0 +1,43 @@
+import { IpfsDetails } from "@/types/ipfs";
+import { ProposalStatus } from "@/types/proposal";
+import { getProposalsFromIpfs } from "../ipfs/proposal";
+import { filterStatus, FromEventsToProposalsReturnType, mergeIpfsDetails } from "./helpers";
+import { getProposalsWithState } from "./proposalsQueries";
+import { MergedProposal } from "@/types/historicalProposals";
+
+export const paginateProposals = (proposals: MergedProposal[], cursor?: string, pageSize = 20) => {
+  const startIndex = cursor ? parseInt(cursor) : 0;
+  const endIndex = startIndex + pageSize;
+  const paginatedProposals = proposals.slice(startIndex, endIndex);
+  const hasNextPage = endIndex < proposals.length;
+  const nextCursor = hasNextPage ? endIndex.toString() : undefined;
+
+  return { paginatedProposals, hasNextPage, nextCursor };
+};
+
+export const enrichProposalsWithData = async (proposals: FromEventsToProposalsReturnType) => {
+  const ipfsFetches = proposals.map(p => getProposalsFromIpfs(p.ipfsHash));
+  const ipfsDetails: IpfsDetails[] = await Promise.all(ipfsFetches);
+
+  const mergedWithIpfs = mergeIpfsDetails(ipfsDetails, proposals);
+  const merged = mergedWithIpfs?.map(p => ({
+    ...p,
+  }));
+
+  return await getProposalsWithState(merged);
+};
+
+export const applyFilters = (proposals: MergedProposal[], statuses?: ProposalStatus[], searchQuery?: string) => {
+  let filtered = proposals;
+
+  if (statuses && statuses.length > 0) {
+    filtered = filtered.filter(p => filterStatus(statuses, p.status));
+  }
+
+  if (searchQuery && searchQuery.trim()) {
+    const searchLower = searchQuery.toLowerCase();
+    filtered = filtered.filter(p => p.title?.toLowerCase().includes(searchLower));
+  }
+
+  return filtered;
+};

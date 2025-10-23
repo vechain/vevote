@@ -1,14 +1,18 @@
 import { CopyIcon } from "@/icons";
-import { Button, Flex, Icon, Link, LinkProps, useToast } from "@chakra-ui/react";
+import { Button, Flex, FlexProps, Icon, Link, LinkProps, useToast } from "@chakra-ui/react";
 import { useCallback } from "react";
 import { InfoBox } from "./InfoBox";
 import { useI18nContext } from "@/i18n/i18n-react";
 
 export const CopyLink = ({
   textToCopy,
+  containerProps,
+  showCopyIcon = true,
   ...props
 }: LinkProps & {
   textToCopy?: string;
+  containerProps?: FlexProps;
+  showCopyIcon?: boolean;
 }) => {
   const { LL } = useI18nContext();
   const toast = useToast();
@@ -25,18 +29,20 @@ export const CopyLink = ({
     });
   }, [LL, textToCopy, toast]);
   return (
-    <Flex gap={2} alignItems={"center"}>
+    <Flex gap={2} alignItems={"center"} {...containerProps}>
       <Link {...props} />
-      <Button
-        onClick={copy}
-        variant="ghost"
-        minWidth={"fit-content"}
-        minH={"fit-content"}
-        height={"fit-content"}
-        color={props.color}
-        padding={0}
-        leftIcon={<Icon as={CopyIcon} width={4} height={4} />}
-      />
+      {showCopyIcon && (
+        <Button
+          onClick={copy}
+          variant="ghost"
+          minWidth={"fit-content"}
+          minH={"fit-content"}
+          height={"fit-content"}
+          color={props.color}
+          padding={0}
+          leftIcon={<Icon as={CopyIcon} width={4} height={4} />}
+        />
+      )}
     </Flex>
   );
 };

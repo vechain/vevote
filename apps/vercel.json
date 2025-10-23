@@ -1,13 +1,31 @@
 {
-    "rewrites": [
-        {
-            "source": "/(.*)",
-            "destination": "/index.html"
-        }
-    ],
-    "git": {
-        "deploymentEnabled": {
-            "main": false
-        }
+  "redirects": [
+    {
+      "source": "/home",
+      "destination": "/",
+      "permanent": true
     }
+  ],
+  "rewrites": [
+    {
+      "source": "/privacy",
+      "destination": "https://irlnxowcx9wwrmfk.public.blob.vercel-storage.com/VeVote-PRIVACY-POLICY-rev.pdf"
+    },
+    {
+      "source": "/cookies",
+      "destination": "https://irlnxowcx9wwrmfk.public.blob.vercel-storage.com/VeVote-COOKIE-POLICY-rev.pdf"
+    },
+    {
+      "source": "/governance-charter",
+      "destination": "https://irlnxowcx9wwrmfk.public.blob.vercel-storage.com/VeChainThor%20Governance%20Charter.pdf"
+    },
+    {
+      "source": "/terms",
+      "destination": "https://irlnxowcx9wwrmfk.public.blob.vercel-storage.com/VeVote-terms-and-conditions-final.pdf"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
 }

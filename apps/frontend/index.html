@@ -1,13 +1,41 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <meta
+      name="description"
+      content="VeVote is VeChain's official governance platform, where Validators and Node holders vote on proposals to shape the VeChainThor blockchain and ecosystem." />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/x-icon" href="/images/stargate-icon.png" />
 
+    <!-- Font preloading for better performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap"
+      rel="preload"
+      as="style"
+      onload="this.onload=null;this.rel='stylesheet'" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Rubik:wght@300..900&display=swap"
+      rel="preload"
+      as="style"
+      onload="this.onload=null;this.rel='stylesheet'" />
+    
+    <!-- Fallback for users without JavaScript -->
+    <noscript>
+      <link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap" rel="stylesheet">
+      <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300..900&display=swap" rel="stylesheet">
+    </noscript>
+
     <link rel="preload" href="/images/bemo.webp" as="image" fetchpriority="high" media="(min-width: 768px)" />
-    <link rel="preload" href="/images/banner-bg.webp" as="image" media="(min-width: 768px)" />
-    <link rel="preload" href="/images/banner-bg-mobile.webp" as="image" media="(max-width: 767px)" />
+    <link rel="preload" href="/images/banner-bg.webp" as="image" fetchpriority="high" media="(min-width: 768px)" />
+    <link
+      rel="preload"
+      href="/images/banner-bg-mobile.webp"
+      as="image"
+      fetchpriority="high"
+      media="(max-width: 767px)" />
 
     <title>VeVote</title>
   </head>

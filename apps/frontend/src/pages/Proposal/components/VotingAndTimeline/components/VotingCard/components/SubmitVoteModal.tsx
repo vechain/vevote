@@ -1,32 +1,30 @@
+import { useProposal } from "@/components/proposal/ProposalProvider";
+import { GenericInfoBox } from "@/components/ui/GenericInfoBox";
+import { ModalSkeleton } from "@/components/ui/ModalSkeleton";
+import { ColorByVote, IconByVote, voteOptions } from "@/constants";
+import { useBuildCastVote } from "@/hooks/useBuildCastVote";
+import { useNodes } from "@/hooks/useUserQueries";
+import { useI18nContext } from "@/i18n/i18n-react";
+import { ArrowLinkIcon, CheckIcon, CircleXIcon, VoteIcon, VotingPowerIcon } from "@/icons";
+import { SingleChoiceEnum } from "@/types/proposal";
+import { MixPanelEvent, trackEvent } from "@/utils/mixpanel/utilsMixpanel";
+import { getIndexFromSingleChoice } from "@/utils/proposals/helpers";
 import {
-  ModalHeader,
-  UseDisclosureReturn,
-  VStack,
-  HStack,
-  Text,
-  Button,
-  Icon,
   Box,
-  Radio,
-  Spinner,
+  Button,
+  HStack,
+  Icon,
   Link,
   ModalBody,
-  AlertDescription,
-  AlertIcon,
-  Alert,
+  ModalHeader,
+  Radio,
+  Spinner,
+  Text,
+  UseDisclosureReturn,
+  VStack,
 } from "@chakra-ui/react";
-import { useState, useMemo, useCallback } from "react";
-import { SingleChoiceEnum } from "@/types/proposal";
-import { VoteIcon, CheckIcon, VotingPowerIcon, ArrowLinkIcon, CircleXIcon } from "@/icons";
-import { useNodes } from "@/hooks/useUserQueries";
-import { useCastVote } from "@/hooks/useCastVote";
-import { useProposal } from "@/components/proposal/ProposalProvider";
-import { trackEvent, MixPanelEvent } from "@/utils/mixpanel/utilsMixpanel";
-import { IconByVote, ColorByVote, voteOptions } from "@/constants";
-import { getIndexFromSingleChoice } from "@/utils/proposals/helpers";
 import { getConfig } from "@repo/config";
-import { ModalSkeleton } from "@/components/ui/ModalSkeleton";
-import { useI18nContext } from "@/i18n/i18n-react";
+import { useCallback, useMemo, useState } from "react";
 
 const EXPLORER_URL = getConfig(import.meta.env.VITE_APP_ENV).network.explorerUrl;
 
@@ -47,7 +45,7 @@ export const SubmitVoteModal = ({ submitVoteModal }: { submitVoteModal: UseDiscl
     return new Intl.NumberFormat().format(totalVotingPower);
   }, [totalVotingPower]);
 
-  const { sendTransaction, isTransactionPending } = useCastVote({
+  const { sendTransaction, isTransactionPending } = useBuildCastVote({
     proposalId: proposal.id,
     masterNode,
   });
@@ -291,10 +289,9 @@ export const SubmitVoteModal = ({ submitVoteModal }: { submitVoteModal: UseDiscl
               </Text>
             </HStack>
           </Box>
-          <Alert status="warning" variant="left-accent" borderRadius="md" colorScheme="orange">
-            <AlertIcon boxSize={5} color="orange.400" />
-            <AlertDescription color="orange.700">{LL.proposal.vote_cannot_be_changed()}</AlertDescription>
-          </Alert>
+          <GenericInfoBox variant="warning">
+            <Text color="orange.700">{LL.proposal.vote_cannot_be_changed()}</Text>
+          </GenericInfoBox>
 
           {/* Confirm Button */}
           <Button

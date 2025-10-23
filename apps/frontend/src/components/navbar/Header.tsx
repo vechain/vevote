@@ -13,11 +13,11 @@ export const ProposalsHeader = () => {
     </>
   );
 };
+
 export const Banner = () => {
   const { LL } = useI18nContext();
   return (
     <Box
-      paddingX={{ base: 6, md: 20 }}
       paddingY={10}
       bgImage={{ base: "/images/banner-bg-mobile.webp", md: "/images/banner-bg.webp" }}
       bgSize={"cover"}
@@ -28,16 +28,17 @@ export const Banner = () => {
       overflow={"hidden"}>
       <Flex
         alignItems={"center"}
-        justifyContent={"center"}
+        justifyContent={"space-between"}
         paddingTop={{ base: 16, md: 10, lg: 0 }}
-        maxWidth={{ base: "full", lg: "1440px" }}
+        maxWidth={{ base: "full", lg: "1024px" }}
+        paddingX={"20px"}
         marginX={"auto"}>
         <Flex
           flexDirection={"column"}
           gap={{ base: 10, md: 16 }}
           color={"white"}
           minWidth={{ base: "full", md: "350px", lg: "450px" }}>
-          <Flex flexDirection={"column"} gap={{ base: 4, md: 6 }}>
+          <Flex flexDirection={"column"} gap={{ base: 4, md: 6 }} maxWidth={"500px"}>
             <Heading
               as="h1"
               fontSize={{ base: "24px", md: "36px", lg: "48px" }}
@@ -53,8 +54,12 @@ export const Banner = () => {
             <Link {...stargateButtonStyle} href={VeVoteLinks.VEVOTE_DOCS} isExternal>
               {LL.header.how_to_vote()} <Icon as={ArrowLinkIcon} />
             </Link>
-            <Link {...stargateButtonStyle} href={ResourcesLinks.STARGATE} isExternal>
+            <Link {...stargateButtonStyle} href={ResourcesLinks.STARGATE_APP} isExternal>
               {LL.header.how_to_get_voting_power()}
+              <Icon as={ArrowLinkIcon} />
+            </Link>
+            <Link {...stargateButtonStyle} href={ResourcesLinks.VOTING_POWER} isExternal>
+              {LL.learn_how_voting_power()}
               <Icon as={ArrowLinkIcon} />
             </Link>
           </Flex>
@@ -63,7 +68,7 @@ export const Banner = () => {
           display={{ base: "none", md: "block" }}
           src="/images/bemo.webp"
           alt="bemo"
-          width={{ md: "320px", lg: "420px" }}
+          width={{ md: "320px", lg: "320px" }}
           height={{ md: "520px", lg: "720px" }}
           objectFit={"cover"}
           flexShrink={1}

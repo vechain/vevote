@@ -1,5 +1,5 @@
 import { createColumnHelper } from "@tanstack/react-table";
-import { defineStyle, Icon, Link, Text } from "@chakra-ui/react";
+import { defineStyle, Icon, Link, Text, TextProps, useBreakpointValue } from "@chakra-ui/react";
 import { formatAddress } from "@/utils/address";
 import { CopyLink } from "@/components/ui/CopyLink";
 import { DataTable } from "@/components/ui/TableSkeleton";
@@ -13,9 +13,10 @@ const VECHAIN_EXPLORER_URL = getConfig(import.meta.env.VITE_APP_ENV).network.exp
 
 export type VoteItem = {
   date: Date;
-  address: string;
-  node: string;
-  nodeId: string;
+  voter: {
+    address: string;
+    domain?: string;
+  };
   votingPower: number;
   votedOption: string;
   transactionId: string;
@@ -25,30 +26,48 @@ const columnHelper = createColumnHelper<VoteItem>();
 
 const TableHeader = ({ label }: { label: string }) => {
   return (
-    <Text whiteSpace={"nowrap"} fontSize={12} color={"gray.800"} fontWeight={500} textTransform={"none"}>
+    <Text
+      whiteSpace={"nowrap"}
+      fontSize={12}
+      color={"gray.800"}
+      fontWeight={500}
+      textTransform={"none"}
+      flex={1}
+      textAlign={"center"}>
       {label}
     </Text>
   );
 };
 
-const BaseCell = ({ value }: { value: string }) => {
+const BaseCell = ({ value, ...restProps }: TextProps & { value: string }) => {
   return (
-    <Text whiteSpace={"nowrap"} fontSize={12} color={"gray.600"}>
+    <Text whiteSpace={"nowrap"} fontSize={12} color={"gray.600"} textAlign={"center"} {...restProps}>
       {value}
     </Text>
   );
 };
 
-const AddressCell = ({ value }: { value: string }) => {
+const AddressCell = ({ voter, isMobile }: { voter: VoteItem["voter"]; isMobile: boolean }) => {
   return (
     <CopyLink
       isExternal
-      textToCopy={value}
+      textToCopy={voter?.address}
       color={"primary.500"}
       fontSize={12}
       fontWeight={500}
-      href={`${VECHAIN_EXPLORER_URL}/account/${value}`}>
-      {formatAddress(value)}
+      href={`${VECHAIN_EXPLORER_URL}/accounts/${voter?.address}`}
+      overflow={"hidden"}
+      textOverflow={"ellipsis"}
+      textAlign={"left"}
+      display={"block"}
+      w={"90px"}
+      containerProps={{
+        justifyContent: "center",
+        width: "100%",
+      }}
+      noOfLines={1}
+      showCopyIcon={!isMobile}>
+      {voter?.domain || formatAddress(voter?.address || "")}
     </CopyLink>
   );
 };
@@ -87,25 +106,29 @@ const VotedOptionCell = ({ option }: { option: SingleChoiceEnum }) => {
       fontSize={12}
       borderRadius={4}
       p={1}
+      minWidth={"80px"}
       {...votedOptionCellVariants(option)}>
       {option}
     </Text>
   );
 };
 
-const TransactionIdCell = ({ value }: { value: string }) => {
+const TransactionIdCell = ({ value, isMobile }: { value: string; isMobile: boolean }) => {
   return (
     <Link
       display={"flex"}
       gap={2}
       alignItems={"center"}
+      justifyContent={"center"}
       color={"primary.500"}
       fontWeight={500}
       fontSize={12}
       isExternal
       href={`${VECHAIN_EXPLORER_URL}/transactions/${value}`}>
-      {formatAddress(value)}
-      <Icon as={ArrowLinkIcon} width={4} height={4} />
+      <Text overflow={"hidden"} textOverflow={"ellipsis"} minW={"86px"}>
+        {formatAddress(value)}
+      </Text>
+      {!isMobile && <Icon as={ArrowLinkIcon} width={4} height={4} />}
     </Link>
   );
 };
@@ -116,42 +139,38 @@ interface VotersTableProps {
 
 export const VotersTable = ({ data }: VotersTableProps) => {
   const { LL } = useI18nContext();
+  const isMobile = useBreakpointValue({ base: true, md: false });
 
   const votersColumn = [
     columnHelper.accessor("date", {
       cell: data => <BaseCell value={dayjs(data.getValue()).format("DD/MM/YYYY")} />,
       header: () => <TableHeader label={LL.proposal.voters_table.header.date()} />,
       id: "DATE",
+      size: 120,
     }),
-    columnHelper.accessor("address", {
-      cell: data => <AddressCell value={data.getValue()} />,
+    columnHelper.accessor("voter", {
+      cell: data => <AddressCell voter={data.getValue()} isMobile={isMobile || false} />,
       header: () => <TableHeader label={LL.proposal.voters_table.header.address()} />,
       id: "ADDRESS",
-    }),
-    columnHelper.accessor("node", {
-      cell: data => <BaseCell value={data.getValue()} />,
-      header: () => <TableHeader label={LL.proposal.voters_table.header.node()} />,
-      id: "NODE",
-    }),
-    columnHelper.accessor("nodeId", {
-      cell: data => <BaseCell value={formatAddress(data.getValue())} />,
-      header: () => <TableHeader label={LL.proposal.voters_table.header.node_id()} />,
-      id: "NODE_ID",
+      size: 180,
     }),
     columnHelper.accessor("votingPower", {
-      cell: data => <BaseCell value={data.getValue().toString()} />,
+      cell: data => <BaseCell value={data.getValue().toString()} minW={"60px"} />,
       header: () => <TableHeader label={LL.proposal.voters_table.header.voting_power()} />,
       id: "VOTING_POWER",
+      size: 120,
     }),
     columnHelper.accessor("votedOption", {
       cell: data => <VotedOptionCell option={data.getValue() as SingleChoiceEnum} />,
       header: () => <TableHeader label={LL.proposal.voters_table.header.voted_option()} />,
       id: "VOTED_OPTION",
+      size: 140,
     }),
     columnHelper.accessor("transactionId", {
-      cell: data => <TransactionIdCell value={data.getValue()} />,
+      cell: data => <TransactionIdCell value={data.getValue()} isMobile={isMobile || false} />,
       header: () => <TableHeader label={LL.proposal.voters_table.header.transaction_id()} />,
       id: "TRANSACTION_ID",
+      size: 180,
     }),
   ];
 

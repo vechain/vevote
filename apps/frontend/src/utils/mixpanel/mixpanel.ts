@@ -12,7 +12,9 @@ if (MIXPANEL_TOKEN) {
       persistence: "localStorage",
       ignore_dnt: true,
       loaded: function (mixpanel) {
-        console.log("Mixpanel loaded successfully id:", mixpanel.get_distinct_id());
+        if (import.meta.env.DEV) {
+          console.log("Mixpanel loaded successfully id:", mixpanel.get_distinct_id());
+        }
       },
     },
     "vevote",

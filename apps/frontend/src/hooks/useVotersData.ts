@@ -1,14 +1,11 @@
 import { Sort } from "@/components/ui/SortDropdown";
 import { useVoteCastResults } from "@/hooks/useCastVote";
-import { useVotersNodes } from "@/hooks/useUserQueries";
 import { VoteItem } from "@/pages/Proposal/components/VotingAndTimeline/components/VotingCard/components/ResultsSection/components/AllVotersModal/components/VotersTable";
-import { NodeStrengthLevel } from "@/types/user";
 import { getSingleChoiceFromIndex } from "@/utils/proposals/helpers";
 import { useMemo } from "react";
 
 export type VotersFilters = {
   selectedOption: string;
-  node: NodeStrengthLevel | string;
   searchQuery: string;
   sort: Sort;
 };
@@ -30,34 +27,19 @@ export const useVotersData = ({
     error: votesError,
   } = useVoteCastResults({ proposalIds: [proposalId], enabled: proposalId !== "draft" });
 
-  const {
-    nodes,
-    isLoading: isNodesLoading,
-    isError: nodesError,
-  } = useVotersNodes({
-    nodeIds: votedInfo?.flatMap(vote => vote.stargateNFTs) || [],
-  });
-
   const votes = useMemo(() => {
     if (!votedInfo) return [];
 
-    return votedInfo
-      .map(vote => {
-        return vote.stargateNFTs.map(node => {
-          const nodeInfo = nodes.find(n => n.id === node);
-          return {
-            date: vote.date,
-            address: vote.voter,
-            node: nodeInfo?.name || "Unknown",
-            nodeId: node,
-            votingPower: nodeInfo?.votingPower || 0,
-            votedOption: getSingleChoiceFromIndex(vote.choice),
-            transactionId: vote.transactionId,
-          };
-        });
-      })
-      .flat();
-  }, [votedInfo, nodes]);
+    return votedInfo.map(vote => {
+      return {
+        date: vote.date,
+        voter: vote.voter,
+        votingPower: Number(vote.weight) / 100,
+        votedOption: getSingleChoiceFromIndex(vote.choice),
+        transactionId: vote.transactionId,
+      };
+    });
+  }, [votedInfo]);
 
   const filterOptions = useMemo(() => {
     const optionsSet = new Set<string>();
@@ -69,25 +51,27 @@ export const useVotersData = ({
     return Array.from(optionsSet);
   }, [votes]);
 
-  const nodeOptions = useMemo(() => {
-    const usedNodes = new Set(votes.map(vote => vote.node).filter(Boolean));
-    return Array.from(usedNodes) as NodeStrengthLevel[];
-  }, [votes]);
-
   const filteredVotes = useMemo(() => {
-    const { selectedOption, node, searchQuery, sort } = filters;
+    const { selectedOption, searchQuery, sort } = filters;
     const DEFAULT_FILTER = "All";
 
     const filtered = votes.reduce((acc: VoteItem[], vote) => {
-      if (node && node !== DEFAULT_FILTER && vote.node !== node) return acc;
-      if (selectedOption && selectedOption !== DEFAULT_FILTER && vote.votedOption !== selectedOption) return acc;
-      if (searchQuery && !vote.address.toLowerCase().includes(searchQuery.toLowerCase())) return acc;
+      const isSelectedOption =
+        selectedOption && selectedOption !== DEFAULT_FILTER && vote.votedOption !== selectedOption;
+      const isSearchQuery =
+        searchQuery &&
+        !(
+          vote.voter.address.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          (vote.voter.domain && vote.voter.domain.toLowerCase().includes(searchQuery.toLowerCase()))
+        );
 
+      if (isSelectedOption) return acc;
+      if (isSearchQuery) return acc;
       acc.push(vote);
       return acc;
     }, []);
 
-    if (sort === Sort.Oldest) {
+    if (sort === Sort.Newest) {
       return [...filtered].reverse();
     }
 
@@ -116,11 +100,10 @@ export const useVotersData = ({
 
   return {
     votes: paginationData.votes,
+    totalVotes: votes.length,
     pagination: paginationData.pagination,
-    allVotes: filteredVotes, // Keep all filtered votes for backward compatibility
     filterOptions,
-    nodeOptions,
-    isLoading: isVotesLoading || isNodesLoading,
-    error: votesError || nodesError,
+    isLoading: isVotesLoading,
+    error: votesError,
   };
 };
