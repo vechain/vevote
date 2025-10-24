@@ -22,7 +22,8 @@ export const HistoricalResults = ({ proposal }: { proposal: HistoricalProposalMe
       border={"1px solid"}
       borderColor={"gray.200"}
       borderRadius={16}
-      width={"100%"}>
+      width={"100%"}
+      maxW={"380px"}>
       <Flex alignItems={"center"} gap={3} padding={6} borderBottom={"1px solid"} borderColor={"gray.200"}>
         <Icon as={VoteIcon} width={5} height={5} color={"primary.700"} />
         <Text fontWeight={600} color={"primary.700"} fontSize={{ base: "14px", md: "16px" }}>

@@ -257,7 +257,7 @@ export const parseHistoricalProposals = async (
     const createdAt = dayjs.unix(Number(d.createdDate)).toDate();
 
     return {
-      id: d.proposalId,
+      id: d.id,
       proposer: d.proposer,
       createdAt,
       startDate: dayjs.unix(d.votingStartTime).toDate(),

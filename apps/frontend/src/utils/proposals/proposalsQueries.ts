@@ -20,6 +20,8 @@ export const getProposalsEvents = async (
   thor: ThorClient,
   proposalId?: string,
 ): Promise<{ proposals: FromEventsToProposalsReturnType }> => {
+  const isHistoricalProposal = proposalId?.includes("-");
+  if (isHistoricalProposal) return { proposals: [] };
   try {
     const proposalCreatedAbi = thor.contracts
       .load(contractAddress, VeVote__factory.abi)
