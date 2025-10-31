@@ -1,7 +1,7 @@
 import { ProposalDetails } from "@/pages/CreateProposal/CreateProposalProvider";
 import { ProposalCardType, ProposalEvent } from "@/types/proposal";
 import { getConfig } from "@repo/config";
-import { VeVote__factory } from "@repo/contracts";
+import { VeVote__factory } from "@vechain/vevote-contracts";
 import { getAllEventLogs, ThorClient } from "@vechain/vechain-kit";
 import { ethers } from "ethers";
 import { executeCall, executeMultipleClauses } from "../contract";

@@ -28,7 +28,7 @@
     "@emotion/styled": "^11.11.5",
     "@hookform/resolvers": "^3.0.1",
     "@originjs/vite-plugin-commonjs": "^1.0.3",
-    "@repo/contracts": "*",
+    "@vechain/vevote-contracts": "*",
     "@tanstack/query-sync-storage-persister": "^5.28.12",
     "@tanstack/react-query": "^5.64.2",
     "@tanstack/react-query-devtools": "^5.20.5",

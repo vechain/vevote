@@ -1,7 +1,7 @@
 import { IndexerRoutes } from "@/types/indexer";
 import { VotedResult } from "@/types/votes";
 import { getConfig } from "@repo/config";
-import { VeVote__factory } from "@repo/contracts";
+import { VeVote__factory } from "@vechain/vevote-contracts";
 import axios from "axios";
 import { executeCall } from "../contract";
 import { getAllEventLogs, ThorClient } from "@vechain/vechain-kit";

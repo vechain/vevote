@@ -2,7 +2,7 @@ import { ProposalCardType } from "@/types/proposal";
 import { useVevoteSendTransaction } from "@/utils/hooks/useVevoteSendTransaction";
 import { fromStringToUint256 } from "@/utils/proposals/helpers";
 import { getConfig } from "@repo/config";
-import { VeVote__factory } from "@repo/contracts";
+import { VeVote__factory } from "@vechain/vevote-contracts";
 import { ABIFunction, Address, Clause, ZERO_ADDRESS } from "@vechain/sdk-core";
 import { EnhancedClause, useWallet } from "@vechain/vechain-kit";
 import { useCallback } from "react";
