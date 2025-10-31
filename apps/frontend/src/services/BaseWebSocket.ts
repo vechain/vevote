@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { subscriptions } from "@vechain/sdk-network";
 import { getConfig } from "@repo/config";
-import { VeVote__factory } from "@repo/contracts";
+import { VeVote__factory } from "@vechain/vevote-contracts";
 import { thorClient } from "@/utils/thorClient";
 import { ABIEvent } from "@vechain/sdk-core";
 

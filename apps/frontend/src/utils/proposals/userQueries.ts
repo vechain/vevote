@@ -1,7 +1,7 @@
 import { getConfig } from "@repo/config";
 import { executeCall, executeMultipleClauses } from "../contract";
-import { VeVote__factory } from "@repo/contracts";
-import { NodeManagement__factory } from "@repo/contracts/typechain-types";
+import { VeVote__factory } from "@vechain/vevote-contracts";
+import { NodeManagement__factory } from "@vechain/vevote-contracts/typechain-types";
 import { AmnResponse, ExtendedStargateNode, NodeStrengthLevels, StargateNode } from "@/types/user";
 import axios from "axios";
 import { IndexerRoutes } from "@/types/indexer";
