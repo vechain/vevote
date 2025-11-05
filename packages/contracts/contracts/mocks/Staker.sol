@@ -160,12 +160,25 @@ contract Staker {
     returns (address endorser, uint256 stake, uint256 weight, uint256 queuedVET, uint8 status, uint32 offlineBlock)
   {
     Validation storage v = validations[validator];
+    // if validator is not found, return zero values
+    if (v.status == uint8(Status.NONE)) {
+      return (address(0), 0, 0, 0, uint8(Status.NONE), 0);
+    }
     endorser = v.endorser;
     stake = v.stake;
     weight = v.weight;
     queuedVET = (v.status == uint8(Status.QUEUED)) ? v.stake : 0;
     status = v.status;
     offlineBlock = 0;
+  }
+
+  function getValidationPeriodDetails(
+    address validator
+  ) external view returns (uint32 period, uint32 startBlock, uint32 exitBlock, uint32 completedPeriods) {
+    period = validations[validator].period;
+    startBlock = 0;
+    exitBlock = type(uint32).max;
+    completedPeriods = 10;
   }
 
   // ============ TEST HELPERS FOR MANUAL STATE CONTROL ============
