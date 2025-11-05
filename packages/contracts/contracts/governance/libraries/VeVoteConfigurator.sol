@@ -14,9 +14,8 @@ pragma solidity 0.8.20;
 import { VeVoteStorageTypes } from "./VeVoteStorageTypes.sol";
 import { VeVoteClockLogic } from "./VeVoteClockLogic.sol";
 import { VeVoteTypes } from "./VeVoteTypes.sol";
-import { INodeManagement } from "../../interfaces/INodeManagement.sol";
 import { IStargateNFT } from "../../interfaces/IStargateNFT.sol";
-import { IAuthority } from "../../interfaces/IAuthority.sol";
+import { IStaker } from "../../interfaces/IStaker.sol";
 import "@openzeppelin/contracts/utils/structs/Checkpoints.sol";
 import "@openzeppelin/contracts/utils/math/SafeCast.sol";
 
@@ -175,23 +174,6 @@ library VeVoteConfigurator {
   }
 
   /**
-   * @notice Sets the Node Management contract address.
-   * @dev Ensures the provided address is not zero before updating.
-   * @param self The storage reference for VeVote.
-   * @param newContractAddress The new contract address to set.
-   */
-  function setNodeManagementContract(
-    VeVoteStorageTypes.VeVoteStorage storage self,
-    address newContractAddress
-  ) external {
-    if (newContractAddress == address(0)) revert InvalidAddress();
-
-    address oldContractAddress = address(self.nodeManagement);
-    self.nodeManagement = INodeManagement(newContractAddress);
-    emit NodeManagementContractSet(oldContractAddress, newContractAddress);
-  }
-
-  /**
    * @notice Sets the Stargate NFT contract adress.
    * @dev Ensures the provided address is not zero before updating.
    * @param self The storage reference for VeVote.
@@ -291,17 +273,6 @@ library VeVoteConfigurator {
   }
 
   /**
-   * @notice Returns the Node Management contract.
-   * @param self The storage reference for VeVote.
-   * @return The current Node Management contract.
-   */
-  function getNodeManagementContract(
-    VeVoteStorageTypes.VeVoteStorage storage self
-  ) internal view returns (INodeManagement) {
-    return self.nodeManagement;
-  }
-
-  /**
    * @notice Returns the Stargate NFT contract.
    * @param self The storage reference for VeVote.
    * @return The current Stargate NFT contract.
@@ -311,12 +282,12 @@ library VeVoteConfigurator {
   }
 
   /**
-   * @notice Returns the builtin Authority contract.
+   * @notice Returns the builtin Staker contract.
    * @param self The storage reference for VeVote.
    * @return The current builtin validator contract.
    */
-  function getValidatorContract(VeVoteStorageTypes.VeVoteStorage storage self) internal view returns (IAuthority) {
-    return IAuthority(self.validatorContract);
+  function getValidatorContract(VeVoteStorageTypes.VeVoteStorage storage self) internal view returns (IStaker) {
+    return IStaker(self.validatorContract);
   }
 
   /**
