@@ -2,12 +2,13 @@
 
 pragma solidity 0.8.20;
 
-import { VeVoteTypes } from "../governance/libraries/VeVoteTypes.sol";
+import { VeVoteTypesV1 as VeVoteTypes } from "../deprected/governance/libraries/VeVoteTypesV1.sol";
 import { INodeManagement } from "./INodeManagement.sol";
 import { IStargateNFTV2 } from "./IStargateNFTV2.sol";
-import { IAuthority } from "./IAuthority.sol";
+import { IAuthority } from "../interfaces/IAuthority.sol";
 import "@openzeppelin/contracts/interfaces/IERC165.sol";
 import "@openzeppelin/contracts/interfaces/IERC6372.sol";
+import { INodeManagement } from "./INodeManagement.sol";
 
 interface IVeVoteV1 is IERC165, IERC6372 {
   error VeVoteInvalidStartBlock(uint48 startBlock);

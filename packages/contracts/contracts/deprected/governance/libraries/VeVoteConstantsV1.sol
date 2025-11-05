@@ -1,0 +1,26 @@
+// SPDX-License-Identifier: MIT
+
+//  8b           d8       8b           d8
+//  `8b         d8'       `8b         d8'           ,d
+//   `8b       d8'         `8b       d8'            88
+//    `8b     d8' ,adPPYba, `8b     d8' ,adPPYba, MM88MMM ,adPPYba,
+//     `8b   d8' a8P   _d88  `8b   d8' a8"     "8a  88   a8P_____88
+//      `8b d8'  8PP  "PP""   `8b d8'  8b       d8  88   8PP"""""""
+//       `888'   "8b,   ,aa    `888'   "8a,   ,a8"  88,  "8b,   ,aa
+//        `8'     `"Ybbd8"'     `8'     `"YbbdP"'   "Y888 `"Ybbd8"'
+
+pragma solidity 0.8.20;
+
+import { VeVoteTypesV1 as VeVoteTypes } from "./VeVoteTypesV1.sol";
+
+/// @title VeVoteConstants
+/// @notice Shared constants used across VeVote governance libraries.
+library VeVoteConstantsV1 {
+  // ---------------- Validator Constants ----------------
+
+  /// @dev The total number of Authority Nodes on VeChain.
+  uint256 internal constant TOTAL_AUTHORITY_MASTER_NODES = 101;
+
+  /// @dev The minimum staked VET required to become a validator (25 million VET in wei).
+  uint256 internal constant VALIDATOR_STAKED_VET_REQUIREMENT = 25_000_000 ether;
+}
