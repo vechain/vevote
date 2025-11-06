@@ -1,5 +1,5 @@
 import { getConfig } from "@repo/config";
-import { VeVote__factory } from "@repo/contracts";
+import { VeVote__factory } from "@vechain/vevote-contracts";
 import { EnhancedClause } from "@vechain/vechain-kit";
 import { useVevoteSendTransaction } from "@/utils/hooks/useVevoteSendTransaction";
 import { useCallback } from "react";
@@ -12,7 +12,7 @@ type ClausesProps = {
 const contractAddress = getConfig(import.meta.env.VITE_APP_ENV).vevoteContractAddress;
 const contractInterface = VeVote__factory.createInterface();
 
-export const useCancelProposal = () => {
+export const useCancelProposal = ({ proposalId }: { proposalId?: string }) => {
   const buildClauses = useCallback(({ proposalId, reason }: ClausesProps) => {
     const clauses: EnhancedClause[] = [];
 
@@ -47,7 +47,7 @@ export const useCancelProposal = () => {
 
   return useVevoteSendTransaction({
     clauseBuilder: buildClauses,
-    delayedRefetchKeys: [["infiniteProposals"], ["proposalEvent"]],
+    delayedRefetchKeys: [["infiniteProposals"], ["proposalEvent", proposalId]],
     refetchDelay: 100,
   });
 };

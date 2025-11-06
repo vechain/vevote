@@ -1,7 +1,7 @@
 import { ProposalDetails } from "@/pages/CreateProposal/CreateProposalProvider";
 import { ProposalCardType, ProposalEvent } from "@/types/proposal";
 import { getConfig } from "@repo/config";
-import { VeVote__factory } from "@repo/contracts";
+import { VeVote__factory } from "@vechain/vevote-contracts";
 import { getAllEventLogs, ThorClient } from "@vechain/vechain-kit";
 import { ethers } from "ethers";
 import { executeCall, executeMultipleClauses } from "../contract";
@@ -139,7 +139,7 @@ export const getProposalsEvents = async (
       })
       .filter(Boolean);
 
-    const mergedProposals: ProposalEvent[] = decodedCreateProposalEvents
+    const MergedProposal: ProposalEvent[] = decodedCreateProposalEvents
       .map(proposal => {
         const canceledProposal = decodedCanceledProposals.find(
           canceled => canceled?.proposalId === proposal?.proposalId,
@@ -164,7 +164,7 @@ export const getProposalsEvents = async (
       })
       .filter(Boolean) as ProposalEvent[];
 
-    const proposals = await fromEventsToProposals(mergedProposals);
+    const proposals = await fromEventsToProposals(MergedProposal);
 
     return { proposals };
   } catch (error) {

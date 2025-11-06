@@ -73,7 +73,7 @@ jobs:
           set -euo pipefail
           
           # Get the current ref and SHA
-          REF="${{ github.ref }}"
+          REF="${GITHUB_REF}"
           SHA="${{ github.sha }}"
           
           # Check if this is a tag or branch

@@ -1,7 +1,7 @@
 import { ProposalDetails } from "@/pages/CreateProposal/CreateProposalProvider";
 import { useVevoteSendTransaction } from "@/utils/hooks/useVevoteSendTransaction";
 import { getConfig } from "@repo/config";
-import { VeVote__factory } from "@repo/contracts";
+import { VeVote__factory } from "@vechain/vevote-contracts";
 import { ABIFunction, Address, Clause } from "@vechain/sdk-core";
 import { EnhancedClause } from "@vechain/vechain-kit";
 import { useCallback } from "react";

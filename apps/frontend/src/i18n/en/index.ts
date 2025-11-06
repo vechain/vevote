@@ -428,6 +428,7 @@ const en = {
       docs: "Docs",
       stargate: "StarGate",
       support: "Support",
+      governance_charter: "Governance Charter",
     },
   },
   admin: {

@@ -6,6 +6,8 @@ import { HexUInt } from "@vechain/sdk-core";
 import { thorClient } from "../thorClient";
 import { ThorClient, vnsUtils } from "@vechain/sdk-network";
 import { getConfig } from "@repo/config";
+import { HistoricalProposalData, HistoricalProposalMerged } from "@/types/historicalProposals";
+import { getProposalsFromIpfs } from "../ipfs/proposal";
 
 const nodeUrl = getConfig(import.meta.env.VITE_APP_ENV).nodeUrl;
 
@@ -47,6 +49,55 @@ export const getStatusParProposalMethod = (proposalIds?: string[]) => {
     method: "state" as const,
     args: [id],
   }));
+};
+
+export const calculateNextStateChangeTime = (proposals: ProposalCardType[]): number | null => {
+  const now = dayjs().valueOf();
+  let nextChangeTime: number | null = null;
+
+  for (const proposal of proposals) {
+    let proposalNextChange: number | null = null;
+
+    if (proposal.status === ProposalStatus.UPCOMING && proposal.startDate) {
+      proposalNextChange = dayjs(proposal.startDate).valueOf();
+    } else if (proposal.status === ProposalStatus.VOTING && proposal.endDate) {
+      proposalNextChange = dayjs(proposal.endDate).valueOf();
+    }
+
+    if (proposalNextChange && proposalNextChange > now) {
+      if (!nextChangeTime || proposalNextChange < nextChangeTime) {
+        nextChangeTime = proposalNextChange;
+      }
+    }
+  }
+
+  return nextChangeTime;
+};
+
+export const calculateRefetchInterval = (proposals: ProposalCardType[]): number | false => {
+  const nextChangeTime = calculateNextStateChangeTime(proposals);
+
+  if (!nextChangeTime) return false;
+
+  const now = dayjs().valueOf();
+  const timeUntilChange = nextChangeTime - now;
+
+  let interval: number;
+
+  const tenSeconds = 10 * 1000;
+  const thirtySeconds = 30 * 1000;
+  const oneMinute = 60 * 1000;
+  const fiveMinutes = 5 * oneMinute;
+
+  if (timeUntilChange <= oneMinute) {
+    interval = tenSeconds;
+  } else if (timeUntilChange <= fiveMinutes) {
+    interval = thirtySeconds;
+  } else {
+    interval = oneMinute;
+  }
+
+  return interval;
 };
 
 export const getIndexFromSingleChoice = (choice: SingleChoiceEnum): 0 | 1 | 2 => {
@@ -184,6 +235,40 @@ export const getVetDomainOrAddresses = async (addresses: string[]) => {
     return {
       address: addresses[index],
       domain,
+    };
+  });
+};
+
+export const parseHistoricalProposals = async (
+  data?: HistoricalProposalData[],
+): Promise<HistoricalProposalMerged[]> => {
+  if (!data) return [];
+  const ipfsFetches = data.map(d => getProposalsFromIpfs(d.description));
+
+  const ipfsDetails = await Promise.all(ipfsFetches);
+
+  return data.map(d => {
+    const choicesWithVote = d.choices.map((choice, index) => ({
+      choice,
+      votes: d.voteTallies[index],
+      percentage: d.totalVotes ? (d.voteTallies[index] / d.totalVotes) * 100 : 0,
+    }));
+
+    const createdAt = dayjs.unix(Number(d.createdDate)).toDate();
+
+    return {
+      id: d.proposalId,
+      proposer: d.proposer,
+      createdAt,
+      startDate: dayjs.unix(d.votingStartTime).toDate(),
+      endDate: dayjs.unix(d.votingEndTime).toDate(),
+      description: new Delta(ipfsDetails.find(ipfs => ipfs?.ipfsHash === d.description)?.markdownDescription || []).ops,
+      title: d.title,
+      votingQuestion: "",
+      status: d.totalVotes === 0 ? ProposalStatus.MIN_NOT_REACHED : ProposalStatus.EXECUTED,
+      choicesWithVote,
+      totalVotes: d.totalVotes,
+      ipfsHash: "",
     };
   });
 };

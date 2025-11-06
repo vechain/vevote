@@ -1,7 +1,7 @@
 import { useVevoteSendTransaction } from "@/utils/hooks/useVevoteSendTransaction";
 import { fromStringToUint256 } from "@/utils/proposals/helpers";
 import { getConfig } from "@repo/config";
-import { VeVote__factory } from "@repo/contracts";
+import { VeVote__factory } from "@vechain/vevote-contracts";
 import { ABIFunction, Address, Clause } from "@vechain/sdk-core";
 import { EnhancedClause } from "@vechain/vechain-kit";
 import { useCallback } from "react";
@@ -34,6 +34,7 @@ export const useExecuteProposal = ({ proposalId }: { proposalId?: string }) => {
 
   return useVevoteSendTransaction({
     clauseBuilder: buildClauses,
-    refetchQueryKeys: [["getSingleProposal", proposalId]],
+    refetchQueryKeys: [["infiniteProposals"]],
+    delayedRefetchKeys: [["proposalEvent", proposalId]],
   });
 };

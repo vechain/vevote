@@ -1,6 +1,16 @@
 import { useI18nContext } from "@/i18n/i18n-react";
 import { ArrowRightIcon, UserCheckIcon } from "@/icons";
-import { Icon, ModalBody, ModalHeader, useDisclosure, Spinner, Flex, Text, Skeleton } from "@chakra-ui/react";
+import {
+  Icon,
+  ModalBody,
+  ModalHeader,
+  useDisclosure,
+  Spinner,
+  Flex,
+  Text,
+  Skeleton,
+  useBreakpointValue,
+} from "@chakra-ui/react";
 import { useCallback, useState } from "react";
 import { useProposal } from "@/components/proposal/ProposalProvider";
 import { VotersFiltersPanel, DEFAULT_FILTER } from "./components/VotersFiltersPanel";
@@ -21,8 +31,11 @@ export const AllVotersModal = () => {
   const [sort, setSort] = useState(Sort.Newest);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [isFocused, setIsFocused] = useState(false);
 
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
+
+  const isMobile = useBreakpointValue({ base: true, md: false });
 
   const { votes, totalVotes, pagination, filterOptions, isLoading, error } = useVotersData({
     proposalId: proposal.id,
@@ -32,7 +45,7 @@ export const AllVotersModal = () => {
       searchQuery: debouncedSearchQuery,
     },
     page: currentPage,
-    pageSize: 10,
+    pageSize: isMobile ? 6 : 10,
   });
 
   const handleSelectedOptionChange = useCallback((value: string) => {
@@ -66,7 +79,11 @@ export const AllVotersModal = () => {
         </Text>
         <Icon as={ArrowRightIcon} width={4} height={4} color={"primary.600"} />
       </Flex>
-      <ModalSkeleton isOpen={isOpen} onClose={onClose} size={"3xl"}>
+      <ModalSkeleton
+        isOpen={isOpen}
+        onClose={onClose}
+        size={"3xl"}
+        contentProps={{ minHeight: { base: isFocused ? "90vh" : "0vh", md: "0vh" }, transition: "all 0.3s ease" }}>
         <ModalHeader>
           <ModalTitle title={LL.voters()} icon={UserCheckIcon} />
           <VotersFiltersPanel
@@ -77,6 +94,7 @@ export const AllVotersModal = () => {
             onSortChange={handleSortChange}
             searchQuery={searchQuery}
             onSearchChange={handleSearchChange}
+            setIsFocused={setIsFocused}
           />
         </ModalHeader>
         <ModalBody overflowX={"auto"}>

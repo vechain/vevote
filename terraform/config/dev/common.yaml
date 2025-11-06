@@ -1,8 +1,6 @@
 project: vevote
 project_alias: ve
-vercel_team_id: team_gWCnY5uRnzsZIb5SvnCXAIjH
-tag: latest
-domain_frontend_name: vevote.vechain.org
+environment: dev
 
 all_environments:
   mnemonic: denial kitchen pet squirrel other broom bar gas better priority spoil cross

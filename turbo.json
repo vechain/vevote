@@ -1,6 +1,5 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "globalDotEnv": [".env"],
   "globalDependencies": ["**/.env.*local"],
   "globalEnv": [
     "VITE_APP_ENV",
@@ -12,7 +11,7 @@
     "CONTRACT_TO_UPGRADE",
     "CONTRACT_VERSION"
   ],
-  "pipeline": {
+  "tasks": {
     "build": {
       "dependsOn": ["^compile", "@repo/config#check-or-generate-local-config"],
       "outputs": ["dist/**", "!dist/cache/**"]
@@ -47,48 +46,48 @@
     "setup-contracts": {
       "cache": false,
       "persistent": true,
-      "dependsOn": ["^compile", "@repo/contracts#check-contracts-deployment"]
+      "dependsOn": ["^compile", "@vechain/vevote-contracts#check-contracts-deployment"]
     },
     "setup-contracts:staging": {
       "cache": false,
       "persistent": true,
-      "dependsOn": ["^compile", "@repo/contracts#check-contracts-deployment"]
+      "dependsOn": ["^compile", "@vechain/vevote-contracts#check-contracts-deployment"]
     },
     "setup-contracts:testnet": {
       "cache": false,
       "persistent": true,
-      "dependsOn": ["^compile", "@repo/contracts#check-contracts-deployment:testnet"]
+      "dependsOn": ["^compile", "@vechain/vevote-contracts#check-contracts-deployment:testnet"]
     },
     "setup-contracts:mainnet": {
       "cache": false,
       "persistent": true,
-      "dependsOn": ["^compile", "@repo/contracts#check-contracts-deployment:mainnet"]
+      "dependsOn": ["^compile", "@vechain/vevote-contracts#check-contracts-deployment:mainnet"]
     },
     "setup-contracts:galactica-test": {
       "cache": false,
       "persistent": true,
-      "dependsOn": ["^compile", "@repo/contracts#check-contracts-deployment:galactica-test"]
+      "dependsOn": ["^compile", "@vechain/vevote-contracts#check-contracts-deployment:galactica-test"]
     },
     "@repo/config#check-or-generate-local-config": {
       "cache": false
     },
-    "@repo/contracts#check-contracts-deployment": {
+    "@vechain/vevote-contracts#check-contracts-deployment": {
       "cache": false,
       "dependsOn": ["^compile", "@repo/config#check-or-generate-local-config"]
     },
-    "@repo/contracts#check-contracts-deployment:staging": {
+    "@vechain/vevote-contracts#check-contracts-deployment:staging": {
       "cache": false,
       "dependsOn": ["^compile", "@repo/config#check-or-generate-local-config"]
     },
-    "@repo/contracts#check-contracts-deployment:testnet": {
+    "@vechain/vevote-contracts#check-contracts-deployment:testnet": {
       "cache": false,
       "dependsOn": ["^compile", "@repo/config#check-or-generate-local-config"]
     },
-    "@repo/contracts#check-contracts-deployment:mainnet": {
+    "@vechain/vevote-contracts#check-contracts-deployment:mainnet": {
       "cache": false,
       "dependsOn": ["^compile", "@repo/config#check-or-generate-local-config"]
     },
-    "@repo/contracts#check-contracts-deployment:galactica-test": {
+    "@vechain/vevote-contracts#check-contracts-deployment:galactica-test": {
       "cache": false
     },
     "clean": {

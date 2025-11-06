@@ -1,0 +1,7 @@
+test/
+scripts/
+cache/
+dist/
+typechain-types/
+*.js
+*.tsbuildinfo

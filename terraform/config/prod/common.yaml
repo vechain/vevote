@@ -1,16 +1,8 @@
 project: vevote
 project_alias: ve
-tag: latest
-vercel_team_id: team_gWCnY5uRnzsZIb5SvnCXAIjH
-public_zone_name: vevote.vechain.org
 environment: prod
 region: eu-west-1
-domain_frontend_name: vevote.vechain.org
-
-vercel_domain_verify_record: "vc-domain-verify=vevote.vechain.org,26cca055182df33a0af6"
-vercel_domain_name: "_vercel.vevote.vechain.org"
-vercel_domain_ip: "76.76.21.21"
-vercel_domain_record_name: vevote.vechain.org
+public_zone_name: vevote.vechain.org
 
 all_environments:
   mnemonic: denial kitchen pet squirrel other broom bar gas better priority spoil cross

@@ -6,6 +6,8 @@ import { Pagination } from "@/components/ui/Pagination";
 import { ProposalsListSkeleton } from "@/components/ui/ProposalsListSkeleton";
 import { SearchInput } from "@/components/ui/SearchInput";
 import { useUser } from "@/contexts/UserProvider";
+import { useProposalsEvents } from "@/hooks/useProposalsEvents";
+import { useProposalsUrlParams } from "@/hooks/useProposalsUrlParams";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { CircleInfoIcon } from "@/icons";
 import { ProposalCardType } from "@/types/proposal";
@@ -14,8 +16,6 @@ import { useWallet } from "@vechain/vechain-kit";
 import { PropsWithChildren, useMemo } from "react";
 import { useCreateProposal } from "../CreateProposal/CreateProposalProvider";
 import { ProposalCard } from "./ProposalCard";
-import { useProposalsEvents } from "@/hooks/useProposalsEvents";
-import { useProposalsUrlParams } from "@/hooks/useProposalsUrlParams";
 
 const ITEMS_PER_PAGE = 6;
 
@@ -60,7 +60,7 @@ export const Proposals = () => {
             gap={4}
             alignItems={"center"}
             justifyContent={{ base: "space-between", md: "flex-end" }}
-            minWidth="0"
+            w={{ base: "100%", md: "auto" }}
             overflow="hidden">
             <SearchInput
               value={searchInput}

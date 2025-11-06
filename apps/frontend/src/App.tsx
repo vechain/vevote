@@ -6,11 +6,16 @@ import { CreateProposal } from "./pages/CreateProposal/CreateProposal";
 import { AdminDashboard } from "./pages/Admin/AdminDashboard";
 import { Footer } from "./components/footer/Footer";
 import { ScrollToTop } from "./components/ui/ScrollToTop";
+import { useVoteCastInvalidate } from "./hooks/useVoteCastInvalidate";
+import { useProposalCreatedInvalidate } from "./hooks/useProposalCreatedInvalidate";
 
 const excludedRoutes = ["/create-proposal", "/admin"];
 
 function Layout() {
   const { pathname } = useLocation();
+
+  useVoteCastInvalidate();
+  useProposalCreatedInvalidate();
 
   return (
     <Box h="full" bgColor="#f7f7f7">
