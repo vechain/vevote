@@ -108,6 +108,60 @@ describe("VeVote", function () {
     });
   });
 
+  describe("Upgradeability", function () {
+    it("should upgrade the contract to V2 sucessfully", async function () {
+      // Deploy V1 contracts
+      const { vevote, strengthHolder, validatorHolder, dawnHolder, mjolnirHolder, stargateNFT, validator } =
+        await getOrDeployContractInstances({ forceDeploy: true });
+
+      const tx = await createProposal({
+        votingPeriod: 6,
+      });
+      const proposalId = await getProposalIdFromTx(tx);
+      await waitForProposalToStart(proposalId);
+
+      // User owns 1 node with weight 100
+      expect(await vevote.getVoteWeight(strengthHolder.address, ZeroAddress)).to.equal(10000);
+
+      // User Vote FOR the proposal
+      await vevote.connect(strengthHolder).castVote(proposalId, 1, ZeroAddress);
+
+      // Total votes should be 100
+      expect(await vevote.totalVotes(proposalId)).to.equal(10000);
+      // Choice 1 should have 50 votes (scaled by 100)
+      const votes = await vevote.getProposalVotes(proposalId);
+
+      expect(votes[0]).to.equal(0);
+      expect(votes[1]).to.equal(10000);
+      expect(votes[2]).to.equal(0);
+
+      // Another voter votes AGAINST
+      await vevote.connect(validatorHolder).castVote(proposalId, 0, validator as AddressLike);
+
+      // Choice 1 should have 50 votes (scaled by 100)
+      const votes2 = await vevote.getProposalVotes(proposalId);
+      expect(votes2[0]).to.equal(500000); // validatorHolder put all his weight AGAINST
+      expect(votes2[1]).to.equal(10000);
+      expect(votes2[2]).to.equal(0);
+
+      const tokenIds = await stargateNFT.idsOwnedBy(dawnHolder.address);
+      await stargateNFT.connect(dawnHolder).addTokenManager(mjolnirHolder.address, tokenIds[0]);
+
+      await expect(vevote.connect(dawnHolder).castVote(proposalId, 1, ZeroAddress)).to.be.revertedWithCustomError(
+        vevote,
+        "VoterNotEligible",
+      );
+
+      // Another voter votes
+      await vevote.connect(mjolnirHolder).castVote(proposalId, 1, ZeroAddress); // 150000 + 100
+
+      const votes3 = await vevote.getProposalVotes(proposalId);
+      expect(votes3[0]).to.equal(500000);
+      expect(votes3[1]).to.equal(160100); // Latest VOTER puts all his weight FOR
+      expect(votes3[2]).to.equal(0);
+    });
+  });
+
   describe("Proposal Creation", function () {
     it("Only whitelisted addresses can create proposals", async function () {
       const { vevote, otherAccount } = await getOrDeployContractInstances({});
@@ -672,16 +726,8 @@ describe("VeVote", function () {
     });
 
     it("Should update proposal choice tally correctly when a user votes", async function () {
-      const {
-        vevote,
-        strengthHolder,
-        validatorHolder,
-        dawnHolder,
-        mjolnirHolder,
-        nodeManagement,
-        stargateNFT,
-        validator,
-      } = await getOrDeployContractInstances({ forceDeploy: true });
+      const { vevote, strengthHolder, validatorHolder, dawnHolder, mjolnirHolder, stargateNFT, validator } =
+        await getOrDeployContractInstances({ forceDeploy: true });
       const tx = await createProposal({
         votingPeriod: 6,
       });
