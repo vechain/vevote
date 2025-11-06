@@ -4,7 +4,7 @@ import { VeVote__factory } from "@vechain/vevote-contracts";
 import { StargateNFT__factory } from "@vechain/vevote-contracts/typechain-types";
 import { ExtendedStargateNode, NodeStrengthLevels, StargateNode } from "@/types/user";
 import axios from "axios";
-import { IndexerRoutes } from "@/types/indexer";
+import { IndexerRoutes, ValidatorsResponse } from "@/types/indexer";
 
 const contractAddress = getConfig(import.meta.env.VITE_APP_ENV).vevoteContractAddress;
 const stargateNFTAddress = getConfig(import.meta.env.VITE_APP_ENV).stargateNFTContractAddress;
@@ -142,21 +142,13 @@ export const getAMN = async (address?: string) => {
   if (!address) return { data: undefined };
   try {
     const url = `${indexerUrl}${IndexerRoutes.MASTER_NODE}${address}&page=0&size=1&direction=DESC`;
-    const res = await axios.get(url, { headers: { accept: "*/*" } });
-
-    const data = res.data;
-    const list = Array.isArray(data)
-      ? data
-      : Array.isArray(data?.items)
-        ? data.items
-        : Array.isArray(data?.content)
-          ? data.content
-          : [];
+    const res = await axios.get<ValidatorsResponse>(url, { headers: { accept: "*/*" } });
+    const list = res.data?.data ?? [];
 
     if (!Array.isArray(list) || list.length === 0) return { data: undefined };
 
     const first = list[0];
-    const masterNode = first?.address ?? first?.id ?? (typeof first === "string" ? first : undefined);
+    const masterNode = first.id;
     if (!masterNode) return { data: undefined };
 
     const powerRes = await executeCall({
