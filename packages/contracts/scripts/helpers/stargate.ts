@@ -9,6 +9,7 @@ import { ThorClient } from "@vechain/sdk-network";
 import { getConfig } from "@repo/config";
 import { AddressLike } from "ethers";
 import { waitForNextBlock } from "../../test/helpers/common";
+import { StargateNFTV2 } from "../../typechain-types";
 const thorClient = ThorClient.at(getConfig().nodeUrl);
 
 export interface Level {
@@ -256,6 +257,11 @@ export async function deployStargateNFTLibrariesV2() {
   const StargateNFTSettingsLibV2 = await SettingsV2.deploy();
   await StargateNFTSettingsLibV2.waitForDeployment();
 
+  // Deploy VetGeneratedVtho Library
+  const VetGeneratedVthoV2 = await ethers.getContractFactory("VetGeneratedVthoV2");
+  const StargateNFTVetGeneratedVthoLibV2 = await VetGeneratedVthoV2.deploy();
+  await StargateNFTVetGeneratedVthoLibV2.waitForDeployment();
+
   // Deploy Token Library
   const TokenV2 = await ethers.getContractFactory("TokenV2");
   const StargateNFTTokenLibV2 = await TokenV2.deploy();
@@ -264,6 +270,7 @@ export async function deployStargateNFTLibrariesV2() {
   return {
     StargateNFTClockLibV2,
     StargateNFTTypesLibV2,
+    StargateNFTVetGeneratedVthoLibV2,
     StargateNFTMintingLibV2,
     StargateNFTSettingsLibV2,
     StargateNFTTokenLibV2,
@@ -408,6 +415,42 @@ export const createNodeHolder = async (
     }
     await stargateNFT.connect(account).stake(level, { value: vetRequired });
   }
+};
+
+export const createNodeHolderV2 = async (
+  level: number,
+  admin: HardhatEthersSigner,
+  account: HardhatEthersSigner,
+  stargateNFT: StargateNFTV2,
+) => {
+  const vetRequired = initialTokenLevels[level - 1].level.vetAmountRequiredToStake;
+
+  if (network.name == "hardhat") {
+    await network.provider.send("hardhat_setBalance", [account.address, "0x52B7D2DCC80CD2E4000000"]);
+  } else {
+    const vtho = await ethers.getContractAt(ERC20_ABI, VTHO_ADDRESS);
+    const vthoRequired = ethers.parseUnits("1000", 18); // replace with actual required VTHO amount
+
+    const currentVthoBalance = await vtho.balanceOf(account.address);
+
+    if (currentVthoBalance < vthoRequired) {
+      const tx = await vtho.connect(admin).transfer(account.address, vthoRequired);
+      await tx.wait();
+      console.log(`Sent ${ethers.formatEther(vthoRequired)} VTHO to ${account.address}`);
+    }
+
+    if ((await ethers.provider.getBalance(account.address)) < vetRequired) {
+      await admin.sendTransaction({
+        to: account.address,
+        value: vetRequired,
+      });
+      console.log(`Sent ${ethers.formatEther(vetRequired)} VET to ${account.address}`);
+    }
+  }
+
+  await stargateNFT.connect(account).stake(level, {
+    value: vetRequired,
+  });
 };
 
 export const chunk = <T>(array: T[], size: number): T[][] =>

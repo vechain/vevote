@@ -8,12 +8,28 @@ import {
   createValidator,
   getCurrentBlockNumber,
   getProposalIdFromTx,
+  moveBlocks,
   waitForNextBlock,
   waitForProposalToEnd,
   waitForProposalToStart,
 } from "./helpers/common";
-import { createNodeHolder, TokenLevelId } from "../scripts/helpers";
+import {
+  createNodeHolder,
+  createNodeHolderV2,
+  deployAndInitializeLatest,
+  deployProxy,
+  deployStargateNFTLibraries,
+  deployStargateNFTLibrariesV2,
+  deployUpgradeableWithoutInitialization,
+  initializeProxy,
+  initialTokenLevels,
+  TokenLevelId,
+  upgradeProxy,
+  vthoRewardPerBlockPerLevel,
+} from "../scripts/helpers";
 import { AddressLike, ZeroAddress } from "ethers";
+import { NodeManagement, Stargate, StargateDelegation, StargateNFTV2, VeVoteV1 } from "../typechain-types";
+import { deployLibraries, deployLibrariesV1 } from "../scripts/helpers/deployLibraries";
 
 describe("VeVote", function () {
   describe("Deployment", function () {
@@ -109,16 +125,192 @@ describe("VeVote", function () {
   });
 
   describe("Upgradeability", function () {
-    it("should upgrade the contract to V2 sucessfully", async function () {
-      // Deploy V1 contracts
-      const { vevote, strengthHolder, validatorHolder, dawnHolder, mjolnirHolder, stargateNFT, validator } =
-        await getOrDeployContractInstances({ forceDeploy: true });
-
-      const tx = await createProposal({
-        votingPeriod: 6,
+    it.only("should upgrade the contract to V2 sucessfully", async function () {
+      const config = createLocalConfig();
+      const { vechainNodesMock, authorityContractMock, stakerContractMock } = await getOrDeployContractInstances({
+        forceDeploy: false,
       });
-      const proposalId = await getProposalIdFromTx(tx);
-      await waitForProposalToStart(proposalId);
+      const [
+        admin,
+        whitelistedAccount,
+        otherAccount,
+        strengthHolder,
+        thunderHolder,
+        mjolnirHolder,
+        veThorXHolder,
+        strengthXHolder,
+        thunderXHolder,
+        mjolnirXHolder,
+        flashHolder,
+        lighteningHolder,
+        dawnHolder,
+        validatorHolder,
+        ...otherAccounts
+      ] = await ethers.getSigners();
+      const {
+        StargateNFTClockLibV2,
+        StargateNFTSettingsLibV2,
+        StargateNFTTokenLibV2,
+        StargateNFTMintingLibV2,
+        StargateNFTLevelsLibV2,
+        StargateNFTVetGeneratedVthoLibV2,
+      } = await deployStargateNFTLibrariesV2();
+      const stargateNFTProxyAddressV2 = await deployUpgradeableWithoutInitialization(
+        "StargateNFTV2",
+        {
+          ClockV2: await StargateNFTClockLibV2.getAddress(),
+          MintingLogicV2: await StargateNFTMintingLibV2.getAddress(),
+          SettingsV2: await StargateNFTSettingsLibV2.getAddress(),
+          TokenV2: await StargateNFTTokenLibV2.getAddress(),
+          VetGeneratedVthoV2: await StargateNFTVetGeneratedVthoLibV2.getAddress(),
+          LevelsV2: await StargateNFTLevelsLibV2.getAddress(),
+        },
+        false,
+      );
+
+      const stargateDelegationProxyAddress = await deployUpgradeableWithoutInitialization(
+        "StargateDelegation",
+        {},
+        false,
+      );
+
+      const stargateNFTV2 = (await initializeProxy(
+        stargateNFTProxyAddressV2,
+        "StargateNFTV2",
+        [
+          {
+            tokenCollectionName: "VeChain Node Token",
+            tokenCollectionSymbol: "VNT",
+            baseTokenURI: "ipfs://todo/metadata/",
+            admin: admin.address,
+            upgrader: admin.address,
+            pauser: admin.address,
+            levelOperator: admin.address,
+            legacyNodes: await vechainNodesMock.getAddress(),
+            legacyLastTokenId: admin.address,
+            levelsAndSupplies: initialTokenLevels,
+            stargateDelegation: stargateDelegationProxyAddress,
+            vthoToken: "0x0000000000000000000000000000456E65726779",
+          },
+        ],
+        {
+          ClockV2: await StargateNFTClockLibV2.getAddress(),
+          MintingLogicV2: await StargateNFTMintingLibV2.getAddress(),
+          SettingsV2: await StargateNFTSettingsLibV2.getAddress(),
+          TokenV2: await StargateNFTTokenLibV2.getAddress(),
+          VetGeneratedVthoV2: await StargateNFTVetGeneratedVthoLibV2.getAddress(),
+          LevelsV2: await StargateNFTLevelsLibV2.getAddress(),
+        },
+      )) as StargateNFTV2;
+
+      (await initializeProxy(
+        stargateDelegationProxyAddress,
+        "StargateDelegation",
+        [
+          {
+            upgrader: admin.address,
+            admin: admin.address,
+            stargateNFT: await stargateNFTV2.getAddress(),
+            vthoToken: "0x0000000000000000000000000000456E65726779",
+            vthoRewardPerBlock: vthoRewardPerBlockPerLevel,
+            delegationPeriod: 10, // 10 blocks"
+            operator: "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+          },
+        ],
+        {},
+      )) as unknown as StargateDelegation;
+
+      const nodeManagement = (await deployAndInitializeLatest(
+        "NodeManagement",
+        [
+          {
+            name: "initialize",
+            args: [await vechainNodesMock.getAddress(), admin.address, admin.address],
+          },
+          {
+            name: "initializeV3",
+            args: [await stargateNFTV2.getAddress()],
+          },
+        ],
+        {},
+        false,
+      )) as NodeManagement;
+
+      // Create mock node holders
+
+      // ---------------------- Create Node Holders ----------------------
+      await createNodeHolderV2(TokenLevelId.Strength, admin, strengthHolder, stargateNFTV2);
+      await createNodeHolderV2(TokenLevelId.Thunder, admin, thunderHolder, stargateNFTV2);
+      await createNodeHolderV2(TokenLevelId.Mjolnir, admin, mjolnirHolder, stargateNFTV2);
+      await createNodeHolderV2(TokenLevelId.VeThorX, admin, veThorXHolder, stargateNFTV2);
+      await createNodeHolderV2(TokenLevelId.StrengthX, admin, strengthXHolder, stargateNFTV2);
+      await createNodeHolderV2(TokenLevelId.ThunderX, admin, thunderXHolder, stargateNFTV2);
+      await createNodeHolderV2(TokenLevelId.MjolnirX, admin, mjolnirXHolder, stargateNFTV2);
+      await createNodeHolderV2(TokenLevelId.Dawn, admin, dawnHolder, stargateNFTV2);
+      await createNodeHolderV2(TokenLevelId.Lightning, admin, lighteningHolder, stargateNFTV2);
+      await createNodeHolderV2(TokenLevelId.Flash, admin, flashHolder, stargateNFTV2);
+      const mockIdentity = ethers.encodeBytes32String("vechain-validator");
+      await authorityContractMock.add(validatorHolder.address, validatorHolder.address, mockIdentity);
+
+      // ---------------------- Deploy Contracts ----------------------
+      const { veVoteConfigurator, veVoteProposalLogic, veVoteQuoromLogic, veVoteStateLogic, veVoteVoteLogic } =
+        await deployLibraries();
+
+      const {
+        veVoteConfiguratorV1,
+        veVoteProposalLogicV1,
+        veVoteQuoromLogicV1,
+        veVoteStateLogicV1,
+        veVoteVoteLogicV1,
+      } = await deployLibrariesV1();
+      const vevote = (await deployProxy(
+        "VeVoteV1",
+        [
+          {
+            quorumPercentage: config.QUORUM_PERCENTAGE,
+            initialMinVotingDelay: config.INITIAL_MIN_VOTING_DELAY,
+            initialMaxVotingDuration: config.INITIAL_MAX_VOTING_DURATION,
+            initialMinVotingDuration: config.INITIAL_MIN_VOTING_DURATION,
+            nodeManagement: await nodeManagement.getAddress(),
+            stargateNFT: await stargateNFTV2.getAddress(),
+            authorityContract: await authorityContractMock.getAddress(),
+            initialMinStakedAmount: config.MIN_VET_STAKE,
+          },
+          {
+            admin: admin.address,
+            upgrader: admin.address,
+            whitelist: [whitelistedAccount.address],
+            settingsManager: admin.address,
+            nodeWeightManager: admin.address,
+            executor: admin.address,
+            whitelistAdmin: admin.address,
+          },
+        ],
+        {
+          VeVoteVoteLogicV1: await veVoteVoteLogicV1.getAddress(),
+          VeVoteStateLogicV1: await veVoteStateLogicV1.getAddress(),
+          VeVoteQuorumLogicV1: await veVoteQuoromLogicV1.getAddress(),
+          VeVoteProposalLogicV1: await veVoteProposalLogicV1.getAddress(),
+          VeVoteConfiguratorV1: await veVoteConfiguratorV1.getAddress(),
+        },
+        false,
+      )) as unknown as VeVoteV1;
+
+      const tx = await vevote
+        .connect(whitelistedAccount)
+        .propose("QmPaAAXwS2kGyr63q6iakVT8ybqeYeRLqwqUCYu64mNLME", (await getCurrentBlockNumber()) + 10, 10);
+      const proposeReceipt = await tx.wait();
+      const event = proposeReceipt?.logs[0];
+
+      const decodedLogs = vevote.interface.parseLog({
+        topics: [...(event?.topics as string[])],
+        data: event ? event.data : "",
+      });
+
+      const proposalId = decodedLogs?.args[0];
+      const snapshot = parseInt((await vevote.proposalSnapshot(proposalId)).toString()) + 1;
+      const currentBlockNumber = await getCurrentBlockNumber();
+      await moveBlocks(snapshot - currentBlockNumber);
 
       // User owns 1 node with weight 100
       expect(await vevote.getVoteWeight(strengthHolder.address, ZeroAddress)).to.equal(10000);
@@ -136,7 +328,7 @@ describe("VeVote", function () {
       expect(votes[2]).to.equal(0);
 
       // Another voter votes AGAINST
-      await vevote.connect(validatorHolder).castVote(proposalId, 0, validator as AddressLike);
+      await vevote.connect(validatorHolder).castVote(proposalId, 0, validatorHolder.address);
 
       // Choice 1 should have 50 votes (scaled by 100)
       const votes2 = await vevote.getProposalVotes(proposalId);
@@ -144,8 +336,8 @@ describe("VeVote", function () {
       expect(votes2[1]).to.equal(10000);
       expect(votes2[2]).to.equal(0);
 
-      const tokenIds = await stargateNFT.idsOwnedBy(dawnHolder.address);
-      await stargateNFT.connect(dawnHolder).addTokenManager(mjolnirHolder.address, tokenIds[0]);
+      const tokenIds = await nodeManagement.getNodeIds(dawnHolder.address);
+      await nodeManagement.connect(dawnHolder).delegateNode(mjolnirHolder.address, tokenIds[0]);
 
       await expect(vevote.connect(dawnHolder).castVote(proposalId, 1, ZeroAddress)).to.be.revertedWithCustomError(
         vevote,
@@ -159,6 +351,96 @@ describe("VeVote", function () {
       expect(votes3[0]).to.equal(500000);
       expect(votes3[1]).to.equal(160100); // Latest VOTER puts all his weight FOR
       expect(votes3[2]).to.equal(0);
+
+      let storageSlots = [];
+
+      const initialSlot = BigInt("0xe4daadd51b0f186722e079c28ae9ded1c74d42eecd2103f7a5ce80c77c626300"); // Slot 0 of VeVote
+
+      for (let i = initialSlot; i < initialSlot + BigInt(100); i++) {
+        storageSlots.push(await ethers.provider.getStorage(await vevote.getAddress(), i));
+      }
+
+      storageSlots = storageSlots.filter(
+        slot => slot !== "0x0000000000000000000000000000000000000000000000000000000000000000",
+      ); // removing empty slots
+
+      // upgrade stargateNFT deploy stargate and upgrade VeVote to V2
+
+      const {
+        StargateNFTClockLib,
+        StargateNFTMintingLib,
+        StargateNFTLevelsLib,
+        StargateNFTSettingsLib,
+        StargateNFTTokenLib,
+        StargateNFTTokenManagerLib,
+      } = await deployStargateNFTLibraries();
+
+      const stargate = (await deployAndInitializeLatest(
+        "Stargate",
+        [
+          {
+            name: "initialize",
+            args: [
+              {
+                admin: admin.address,
+                protocolStakerContract: await stakerContractMock.getAddress(),
+                stargateNFTContract: await stargateNFTV2.getAddress(),
+                maxClaimablePeriods: 832,
+              },
+            ],
+          },
+        ],
+        {
+          Clock: await StargateNFTClockLib.getAddress(),
+        },
+      )) as Stargate;
+
+      // upgrade StargateNFT to latest version
+      await upgradeProxy(
+        "StargateNFTV2",
+        "StargateNFT",
+        await stargateNFTV2.getAddress(),
+        [await stargate.getAddress(), [], []],
+
+        {
+          version: 3,
+          libraries: {
+            Clock: await StargateNFTClockLib.getAddress(),
+            MintingLogic: await StargateNFTMintingLib.getAddress(),
+            Levels: await StargateNFTLevelsLib.getAddress(),
+            Settings: await StargateNFTSettingsLib.getAddress(),
+            Token: await StargateNFTTokenLib.getAddress(),
+            TokenManager: await StargateNFTTokenManagerLib.getAddress(),
+          },
+        },
+      );
+
+      // upgrade VeVote to V2
+      await upgradeProxy("VeVoteV1", "VeVote", await vevote.getAddress(), [], {
+        version: 2,
+        libraries: {
+          VeVoteVoteLogic: await veVoteVoteLogic.getAddress(),
+          VeVoteStateLogic: await veVoteStateLogic.getAddress(),
+          VeVoteQuorumLogic: await veVoteQuoromLogic.getAddress(),
+          VeVoteProposalLogic: await veVoteProposalLogic.getAddress(),
+          VeVoteConfigurator: await veVoteConfigurator.getAddress(),
+        },
+      });
+      let storageSlotsAfter = [];
+
+      for (let i = initialSlot; i < initialSlot + BigInt(100); i++) {
+        storageSlotsAfter.push(await ethers.provider.getStorage(await vevote.getAddress(), i));
+      }
+
+      storageSlotsAfter = storageSlotsAfter.filter(
+        slot => slot !== "0x0000000000000000000000000000000000000000000000000000000000000000",
+      ); // removing empty slots
+
+      // Check if storage slots are the same after upgrade
+      for (let i = 0; i < storageSlots.length; i++) {
+        // console.log("*** storageSlots v1", storageSlots[i], "vs v2", storageSlotsAfter[i])
+        expect(storageSlots[i]).to.equal(storageSlotsAfter[i]);
+      }
     });
   });
 
