@@ -1,12 +1,14 @@
 import { HardhatEthersSigner } from "@nomicfoundation/hardhat-ethers/signers";
 import { ethers, network } from "hardhat";
-import { StargateNFT, StargateNFT__factory } from "../../typechain-types";
+import { StargateNFT, Stargate__factory, Stargate, TokenAuctionMock } from "../../typechain-types";
 import { ERC20_ABI, VTHO_ADDRESS } from "./constants";
 import { ABIContract, Address, Clause } from "@vechain/sdk-core";
-import { SeedAccount, TestPk } from "./seedAccounts";
+import { SeedAccount } from "./seedAccounts";
 import { TransactionUtils } from "@repo/utils";
 import { ThorClient } from "@vechain/sdk-network";
 import { getConfig } from "@repo/config";
+import { AddressLike } from "ethers";
+import { waitForNextBlock } from "../../test/helpers/common";
 const thorClient = ThorClient.at(getConfig().nodeUrl);
 
 export interface Level {
@@ -228,6 +230,48 @@ export const vthoRewardPerBlockPerLevel = [
   },
 ];
 
+export async function deployStargateNFTLibrariesV2() {
+  // Deploy Clock Library
+  const ClockV2 = await ethers.getContractFactory("ClockV2");
+  const StargateNFTClockLibV2 = await ClockV2.deploy();
+  await StargateNFTClockLibV2.waitForDeployment();
+
+  // Deploy DataTypes Library
+  const DataTypesV2 = await ethers.getContractFactory("DataTypesV2");
+  const StargateNFTTypesLibV2 = await DataTypesV2.deploy();
+  await StargateNFTTypesLibV2.waitForDeployment();
+
+  // Deploy Levels Library
+  const LevelsV2 = await ethers.getContractFactory("LevelsV2");
+  const StargateNFTLevelsLibV2 = await LevelsV2.deploy();
+  await StargateNFTLevelsLibV2.waitForDeployment();
+
+  // Deploy MintingLogic Library
+  const MintingLogicV2 = await ethers.getContractFactory("MintingLogicV2");
+  const StargateNFTMintingLibV2 = await MintingLogicV2.deploy();
+  await StargateNFTMintingLibV2.waitForDeployment();
+
+  // Deploy Settings Library
+  const SettingsV2 = await ethers.getContractFactory("SettingsV2");
+  const StargateNFTSettingsLibV2 = await SettingsV2.deploy();
+  await StargateNFTSettingsLibV2.waitForDeployment();
+
+  // Deploy Token Library
+  const TokenV2 = await ethers.getContractFactory("TokenV2");
+  const StargateNFTTokenLibV2 = await TokenV2.deploy();
+  await StargateNFTTokenLibV2.waitForDeployment();
+
+  return {
+    StargateNFTClockLibV2,
+    StargateNFTTypesLibV2,
+    StargateNFTMintingLibV2,
+    StargateNFTSettingsLibV2,
+    StargateNFTTokenLibV2,
+    StargateNFTLevelsLibV2,
+  };
+}
+
+// Latest (V3) library deployment set for StargateNFT
 export async function deployStargateNFTLibraries() {
   // Deploy Clock Library
   const Clock = await ethers.getContractFactory("Clock");
@@ -259,10 +303,10 @@ export async function deployStargateNFTLibraries() {
   const StargateNFTTokenLib = await Token.deploy();
   await StargateNFTTokenLib.waitForDeployment();
 
-  // Deploy VetGeneratedVtho Library
-  const VetGeneratedVtho = await ethers.getContractFactory("VetGeneratedVtho");
-  const StargateNFTVetGeneratedVthoLib = await VetGeneratedVtho.deploy();
-  await StargateNFTVetGeneratedVthoLib.waitForDeployment();
+  // Deploy TokenManager Library (V3)
+  const TokenManager = await ethers.getContractFactory("TokenManager");
+  const StargateNFTTokenManagerLib = await TokenManager.deploy();
+  await StargateNFTTokenManagerLib.waitForDeployment();
 
   return {
     StargateNFTClockLib,
@@ -270,16 +314,43 @@ export async function deployStargateNFTLibraries() {
     StargateNFTMintingLib,
     StargateNFTSettingsLib,
     StargateNFTTokenLib,
-    StargateNFTVetGeneratedVthoLib,
     StargateNFTLevelsLib,
+    StargateNFTTokenManagerLib,
   };
 }
+
+const createXNodeHolder = async (vechainNodesMock: TokenAuctionMock, level: number, endorser: HardhatEthersSigner) => {
+  const latest = await ethers.provider.getBlock("latest");
+  const base = Number(latest?.number ?? 1);
+  const tokenId = base * 100 + level; // unique, non-zero id per call
+
+  await vechainNodesMock.helper__setMetadata(tokenId, {
+    owner: endorser.address,
+    strengthLevel: level,
+    onUpgrade: false,
+    isOnAuction: false,
+    lastTransferTime: 0,
+    createdAt: 0,
+    updatedAt: 0,
+  });
+
+  return tokenId;
+};
+
+export const mineBlocks = async (blocks: number) => {
+  for (let i = 0; i < blocks; i++) {
+    await waitForNextBlock();
+  }
+};
 
 export const createNodeHolder = async (
   level: number,
   admin: HardhatEthersSigner,
   account: HardhatEthersSigner,
   stargateNFT: StargateNFT,
+  stargate?: Stargate,
+  vechainNodesMock?: TokenAuctionMock,
+  validator?: String,
 ) => {
   const vetRequired = initialTokenLevels[level - 1].level.vetAmountRequiredToStake;
 
@@ -305,10 +376,38 @@ export const createNodeHolder = async (
       console.log(`Sent ${ethers.formatEther(vetRequired)} VET to ${account.address}`);
     }
   }
+  // Basic sanity validations
+  if (level <= 0) {
+    throw new Error(`Invalid level id: ${level}`);
+  }
+  // Ensure level exists on-chain (will revert if not configured)
+  await stargateNFT.getLevel(level);
 
-  await stargateNFT.connect(account).stake(level, {
-    value: vetRequired,
-  });
+  const isXLevel = initialTokenLevels[level - 1].level.isX;
+
+  if (stargate) {
+    if (isXLevel) {
+      if (!vechainNodesMock) {
+        throw new Error("vechainNodesMock is required to migrate X levels");
+      }
+      if (!validator) {
+        throw new Error("validator address is required to migrate X levels");
+      }
+      // Create legacy X-Node on the TokenAuction mock, then migrate via Stargate
+      const legacyTokenId = await createXNodeHolder(vechainNodesMock as TokenAuctionMock, level, account);
+      await stargate
+        .connect(account)
+        .migrateAndDelegate(legacyTokenId, validator as AddressLike, { value: vetRequired });
+    } else {
+      await stargate.connect(account).stake(level, { value: vetRequired });
+    }
+  } else {
+    // Legacy path: directly stake on StargateNFT (only valid for non-X levels)
+    if (isXLevel) {
+      throw new Error("Cannot mint X-Node via stake on StargateNFT. Provide stargateAddress to migrate instead.");
+    }
+    await stargateNFT.connect(account).stake(level, { value: vetRequired });
+  }
 };
 
 export const chunk = <T>(array: T[], size: number): T[][] =>
@@ -317,7 +416,7 @@ export const chunk = <T>(array: T[], size: number): T[][] =>
 export const stake = async (stargateAddress: string, accounts: SeedAccount[]) => {
   console.log(`Minting Stargate NFTs (excluding X-Nodes)...`);
 
-  const abi = ABIContract.ofAbi(StargateNFT__factory.abi);
+  const abi = ABIContract.ofAbi(Stargate__factory.abi);
   const stakeFunction = abi.getFunction("stake");
 
   // Filter out X-Node Levels
