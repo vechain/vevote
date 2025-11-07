@@ -38,11 +38,7 @@ export const getProposals = async (
     const historicalProposals = await parseHistoricalProposals(historicalData?.results);
     const enrichedBlockchainProposals = await enrichProposalsWithData(blockchainProposals);
 
-    const blockchainIds = new Set(enrichedBlockchainProposals.map(p => p.id));
-
-    const uniqueHistoricalProposals = historicalProposals.filter(hp => !blockchainIds.has(hp.id));
-
-    const allProposals: MergedProposal[] = [...enrichedBlockchainProposals, ...uniqueHistoricalProposals].sort(
+    const allProposals: MergedProposal[] = [...enrichedBlockchainProposals, ...historicalProposals].sort(
       (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
     );
 
