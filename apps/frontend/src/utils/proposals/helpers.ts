@@ -272,3 +272,7 @@ export const parseHistoricalProposals = async (
     };
   });
 };
+
+export const formatVotingPower = (power: bigint): string => {
+  return (Number(power) / 100).toString();
+};
