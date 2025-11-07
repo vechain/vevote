@@ -7,17 +7,11 @@ import axios from "axios";
 import { IndexerRoutes, ValidatorsResponse } from "@/types/indexer";
 
 const contractAddress = getConfig(import.meta.env.VITE_APP_ENV).vevoteContractAddress;
-const stargateNFTAddress = getConfig(import.meta.env.VITE_APP_ENV).stargateNFTContractAddress;
+const stargateNFTContractAddress = getConfig(import.meta.env.VITE_APP_ENV).stargateNFTContractAddress;
 const indexerUrl = getConfig(import.meta.env.VITE_APP_ENV).indexerUrl;
 
 const contractInterface = VeVote__factory.createInterface();
-const stargateNftInterface = StargateNFT__factory.createInterface();
-// no Stargate address in FE config; use NFT address directly
-
-async function getStargateNftAddress() {
-  if (!stargateNFTAddress) throw new Error("Missing stargateNFTContractAddress in config");
-  return stargateNFTAddress as `0x${string}`;
-}
+const stargateNFTInterface = StargateNFT__factory.createInterface();
 
 export const getUserRoles = async ({ address }: { address?: string }) => {
   if (!address) {
@@ -67,18 +61,16 @@ export const getUserRoles = async ({ address }: { address?: string }) => {
 
 export const getUserNodes = async ({ address }: { address: string }) => {
   try {
-    const nftAddress = await getStargateNftAddress();
-    const tokensRes = await executeCall({
-      contractAddress: nftAddress,
-      contractInterface: stargateNftInterface,
+    const nodesRes = await executeCall({
+      contractAddress: stargateNFTContractAddress,
+      contractInterface: stargateNFTInterface,
       method: "tokensManagedBy",
       args: [address],
     });
 
-    if (!tokensRes.success) return { nodes: [] };
+    if (!nodesRes.success) return { nodes: [] };
 
-    const owned = tokensRes.result.plain as { tokenId: bigint; levelId: number }[];
-    const userNodes: StargateNode[] = owned.map(t => ({ tokenId: t.tokenId, levelId: t.levelId }) as StargateNode);
+    const userNodes = nodesRes.result.plain as StargateNode[];
 
     const votingPowerArgs = userNodes.map(node => ({
       method: "getNodeVoteWeight" as const,
@@ -110,7 +102,10 @@ export const getNodesNameAndPower = async ({ nodeIds }: { nodeIds: string[] }) =
     method: "getNodeVoteWeight" as const,
     args: [node],
   }));
-  const nodeLevelArgs = nodeIds.map(node => ({ method: "getTokenLevel" as const, args: [node] }));
+  const nodeLevelArgs = nodeIds.map(node => ({
+    method: "getTokenLevel" as const,
+    args: [node],
+  }));
 
   const [nodesPower, nodesLevel] = await Promise.all([
     executeMultipleClauses({
@@ -118,14 +113,11 @@ export const getNodesNameAndPower = async ({ nodeIds }: { nodeIds: string[] }) =
       contractInterface,
       methodsWithArgs: votingPowerArgs,
     }),
-    (async () => {
-      const nftAddress = await getStargateNftAddress();
-      return executeMultipleClauses({
-        contractAddress: nftAddress,
-        contractInterface: stargateNftInterface,
-        methodsWithArgs: nodeLevelArgs,
-      });
-    })(),
+    executeMultipleClauses({
+      contractAddress: stargateNFTContractAddress,
+      contractInterface: stargateNFTInterface,
+      methodsWithArgs: nodeLevelArgs,
+    }),
   ]);
 
   const power = nodesPower.map(r => (r.success ? (r.result.plain as bigint) : BigInt(0)));
@@ -170,18 +162,24 @@ export const getAMN = async (address?: string) => {
 };
 
 export const getAllUsersNodes = async (address: string) => {
-  const nftAddress = await getStargateNftAddress();
-  const idsRes = await executeCall({
-    contractAddress: nftAddress,
-    contractInterface: stargateNftInterface,
-    method: "idsManagedBy",
-    args: [address],
+  const [allNodesRes, stargateNodesRes] = await executeMultipleClauses({
+    contractAddress: stargateNFTContractAddress,
+    contractInterface: stargateNFTInterface,
+    methodsWithArgs: [
+      { method: "idsManagedBy", args: [address] },
+      { method: "tokensManagedBy", args: [address] },
+    ],
   });
 
-  if (!idsRes.success) return { nodes: [] };
+  if (!allNodesRes.success || !stargateNodesRes.success) return { nodes: [] };
 
-  const nodeIds = (idsRes.result.plain as bigint[]).map(n => n.toString());
-  const nodes = nodeIds.map(nodeId => ({ nodeId, isStargate: true }));
+  const AllNodes = (allNodesRes.result.plain as bigint[]).map(n => n.toString());
+  const stargateNodes = (stargateNodesRes.result.plain as StargateNode[]).map(n => n.tokenId.toString());
+
+  const nodes = AllNodes.map(nodeId => ({
+    nodeId,
+    isStargate: stargateNodes.includes(nodeId),
+  }));
 
   return {
     nodes,
@@ -190,27 +188,28 @@ export const getAllUsersNodes = async (address: string) => {
 
 export const isNodeDelegator = async (address: string) => {
   try {
-    const nftAddress = await getStargateNftAddress();
-    const res = await executeCall({
-      contractAddress: nftAddress,
-      contractInterface: stargateNftInterface,
-      method: "idsOwnedBy",
-      args: [address],
+    const [managedRes, ownedRes] = await executeMultipleClauses({
+      contractAddress: stargateNFTContractAddress,
+      contractInterface: stargateNFTInterface,
+      methodsWithArgs: [
+        { method: "idsManagedBy", args: [address] }, // NFTs currently under user's management
+        { method: "idsOwnedBy", args: [address] }, // NFTs user owns
+      ],
     });
-    if (!res.success) return false;
-    const ids = res.result.plain as bigint[];
-    if (ids.length > 0) return true;
-    const managedRes = await executeCall({
-      contractAddress: nftAddress,
-      contractInterface: stargateNftInterface,
-      method: "tokensManagedBy",
-      args: [address],
-    });
-    if (!managedRes.success) return false;
-    const managed = managedRes.result.plain as unknown[];
-    return managed.length > 0;
-  } catch (error) {
-    console.error("Error checking if user is a node delegator:", error);
+
+    if (!managedRes.success || !ownedRes.success) return false;
+
+    const managedIds = managedRes.result.plain as string[]; // or number[]
+    const ownedIds = ownedRes.result.plain as string[];
+
+    // If user owns no NFTs → they can’t have delegated anything away
+    if (ownedIds.length === 0) return false;
+
+    // If they own NFTs but none of those are managed by them → they delegated them away
+    const stillManagingOwned = managedIds.filter(id => ownedIds.includes(id));
+    return stillManagingOwned.length === 0;
+  } catch (e) {
+    console.error("Error checking delegation status:", e);
     return false;
   }
 };
