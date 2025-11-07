@@ -1,5 +1,5 @@
 import { getConfig } from "@repo/config";
-import { VeVote__factory } from "@repo/contracts";
+import { VeVote__factory } from "@vechain/vevote-contracts";
 import { EnhancedClause } from "@vechain/vechain-kit";
 import { useVevoteSendTransaction } from "@/utils/hooks/useVevoteSendTransaction";
 import { useCallback } from "react";
@@ -25,7 +25,7 @@ export const useLevelMultipliers = () => {
         ...baseClause,
         data: contractInterface.encodeFunctionData("updateLevelIdMultipliers", [props.updateLevelIdMultipliers]),
         abi: JSON.parse(JSON.stringify(contractInterface.getFunction("updateLevelIdMultipliers"))),
-        comment: `Update level ID multipliers: [${props.updateLevelIdMultipliers.join(', ')}]`,
+        comment: `Update level ID multipliers: [${props.updateLevelIdMultipliers.join(", ")}]`,
       };
       clauses.push(clause as EnhancedClause);
 

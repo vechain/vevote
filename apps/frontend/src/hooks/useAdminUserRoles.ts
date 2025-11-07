@@ -1,6 +1,6 @@
 import { executeMultipleClauses } from "@/utils/contract";
 import { getConfig } from "@repo/config";
-import { VeVote__factory } from "@repo/contracts";
+import { VeVote__factory } from "@vechain/vevote-contracts";
 import { useQuery } from "@tanstack/react-query";
 import { useCallback } from "react";
 

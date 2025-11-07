@@ -1,4 +1,4 @@
-import { NodeManagement__factory } from "@repo/contracts/typechain-types";
+import { NodeManagement__factory } from "@vechain/vevote-contracts/typechain-types";
 import { getConfig } from "@repo/config";
 import { executeCall, executeMultipleClauses } from "../../../utils/contract";
 

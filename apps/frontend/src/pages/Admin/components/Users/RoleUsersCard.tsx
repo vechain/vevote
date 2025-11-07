@@ -13,7 +13,7 @@ import { veVoteService, type RoleUserInfo } from "../../services/VeVoteService";
 import { useThor } from "@vechain/vechain-kit";
 import { ROLES } from "./UserManagementCard";
 import { executeCall } from "@/utils/contract";
-import { VeVote__factory } from "@repo/contracts";
+import { VeVote__factory } from "@vechain/vevote-contracts";
 import { z } from "zod";
 
 const EXPLORER_URL = getConfig(import.meta.env.VITE_APP_ENV).network.explorerUrl;

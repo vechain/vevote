@@ -1,5 +1,5 @@
 import { getConfig } from "@repo/config";
-import { VeVote__factory } from "@repo/contracts";
+import { VeVote__factory } from "@vechain/vevote-contracts";
 import { EnhancedClause } from "@vechain/vechain-kit";
 import { useVevoteSendTransaction } from "@/utils/hooks/useVevoteSendTransaction";
 import { useCallback } from "react";

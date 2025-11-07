@@ -26,7 +26,7 @@ import {
   WrapItem,
 } from "@chakra-ui/react";
 import { getConfig } from "@repo/config";
-import { VeVote__factory } from "@repo/contracts";
+import { VeVote__factory } from "@vechain/vevote-contracts";
 import { useCallback, useMemo } from "react";
 import { AdminCard } from "../common/AdminCard";
 import { SensitiveWarning } from "../common/SensitiveWarning";

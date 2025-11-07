@@ -1,7 +1,7 @@
 import { executeMultipleClauses } from "@/utils/contract";
 import { getConfig } from "@repo/config";
-import { VeVote__factory } from "@repo/contracts";
-import { NodeManagement__factory, StargateNFT__factory } from "@repo/contracts/typechain-types";
+import { VeVote__factory } from "@vechain/vevote-contracts";
+import { NodeManagement__factory, StargateNFT__factory } from "@vechain/vevote-contracts/typechain-types";
 import { useQuery } from "@tanstack/react-query";
 import { useCallback } from "react";
 import { useWallet } from "@vechain/vechain-kit";
