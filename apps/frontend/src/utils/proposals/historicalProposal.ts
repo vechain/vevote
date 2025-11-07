@@ -7,11 +7,15 @@ import axios from "axios";
 const indexerUrl = getConfig("mainnet").indexerUrl;
 
 export const getHistoricalProposal = async (proposalId?: string) => {
+  const isValid = !proposalId || proposalId?.includes("-");
+  if (!isValid) return { results: undefined };
+  const [contractAddress, id] = proposalId?.split("-") || [undefined, undefined];
   try {
     const res = await axios.get<HistoricalProposalResponse>(`${indexerUrl}${IndexerRoutes.HISTORIC_PROPOSALS}`, {
       params: {
         size: 50,
-        proposalId,
+        contractAddress,
+        proposalId: id,
       },
     });
 
