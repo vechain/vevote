@@ -1,4 +1,4 @@
-import { BaseContract, Interface } from "ethers";
+import { BaseContract, Contract, Interface, getAddress } from "ethers";
 import { ethers } from "hardhat";
 import { getImplementationAddress } from "@openzeppelin/upgrades-core";
 import { AddressUtils } from "@repo/utils";
@@ -29,7 +29,7 @@ export const deployProxy = async (
   logOutput && console.log(`${contractName} proxy: ${await proxy.getAddress()}`);
 
   const newImplementationAddress = await getImplementationAddress(ethers.provider, await proxy.getAddress());
-  if (!AddressUtils.compareAddresses(newImplementationAddress, await implementation.getAddress())) {
+  if (getAddress(newImplementationAddress) !== getAddress(await implementation.getAddress())) {
     throw new Error(
       `The implementation address is not the one expected: ${newImplementationAddress} !== ${await implementation.getAddress()}`,
     );
@@ -64,7 +64,7 @@ export const upgradeProxy = async (
   await tx.wait();
 
   const newImplementationAddress = await getImplementationAddress(ethers.provider, proxyAddress);
-  if (newImplementationAddress.toLocaleLowerCase() !== (await implementation.getAddress())) {
+  if (getAddress(newImplementationAddress) !== getAddress(await implementation.getAddress())) {
     throw new Error(
       `The implementation address is not the one expected: ${newImplementationAddress} !== ${await implementation.getAddress()}`,
     );
@@ -147,7 +147,7 @@ export const deployUpgradeableWithoutInitialization = async (
   logOutput && console.log(`${contractName} proxy: ${await proxy.getAddress()}`);
 
   const newImplementationAddress = await getImplementationAddress(ethers.provider, await proxy.getAddress());
-  if (!AddressUtils.compareAddresses(newImplementationAddress, await implementation.getAddress())) {
+  if (getAddress(newImplementationAddress) !== getAddress(await implementation.getAddress())) {
     throw new Error(
       `The implementation address is not the one expected: ${newImplementationAddress} !== ${await implementation.getAddress()}`,
     );
@@ -155,6 +155,41 @@ export const deployUpgradeableWithoutInitialization = async (
 
   // Return the proxy address
   return await proxy.getAddress();
+};
+
+export const initializeProxyAllVersions = async (
+  contractName: string,
+  proxyAddress: string,
+  initializerCalls: { version?: number; args: any[] }[],
+  logOutput: boolean = false,
+): Promise<BaseContract> => {
+  // Get contract instance
+  const Contract = await ethers.getContractAt(contractName, proxyAddress);
+
+  // Get the signer
+  const signer = (await ethers.getSigners())[0];
+
+  // Call all initializers
+  let upgraderCheck = false;
+  for (const { version, args } of initializerCalls) {
+    logOutput && console.log(`Initializing ${contractName} V${version ?? "1"}...`);
+
+    if (version !== undefined && upgraderCheck === false) {
+      await revertIfSignerIsNotUpgrader(Contract, await signer.getAddress());
+      upgraderCheck = true;
+    }
+
+    const data = getInitializerData(Contract.interface, args, version);
+    const tx = await signer.sendTransaction({
+      to: proxyAddress,
+      data,
+      gasLimit: 10_000_000,
+    });
+    await tx.wait();
+  }
+
+  // Return the contract instance
+  return Contract;
 };
 
 export const initializeProxy = async (
@@ -233,7 +268,7 @@ export const deployProxyOnly = async (
   logOutput && console.log(`${contractName} proxy: ${await proxy.getAddress()}`);
 
   const newImplementationAddress = await getImplementationAddress(ethers.provider, await proxy.getAddress());
-  if (!AddressUtils.compareAddresses(newImplementationAddress, await implementation.getAddress())) {
+  if (getAddress(newImplementationAddress) !== getAddress(await implementation.getAddress())) {
     throw new Error(
       `The implementation address is not the one expected: ${newImplementationAddress} !== ${await implementation.getAddress()}`,
     );
@@ -242,3 +277,11 @@ export const deployProxyOnly = async (
   // Return the proxy address
   return await proxy.getAddress();
 };
+
+async function revertIfSignerIsNotUpgrader(contract: Contract, signerAddress: string) {
+  const upgraderRole = ethers.keccak256(ethers.toUtf8Bytes("UPGRADER_ROLE"));
+  const hasUpgraderRole = await contract.hasRole(upgraderRole, signerAddress);
+  if (!hasUpgraderRole) {
+    throw new Error(`Signer ${signerAddress} is missing UPGRADER_ROLE. Cancelling upgrade.`);
+  }
+}

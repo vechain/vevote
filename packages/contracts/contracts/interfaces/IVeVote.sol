@@ -5,7 +5,7 @@ pragma solidity 0.8.20;
 import { VeVoteTypes } from "../governance/libraries/VeVoteTypes.sol";
 import { INodeManagement } from "./INodeManagement.sol";
 import { IStargateNFT } from "./IStargateNFT.sol";
-import { IAuthority } from "./IAuthority.sol";
+import { IStaker } from "./IStaker.sol";
 import "@openzeppelin/contracts/interfaces/IERC165.sol";
 import "@openzeppelin/contracts/interfaces/IERC6372.sol";
 
@@ -391,12 +391,6 @@ interface IVeVote is IERC165, IERC6372 {
   function getMinStakedAmountAtTimepoint(uint48 timepoint) external view returns (uint256);
 
   /**
-   * @notice Returns the node management contract instance.
-   * @return INodeManagement The node management contract
-   */
-  function getNodeManagementContract() external view returns (INodeManagement);
-
-  /**
    * @notice Returns the stargate NFT contract instance.
    * @return IStargateNFT The stargate NFT contract.
    */
@@ -406,7 +400,7 @@ interface IVeVote is IERC165, IERC6372 {
    * @notice Returns the builtin Authority contract instance.
    * @return IAuthority The current builtin validator contract.
    */
-  function getValidatorContract() external view returns (IAuthority);
+  function getValidatorContract() external view returns (IStaker);
 
   /**
    * @notice this function returns the voting multiplier score of a specific level Id.
@@ -501,12 +495,6 @@ interface IVeVote is IERC165, IERC6372 {
    * @param newMinStake The new minimum stake amount in VET (must be > 0).
    */
   function setMinStakedVetAmount(uint256 newMinStake) external;
-
-  /**
-   * @notice Updates the node management contract address.
-   * @param nodeManagement The address of the node management contract
-   */
-  function setNodeManagementContract(address nodeManagement) external;
 
   /**
    * @notice Updates the Stargate NFT contract address.

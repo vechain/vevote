@@ -18,7 +18,7 @@ import { VeVoteStateLogic } from "./VeVoteStateLogic.sol";
 import { VeVoteTypes } from "./VeVoteTypes.sol";
 import { VeVoteConstants } from "./VeVoteConstants.sol";
 import { VeVoteConfigurator } from "./VeVoteConfigurator.sol";
-import { IAuthority } from "../../interfaces/IAuthority.sol";
+import { IStaker } from "../../interfaces/IStaker.sol";
 import { DataTypes } from "../../external/StargateNFT/libraries/DataTypes.sol";
 
 /// @title VeVoteVoteLogic
@@ -261,8 +261,8 @@ library VeVoteVoteLogic {
     uint64 snapshot,
     address masterAddress
   ) private view returns (uint256 weight) {
-    // Fetch voter's stargate NFT info from NodeManagement
-    DataTypes.Token[] memory nodes = self.nodeManagement.getUserStargateNFTsInfo(voter);
+    // Fetch voter's managed stargate NFTs
+    DataTypes.Token[] memory nodes = self.stargateNFT.tokensManagedBy(voter);
 
     // Check if a user is a validator
     if (masterAddress != address(0)) weight = _determineValidatorVoteWeight(self, voter, masterAddress);
@@ -304,8 +304,8 @@ library VeVoteVoteLogic {
     uint256 proposalId,
     address masterAddress
   ) private returns (uint256 weight, uint256[] memory nfts, address validator) {
-    // Fetch voter's stargate NFT info from NodeManagement
-    DataTypes.Token[] memory nodes = self.nodeManagement.getUserStargateNFTsInfo(voter);
+    // Fetch voter's managed stargate NFTs
+    DataTypes.Token[] memory nodes = self.stargateNFT.tokensManagedBy(voter);
 
     // Check if a user is a validator
     if (masterAddress != address(0)) {
@@ -410,13 +410,13 @@ library VeVoteVoteLogic {
     address masterAddress
   ) private view returns (uint256 voteWeight) {
     // Load validator authority contract
-    IAuthority validatorContract = VeVoteConfigurator.getValidatorContract(self);
+    IStaker validatorContract = VeVoteConfigurator.getValidatorContract(self);
 
     // Fetch validator info
-    (bool isListed, address endorser, , bool isActive) = validatorContract.get(masterAddress);
+    (address endorser, , , , uint8 status, ) = validatorContract.getValidation(masterAddress);
 
     // Check eligibility
-    if (!isListed || !isActive || endorser != voter) {
+    if (status != 2 || endorser != voter) {
       return 0;
     }
 

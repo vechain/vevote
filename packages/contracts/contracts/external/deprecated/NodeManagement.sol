@@ -14,11 +14,11 @@ pragma solidity 0.8.20;
 import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
-import { VechainNodesDataTypes } from "../libraries/VechainNodesDataTypes.sol";
-import { ITokenAuction } from "../interfaces/ITokenAuction.sol";
-import { INodeManagement } from "../interfaces/INodeManagement.sol";
-import { IStargateNFT } from "../interfaces/IStargateNFT.sol";
-import { DataTypes } from "./StargateNFT/libraries/DataTypes.sol";
+import { VechainNodesDataTypes } from "./libraries/VechainNodesDataTypes.sol";
+import { ITokenAuction } from "../../interfaces/ITokenAuction.sol";
+import { INodeManagement } from "../../interfaces/INodeManagement.sol";
+import { IStargateNFTV2 as IStargateNFT } from "../../interfaces/IStargateNFTV2.sol";
+import { DataTypesV2 } from "./StargateNFT/libraries/DataTypesV2.sol";
 
 /**
  * @title NodeManagement
@@ -638,11 +638,11 @@ contract NodeManagement is INodeManagement, AccessControlUpgradeable, UUPSUpgrad
    * @param user The user address to query.
    * @return tokens An array of DataTypes.Token structs owned or delegated to the user.
    */
-  function getUserStargateNFTsInfo(address user) public view returns (DataTypes.Token[] memory tokens) {
+  function getUserStargateNFTsInfo(address user) public view returns (DataTypesV2.Token[] memory tokens) {
     NodeManagementStorage storage $ = _getNodeManagementStorage();
 
     // Fetch owned tokens directly in a single call
-    DataTypes.Token[] memory ownedTokens = $.stargateNft.tokensOwnedBy(user);
+    DataTypesV2.Token[] memory ownedTokens = $.stargateNft.tokensOwnedBy(user);
     uint256 ownedLength = ownedTokens.length;
 
     // Get delegated token IDs (may include burned tokens)
@@ -650,7 +650,7 @@ contract NodeManagement is INodeManagement, AccessControlUpgradeable, UUPSUpgrad
     uint256 delegatedLength = delegatedSet.length();
 
     // Allocate maximum size (owned + delegated), will shrink later
-    tokens = new DataTypes.Token[](ownedLength + delegatedLength);
+    tokens = new DataTypesV2.Token[](ownedLength + delegatedLength);
     uint256 count;
 
     // Copy owned tokens

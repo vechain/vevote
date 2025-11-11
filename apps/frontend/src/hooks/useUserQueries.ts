@@ -25,7 +25,7 @@ const getValidatorNode = (votingPower: bigint): ExtendedStargateNode => {
 const getNodes = async ({ address }: { address: string }) => {
   try {
     const { data } = await getAMN(address);
-    const masterNode = data?.nodeMaster;
+    const masterNode = data?.data[0].id;
     const masterNodeVotingPower = data?.votingPower || BigInt(0);
 
     const r = await getUserNodes({ address });

@@ -21,9 +21,8 @@ import { VeVoteVoteLogic } from "./governance/libraries/VeVoteVoteLogic.sol";
 import { VeVoteProposalLogic } from "./governance/libraries/VeVoteProposalLogic.sol";
 import { VeVoteStorageTypes } from "./governance/libraries/VeVoteStorageTypes.sol";
 import { VeVoteConfigurator } from "./governance/libraries/VeVoteConfigurator.sol";
-import { INodeManagement } from "./interfaces/INodeManagement.sol";
 import { IStargateNFT } from "./interfaces/IStargateNFT.sol";
-import { IAuthority } from "./interfaces/IAuthority.sol";
+import { IStaker } from "./interfaces/IStaker.sol";
 import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "@openzeppelin/contracts/utils/introspection/IERC165.sol";
@@ -309,14 +308,6 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
   /**
    * @inheritdoc IVeVote
    */
-  function getNodeManagementContract() external view returns (INodeManagement) {
-    VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
-    return VeVoteConfigurator.getNodeManagementContract($);
-  }
-
-  /**
-   * @inheritdoc IVeVote
-   */
   function getStargateNFTContract() external view returns (IStargateNFT) {
     VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
     return VeVoteConfigurator.getStargateNFTContract($);
@@ -325,7 +316,7 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
   /**
    * @inheritdoc IVeVote
    */
-  function getValidatorContract() external view returns (IAuthority) {
+  function getValidatorContract() external view returns (IStaker) {
     VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
     return VeVoteConfigurator.getValidatorContract($);
   }
@@ -357,7 +348,7 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
    * @inheritdoc IVeVote
    */
   function version() external pure returns (uint8) {
-    return 1;
+    return 2;
   }
 
   // ------------------ SETTERS ------------------ //
@@ -471,14 +462,6 @@ contract VeVote is IVeVote, VeVoteStorage, AccessControlUpgradeable, UUPSUpgrade
   function setMinStakedVetAmount(uint256 newMinStake) external onlyRole(NODE_WEIGHT_MANAGER_ROLE) {
     VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
     VeVoteConfigurator.setMinStakedVetAmount($, newMinStake);
-  }
-
-  /**
-   * @inheritdoc IVeVote
-   */
-  function setNodeManagementContract(address nodeManagement) external onlyRole(SETTINGS_MANAGER_ROLE) {
-    VeVoteStorageTypes.VeVoteStorage storage $ = getVeVoteStorage();
-    VeVoteConfigurator.setNodeManagementContract($, nodeManagement);
   }
 
   /**

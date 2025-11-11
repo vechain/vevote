@@ -20,8 +20,8 @@ async function main() {
   const { veVoteConfigurator, veVoteProposalLogic, veVoteQuoromLogic, veVoteStateLogic, veVoteVoteLogic } =
     await deployLibraries();
 
-  const vevote = (await upgradeProxy("VeVote", "VeVote", config.vevoteContractAddress, [], {
-    version: 1,
+  const vevote = (await upgradeProxy("VeVoteV1", "VeVote", config.vevoteContractAddress, [], {
+    version: 2,
     libraries: {
       VeVoteVoteLogic: await veVoteVoteLogic.getAddress(),
       VeVoteStateLogic: await veVoteStateLogic.getAddress(),

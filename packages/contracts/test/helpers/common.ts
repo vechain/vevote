@@ -1,6 +1,6 @@
 import { ethers, network } from "hardhat";
 import { getOrDeployContractInstances } from "./deploy";
-import { ContractTransactionResponse } from "ethers";
+import { AddressLike, ContractTransactionResponse } from "ethers";
 import { Clause, TransactionClause, Units, VTHO } from "@vechain/sdk-core";
 import { mine } from "@nomicfoundation/hardhat-network-helpers";
 import { getTestKeys } from "../../scripts/helpers/seedAccounts";
@@ -10,6 +10,7 @@ import { TransactionUtils } from "@repo/utils";
 import { ThorClient } from "@vechain/sdk-network";
 import { HardhatEthersSigner } from "@nomicfoundation/hardhat-ethers/signers";
 import { Authority } from "../../typechain-types";
+import { Staker } from "../../typechain-types";
 
 const thorClient = ThorClient.at(getConfig().nodeUrl);
 
@@ -91,8 +92,26 @@ export const createProposal = async ({
 export const createValidator = async (
   endorser: HardhatEthersSigner,
   authorityContract: Authority,
-  validator: HardhatEthersSigner,
+  stakerContract: Staker,
+  validator: AddressLike,
 ) => {
+  // Prefer using provided staker contract
+  try {
+    if (stakerContract) {
+      const defaultStake = ethers.parseEther("1");
+      const defaultPeriod = 1;
+      await (
+        await stakerContract.connect(endorser).addValidation(validator, defaultPeriod, { value: defaultStake })
+      ).wait();
+
+      await stakerContract.activateValidator(validator);
+      return;
+    }
+  } catch (_e) {
+    // fall back to authority path below
+  }
+
+  // Fallback: register via builtin Authority contract
   const mockIdentity = ethers.encodeBytes32String("vechain-validator");
-  await authorityContract.add(validator.address, endorser.address, mockIdentity);
+  await authorityContract.add(validator, endorser.address, mockIdentity);
 };
