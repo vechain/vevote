@@ -16,6 +16,7 @@ export const getHistoricalProposal = async (proposalId?: string) => {
         size: 50,
         contractAddress,
         proposalId: id,
+        testProposals: false,
       },
     });
 
