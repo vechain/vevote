@@ -1,9 +1,13 @@
-project: vevote
-project_alias: ve
-environment: dev
+project                         : vevote
+project_alias                   : ve
+environment                     : dev
+region                          : eu-west-1
+public_zone_name                : vevote-dev.vechain.org
+preview_environment_domain_name : preview.vevote-dev.vechain.org
+preview_environment_bucket_name : preview-vevote
 
 all_environments:
-  mnemonic: denial kitchen pet squirrel other broom bar gas better priority spoil cross
+  mnemonic                    : denial kitchen pet squirrel other broom bar gas better priority spoil cross
   TESTNET_STAGING_MNEMONIC: 
-  public_ipfs_pinning_service: https://api.gateway-proxy.vechain.org/api/v1/pinning/pinFileToIPFS
-  vechain_url_devnet: https://galactica.green.dev.node.vechain.org/
+  public_ipfs_pinning_service : https://api.gateway-proxy.vechain.org/api/v1/pinning/pinFileToIPFS
+  vechain_url_devnet          : https://galactica.green.dev.node.vechain.org/
