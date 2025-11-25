@@ -48,9 +48,11 @@ jobs:
           fi
 
       - name: Remove Preview Environment from S3
+        env:
+          PROCESSED_BRANCH_NAME: ${{ steps.process-branch-name.outputs.processedBranchName }}
         run: |
           if [ ${{ inputs.target == 'dev' }} ]; then
-            aws s3 rm s3://${{ secrets.AWS_PREVIEW_BUCKET_NAME }}${{ steps.process-branch-name.outputs.processedBranchName }} --recursive
+            aws s3 rm s3://${{ secrets.AWS_PREVIEW_BUCKET_NAME }}${PROCESSED_BRANCH_NAME} --recursive
           else
             aws s3 rm s3://${{ secrets.AWS_PREVIEW_BUCKET_NAME }}/ --recursive
           fi
@@ -66,6 +68,7 @@ jobs:
 
       - name: Remove Deployment PR Comment
         if: github.event_name == 'pull_request'
-        run: gh api --method DELETE /repos/${{ github.repository }}/issues/comments/${{ steps.find-comment.outputs.comment-id }}
+        run: gh api --method DELETE /repos/${{ github.repository }}/issues/comments/$COMMENT_ID
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          COMMENT_ID: ${{ steps.find-comment.outputs.comment-id }}
