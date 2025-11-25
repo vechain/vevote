@@ -69,6 +69,8 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Deploy to S3 # if main branch, deploy to the root path
+        env:
+          BRANCH_NAME: ${{ github.event.pull_request.head.ref || github.ref_name }}
         run: |
           if [ "$BRANCH_NAME" != "main" ]; then
             aws s3 sync ./apps/frontend/dist s3://${{ secrets.AWS_PREVIEW_BUCKET_NAME }}${{ steps.process-branch-name.outputs.processedBranchName }} --delete
@@ -77,6 +79,8 @@ jobs:
           fi
 
       - name: Cloudfront Invalidation # if main branch, invalidate the root path
+        env:
+          BRANCH_NAME: ${{ github.event.pull_request.head.ref || github.ref_name }}
         run: |
           if [ "$BRANCH_NAME" != "main" ]; then
             AWS_MAX_ATTEMPTS=10 aws cloudfront create-invalidation --distribution-id ${{ secrets.AWS_PREVIEW_CLOUDFRONT_DISTRIBUTION_ID }} --paths ${{ steps.process-branch-name.outputs.processedBranchName }} '/*'
