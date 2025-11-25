@@ -14,11 +14,6 @@ on:
         required: true
         type: string
         default: 'latest'
-      create_release:
-        description: 'Create a release for the tag, needed if dont want to create duplicate releases'
-        required: true
-        type: boolean
-        default: true
 
 permissions: {}
 
@@ -94,7 +89,7 @@ jobs:
           fi
 
       - name: Create GitHub Release
-        if: ${{ inputs.target == 'release' && inputs.create_release == true }}
+        if: ${{ inputs.target == 'release' }}
         env:
           GITHUB_TOKEN: ${{ github.token }}
           DEPLOY_URL: https://vevote.vechain.org
