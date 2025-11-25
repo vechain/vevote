@@ -41,7 +41,7 @@
     "@vechain/sdk-network": "1.2.0-rc.2",
     "@vechain/sdk-hardhat-plugin": "1.2.0-rc.2",
     "@openzeppelin/contracts": "5.0.1",
-    "@openzeppelin/contracts-upgradeable": "5.0.1",
+    "@openzeppelin/contracts-upgradeable": "5.0.2",
     "@openzeppelin/upgrades-core": "^1.32.5"
   },
   "devDependencies": {
