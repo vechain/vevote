@@ -1,0 +1,71 @@
+name: Destroy Preview Environment
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths: ["apps/frontend/**", "packages/**", "yarn.lock"]
+    types: [closed]
+
+  workflow_dispatch:
+    inputs:
+      target:
+        description: 'Environment to use'
+        required: true
+        type: choice
+        options: [dev, prod]
+        default: dev
+
+permissions: {}
+
+jobs:
+  deploy:
+    environment: ${{ inputs.target || 'dev' }}
+    permissions:
+      contents: read
+      id-token: write
+      pull-requests: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@7474bc4690e29a8392af63c5b98e7449536d5c3a # v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ACC_ROLE }}
+          aws-region: eu-west-1
+
+      - name: Process Branch Name
+        if: ${{ inputs.target == 'dev' }}
+        id: process-branch-name
+        env:
+          BRANCH_NAME: ${{ github.event.pull_request.head.ref || github.ref_name }}
+        run: |
+          if [ "$BRANCH_NAME" != "main" ]; then
+            sanitized_branch_name=$(echo "$BRANCH_NAME" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9-]//g')
+            echo "processedBranchName=/$sanitized_branch_name/" >> $GITHUB_OUTPUT
+          else
+            echo "Cannot destroy from main branch!" | tee -a "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+
+      - name: Remove Preview Environment from S3
+        run: |
+          if [ ${{ inputs.target == 'dev' }} ]; then
+            aws s3 rm s3://${{ secrets.AWS_PREVIEW_BUCKET_NAME }}${{ steps.process-branch-name.outputs.processedBranchName }} --recursive
+          else
+            aws s3 rm s3://${{ secrets.AWS_PREVIEW_BUCKET_NAME }}/ --recursive
+          fi
+
+      - name: Find Previous Deployment Comment
+        if: github.event_name == 'pull_request'
+        uses: peter-evans/find-comment@3eae4d37986fb5a8592848f6a574fdf654e61f9e # v3.1.0
+        id: find-comment
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: "github-actions[bot]"
+          body-includes: "🚀 Preview environment deployed!"
+
+      - name: Remove Deployment PR Comment
+        if: github.event_name == 'pull_request'
+        run: gh api --method DELETE /repos/${{ github.repository }}/issues/comments/${{ steps.find-comment.outputs.comment-id }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

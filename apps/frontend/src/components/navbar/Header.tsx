@@ -19,7 +19,10 @@ export const Banner = () => {
   return (
     <Box
       paddingY={10}
-      bgImage={{ base: "/images/banner-bg-mobile.webp", md: "/images/banner-bg.webp" }}
+      bgImage={{
+        base: import.meta.env.VITE_BASE_PATH + "images/banner-bg-mobile.webp",
+        md: import.meta.env.VITE_BASE_PATH + "images/banner-bg.webp",
+      }}
       bgSize={"cover"}
       bgPosition={"top"}
       bgRepeat={"no-repeat"}
@@ -66,7 +69,7 @@ export const Banner = () => {
         </Flex>
         <Image
           display={{ base: "none", md: "block" }}
-          src="/images/bemo.webp"
+          src={import.meta.env.VITE_BASE_PATH + "images/bemo.webp"}
           alt="bemo"
           width={{ md: "320px", lg: "320px" }}
           height={{ md: "520px", lg: "720px" }}
