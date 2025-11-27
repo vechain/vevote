@@ -20,8 +20,6 @@ permissions: {}
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     environment: prod
     permissions:
       contents: write
