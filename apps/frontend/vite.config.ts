@@ -5,7 +5,8 @@ import react from "@vitejs/plugin-react";
 import { nodePolyfills } from "vite-plugin-node-polyfills";
 import { resolve } from "path";
 
-export default defineConfig(({ mode }) => {
+export default defineConfig(() => {
+  const basePath = process.env.VITE_BASE_PATH;
   return {
     plugins: [nodePolyfills(), react()],
     build: {
@@ -48,6 +49,6 @@ export default defineConfig(({ mode }) => {
       environment: "jsdom",
       setupFiles: [resolve(__dirname, "test/setup/setup.ts"), resolve(__dirname, "test/setup/resizeObserverMock.ts")],
     },
-    base: mode === "production" ? "/vechain-dapp-kit/react/" : "/",
+    base: basePath,
   };
 });

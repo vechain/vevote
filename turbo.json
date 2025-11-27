@@ -3,6 +3,7 @@
   "globalDependencies": ["**/.env.*local"],
   "globalEnv": [
     "VITE_APP_ENV",
+    "VITE_BASE_PATH",
     "MNEMONIC",
     "IS_TEST_COVERAGE",
     "NEXT_DEVNET_URL",

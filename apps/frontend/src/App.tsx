@@ -30,30 +30,33 @@ function Layout() {
   );
 }
 
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <Layout />,
-    children: [
-      {
-        index: true,
-        element: <Proposals />,
-      },
-      {
-        path: "proposal/:proposalId",
-        element: <Proposal />,
-      },
-      {
-        path: "create-proposal",
-        element: <CreateProposal />,
-      },
-      {
-        path: "admin",
-        element: <AdminDashboard />,
-      },
-    ],
-  },
-]);
+const router = createBrowserRouter(
+  [
+    {
+      path: "/",
+      element: <Layout />,
+      children: [
+        {
+          index: true,
+          element: <Proposals />,
+        },
+        {
+          path: "proposal/:proposalId",
+          element: <Proposal />,
+        },
+        {
+          path: "create-proposal",
+          element: <CreateProposal />,
+        },
+        {
+          path: "admin",
+          element: <AdminDashboard />,
+        },
+      ],
+    },
+  ],
+  { basename: import.meta.env.VITE_BASE_PATH },
+);
 
 function App() {
   return <RouterProvider router={router} />;
