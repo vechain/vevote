@@ -462,7 +462,7 @@ const en = {
       contract_info_title: "Contract Information",
     },
     node_management: {
-      title: "Node Management Contract Information",
+      title: "Stargate Node Management Contract Information",
       help_text: "Enter a wallet address to view detailed node ownership and delegation information for that account.",
       user_address_label: "User Address",
       user_address_placeholder: "Enter user address (0x...)",

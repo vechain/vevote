@@ -1,30 +1,18 @@
 import { executeMultipleClauses } from "@/utils/contract";
 import { getConfig } from "@repo/config";
 import { VeVote__factory } from "@vechain/vevote-contracts";
-import { NodeManagement__factory, StargateNFT__factory } from "@vechain/vevote-contracts/typechain-types";
 import { useQuery } from "@tanstack/react-query";
 import { useCallback } from "react";
 import { useWallet } from "@vechain/vechain-kit";
 import { CONTRACT_CONFIGS, ContractType } from "@/pages/Admin/constants/contracts";
 
-const getContractInterface = (contractType: ContractType) => {
-  switch (contractType) {
-    case "vevote":
-      return VeVote__factory.createInterface();
-    case "nodeManagement":
-      return NodeManagement__factory.createInterface();
-    case "stargate":
-      return StargateNFT__factory.createInterface();
-    default:
-      return VeVote__factory.createInterface();
-  }
-};
+const getContractInterface = () => VeVote__factory.createInterface();
 
 export const useContractRoles = (contractType: ContractType = "vevote") => {
   const { account } = useWallet();
   const config = CONTRACT_CONFIGS[contractType];
   const contractAddress = getConfig(import.meta.env.VITE_APP_ENV)[config.addressKey];
-  const contractInterface = getContractInterface(contractType);
+  const contractInterface = getContractInterface();
 
   const checkUserRoles = useCallback(async () => {
     if (!account?.address) return [];

@@ -1,4 +1,4 @@
-import { NodeManagement__factory } from "@vechain/vevote-contracts/typechain-types";
+import { StargateNFT__factory } from "@vechain/vevote-contracts/typechain-types";
 import { getConfig } from "@repo/config";
 import { executeCall, executeMultipleClauses } from "../../../utils/contract";
 
@@ -17,20 +17,19 @@ export interface UserNodeInfo {
 
 export class NodeManagementService {
   private readonly contractAddress: string;
-  private readonly contractInterface: ReturnType<typeof NodeManagement__factory.createInterface>;
+  private readonly contractInterface: ReturnType<typeof StargateNFT__factory.createInterface>;
 
   constructor() {
     const config = getConfig(import.meta.env.VITE_APP_ENV);
-    this.contractAddress = config.nodeManagementContractAddress;
-    this.contractInterface = NodeManagement__factory.createInterface();
+    this.contractAddress = config.stargateNFTContractAddress;
+    this.contractInterface = StargateNFT__factory.createInterface();
   }
 
   async getUserNodeInfo(userAddress: string): Promise<UserNodeInfo> {
     const methodsWithArgs = [
-      { method: "getDirectNodesOwnership" as const, args: [userAddress] },
-      { method: "getNodeIds" as const, args: [userAddress] },
-      { method: "isNodeHolder" as const, args: [userAddress] },
-      { method: "isNodeDelegator" as const, args: [userAddress] },
+      { method: "idsOwnedBy" as const, args: [userAddress] },
+      { method: "idsManagedBy" as const, args: [userAddress] },
+      { method: "isTokenManager" as const, args: [userAddress] },
     ];
 
     const results = await executeMultipleClauses({
@@ -57,7 +56,7 @@ export class NodeManagementService {
     const result = await executeCall({
       contractAddress: this.contractAddress,
       contractInterface: this.contractInterface,
-      method: "getNodeLevel",
+      method: "getTokenLevel",
       args: [nodeId],
     });
     return result?.success ? Number(result.result.plain) : 0;
@@ -67,27 +66,46 @@ export class NodeManagementService {
     const result = await executeCall({
       contractAddress: this.contractAddress,
       contractInterface: this.contractInterface,
-      method: "isNodeHolder",
+      method: "isTokenManager",
       args: [userAddress],
     });
     return Boolean(result?.success ? result.result.plain : false);
   }
 
   async isNodeDelegator(userAddress: string): Promise<boolean> {
-    const result = await executeCall({
+    const methodsWithArgs = [
+      { method: "idsOwnedBy" as const, args: [userAddress] },
+      { method: "idsManagedBy" as const, args: [userAddress] },
+    ];
+
+    const results = await executeMultipleClauses({
       contractAddress: this.contractAddress,
       contractInterface: this.contractInterface,
-      method: "isNodeDelegator",
-      args: [userAddress],
+      methodsWithArgs,
     });
-    return Boolean(result?.success ? result.result.plain : false);
+
+    const ownedNodes =
+      results[0]?.success && Array.isArray(results[0].result.plain)
+        ? results[0].result.plain.map((id: unknown) => BigInt(String(id)))
+        : [];
+    const managedNodes =
+      results[1]?.success && Array.isArray(results[1].result.plain)
+        ? results[1].result.plain.map((id: unknown) => BigInt(String(id)))
+        : [];
+
+    if (ownedNodes.length === 0) {
+      return false;
+    }
+
+    const managedSet = new Set(managedNodes.map(id => id.toString()));
+    return ownedNodes.some(id => !managedSet.has(id.toString()));
   }
 
   async getDirectNodesOwnership(userAddress: string): Promise<bigint[]> {
     const result = await executeCall({
       contractAddress: this.contractAddress,
       contractInterface: this.contractInterface,
-      method: "getDirectNodesOwnership",
+      method: "idsOwnedBy",
       args: [userAddress],
     });
     return result?.success && Array.isArray(result.result.plain)
@@ -99,7 +117,7 @@ export class NodeManagementService {
     const result = await executeCall({
       contractAddress: this.contractAddress,
       contractInterface: this.contractInterface,
-      method: "getNodeIds",
+      method: "idsManagedBy",
       args: [userAddress],
     });
     return result?.success && Array.isArray(result.result.plain)

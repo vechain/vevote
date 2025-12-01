@@ -19,7 +19,6 @@ export interface VeVoteInfo {
 
 export interface ContractAddresses {
   vevoteContractAddress: string;
-  nodeManagementAddress: string;
   stargateAddress: string;
 }
 
@@ -79,10 +78,7 @@ export class VeVoteService {
   }
 
   async getContractAddress(): Promise<ContractAddresses> {
-    const methodsWithArgs = [
-      { method: "getNodeManagementContract" as const, args: [] },
-      { method: "getStargateNFTContract" as const, args: [] },
-    ];
+    const methodsWithArgs = [{ method: "getStargateNFTContract" as const, args: [] }];
 
     try {
       const results = await executeMultipleClauses({
@@ -93,7 +89,6 @@ export class VeVoteService {
 
       return {
         vevoteContractAddress: this.contractAddress,
-        nodeManagementAddress: results[0]?.success ? String(results[0].result.plain) : "",
         stargateAddress: results[1]?.success ? String(results[1].result.plain) : "",
       };
     } catch (error) {

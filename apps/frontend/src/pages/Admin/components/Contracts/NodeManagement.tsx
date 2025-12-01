@@ -15,8 +15,8 @@ export function NodeManagement() {
   const { contractAddresses } = useContractAddresses();
 
   const nodeManagementContractAddress = useMemo(
-    () => contractAddresses?.nodeManagementAddress,
-    [contractAddresses?.nodeManagementAddress],
+    () => contractAddresses?.stargateAddress,
+    [contractAddresses?.stargateAddress],
   );
   const stackSpacing = useBreakpointValue({
     base: 4,
