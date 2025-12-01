@@ -257,7 +257,7 @@ export const parseHistoricalProposals = async (
     const createdAt = dayjs.unix(Number(d.createdDate)).toDate();
 
     return {
-      id: d.proposalId,
+      id: d.id,
       proposer: d.proposer,
       createdAt,
       startDate: dayjs.unix(d.votingStartTime).toDate(),
@@ -271,4 +271,8 @@ export const parseHistoricalProposals = async (
       ipfsHash: "",
     };
   });
+};
+
+export const formatVotingPower = (power: bigint): string => {
+  return (Number(power) / 100).toString();
 };

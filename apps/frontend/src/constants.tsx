@@ -14,3 +14,5 @@ export const IconByVote = {
   [SingleChoiceEnum.FOR]: ThumbsUpIcon,
   [SingleChoiceEnum.ABSTAIN]: AbstainIcon,
 };
+
+export const VALIDATOR_STAKED_VET_REQUIREMENT = BigInt("25000000000000000000000000"); // 25 million VET

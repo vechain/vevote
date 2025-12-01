@@ -17,6 +17,8 @@ type DecodedVoteCastEvent = [string, bigint, 0 | 1 | 2, bigint, string, bigint[]
 export const getHasVoted = async (proposalId?: string, address?: string) => {
   if (!proposalId || !address) return false;
   if (proposalId === "draft") return false;
+  const isHistoricalProposal = proposalId.includes("-");
+  if (isHistoricalProposal) return false;
 
   try {
     const hasVoted = await executeCall({

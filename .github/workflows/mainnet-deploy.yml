@@ -1,7 +1,4 @@
-name: Mainnet — Preview or Release
-
-permissions:
-  contents: write
+name: Mainnet — Preview or Release to AWS
 
 on:
   workflow_dispatch:
@@ -12,24 +9,36 @@ on:
         type: choice
         options: [preview, release]
         default: preview
+      version:
+        description: 'Version to deploy'
+        required: true
+        type: string
+        default: 'latest'
+
+permissions: {}
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     environment: prod
-    if: startsWith(github.ref, 'refs/tags/')
-
-    env:
-      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+    permissions:
+      contents: write
+      id-token: write
+    if: ${{ inputs.version == 'latest' || startsWith(inputs.version, 'v.') }}
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Find latest tag
+        if: inputs.version == 'latest'
+        id: find-latest-tag
+        run: |
+          echo "LATEST_TAG=$(git tag -l | sort -V | tail -n1)" >> $GITHUB_OUTPUT
+
+      - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
         with:
           fetch-depth: 0
           fetch-tags: true
-          ref: ${{ github.ref_name }}
+          ref: ${{ inputs.version == 'latest' && steps.find-latest-tag.outputs.LATEST_TAG || inputs.version }}
+          persist-credentials: false
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
@@ -40,35 +49,50 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
-      - name: Install dependencies
-        run: npm i -g vercel@latest
-
-      - name: Vercel pull (config + env)
-        run: |
-          ENVIRONMENT=${{ inputs.target == 'release' && 'production' || 'preview' }}
-          vercel pull --yes --environment="$ENVIRONMENT" \
-            --token "$VERCEL_TOKEN"
-
-      - name: Build (debug)
+      - name: Build App
         env:
-          VERCEL_DEBUG: 1
+          NODE_OPTIONS: '--max-old-space-size=8192'
+          MNEMONIC: ${{ secrets.MNEMONIC }}
+          TESTNET_STAGING_MNEMONIC: ${{ secrets.TESTNET_STAGING_MNEMONIC }}
+          PUBLIC_IPFS_PINNING_SERVICE: ${{ secrets.PUBLIC_IPFS_PINNING_SERVICE }}
+          VECHAIN_URL_DEVNET: ${{ secrets.VECHAIN_URL_DEVNET }}
+          VITE_BASE_PATH: /
         run: |
-          PROD_FLAG="${{ inputs.target == 'release' && '--prod' || '' }}"
-          vercel build $PROD_FLAG --token "$VERCEL_TOKEN"
-      - name: Deploy
-        id: deploy
+          yarn build:mainnet
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@7474bc4690e29a8392af63c5b98e7449536d5c3a # v4.0.0
+        env:
+          AWS_REGION: eu-west-1
+        with:
+          role-to-assume: ${{ secrets.AWS_ACC_ROLE }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Deploy to S3 and copy Terms and Privacy Policy files to Website
         run: |
-          PROD_FLAG="${{ inputs.target == 'release' && '--prod' || '' }}"
-          URL=$(npx -y vercel@latest deploy --prebuilt $PROD_FLAG --yes \
-            --token "$VERCEL_TOKEN")
-          echo "url=$URL" >> "$GITHUB_OUTPUT"
-          echo "🌐 Deployed: $URL" | tee -a "$GITHUB_STEP_SUMMARY"
+          if [[ "${{ inputs.target }}" == "release" ]]; then
+            aws s3 sync ./apps/frontend/dist s3://${{ secrets.AWS_BUCKET_NAME }}/ --delete
+            aws s3 cp s3://${{ secrets.AWS_POLICY_DOCS_BUCKET }} s3://${{ secrets.AWS_BUCKET_NAME }}/ --recursive
+          else
+            aws s3 sync ./apps/frontend/dist s3://${{ secrets.AWS_PREVIEW_BUCKET_NAME }}/ --delete
+            aws s3 cp s3://${{ secrets.AWS_POLICY_DOCS_BUCKET }} s3://${{ secrets.AWS_PREVIEW_BUCKET_NAME }}/ --recursive
+          fi
+
+      - name: Cloudfront Invalidation
+        run: |
+          if [[ "${{ inputs.target }}" == "release" ]]; then
+            AWS_MAX_ATTEMPTS=10 aws cloudfront create-invalidation --distribution-id ${{ secrets.AWS_CLOUDFRONT_DISTRIBUTION_ID }} --paths '/' '/*'
+            echo "🌐 Deployed: https://vevote.vechain.org/" | tee -a "$GITHUB_STEP_SUMMARY"
+          else
+            AWS_MAX_ATTEMPTS=10 aws cloudfront create-invalidation --distribution-id ${{ secrets.AWS_PREVIEW_CLOUDFRONT_DISTRIBUTION_ID }} --paths '/' '/*'
+            echo "🌐 Deployed: https://preview.vevote.vechain.org/" | tee -a "$GITHUB_STEP_SUMMARY"
+          fi
 
       - name: Create GitHub Release
         if: ${{ inputs.target == 'release' }}
         env:
           GITHUB_TOKEN: ${{ github.token }}
-          DEPLOY_URL: ${{ steps.deploy.outputs.url }}
+          DEPLOY_URL: https://vevote.vechain.org
         run: |
           set -euo pipefail
           
@@ -93,7 +117,7 @@ jobs:
             echo "🔄 Release for tag $TAG already exists. Updating..."
             gh release edit "$TAG" \
               --title "Release $TAG" \
-              --notes "Deployed to Vercel: ${DEPLOY_URL}"
+              --notes "Deployed to AWS: ${DEPLOY_URL}"
           else
             echo "✨ Creating new release for tag $TAG"
             
@@ -119,7 +143,7 @@ jobs:
             # Add deployment info to the release notes
             sleep 2  # Wait for release to be created
             gh release edit "$TAG" \
-              --notes "$(gh release view "$TAG" --json body --jq '.body')"$'\n\n## Deployment\nDeployed to Vercel: '"${DEPLOY_URL}"
+              --notes "$(gh release view "$TAG" --json body --jq '.body')"$'\n\n## Deployment\nDeployed to AWS: '"${DEPLOY_URL}"
           fi
           
           echo "✅ Release created/updated successfully for tag: $TAG"
