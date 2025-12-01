@@ -114,7 +114,7 @@ contract Stargate is
 
     struct StargateStorage {
         // general mappings
-        IProtocolStaker protocolStakerContract;
+        IStaker protocolStakerContract;
         IStargateNFT stargateNFTContract;
         // delegation mappings
         mapping(uint256 tokenId => uint256 delegationId) delegationIdByTokenId;
@@ -166,7 +166,7 @@ contract Stargate is
         _grantRole(DEFAULT_ADMIN_ROLE, params.admin);
 
         StargateStorage storage $ = _getStargateStorage();
-        $.protocolStakerContract = IProtocolStaker(params.protocolStakerContract);
+        $.protocolStakerContract = IStaker(params.protocolStakerContract);
         $.stargateNFTContract = IStargateNFT(params.stargateNFTContract);
         $.maxClaimablePeriods = params.maxClaimablePeriods;
     }
