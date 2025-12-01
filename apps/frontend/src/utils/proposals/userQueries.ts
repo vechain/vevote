@@ -199,15 +199,18 @@ export const isNodeDelegator = async (address: string) => {
 
     if (!managedRes.success || !ownedRes.success) return false;
 
-    const managedIds = managedRes.result.plain as string[]; // or number[]
-    const ownedIds = ownedRes.result.plain as string[];
+    // Convert to strings for proper comparison (handles bigint or number types)
+    const managedIds = (managedRes.result.plain as (string | bigint | number)[]).map(id => id.toString());
+    const ownedIds = (ownedRes.result.plain as (string | bigint | number)[]).map(id => id.toString());
 
-    // If user owns no NFTs → they can’t have delegated anything away
+    // If user owns no NFTs → they can't have delegated anything away
     if (ownedIds.length === 0) return false;
 
-    // If they own NFTs but none of those are managed by them → they delegated them away
+    // Check how many owned NFTs are still managed by the user
     const stillManagingOwned = managedIds.filter(id => ownedIds.includes(id));
-    return stillManagingOwned.length === 0;
+
+    // User is a delegator if they delegated ANY NFTs away (not all of their owned NFTs are still managed by them)
+    return stillManagingOwned.length < ownedIds.length;
   } catch (e) {
     console.error("Error checking delegation status:", e);
     return false;
