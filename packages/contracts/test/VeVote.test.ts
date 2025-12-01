@@ -125,7 +125,7 @@ describe("VeVote", function () {
   });
 
   describe("Upgradeability", function () {
-    it.only("should upgrade the contract to V2 sucessfully", async function () {
+    it("should upgrade the contract to V2 sucessfully", async function () {
       const config = createLocalConfig();
       const { vechainNodesMock, authorityContractMock, stakerContractMock } = await getOrDeployContractInstances({
         forceDeploy: false,

@@ -181,6 +181,16 @@ contract Staker {
     completedPeriods = 10;
   }
 
+
+  function firstActive() external view returns (address) {
+    for (uint256 i = 0; i < validatorList.length; i++) {
+      if (validations[validatorList[i]].status == uint8(Status.ACTIVE)) {
+        return validatorList[i];
+      }
+    }
+    return address(0);
+  }
+
   // ============ TEST HELPERS FOR MANUAL STATE CONTROL ============
   function mockSetStatus(address validator, uint8 status) external {
     validations[validator].status = status;
