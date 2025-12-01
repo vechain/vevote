@@ -194,6 +194,9 @@ library TokenManager {
 
     /**
      * @notice Internal function to retrieve the token IDs managed by a user.
+     * @dev This function calls the `_idsOwnedBy` function, this function
+     * iterates over an external call to a contract function, so it is
+     * flagged by static analyzers and it may run out of gas if the user has a lot of tokens.
      * @param _user The address of the user to check.
      * @return uint256[] The token IDs managed by the user.
      */
@@ -274,6 +277,9 @@ library TokenManager {
     /// - Tokens owned by the user and managed by the user
     /// - Tokens owned by the user and not managed by the user
     /// - Tokens managed by the user and not owned by the user
+    /// @dev WARNING: This function contains external calls in a loop.
+    ///      This pattern is necessary due to ERC721Enumerable's token iteration model.
+    ///      This function may run out of gas if the user has a lot of tokens.
     /// @param _user The address of the user to get the overview of the tokens
     /// @return DataTypes.TokenOverview[] The overview of the tokens related to the user
     function tokensOverview(

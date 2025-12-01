@@ -67,12 +67,6 @@ library MintingLogic {
         uint256 vetAmountStaked
     );
 
-    /**
-     * @notice Emitted when a whitelist entry is removed
-     * @param owner The address of the whitelist entry
-     */
-    event WhitelistEntryRemoved(address owner);
-
     /// @notice Emitted when a token maturity period is boosted
     event MaturityPeriodBoosted(
         uint256 indexed tokenId,
@@ -113,7 +107,7 @@ library MintingLogic {
 
         uint256 balance = $.vthoToken.balanceOf(_sender);
         // check that the boost amount is enough
-        if ($.vthoToken.balanceOf(_sender) < requiredBoostAmount) {
+        if (balance < requiredBoostAmount) {
             revert Errors.InsufficientBalance(
                 address($.vthoToken),
                 _sender,

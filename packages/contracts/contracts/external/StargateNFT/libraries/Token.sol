@@ -86,6 +86,12 @@ library Token {
 
     /// @notice Returns an array of token IDs owned by a given address
     /// @dev Replaces the original `ownerToId` mapping which can't support multiple tokens per owner
+    /// @dev WARNING: This function contains external calls in a loop, which is flagged by static analyzers.
+    ///      This pattern is necessary due to ERC721Enumerable's token iteration model, but should be used with caution:
+    ///      1. It returns early to minimize gas usage when possible
+    ///      2. It should only be used in view functions, never in state-changing functions
+    ///      3. This approach is acceptable for off-chain queries and UI/DApp integrations
+    ///      4. For on-chain interactions, prefer using alternative data structures when possible
     /// @param _owner The address to get token IDs for
     /// @return An array of token IDs owned by the address
     // slither-disable-next-line calls-loop
@@ -256,10 +262,6 @@ library Token {
         DataTypes.Token memory token = $.tokens[_tokenId];
 
         return token;
-    }
-
-    function _tokenExists(uint256 _tokenId) internal view returns (bool) {
-        return IStargateNFT(address(this)).tokenExists(_tokenId);
     }
 
     /// @notice Throws if a token does not exist

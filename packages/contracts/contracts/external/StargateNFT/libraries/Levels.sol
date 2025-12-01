@@ -124,54 +124,6 @@ library Levels {
         emit LevelCapUpdated($.MAX_LEVEL_ID, 0, _levelAndSupply.cap);
     }
 
-    /// @notice Updates a token level
-    /// @param _levelId - The ID of the level to update
-    /// @param _name - The name of the level
-    /// @param _isX - Whether the level is an X level
-    /// @param _maturityBlocks - The number of blocks before the level can earn rewards
-    /// @param _scaledRewardFactor - The scaled reward multiplier for the level
-    /// @param _vetAmountRequiredToStake - The amount of VET required to stake for the level
-    /// @dev Only the LEVEL_OPERATOR_ROLE can call this function
-    /// Use carefully, all fields are updated,
-    /// if you want to update only some fields, fetch the level first, then update the fields you need to change
-    /// A new level is valid if:
-    /// - the id exists
-    /// - name is not empty
-    /// - vetAmountRequiredToStake is greater than 0
-    /// Emits a {IStargateNFT.LevelUpdated} event
-    function updateLevel(
-        DataTypes.StargateNFTStorage storage $,
-        uint8 _levelId,
-        string memory _name,
-        bool _isX,
-        uint64 _maturityBlocks,
-        uint64 _scaledRewardFactor,
-        uint256 _vetAmountRequiredToStake
-    ) external {
-        _updateLevel(
-            $,
-            _levelId,
-            _name,
-            _isX,
-            _maturityBlocks,
-            _scaledRewardFactor,
-            _vetAmountRequiredToStake
-        );
-    }
-
-    /// @notice Updates the cap for a token level
-    /// @param _levelId - The ID of the level to update
-    /// @param _cap - The new cap for the level
-    /// @dev Only the LEVEL_OPERATOR_ROLE can call this function
-    /// Emits a {IStargateNFT.LevelCapUpdated} event
-    function updateLevelCap(
-        DataTypes.StargateNFTStorage storage $,
-        uint8 _levelId,
-        uint32 _cap
-    ) external {
-        _updateLevelCap($, _levelId, _cap);
-    }
-
     /// @notice Updates the boost price per block for a token level
     /// @param _levelId - The ID of the level to update
     /// @param _boostPricePerBlock - The new boost price per block for the level
@@ -281,40 +233,6 @@ library Levels {
         }
     }
 
-    /// @dev See {updateLevel}
-    function _updateLevel(
-        DataTypes.StargateNFTStorage storage $,
-        uint8 _levelId,
-        string memory _name,
-        bool _isX,
-        uint64 _maturityBlocks,
-        uint64 _scaledRewardFactor,
-        uint256 _vetAmountRequiredToStake
-    ) internal {
-        // Validate level exists
-        if (!_levelExists($, $.levels[_levelId].id)) {
-            revert Errors.LevelNotFound(_levelId);
-        }
-
-        $.levels[_levelId].name = _name;
-        $.levels[_levelId].isX = _isX;
-        $.levels[_levelId].maturityBlocks = _maturityBlocks;
-        $.levels[_levelId].scaledRewardFactor = _scaledRewardFactor;
-        $.levels[_levelId].vetAmountRequiredToStake = _vetAmountRequiredToStake;
-
-        // Validate level fields
-        _validateLevel($.levels[_levelId]);
-
-        emit LevelUpdated(
-            _levelId,
-            _name,
-            _isX,
-            _maturityBlocks,
-            _scaledRewardFactor,
-            _vetAmountRequiredToStake
-        );
-    }
-
     /// @dev See {updateLevelBoostPricePerBlock}
     function _updateLevelBoostPricePerBlock(
         DataTypes.StargateNFTStorage storage $,
@@ -332,27 +250,6 @@ library Levels {
             _boostPricePerBlock
         );
         $.boostPricePerBlock[_levelId] = _boostPricePerBlock;
-    }
-
-    /// @dev See {updateLevelCap}
-    function _updateLevelCap(
-        DataTypes.StargateNFTStorage storage $,
-        uint8 _levelId,
-        uint32 _cap
-    ) internal {
-        // Validate level exists
-        if (!_levelExists($, $.levels[_levelId].id)) {
-            revert Errors.LevelNotFound(_levelId);
-        }
-
-        // Validate new cap is greater than or equal to current circulating supply
-        if (_getCirculatingSupply($, _levelId) > _cap) {
-            revert Errors.CirculatingSupplyGreaterThanCap();
-        }
-
-        // Update cap
-        emit LevelCapUpdated(_levelId, $.cap[_levelId], _cap);
-        $.cap[_levelId] = _cap;
     }
 
     /// @dev See {getLevelIds}
