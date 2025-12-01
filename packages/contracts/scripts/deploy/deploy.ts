@@ -37,10 +37,6 @@ export async function deployAll(config: ContractsConfig) {
     flashHolder,
     lighteningHolder,
     dawnHolder,
-    validatorHolder1,
-    masterNode1,
-    validatorHolder2,
-    masterNode2,
     whitelistedAccount,
   ] = await ethers.getSigners();
 
@@ -233,8 +229,6 @@ export async function deployAll(config: ContractsConfig) {
     await createNodeHolder(TokenLevelId.Dawn, deployer, dawnHolder, stargateMock, stargate);
     await createNodeHolder(TokenLevelId.Lightning, deployer, lighteningHolder, stargateMock, stargate);
     await createNodeHolder(TokenLevelId.Flash, deployer, flashHolder, stargateMock, stargate);
-    //await createNodeHolderV2(validatorHolder1, authorityContractMock, masterNode1);
-    //await createNodeHolderV2(validatorHolder2, authorityContractMock, masterNode2);
   }
 
   // ---------------------- Deploy Libraries ----------------------
