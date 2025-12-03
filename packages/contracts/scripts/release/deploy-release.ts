@@ -2,8 +2,8 @@ import { ethers, network } from "hardhat";
 import { ContractsConfig } from "@repo/config/contracts/type";
 import { HttpNetworkConfig } from "hardhat/types";
 import { deployProxy, saveContractsToFile } from "../helpers";
-import { VeVote } from "../../typechain-types";
-import { deployLibraries } from "../helpers/deployLibraries";
+import { VeVoteV1 } from "../../typechain-types";
+import { deployLibraries, deployLibrariesV1 } from "../helpers/deployLibraries";
 
 export async function deployAll(config: ContractsConfig) {
   const start = performance.now();
@@ -45,22 +45,22 @@ export async function deployAll(config: ContractsConfig) {
 
   // ---------------------- Deploy Libraries ----------------------
   console.log("Deploying VeVote libaries...");
-  const { veVoteConfigurator, veVoteProposalLogic, veVoteQuoromLogic, veVoteStateLogic, veVoteVoteLogic } =
-    await deployLibraries();
+  const { veVoteConfiguratorV1, veVoteProposalLogicV1, veVoteQuoromLogicV1, veVoteStateLogicV1, veVoteVoteLogicV1 } =
+    await deployLibrariesV1();
 
   console.log("VeVote libaries deployed");
   console.log("Library Addresses:");
-  console.log(`- VeVoteConfigurator:     ${await veVoteConfigurator.getAddress()}`);
-  console.log(`- VeVoteProposalLogic:    ${await veVoteProposalLogic.getAddress()}`);
-  console.log(`- VeVoteQuorumLogic:      ${await veVoteQuoromLogic.getAddress()}`);
-  console.log(`- VeVoteStateLogic:       ${await veVoteStateLogic.getAddress()}`);
-  console.log(`- VeVoteVoteLogic:        ${await veVoteVoteLogic.getAddress()}`);
+  console.log(`- VeVoteConfigurator:     ${await veVoteConfiguratorV1.getAddress()}`);
+  console.log(`- VeVoteProposalLogic:    ${await veVoteProposalLogicV1.getAddress()}`);
+  console.log(`- VeVoteQuorumLogic:      ${await veVoteQuoromLogicV1.getAddress()}`);
+  console.log(`- VeVoteStateLogic:       ${await veVoteStateLogicV1.getAddress()}`);
+  console.log(`- VeVoteVoteLogic:        ${await veVoteVoteLogicV1.getAddress()}`);
   console.log("================================================================================");
 
   console.log("Deploying VeVote Smart Contract...");
   // Deploy the vevote contract
   const vevote = (await deployProxy(
-    "VeVote",
+    "VeVoteV1",
     [
       {
         quorumPercentage: config.QUORUM_PERCENTAGE,
@@ -83,14 +83,14 @@ export async function deployAll(config: ContractsConfig) {
       },
     ],
     {
-      VeVoteVoteLogic: await veVoteVoteLogic.getAddress(),
-      VeVoteStateLogic: await veVoteStateLogic.getAddress(),
-      VeVoteQuorumLogic: await veVoteQuoromLogic.getAddress(),
-      VeVoteProposalLogic: await veVoteProposalLogic.getAddress(),
-      VeVoteConfigurator: await veVoteConfigurator.getAddress(),
+      VeVoteVoteLogicV1: await veVoteVoteLogicV1.getAddress(),
+      VeVoteStateLogicV1: await veVoteStateLogicV1.getAddress(),
+      VeVoteQuorumLogicV1: await veVoteQuoromLogicV1.getAddress(),
+      VeVoteProposalLogicV1: await veVoteProposalLogicV1.getAddress(),
+      VeVoteConfiguratorV1: await veVoteConfiguratorV1.getAddress(),
     },
     true,
-  )) as VeVote;
+  )) as VeVoteV1;
 
   const date = new Date(performance.now() - start);
   console.log(`================  Contracts deployed in ${date.getMinutes()}m ${date.getSeconds()}s `);
@@ -103,11 +103,11 @@ export async function deployAll(config: ContractsConfig) {
     VeVote: Record<string, string>;
   } = {
     VeVote: {
-      VeVoteConfigurator: await veVoteConfigurator.getAddress(),
-      VeVoteProposalLogic: await veVoteProposalLogic.getAddress(),
-      VeVoteQuoromLogic: await veVoteQuoromLogic.getAddress(),
-      VeVoteStateLogic: await veVoteStateLogic.getAddress(),
-      VeVoteVoteLogic: await veVoteVoteLogic.getAddress(),
+      VeVoteConfigurator: await veVoteConfiguratorV1.getAddress(),
+      VeVoteProposalLogic: await veVoteProposalLogicV1.getAddress(),
+      VeVoteQuoromLogic: await veVoteQuoromLogicV1.getAddress(),
+      VeVoteStateLogic: await veVoteStateLogicV1.getAddress(),
+      VeVoteVoteLogic: await veVoteVoteLogicV1.getAddress(),
     },
   };
   console.log(`🚀 Deployed VeVote Smart Contract: ${await vevote.getAddress()} 🚀`);

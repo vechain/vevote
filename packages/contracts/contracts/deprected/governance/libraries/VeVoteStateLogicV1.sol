@@ -1,0 +1,139 @@
+// SPDX-License-Identifier: MIT
+
+//  8b           d8       8b           d8
+//  `8b         d8'       `8b         d8'           ,d
+//   `8b       d8'         `8b       d8'            88
+//    `8b     d8' ,adPPYba, `8b     d8' ,adPPYba, MM88MMM ,adPPYba,
+//     `8b   d8' a8P   _d88  `8b   d8' a8"     "8a  88   a8P_____88
+//      `8b d8'  8PP  "PP""   `8b d8'  8b       d8  88   8PP"""""""
+//       `888'   "8b,   ,aa    `888'   "8a,   ,a8"  88,  "8b,   ,aa
+//        `8'     `"Ybbd8"'     `8'     `"YbbdP"'   "Y888 `"Ybbd8"'
+
+pragma solidity 0.8.20;
+
+import { VeVoteStorageTypesV1 as VeVoteStorageTypes } from "./VeVoteStorageTypesV1.sol";
+import { VeVoteProposalLogicV1 as VeVoteProposalLogic } from "./VeVoteProposalLogicV1.sol";
+import { VeVoteVoteLogicV1 as VeVoteVoteLogic } from "./VeVoteVoteLogicV1.sol";
+import { VeVoteClockLogicV1 as VeVoteClockLogic } from "./VeVoteClockLogicV1.sol";
+import { VeVoteQuorumLogicV1 as VeVoteQuorumLogic } from "./VeVoteQuorumLogicV1.sol";
+import { VeVoteTypesV1 as VeVoteTypes } from "./VeVoteTypesV1.sol";
+
+/// @title VeVoteStateLogic
+/// @notice Handles the state determination of governance proposals in the VeVote system.
+/// @dev Provides functions to determine the status of a proposal based on various governance rules.
+library VeVoteStateLogicV1 {
+  // ------------------------------- Errors -------------------------------
+  /**
+   * @dev Thrown when the `proposalId` does not exist.
+   * @param proposalId The ID of the proposal that does not exist.
+   */
+  error VeVoteNonexistentProposal(uint256 proposalId);
+
+  /**
+   * @dev Thrown when the current state of a proposal does not match the expected state.
+   * @param proposalId The ID of the proposal.
+   * @param current The current state of the proposal.
+   * @param expectedStates The expected states for the proposal.
+   */
+  error VeVoteUnexpectedProposalState(uint256 proposalId, VeVoteTypes.ProposalState current, bytes32 expectedStates);
+
+  // ------------------------------- External Functions -------------------------------
+  /**
+   * @notice Retrieves the current state of a proposal.
+   * @dev Calls the internal `_state` function to determine the proposal's status.
+   * @param self The storage reference for the VeVote system.
+   * @param proposalId The ID of the proposal.
+   * @return The current state of the proposal.
+   */
+  function state(
+    VeVoteStorageTypes.VeVoteStorage storage self,
+    uint256 proposalId
+  ) external view returns (VeVoteTypes.ProposalState) {
+    return _state(self, proposalId);
+  }
+
+  // ------------------------------- Internal Functions -------------------------------
+
+  /**
+   * @dev Internal function to validate the current state of a proposal against expected states.
+   * @param self The storage reference for the VeVoteStorage.
+   * @param proposalId The ID of the proposal.
+   * @param allowedStates The bitmap of allowed states.
+   * @return The current state of the proposal.
+   */
+  function validateStateBitmap(
+    VeVoteStorageTypes.VeVoteStorage storage self,
+    uint256 proposalId,
+    bytes32 allowedStates
+  ) internal view returns (VeVoteTypes.ProposalState) {
+    VeVoteTypes.ProposalState currentState = _state(self, proposalId);
+    if (encodeStateBitmap(currentState) & allowedStates == bytes32(0)) {
+      revert VeVoteUnexpectedProposalState(proposalId, currentState, allowedStates);
+    }
+    return currentState;
+  }
+
+  /**
+   * @dev Encodes a `ProposalState` into a `bytes32` representation where each bit enabled corresponds to the underlying position in the `ProposalState` enum.
+   * @param proposalState The state to encode.
+   * @return The encoded state bitmap.
+   */
+  function encodeStateBitmap(VeVoteTypes.ProposalState proposalState) internal pure returns (bytes32) {
+    return bytes32(1 << uint8(proposalState));
+  }
+
+  /**
+   * @notice Determines the current state of a proposal.
+   * @dev This function evaluates whether a proposal is pending, active, succeeded, defeated, executed, or canceled.
+   * @param self The storage reference for the VeVote system.
+   * @param proposalId The ID of the proposal.
+   * @return The computed state of the proposal.
+   */
+  function _state(
+    VeVoteStorageTypes.VeVoteStorage storage self,
+    uint256 proposalId
+  ) internal view returns (VeVoteTypes.ProposalState) {
+    // Cache the proposal and its snapshot
+    VeVoteTypes.ProposalCore storage proposal = self.proposals[proposalId];
+    uint256 snapshot = proposal.voteStart;
+
+    // If there is no snapshot, the proposal does not exist
+    if (snapshot == 0) {
+      revert VeVoteNonexistentProposal(proposalId);
+    }
+
+    // If the proposal has been executed, return Executed state
+    if (proposal.executed) {
+      return VeVoteTypes.ProposalState.Executed;
+    }
+
+    // If the proposal has been canceled, return Canceled state
+    if (proposal.canceled) {
+      return VeVoteTypes.ProposalState.Canceled;
+    }
+
+    // Retrieve the current block
+    uint256 currentBlock = VeVoteClockLogic.clock();
+
+    // If the snapshot is in the future, the proposal is stil Pending
+    if (snapshot > currentBlock) {
+      return VeVoteTypes.ProposalState.Pending;
+    }
+
+    // Retrieve the voting deadline for the proposal
+    uint256 deadline = VeVoteProposalLogic.proposalDeadline(self, proposalId);
+
+    // If the deadline has not passed, the proposal is still Active
+    if (deadline >= currentBlock) {
+      return VeVoteTypes.ProposalState.Active;
+    }
+    // If the quorum was not reached or FOR votes were not greater than against votes, the proposal is Defeated
+    else if (!VeVoteQuorumLogic._quorumReached(self, proposalId) || !VeVoteVoteLogic._voteSucceeded(self, proposalId)) {
+      return VeVoteTypes.ProposalState.Defeated;
+    }
+    // Otherwise, the proposal has succeeded
+    else {
+      return VeVoteTypes.ProposalState.Succeeded;
+    }
+  }
+}

@@ -2,19 +2,20 @@ import { ethers, network } from "hardhat";
 import { ContractsConfig } from "@repo/config/contracts/type";
 import { HttpNetworkConfig } from "hardhat/types";
 import {
-  deployProxy,
+  deployAndUpgrade,
   saveContractsToFile,
   initialTokenLevels,
   createNodeHolder,
   deployUpgradeableWithoutInitialization,
   initializeProxy,
+  initializeProxyAllVersions,
   deployStargateNFTLibraries,
   vthoRewardPerBlockPerLevel,
   TokenLevelId,
   deployAndInitializeLatest,
 } from "../helpers";
-import { NodeManagement, StargateDelegation, StargateNFT, VeVote } from "../../typechain-types";
-import { deployLibraries } from "../helpers/deployLibraries";
+import { NodeManagement, Stargate, StargateDelegation, StargateNFT, VeVote } from "../../typechain-types";
+import { deployLibraries, deployLibrariesV1 } from "../helpers/deployLibraries";
 import { createValidator } from "../helpers/validators";
 
 export async function deployAll(config: ContractsConfig) {
@@ -36,10 +37,6 @@ export async function deployAll(config: ContractsConfig) {
     flashHolder,
     lighteningHolder,
     dawnHolder,
-    validatorHolder1,
-    masterNode1,
-    validatorHolder2,
-    masterNode2,
     whitelistedAccount,
   ] = await ethers.getSigners();
 
@@ -61,16 +58,9 @@ export async function deployAll(config: ContractsConfig) {
   if (network.name !== "vechain_mainnet") {
     console.log("Deploying Vechain Nodes mock contracts");
 
-    const TokenAuctionLock = await ethers.getContractFactory("TokenAuction");
+    const TokenAuctionLock = await ethers.getContractFactory("TokenAuctionMock");
     const vechainNodesMock = await TokenAuctionLock.deploy();
     await vechainNodesMock.waitForDeployment();
-
-    const ClockAuctionLock = await ethers.getContractFactory("ClockAuction");
-    const clockAuctionContract = await ClockAuctionLock.deploy(await vechainNodesMock.getAddress(), deployer);
-
-    await vechainNodesMock.setSaleAuctionAddress(await clockAuctionContract.getAddress());
-
-    await vechainNodesMock.addOperator(deployer);
     const vechainNodesMockAddress = await vechainNodesMock.getAddress();
 
     console.log("Vechain Nodes Mock deployed at: ", await vechainNodesMock.getAddress());
@@ -80,8 +70,8 @@ export async function deployAll(config: ContractsConfig) {
       StargateNFTSettingsLib,
       StargateNFTTokenLib,
       StargateNFTMintingLib,
-      StargateNFTVetGeneratedVthoLib,
       StargateNFTLevelsLib,
+      StargateNFTTokenManagerLib,
     } = await deployStargateNFTLibraries();
 
     const stargateNFTProxyAddress = await deployUpgradeableWithoutInitialization(
@@ -91,41 +81,64 @@ export async function deployAll(config: ContractsConfig) {
         MintingLogic: await StargateNFTMintingLib.getAddress(),
         Settings: await StargateNFTSettingsLib.getAddress(),
         Token: await StargateNFTTokenLib.getAddress(),
-        VetGeneratedVtho: await StargateNFTVetGeneratedVthoLib.getAddress(),
         Levels: await StargateNFTLevelsLib.getAddress(),
+        TokenManager: await StargateNFTTokenManagerLib.getAddress(),
       },
       true,
     );
 
-    const stargateDelegationProxyAddress = await deployUpgradeableWithoutInitialization("StargateDelegation", {}, true);
+    const stargateProxyAddress = await deployUpgradeableWithoutInitialization(
+      "Stargate",
+      {
+        Clock: await StargateNFTClockLib.getAddress(),
+      },
+      true,
+    );
 
-    stargateMock = (await initializeProxy(
-      stargateNFTProxyAddress,
-      "StargateNFT",
+    const stargate = (await initializeProxy(
+      stargateProxyAddress,
+      "Stargate",
       [
         {
-          tokenCollectionName: "VeChain Node Token",
-          tokenCollectionSymbol: "VNT",
-          baseTokenURI: "ipfs://todo/metadata/",
           admin: TEMP_ADMIN,
-          upgrader: TEMP_ADMIN,
-          pauser: TEMP_ADMIN,
-          levelOperator: TEMP_ADMIN,
-          legacyNodes: vechainNodesMockAddress,
-          legacyLastTokenId: TEMP_ADMIN,
-          levelsAndSupplies: initialTokenLevels,
-          stargateDelegation: stargateDelegationProxyAddress,
-          vthoToken: vthoAddress,
+          protocolStakerContract: config.PROTOCOL_STAKER_CONTRACT_ADDRESS ?? TEMP_ADMIN,
+          stargateNFTContract: stargateNFTProxyAddress,
+          maxClaimablePeriods: (config as any).MAX_CLAIMABLE_PERIODS ?? 832,
         },
       ],
       {
         Clock: await StargateNFTClockLib.getAddress(),
-        MintingLogic: await StargateNFTMintingLib.getAddress(),
-        Settings: await StargateNFTSettingsLib.getAddress(),
-        Token: await StargateNFTTokenLib.getAddress(),
-        VetGeneratedVtho: await StargateNFTVetGeneratedVthoLib.getAddress(),
-        Levels: await StargateNFTLevelsLib.getAddress(),
       },
+    )) as unknown as Stargate;
+
+    const stargateDelegationProxyAddress = await deployUpgradeableWithoutInitialization("StargateDelegation", {}, true);
+
+    stargateMock = (await initializeProxyAllVersions(
+      "StargateNFT",
+      stargateNFTProxyAddress,
+      [
+        {
+          args: [
+            {
+              tokenCollectionName: "StarGate Delegator Token",
+              tokenCollectionSymbol: "SDT",
+              baseTokenURI: "ipfs://todo/metadata/",
+              admin: TEMP_ADMIN,
+              upgrader: TEMP_ADMIN,
+              pauser: TEMP_ADMIN,
+              levelOperator: TEMP_ADMIN,
+              legacyNodes: vechainNodesMockAddress,
+              legacyLastTokenId: TEMP_ADMIN,
+              levelsAndSupplies: initialTokenLevels,
+              stargateDelegation: stargateDelegationProxyAddress,
+              vthoToken: vthoAddress,
+            },
+          ],
+        },
+        { args: [[]], version: 2 },
+        { args: [stargateProxyAddress, [], []], version: 3 },
+      ],
+      true,
     )) as StargateNFT;
 
     stargateSCAddress = await stargateMock.getAddress();
@@ -171,58 +184,109 @@ export async function deployAll(config: ContractsConfig) {
     await authorityContractMock.waitForDeployment();
 
     // ---------------------- Create Node Holders ----------------------
-    await createNodeHolder(TokenLevelId.Strength, deployer, strengthHolder, stargateMock);
-    await createNodeHolder(TokenLevelId.Thunder, deployer, thunderHolder, stargateMock);
-    await createNodeHolder(TokenLevelId.Mjolnir, deployer, mjolnirHolder, stargateMock);
-    await createNodeHolder(TokenLevelId.VeThorX, deployer, veThorXHolder, stargateMock);
-    await createNodeHolder(TokenLevelId.StrengthX, deployer, strengthXHolder, stargateMock);
-    await createNodeHolder(TokenLevelId.ThunderX, deployer, thunderXHolder, stargateMock);
-    await createNodeHolder(TokenLevelId.MjolnirX, deployer, mjolnirXHolder, stargateMock);
-    await createNodeHolder(TokenLevelId.Dawn, deployer, dawnHolder, stargateMock);
-    await createNodeHolder(TokenLevelId.Lightning, deployer, lighteningHolder, stargateMock);
-    await createNodeHolder(TokenLevelId.Flash, deployer, flashHolder, stargateMock);
-    await createValidator(validatorHolder1, authorityContractMock, masterNode1);
-    await createValidator(validatorHolder2, authorityContractMock, masterNode2);
+    // Stargate already initialized above
+    const validator = await strengthHolder.getAddress();
+    const validator2 = await thunderHolder.getAddress();
+    await createNodeHolder(TokenLevelId.Strength, deployer, strengthHolder, stargateMock, stargate);
+    await createNodeHolder(TokenLevelId.Thunder, deployer, thunderHolder, stargateMock, stargate);
+    await createNodeHolder(TokenLevelId.Mjolnir, deployer, mjolnirHolder, stargateMock, stargate);
+    await createNodeHolder(
+      TokenLevelId.VeThorX,
+      deployer,
+      veThorXHolder,
+      stargateMock,
+      stargate,
+      vechainNodesMock,
+      validator,
+    );
+    await createNodeHolder(
+      TokenLevelId.StrengthX,
+      deployer,
+      strengthXHolder,
+      stargateMock,
+      stargate,
+      vechainNodesMock,
+      validator,
+    );
+    await createNodeHolder(
+      TokenLevelId.ThunderX,
+      deployer,
+      thunderXHolder,
+      stargateMock,
+      stargate,
+      vechainNodesMock,
+      validator2,
+    );
+    await createNodeHolder(
+      TokenLevelId.MjolnirX,
+      deployer,
+      mjolnirXHolder,
+      stargateMock,
+      stargate,
+      vechainNodesMock,
+      validator2,
+    );
+    await createNodeHolder(TokenLevelId.Dawn, deployer, dawnHolder, stargateMock, stargate);
+    await createNodeHolder(TokenLevelId.Lightning, deployer, lighteningHolder, stargateMock, stargate);
+    await createNodeHolder(TokenLevelId.Flash, deployer, flashHolder, stargateMock, stargate);
   }
 
   // ---------------------- Deploy Libraries ----------------------
-  const { veVoteConfigurator, veVoteProposalLogic, veVoteQuoromLogic, veVoteStateLogic, veVoteVoteLogic } =
-    await deployLibraries();
+  const { veVoteConfiguratorV1, veVoteProposalLogicV1, veVoteQuoromLogicV1, veVoteStateLogicV1, veVoteVoteLogicV1 } =
+    await deployLibrariesV1();
 
   // ---------------------- Deploy Contracts ----------------------
 
-  // Deploy the vevote contract
-  const vevote = (await deployProxy(
-    "VeVote",
+  // Deploy VeVote V1 and upgrade to latest VeVote
+  const { veVoteConfigurator, veVoteProposalLogic, veVoteQuoromLogic, veVoteStateLogic, veVoteVoteLogic } =
+    await deployLibraries();
+
+  const vevote = (await deployAndUpgrade(
+    ["VeVoteV1", "VeVote"],
     [
-      {
-        quorumPercentage: config.QUORUM_PERCENTAGE,
-        initialMinVotingDelay: config.INITIAL_MIN_VOTING_DELAY,
-        initialMaxVotingDuration: config.INITIAL_MAX_VOTING_DURATION,
-        initialMinVotingDuration: config.INITIAL_MIN_VOTING_DURATION,
-        nodeManagement: nodeManagementAddress,
-        stargateNFT: stargateSCAddress,
-        authorityContract: config.AUTHORITY_CONTRACT_ADDRESS,
-        initialMinStakedAmount: config.MIN_VET_STAKE,
-      },
-      {
-        admin: TEMP_ADMIN,
-        upgrader: TEMP_ADMIN,
-        whitelist: [TEMP_ADMIN, whitelistedAccount.address],
-        settingsManager: TEMP_ADMIN,
-        nodeWeightManager: TEMP_ADMIN,
-        executor: TEMP_ADMIN,
-        whitelistAdmin: TEMP_ADMIN,
-      },
+      [
+        {
+          quorumPercentage: config.QUORUM_PERCENTAGE,
+          initialMinVotingDelay: config.INITIAL_MIN_VOTING_DELAY,
+          initialMaxVotingDuration: config.INITIAL_MAX_VOTING_DURATION,
+          initialMinVotingDuration: config.INITIAL_MIN_VOTING_DURATION,
+          nodeManagement: nodeManagementAddress,
+          stargateNFT: stargateSCAddress,
+          authorityContract: config.AUTHORITY_CONTRACT_ADDRESS,
+          initialMinStakedAmount: config.MIN_VET_STAKE,
+        },
+        {
+          admin: TEMP_ADMIN,
+          upgrader: TEMP_ADMIN,
+          whitelist: [TEMP_ADMIN, whitelistedAccount.address],
+          settingsManager: TEMP_ADMIN,
+          nodeWeightManager: TEMP_ADMIN,
+          executor: TEMP_ADMIN,
+          whitelistAdmin: TEMP_ADMIN,
+        },
+      ],
+      [],
     ],
     {
-      VeVoteVoteLogic: await veVoteVoteLogic.getAddress(),
-      VeVoteStateLogic: await veVoteStateLogic.getAddress(),
-      VeVoteQuorumLogic: await veVoteQuoromLogic.getAddress(),
-      VeVoteProposalLogic: await veVoteProposalLogic.getAddress(),
-      VeVoteConfigurator: await veVoteConfigurator.getAddress(),
+      versions: [undefined, 2],
+      libraries: [
+        {
+          VeVoteVoteLogicV1: await veVoteVoteLogicV1.getAddress(),
+          VeVoteStateLogicV1: await veVoteStateLogicV1.getAddress(),
+          VeVoteQuorumLogicV1: await veVoteQuoromLogicV1.getAddress(),
+          VeVoteProposalLogicV1: await veVoteProposalLogicV1.getAddress(),
+          VeVoteConfiguratorV1: await veVoteConfiguratorV1.getAddress(),
+        },
+        {
+          VeVoteVoteLogic: await veVoteVoteLogic.getAddress(),
+          VeVoteStateLogic: await veVoteStateLogic.getAddress(),
+          VeVoteQuorumLogic: await veVoteQuoromLogic.getAddress(),
+          VeVoteProposalLogic: await veVoteProposalLogic.getAddress(),
+          VeVoteConfigurator: await veVoteConfigurator.getAddress(),
+        },
+      ],
+      logOutput: true,
     },
-    true,
   )) as VeVote;
 
   const date = new Date(performance.now() - start);

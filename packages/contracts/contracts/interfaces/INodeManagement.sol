@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
-
-import { DataTypes } from "../external/StargateNFT/libraries/DataTypes.sol";
-import { VechainNodesDataTypes } from "../libraries/VechainNodesDataTypes.sol";
-
 pragma solidity 0.8.20;
+
+import { DataTypesV2 } from "../external/deprecated/StargateNFT/libraries/DataTypesV2.sol";
+import { VechainNodesDataTypes } from "../external/deprecated/libraries/VechainNodesDataTypes.sol";
+
 
 interface INodeManagement {
   /**
@@ -187,5 +187,5 @@ interface INodeManagement {
    * @param user The user address to query.
    * @return tokens An array of DataTypes.Token structs owned or delegated to the user.
    */
-  function getUserStargateNFTsInfo(address user) external view returns (DataTypes.Token[] memory tokens);
+  function getUserStargateNFTsInfo(address user) external view returns (DataTypesV2.Token[] memory tokens);
 }

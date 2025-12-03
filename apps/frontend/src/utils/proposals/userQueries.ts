@@ -1,17 +1,17 @@
 import { getConfig } from "@repo/config";
 import { executeCall, executeMultipleClauses } from "../contract";
 import { VeVote__factory } from "@vechain/vevote-contracts";
-import { NodeManagement__factory } from "@vechain/vevote-contracts/typechain-types";
-import { AmnResponse, ExtendedStargateNode, NodeStrengthLevels, StargateNode } from "@/types/user";
+import { StargateNFT__factory } from "@vechain/vevote-contracts/typechain-types";
+import { ExtendedStargateNode, NodeStrengthLevels, StargateNode } from "@/types/user";
 import axios from "axios";
-import { IndexerRoutes } from "@/types/indexer";
+import { IndexerRoutes, ValidatorsResponse } from "@/types/indexer";
 
 const contractAddress = getConfig(import.meta.env.VITE_APP_ENV).vevoteContractAddress;
-const nodeManagementAddress = getConfig(import.meta.env.VITE_APP_ENV).nodeManagementContractAddress;
+const stargateNFTContractAddress = getConfig(import.meta.env.VITE_APP_ENV).stargateNFTContractAddress;
 const indexerUrl = getConfig(import.meta.env.VITE_APP_ENV).indexerUrl;
 
 const contractInterface = VeVote__factory.createInterface();
-const nodeManagementInterface = NodeManagement__factory.createInterface();
+const stargateNFTInterface = StargateNFT__factory.createInterface();
 
 export const getUserRoles = async ({ address }: { address?: string }) => {
   if (!address) {
@@ -62,9 +62,9 @@ export const getUserRoles = async ({ address }: { address?: string }) => {
 export const getUserNodes = async ({ address }: { address: string }) => {
   try {
     const nodesRes = await executeCall({
-      contractAddress: nodeManagementAddress,
-      contractInterface: nodeManagementInterface,
-      method: "getUserStargateNFTsInfo",
+      contractAddress: stargateNFTContractAddress,
+      contractInterface: stargateNFTInterface,
+      method: "tokensManagedBy",
       args: [address],
     });
 
@@ -103,7 +103,7 @@ export const getNodesNameAndPower = async ({ nodeIds }: { nodeIds: string[] }) =
     args: [node],
   }));
   const nodeLevelArgs = nodeIds.map(node => ({
-    method: "getNodeLevel" as const,
+    method: "getTokenLevel" as const,
     args: [node],
   }));
 
@@ -114,8 +114,8 @@ export const getNodesNameAndPower = async ({ nodeIds }: { nodeIds: string[] }) =
       methodsWithArgs: votingPowerArgs,
     }),
     executeMultipleClauses({
-      contractAddress: nodeManagementAddress,
-      contractInterface: nodeManagementInterface,
+      contractAddress: stargateNFTContractAddress,
+      contractInterface: stargateNFTInterface,
       methodsWithArgs: nodeLevelArgs,
     }),
   ]);
@@ -133,13 +133,15 @@ export const getNodesNameAndPower = async ({ nodeIds }: { nodeIds: string[] }) =
 export const getAMN = async (address?: string) => {
   if (!address) return { data: undefined };
   try {
-    const res = await axios.get<AmnResponse>(`${indexerUrl}${IndexerRoutes.MASTER_NODE}/${address}`);
+    const url = `${indexerUrl}${IndexerRoutes.MASTER_NODE}${address}&page=0&size=1&direction=DESC`;
+    const res = await axios.get<ValidatorsResponse>(url, { headers: { accept: "*/*" } });
+    const list = res.data?.data ?? [];
 
-    if (!res.data || !res.data.nodeMaster) {
-      return { data: undefined };
-    }
+    if (!Array.isArray(list) || list.length === 0) return { data: undefined };
 
-    const masterNode = res.data.nodeMaster;
+    const first = list[0];
+    const masterNode = first.id;
+    if (!masterNode) return { data: undefined };
 
     const powerRes = await executeCall({
       contractAddress,
@@ -161,11 +163,11 @@ export const getAMN = async (address?: string) => {
 
 export const getAllUsersNodes = async (address: string) => {
   const [allNodesRes, stargateNodesRes] = await executeMultipleClauses({
-    contractAddress: nodeManagementAddress,
-    contractInterface: nodeManagementInterface,
+    contractAddress: stargateNFTContractAddress,
+    contractInterface: stargateNFTInterface,
     methodsWithArgs: [
-      { method: "getNodeIds", args: [address] },
-      { method: "getUserStargateNFTsInfo", args: [address] },
+      { method: "idsManagedBy", args: [address] },
+      { method: "tokensManagedBy", args: [address] },
     ],
   });
 
@@ -186,16 +188,31 @@ export const getAllUsersNodes = async (address: string) => {
 
 export const isNodeDelegator = async (address: string) => {
   try {
-    const res = await executeCall({
-      contractAddress: nodeManagementAddress,
-      contractInterface: nodeManagementInterface,
-      method: "isNodeDelegator",
-      args: [address],
+    const [managedRes, ownedRes] = await executeMultipleClauses({
+      contractAddress: stargateNFTContractAddress,
+      contractInterface: stargateNFTInterface,
+      methodsWithArgs: [
+        { method: "idsManagedBy", args: [address] }, // NFTs currently under user's management
+        { method: "idsOwnedBy", args: [address] }, // NFTs user owns
+      ],
     });
 
-    return res.success ? (res.result.plain as boolean) : false;
-  } catch (error) {
-    console.error("Error checking if user is a node delegator:", error);
+    if (!managedRes.success || !ownedRes.success) return false;
+
+    // Convert to strings for proper comparison (handles bigint or number types)
+    const managedIds = (managedRes.result.plain as (string | bigint | number)[]).map(id => id.toString());
+    const ownedIds = (ownedRes.result.plain as (string | bigint | number)[]).map(id => id.toString());
+
+    // If user owns no NFTs → they can't have delegated anything away
+    if (ownedIds.length === 0) return false;
+
+    // Check how many owned NFTs are still managed by the user
+    const stillManagingOwned = managedIds.filter(id => ownedIds.includes(id));
+
+    // User is a delegator if they delegated ANY NFTs away (not all of their owned NFTs are still managed by them)
+    return stillManagingOwned.length < ownedIds.length;
+  } catch (e) {
+    console.error("Error checking delegation status:", e);
     return false;
   }
 };
