@@ -27,18 +27,21 @@ jobs:
     if: ${{ inputs.version == 'latest' || startsWith(inputs.version, 'v.') }}
 
     steps:
+      - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+          persist-credentials: false
+
       - name: Find latest tag
         if: inputs.version == 'latest'
         id: find-latest-tag
         run: |
           echo "LATEST_TAG=$(git tag -l | sort -V | tail -n1)" >> $GITHUB_OUTPUT
 
-      - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
-        with:
-          fetch-depth: 0
-          fetch-tags: true
-          ref: ${{ inputs.version == 'latest' && steps.find-latest-tag.outputs.LATEST_TAG || inputs.version }}
-          persist-credentials: false
+      - name: Checkout selected ref
+        run: |
+          git checkout "${{ inputs.version == 'latest' && steps.find-latest-tag.outputs.LATEST_TAG || inputs.version }}"
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
