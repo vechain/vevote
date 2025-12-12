@@ -5,6 +5,7 @@ on:
     branches:
       - main
     paths: ['apps/frontend/**', 'packages/**', 'yarn.lock']
+    types: [opened, reopened, synchronize]
 
   push:
     branches:
@@ -94,11 +95,19 @@ jobs:
             echo "🌐 Deployed: https://vevote-dev.vechain.org/" | tee -a "$GITHUB_STEP_SUMMARY"
           fi
 
-      - name: Create Deployment Comment # only create comment if pull request is opened or reopened or draft
-        if: github.event.action == 'opened' || github.event.action == 'reopened' || github.event.pull_request.draft == true
+      - name: Find Comment
+        uses: peter-evans/find-comment@b30e6a3c0ed37e7c023ccd3f1db5c6c0b0c23aad # v4.0.0
+        id: find-comment
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: 'github-actions[bot]'
+          body-includes: '🚀 Preview environment deployed!'
+
+      - name: Create Deployment Comment
         uses: peter-evans/create-or-update-comment@71345be0265236311c031f5c7866368bd1eff043 # v4.0.0
         with:
           issue-number: ${{ github.event.pull_request.number }}
+          comment-id: ${{ steps.find-comment.outputs.comment-id }}
           body: |
             # 🚀 Preview environment deployed!
             Preview URL: https://preview.vevote-dev.vechain.org${{ steps.process-branch-name.outputs.processedBranchName }}
