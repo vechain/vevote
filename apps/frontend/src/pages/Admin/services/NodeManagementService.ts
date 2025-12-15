@@ -29,7 +29,6 @@ export class NodeManagementService {
     const methodsWithArgs = [
       { method: "idsOwnedBy" as const, args: [userAddress] },
       { method: "idsManagedBy" as const, args: [userAddress] },
-      { method: "isTokenManager" as const, args: [userAddress] },
     ];
 
     const results = await executeMultipleClauses({
@@ -47,8 +46,8 @@ export class NodeManagementService {
         results[1]?.success && Array.isArray(results[1].result.plain)
           ? results[1].result.plain.map((id: unknown) => BigInt(String(id)))
           : [],
-      isNodeHolder: Boolean(results[2]?.success ? results[2].result.plain : false),
-      isNodeDelegator: Boolean(results[3]?.success ? results[3].result.plain : false),
+      isNodeHolder: Boolean(results[0]?.success ? results[0].result.plain : false),
+      isNodeDelegator: Boolean(results[1]?.success ? results[1].result.plain : false),
     };
   }
 
