@@ -1,6 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
 import { veVoteService } from "../services/VeVoteService";
-import { ZERO_ADDRESS } from "@vechain/sdk-core";
 
 export interface VotingPowerAtTimepointResult {
   nodePower: bigint;
@@ -26,17 +25,15 @@ export const useVotingPowerAtTimepoint = ({ address, timepoint, masterAddress }:
         };
       }
 
-      const [nodePower, validatorPower] = await Promise.all([
-        veVoteService.getVotingPowerAtTimepoint(address, timepoint, ZERO_ADDRESS),
-        masterAddress
-          ? veVoteService.getVotingPowerAtTimepoint(address, timepoint, masterAddress)
-          : Promise.resolve(BigInt(0)),
+      const [nodePower, validatorPowerWithNodePower] = await Promise.all([
+        veVoteService.getVotingPowerAtTimepoint(address, timepoint),
+        masterAddress ? veVoteService.getVotingPowerAtTimepoint(address, timepoint, masterAddress) : BigInt(0),
       ]);
 
       return {
         nodePower,
-        validatorPower,
-        totalPower: nodePower + validatorPower,
+        validatorPower: validatorPowerWithNodePower - nodePower,
+        totalPower: validatorPowerWithNodePower,
       };
     },
     enabled: !!address && timepoint !== undefined,
