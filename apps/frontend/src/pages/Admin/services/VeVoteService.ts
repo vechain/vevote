@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { VeVote__factory } from "@vechain/vevote-contracts";
 import { getConfig } from "@repo/config";
 import { executeCall, executeMultipleClauses } from "../../../utils/contract";
