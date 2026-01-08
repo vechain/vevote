@@ -50,10 +50,11 @@ const Providers = ({ children }: PropsWithChildren) => {
     <I18nProvider locale={locale}>
       <PersistQueryClientProvider client={queryClient} persistOptions={{ persister }}>
         <VeChainKitProvider
+          darkMode={true}
           theme={{
             textColor: "#FFFFFF",
             modal: {
-              backgroundColor: "rgba(21, 21, 21, 0.4)",
+              backgroundColor: "rgba(21, 21, 21, 0.9)",
               border: "1px solid rgba(255, 255, 255, 0.20)",
               backdropFilter: "blur(20px)",
               rounded: "32px",
@@ -85,6 +86,7 @@ const Providers = ({ children }: PropsWithChildren) => {
           network={{
             type: config.network.type,
           }}
+          loginMethods={[{ method: "dappkit", gridColumn: 4 }]}
           legalDocuments={{
             privacyPolicy: [{ url: LegalLinks.PRIVACY_POLICY, required: true, version: 1 }],
             termsAndConditions: [{ url: LegalLinks.TERMS_OF_SERVICE, required: true, version: 1 }],

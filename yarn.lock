@@ -269,7 +269,7 @@
   dependencies:
     "@chakra-ui/utils" "2.0.15"
 
-"@chakra-ui/react@^2.10.4", "@chakra-ui/react@^2.8.2":
+"@chakra-ui/react@^2.8.2":
   version "2.10.7"
   resolved "https://registry.yarnpkg.com/@chakra-ui/react/-/react-2.10.7.tgz#6718228d9236f4826e117ef5ae49f310a80a5324"
   integrity sha512-GX1dCmnvrxxyZEofDX9GMAtRakZJKnUqFM9k8qhaycPaeyfkiTNNTjhPNX917hgVx1yhC3kcJOs5IeC7yW56/g==
@@ -4300,7 +4300,7 @@
   dependencies:
     ethers "^6.13.5"
 
-"@vechain/vechain-kit@^2.4.1":
+"@vechain/vechain-kit@2.4.1":
   version "2.4.1"
   resolved "https://registry.yarnpkg.com/@vechain/vechain-kit/-/vechain-kit-2.4.1.tgz#b20db51c8ba9daa85376aa7a97e67db699b6d2b5"
   integrity sha512-a3hhrN353hM5UrVoIZo9V/L5oVFkbeOm0tvSdndbwH39mjtxp3HtKEUw7MZ8mc/OAu0LJ2MvFbvSeUg3PnxppQ==

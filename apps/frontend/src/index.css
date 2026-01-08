@@ -194,3 +194,7 @@ iframe[style*="border: none"][style*="position: fixed"][style*="z-index: 9999"][
   background: transparent;
   border-color: rgba(255, 255, 255, 0.04);
 }
+
+.chakra-modal__content input {
+  color: white;
+}
