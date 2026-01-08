@@ -1,6 +1,10 @@
 body {
   margin: 0;
-  font-family: "Geist", system-ui, -apple-system, sans-serif;
+  font-family:
+    "Geist",
+    system-ui,
+    -apple-system,
+    sans-serif;
 }
 
 h1,
@@ -9,7 +13,11 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: "Rubik", system-ui, -apple-system, sans-serif;
+  font-family:
+    "Rubik",
+    system-ui,
+    -apple-system,
+    sans-serif;
 }
 
 .ql-toolbar.ql-snow {
@@ -40,7 +48,11 @@ h6 {
 }
 
 .ql-container.ql-snow [data-placeholder]:before {
-  font-family: "Geist", system-ui, -apple-system, sans-serif;
+  font-family:
+    "Geist",
+    system-ui,
+    -apple-system,
+    sans-serif;
 }
 
 .ql-picker-options {
@@ -176,4 +188,9 @@ h6 {
 
 iframe[style*="border: none"][style*="position: fixed"][style*="z-index: 9999"][style*="width: 100vw"][style*="height: 110px"][style*="bottom: 0px"][style*="left: 0px"] {
   z-index: 10001 !important;
+}
+
+.vechain-kit-126jeke {
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.04);
 }
