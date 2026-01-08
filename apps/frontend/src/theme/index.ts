@@ -79,7 +79,7 @@ export const colors = {
   warning: "#DD6B20",
   stargate: {
     black: "#0B0C10",
-    gray: "#4A5568",
+    gray: "#A0AEC0",
     white: "#ffffffeb",
   },
 };

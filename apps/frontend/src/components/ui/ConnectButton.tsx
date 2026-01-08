@@ -1,7 +1,7 @@
 import { useI18nContext } from "@/i18n/i18n-react";
 import { WalletIcon } from "@/icons";
 import { Avatar, Button, ButtonProps, Flex, Icon, Text } from "@chakra-ui/react";
-import { useAccountModal, useConnectModal, useWallet } from "@vechain/vechain-kit";
+import { useConnectModal, useProfileModal, useWallet } from "@vechain/vechain-kit";
 import { useEffect, useState } from "react";
 
 export const ConnectButton = ({ text, ...props }: ButtonProps & { text?: string }) => {
@@ -10,7 +10,7 @@ export const ConnectButton = ({ text, ...props }: ButtonProps & { text?: string 
 
   const { LL } = useI18nContext();
   const { open: openConnectModal } = useConnectModal();
-  const { open: openAccountModal } = useAccountModal();
+  const { open: openProfileModal } = useProfileModal();
 
   // add a rendering debouncer to avoid flickering
   useEffect(() => {
@@ -24,7 +24,7 @@ export const ConnectButton = ({ text, ...props }: ButtonProps & { text?: string 
   if (connection.isLoading || !canRender) return <Flex height={12} width={8} />;
   if (!connection.isConnected)
     return (
-      <StyledButton leftIcon={<Icon as={WalletIcon} />} onClick={openConnectModal} {...props}>
+      <StyledButton leftIcon={<Icon as={WalletIcon} />} onClick={() => openConnectModal()} {...props}>
         <Text display={{ base: "none", md: "block" }}>{text || LL.connect_wallet()}</Text>
       </StyledButton>
     );
@@ -34,7 +34,7 @@ export const ConnectButton = ({ text, ...props }: ButtonProps & { text?: string 
       src={account?.image}
       bg="gray.200"
       borderRadius="full"
-      onClick={openAccountModal}
+      onClick={() => openProfileModal()}
       cursor="pointer"
     />
   );

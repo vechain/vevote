@@ -50,10 +50,31 @@ const Providers = ({ children }: PropsWithChildren) => {
     <I18nProvider locale={locale}>
       <PersistQueryClientProvider client={queryClient} persistOptions={{ persister }}>
         <VeChainKitProvider
-          loginMethods={[
-            // { method: "vechain", gridColumn: 4 },
-            { method: "dappkit", gridColumn: 4 },
-          ]}
+          darkMode={true}
+          theme={{
+            textColor: "#FFFFFF",
+            modal: {
+              backgroundColor: "rgba(21, 21, 21, 0.9)",
+              border: "1px solid rgba(255, 255, 255, 0.20)",
+              backdropFilter: "blur(20px)",
+              rounded: "32px",
+            },
+            overlay: {
+              backgroundColor: "rgba(0, 0, 0, 0.24)",
+              blur: "blur(15px)",
+            },
+            buttons: {
+              primaryButton: {
+                bg: "white",
+                color: "blackAlpha.900",
+                rounded: "full",
+              },
+              secondaryButton: {
+                bg: "rgb(255 255 255 / 4%)",
+                color: "white",
+              },
+            },
+          }}
           dappKit={{
             allowedWallets: ["veworld", "sync2", "wallet-connect"],
             walletConnectOptions: {
@@ -65,6 +86,7 @@ const Providers = ({ children }: PropsWithChildren) => {
           network={{
             type: config.network.type,
           }}
+          loginMethods={[{ method: "dappkit", gridColumn: 4 }]}
           legalDocuments={{
             privacyPolicy: [{ url: LegalLinks.PRIVACY_POLICY, required: true, version: 1 }],
             termsAndConditions: [{ url: LegalLinks.TERMS_OF_SERVICE, required: true, version: 1 }],
