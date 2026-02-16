@@ -1,8 +1,5 @@
 name: Validate PR Label
 
-permissions:
-  issues: write
-  pull-requests: write
 on:
   pull_request:
     types: [opened, reopened, labeled, unlabeled, synchronize]
@@ -22,6 +19,9 @@ jobs:
   labeler:
     name: Validate PR versioning label
     runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
     env:
       DEFAULT_LABEL: increment:patch
       FAIL_IF_MISSING_LABEL: false
