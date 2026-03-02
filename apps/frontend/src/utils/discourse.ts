@@ -12,7 +12,7 @@ export const getDiscourseTopicUrl = (url: string): string => {
   return url.replace(discourseBaseUrl, "").replace(/^\//, "");
 };
 
-export const validateDiscourseTopicExists = async (topicName: string, delay: number = 500): Promise<boolean> => {
+export const validateDiscourseTopicExists = async (topic: string, delay: number = 500): Promise<boolean> => {
   return new Promise(resolve => {
     if (debounceTimer) {
       clearTimeout(debounceTimer);
@@ -25,7 +25,7 @@ export const validateDiscourseTopicExists = async (topicName: string, delay: num
           return;
         }
 
-        const url = `${discourseBaseUrl}${topicName}`;
+        const url = getFullDiscourseUrl(topicName);
 
         const response = await fetch(url, {
           method: "HEAD",
