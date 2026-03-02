@@ -2095,10 +2095,10 @@
   resolved "https://registry.yarnpkg.com/@popperjs/core/-/core-2.11.8.tgz#6b79032e760a0899cd4204710beede972a3a185f"
   integrity sha512-P1st0aksCrn9sGZhp8GMYwBnQsbvAWsZAX44oXNNvLHGqAOcoVxmjZiohstwQ7SqKnbR47akdNi+uleWD8+g6A==
 
-"@privy-io/api-base@1.6.1":
-  version "1.6.1"
-  resolved "https://registry.yarnpkg.com/@privy-io/api-base/-/api-base-1.6.1.tgz#49467abfa28785a5199890c8b896fdf1d63478e7"
-  integrity sha512-GUGpW8FlwL+oTlKRNcuDRc5rfz2fPhfcqx2lHT58T4D3F54VxoXnX+NI8vsowogCddNq640d/p5FSKzBQJViZg==
+"@privy-io/api-base@1.7.0":
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/@privy-io/api-base/-/api-base-1.7.0.tgz#83467ddc240800e3195f211540b9e264d41d4748"
+  integrity sha512-ji6ARQAAuW/FzRTgft9NCjRuouWX9t+J7JMmvLPsnXQJDFEV9mqh4sWXZhQ8ddTq/iDZ4z/yz1ORJqN8bYAi4Q==
   dependencies:
     zod "^3.24.3"
 
@@ -2122,10 +2122,10 @@
   resolved "https://registry.yarnpkg.com/@privy-io/ethereum/-/ethereum-0.0.2.tgz#1b6eddf48e5e0c3aa13adb8ca61f62496f744677"
   integrity sha512-FnJ1dzgg/tij4jLeKHLlZM9uNk4WN+iIOkc8CG0FZKUQxqXH60Fs/dMF6Xbndd5CQkUO8LUU7FLom/405VKXpQ==
 
-"@privy-io/js-sdk-core@0.54.2":
-  version "0.54.2"
-  resolved "https://registry.yarnpkg.com/@privy-io/js-sdk-core/-/js-sdk-core-0.54.2.tgz#5bc606a7628c76a8b0b77c5763c77747c6e62485"
-  integrity sha512-EDg10NFnbRd+pUbKbg7Cbg9qUq31hKg4trEq4CDhFbixfno0uOO924Dj1vbFzdVBOkFudHsoAmmgfSZ8shXGyQ==
+"@privy-io/js-sdk-core@0.55.0":
+  version "0.55.0"
+  resolved "https://registry.yarnpkg.com/@privy-io/js-sdk-core/-/js-sdk-core-0.55.0.tgz#c6b4aa6bfb7073e4bd56e20fb1a0213d3b61b572"
+  integrity sha512-halUc0CS0fKQY5fX7YOBpL1piBz5eg140rL+tjyL7yeBCjNkgf5DX6J4BWzRdr5AplRdMWRBUb1/6+g+pcm4Iw==
   dependencies:
     "@ethersproject/abstract-signer" "^5.7.0"
     "@ethersproject/bignumber" "^5.7.0"
@@ -2133,9 +2133,9 @@
     "@ethersproject/providers" "^5.7.2"
     "@ethersproject/transactions" "^5.7.0"
     "@ethersproject/units" "^5.7.0"
-    "@privy-io/api-base" "1.6.1"
+    "@privy-io/api-base" "1.7.0"
     "@privy-io/chains" "0.0.2"
-    "@privy-io/public-api" "2.44.2"
+    "@privy-io/public-api" "2.45.0"
     canonicalize "^2.0.0"
     eventemitter3 "^5.0.1"
     fetch-retry "^6.0.0"
@@ -2145,21 +2145,21 @@
     set-cookie-parser "^2.6.0"
     uuid ">=8 <10"
 
-"@privy-io/public-api@2.44.2":
-  version "2.44.2"
-  resolved "https://registry.yarnpkg.com/@privy-io/public-api/-/public-api-2.44.2.tgz#bf7ff5ed5123e0de3e5e6d3e85fa85d5353c2d17"
-  integrity sha512-w+IpGmHIbCHyPka4fmcsIOO8IOaWRV8la/LRAZ1pDhkeKxMNR8zVVJu8jlLFbxu45tAhREvChpz0OGyDu40hmA==
+"@privy-io/public-api@2.45.0":
+  version "2.45.0"
+  resolved "https://registry.yarnpkg.com/@privy-io/public-api/-/public-api-2.45.0.tgz#3a09bc710ac61f383b16a57d684151a268e96e2a"
+  integrity sha512-gEYclrdjirGqKrJBn1ZXkTuZTL/gK9FjPppoxDJ8/dX1JD4/vXahdt0AdgUfNUf70ZfMdVKYhyos1RkvSLFGYQ==
   dependencies:
-    "@privy-io/api-base" "1.6.1"
+    "@privy-io/api-base" "1.7.0"
     bs58 "^5.0.0"
     libphonenumber-js "^1.10.31"
     viem "^2"
     zod "^3.24.3"
 
-"@privy-io/react-auth@2.24.0":
-  version "2.24.0"
-  resolved "https://registry.yarnpkg.com/@privy-io/react-auth/-/react-auth-2.24.0.tgz#ada898e264c0b837beefc4adbc9febe0b2134238"
-  integrity sha512-ujG/4LZEBSXLZPzlcsiRx+mq3l6fUAGccHWtNbFMJK072uys2tQDrwDO2RPwlgWPMnQmu8XH7uaW80MG2TxivQ==
+"@privy-io/react-auth@2.25.0":
+  version "2.25.0"
+  resolved "https://registry.yarnpkg.com/@privy-io/react-auth/-/react-auth-2.25.0.tgz#4e403705d59aab9450e8c63e6a83279b4d4a5fa9"
+  integrity sha512-lcILJaXi2wYgxFsxbvSrIM1Cz8FAumMy90YS4R6wcBNWg79U6S6YTHKMa0U8xJPhJUoKrugAi/LTSifYdTCZjg==
   dependencies:
     "@base-org/account" "^1.1.0"
     "@coinbase/wallet-sdk" "4.3.2"
@@ -2168,11 +2168,11 @@
     "@heroicons/react" "^2.1.1"
     "@marsidev/react-turnstile" "^0.4.1"
     "@metamask/eth-sig-util" "^6.0.0"
-    "@privy-io/api-base" "1.6.1"
+    "@privy-io/api-base" "1.7.0"
     "@privy-io/chains" "0.0.2"
     "@privy-io/ethereum" "0.0.2"
-    "@privy-io/js-sdk-core" "0.54.2"
-    "@privy-io/public-api" "2.44.2"
+    "@privy-io/js-sdk-core" "0.55.0"
+    "@privy-io/public-api" "2.45.0"
     "@reown/appkit" "^1.7.11"
     "@scure/base" "^1.2.5"
     "@simplewebauthn/browser" "^9.0.1"
@@ -3969,10 +3969,10 @@
   dependencies:
     detect-browser "^5.2.0"
 
-"@vechain/contract-getters@1.0.4":
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/@vechain/contract-getters/-/contract-getters-1.0.4.tgz#1a27288bc61b9066a435eb2b959c1eb684b2ca03"
-  integrity sha512-n+o8WIyrrW6ztJtT9MXqPDGt7qu5axfE8RMC9fBZbKqY6pSbCpm68VtxxsPsBSO3ZkNYugW/8/AXFfpJkKvhwA==
+"@vechain/contract-getters@1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@vechain/contract-getters/-/contract-getters-1.1.0.tgz#c72259036946fed4e6ccc9a19309f3fd3def5671"
+  integrity sha512-7ahP+T/aBfIilKnA1iKQsvfg4ZXekLQRcKzq2piUEqYFO+7jlc/FBCFArFNOMBR1wGpYmq9RcxGDinc0BN/Tfg==
 
 "@vechain/dapp-kit-react@2.0.1":
   version "2.0.1"
@@ -4249,30 +4249,30 @@
     "@openzeppelin/contracts-upgradeable" "5.0.2"
     ethers "^6.9.0"
 
-"@vechain/vechain-contract-types@1.5.0":
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/@vechain/vechain-contract-types/-/vechain-contract-types-1.5.0.tgz#952e98d68b62412adea33b394eb44e7cc8475366"
-  integrity sha512-XEmBayL2beBBs1ZiC8CtDVnZAuNCr94Ryfk3mzwg+TFX3A2d0zXHhBNuBRDEs+ePunAZwjOhE0IeSX599MD93Q==
+"@vechain/vechain-contract-types@1.6.0-rc":
+  version "1.6.0-rc"
+  resolved "https://registry.yarnpkg.com/@vechain/vechain-contract-types/-/vechain-contract-types-1.6.0-rc.tgz#49e0d196d91b7b544d63fa7ee8a4db563e56bd08"
+  integrity sha512-0GZvPfTAwpPxoH7pPL+K2kd/EapLBOIBd0Ec7ZZQg5FKs5q0axtPO994P9JD3AoDhpbdSHd/mQaxv4YBuTGYPw==
   dependencies:
     ethers "^6.13.5"
 
-"@vechain/vechain-kit@2.4.1":
-  version "2.4.1"
-  resolved "https://registry.yarnpkg.com/@vechain/vechain-kit/-/vechain-kit-2.4.1.tgz#b20db51c8ba9daa85376aa7a97e67db699b6d2b5"
-  integrity sha512-a3hhrN353hM5UrVoIZo9V/L5oVFkbeOm0tvSdndbwH39mjtxp3HtKEUw7MZ8mc/OAu0LJ2MvFbvSeUg3PnxppQ==
+"@vechain/vechain-kit@2.6.1":
+  version "2.6.1"
+  resolved "https://registry.yarnpkg.com/@vechain/vechain-kit/-/vechain-kit-2.6.1.tgz#b93c6b7dc88c37c438b63a5cdeb286f24a45e926"
+  integrity sha512-RUZPJhr+4Vv3DOr04y2R2hYrzjB2aQZ/1khhRkGLr6iALRdFz9eyhISK1hNitQPVKP/z/O/vulqqUt7WToeEXQ==
   dependencies:
     "@adraffy/ens-normalize" "^1.11.0"
     "@chakra-ui/react" "^2.8.2"
     "@emotion/styled" "^11.14.1"
     "@privy-io/cross-app-connect" "0.2.2"
-    "@privy-io/react-auth" "2.24.0"
+    "@privy-io/react-auth" "2.25.0"
     "@solana/web3.js" "^1.98.0"
     "@tanstack/react-query" "^5.64.2"
     "@tanstack/react-query-devtools" "^5.64.1"
-    "@vechain/contract-getters" "1.0.4"
+    "@vechain/contract-getters" "1.1.0"
     "@vechain/dapp-kit-react" "2.1.0-rc.5"
     "@vechain/picasso" "^2.1.1"
-    "@vechain/vechain-contract-types" "1.5.0"
+    "@vechain/vechain-contract-types" "1.6.0-rc"
     "@wagmi/core" "^2.17.2"
     bignumber.js "^9.1.2"
     browser-image-compression "^2.0.2"
@@ -4281,6 +4281,7 @@
     framer-motion "^11.15.0"
     i18next "^24.2.1"
     i18next-browser-languagedetector "^8.0.2"
+    i18next-resources-to-backend "^1.2.1"
     net "^1.0.2"
     process "^0.11.10"
     react "^18.2.0"
@@ -8452,6 +8453,13 @@ i18next-browser-languagedetector@^8.0.2:
   version "8.0.5"
   resolved "https://registry.yarnpkg.com/i18next-browser-languagedetector/-/i18next-browser-languagedetector-8.0.5.tgz#6cfdc72820457ce95e69a2788a4f837d1d8f4e9d"
   integrity sha512-OstebRKqKiQw8xEvQF5aRyUujsCatanj7Q9eo5iiH2gJpoXGZ7483ol3sVBwfqbobTQPNH1J+NAyJ1aCQoEC+w==
+  dependencies:
+    "@babel/runtime" "^7.23.2"
+
+i18next-resources-to-backend@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/i18next-resources-to-backend/-/i18next-resources-to-backend-1.2.1.tgz#fded121e63e3139ce839c9901b9449dbbea7351d"
+  integrity sha512-okHbVA+HZ7n1/76MsfhPqDou0fptl2dAlhRDu2ideXloRRduzHsqDOznJBef+R3DFZnbvWoBW+KxJ7fnFjd6Yw==
   dependencies:
     "@babel/runtime" "^7.23.2"
 
