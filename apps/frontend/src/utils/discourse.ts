@@ -25,7 +25,7 @@ export const validateDiscourseTopicExists = async (topicName: string, delay: num
           return;
         }
 
-        const url = `${discourseBaseUrl}${encodeURIComponent(topicName)}`;
+        const url = `${discourseBaseUrl}${topicName}`;
 
         const response = await fetch(url, {
           method: "HEAD",
