@@ -4256,10 +4256,10 @@
   dependencies:
     ethers "^6.13.5"
 
-"@vechain/vechain-kit@2.6.1":
-  version "2.6.1"
-  resolved "https://registry.yarnpkg.com/@vechain/vechain-kit/-/vechain-kit-2.6.1.tgz#b93c6b7dc88c37c438b63a5cdeb286f24a45e926"
-  integrity sha512-RUZPJhr+4Vv3DOr04y2R2hYrzjB2aQZ/1khhRkGLr6iALRdFz9eyhISK1hNitQPVKP/z/O/vulqqUt7WToeEXQ==
+"@vechain/vechain-kit@2.6.0":
+  version "2.6.0"
+  resolved "https://registry.yarnpkg.com/@vechain/vechain-kit/-/vechain-kit-2.6.0.tgz#cb4a31541b2be935222f02d507639b63be4b20fa"
+  integrity sha512-uXRYK3KWHqUbo/QiM8uiQQsM4l9pgFwBGUiXy0ZrwFdWXewSfnIxOA4aE0/TsBTJTCdfi2fog3iM+69w1dChrg==
   dependencies:
     "@adraffy/ens-normalize" "^1.11.0"
     "@chakra-ui/react" "^2.8.2"
@@ -4281,7 +4281,6 @@
     framer-motion "^11.15.0"
     i18next "^24.2.1"
     i18next-browser-languagedetector "^8.0.2"
-    i18next-resources-to-backend "^1.2.1"
     net "^1.0.2"
     process "^0.11.10"
     react "^18.2.0"
@@ -8453,13 +8452,6 @@ i18next-browser-languagedetector@^8.0.2:
   version "8.0.5"
   resolved "https://registry.yarnpkg.com/i18next-browser-languagedetector/-/i18next-browser-languagedetector-8.0.5.tgz#6cfdc72820457ce95e69a2788a4f837d1d8f4e9d"
   integrity sha512-OstebRKqKiQw8xEvQF5aRyUujsCatanj7Q9eo5iiH2gJpoXGZ7483ol3sVBwfqbobTQPNH1J+NAyJ1aCQoEC+w==
-  dependencies:
-    "@babel/runtime" "^7.23.2"
-
-i18next-resources-to-backend@^1.2.1:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/i18next-resources-to-backend/-/i18next-resources-to-backend-1.2.1.tgz#fded121e63e3139ce839c9901b9449dbbea7351d"
-  integrity sha512-okHbVA+HZ7n1/76MsfhPqDou0fptl2dAlhRDu2ideXloRRduzHsqDOznJBef+R3DFZnbvWoBW+KxJ7fnFjd6Yw==
   dependencies:
     "@babel/runtime" "^7.23.2"
 
