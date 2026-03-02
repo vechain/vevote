@@ -25,7 +25,7 @@ export const validateDiscourseTopicExists = async (topic: string, delay: number 
           return;
         }
 
-        const url = getFullDiscourseUrl(topicName);
+        const url = getFullDiscourseUrl(topic);
 
         const response = await fetch(url, {
           method: "HEAD",
