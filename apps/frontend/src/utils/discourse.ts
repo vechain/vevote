@@ -20,7 +20,7 @@ export const validateDiscourseTopicExists = async (topic: string, delay: number 
 
     debounceTimer = window.setTimeout(async () => {
       try {
-        if (!topicName.trim()) {
+        if (!topic.trim()) {
           resolve(false);
           return;
         }
