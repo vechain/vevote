@@ -50,29 +50,44 @@ const Providers = ({ children }: PropsWithChildren) => {
     <I18nProvider locale={locale}>
       <PersistQueryClientProvider client={queryClient} persistOptions={{ persister }}>
         <VeChainKitProvider
-          darkMode={true}
+          darkMode={false}
           theme={{
-            textColor: "#FFFFFF",
+            textColor: "#170D45",
             modal: {
-              backgroundColor: "rgba(21, 21, 21, 0.9)",
-              border: "1px solid rgba(255, 255, 255, 0.20)",
-              backdropFilter: "blur(20px)",
-              rounded: "32px",
+              backgroundColor: "white",
+              rounded: "16px",
             },
             overlay: {
-              backgroundColor: "rgba(0, 0, 0, 0.24)",
+              backgroundColor: "rgba(23, 13, 69, 0.65)",
               blur: "blur(15px)",
             },
             buttons: {
               primaryButton: {
-                bg: "white",
-                color: "blackAlpha.900",
-                rounded: "full",
+                bg: "#6042DD",
+                color: "#F9F9FA",
+                hoverBg: "#836CE4",
+                rounded: "12px",
               },
               secondaryButton: {
-                bg: "rgb(255 255 255 / 4%)",
-                color: "white",
+                bg: "white",
+                color: "#525860",
+                border: "1px solid #E7E9EB",
+                rounded: "12px",
               },
+              tertiaryButton: {
+                bg: "#E7E9EB",
+                color: "#525860",
+                rounded: "12px",
+              },
+              loginButton: {
+                bg: "#F9F8FB",
+                color: "#6042DD",
+                rounded: "12px",
+              },
+            },
+            fonts: {
+              family: '"Geist", system-ui, -apple-system, sans-serif',
+              heading: '"Rubik", system-ui, -apple-system, sans-serif',
             },
           }}
           dappKit={{
