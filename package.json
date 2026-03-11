@@ -55,7 +55,8 @@
   "resolutions": {
     "**/elliptic": "^6.6.1",
     "react-router": "7.5.2",
-    "@walletconnect/relay-auth": "1.1.0"
+    "@walletconnect/relay-auth": "1.1.0",
+    "@types/minimatch": "5.1.2"
   },
   "engines": {
     "node": ">=18"
