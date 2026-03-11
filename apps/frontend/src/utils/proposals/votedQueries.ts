@@ -47,9 +47,12 @@ export const getVoteCastResults = async (
   }
 
   try {
+    const blockchainProposalIds = proposalIds?.filter(p => !p.includes("-"));
+    if (!blockchainProposalIds?.length) return { votes: [] };
+
     const eventAbi = thor.contracts.load(contractAddress, VeVote__factory.abi).getEventAbi("VoteCast");
 
-    const topicsArray = proposalIds?.map(p =>
+    const topicsArray = blockchainProposalIds.map(p =>
       eventAbi.encodeFilterTopicsNoNull({
         voter: address,
         proposalId: p,
