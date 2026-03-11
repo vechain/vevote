@@ -243,9 +243,8 @@ export const parseHistoricalProposals = async (
   data?: HistoricalProposalData[],
 ): Promise<HistoricalProposalMerged[]> => {
   if (!data) return [];
-  const ipfsFetches = data.map(d => getProposalsFromIpfs(d.description));
-
-  const ipfsDetails = await Promise.all(ipfsFetches);
+  const ipfsResults = await Promise.allSettled(data.map(d => getProposalsFromIpfs(d.description)));
+  const ipfsDetails = ipfsResults.map(r => (r.status === "fulfilled" ? r.value : undefined));
 
   return data.map(d => {
     const choicesWithVote = d.choices.map((choice, index) => ({

@@ -45,7 +45,8 @@ export const uploadProposalToIpfs = async ({
   }
 };
 
-export const getProposalsFromIpfs = async (proposalCID?: string): Promise<IpfsDetails> => {
+export const getProposalsFromIpfs = async (proposalCID?: string): Promise<IpfsDetails | undefined> => {
+  if (!proposalCID) return undefined;
   const res = await axios.get(`${IPFS_FETCHING_SERVICE}/${proposalCID}`);
   if (res.status !== 200) throw new Error("ipfs failed");
   return { ipfsHash: proposalCID, ...res.data };
