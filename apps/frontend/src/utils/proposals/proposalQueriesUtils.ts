@@ -1,4 +1,3 @@
-import { IpfsDetails } from "@/types/ipfs";
 import { ProposalStatus } from "@/types/proposal";
 import { getProposalsFromIpfs } from "../ipfs/proposal";
 import { filterStatus, FromEventsToProposalsReturnType, mergeIpfsDetails } from "./helpers";
@@ -16,8 +15,8 @@ export const paginateProposals = (proposals: MergedProposal[], cursor?: string, 
 };
 
 export const enrichProposalsWithData = async (proposals: FromEventsToProposalsReturnType) => {
-  const ipfsFetches = proposals.map(p => getProposalsFromIpfs(p.ipfsHash));
-  const ipfsDetails: IpfsDetails[] = await Promise.all(ipfsFetches);
+  const ipfsResults = await Promise.allSettled(proposals.map(p => getProposalsFromIpfs(p.ipfsHash)));
+  const ipfsDetails = ipfsResults.map(r => (r.status === "fulfilled" ? r.value : undefined));
 
   const mergedWithIpfs = mergeIpfsDetails(ipfsDetails, proposals);
   const merged = mergedWithIpfs?.map(p => ({
