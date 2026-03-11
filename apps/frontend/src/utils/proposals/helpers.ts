@@ -243,8 +243,11 @@ export const parseHistoricalProposals = async (
   data?: HistoricalProposalData[],
 ): Promise<HistoricalProposalMerged[]> => {
   if (!data) return [];
-  const ipfsFetches = data.map(d => getProposalsFromIpfs(d.description));
 
+  // Only fetch from IPFS if description (CID) is valid
+  const ipfsFetches = data.map(d =>
+    d.description ? getProposalsFromIpfs(d.description) : Promise.resolve({ ipfsHash: undefined }),
+  );
   const ipfsDetails = await Promise.all(ipfsFetches);
 
   return data.map(d => {

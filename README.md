@@ -6,7 +6,7 @@ VeVote is a decentralized governance platform. This repository serves as the mon
 
 Ensure your development environment is set up with the following:
 
-- **Node.js (v18 or later):** [Download here](https://nodejs.org/en/download/package-manager) 📥
+- **Node.js (v22 or later):** [Download here](https://nodejs.org/en/download/package-manager) 📥
 - **Yarn:** [Install here](https://classic.yarnpkg.com/lang/en/docs/install/#mac-stable) 🧶
 - **Docker (for containerization):** [Get Docker](https://docs.docker.com/get-docker/) 🐳
 - **Hardhat (for smart contracts):** [Getting Started with Hardhat](https://hardhat.org/hardhat-runner/docs/getting-started) ⛑️

@@ -16,7 +16,10 @@ export const paginateProposals = (proposals: MergedProposal[], cursor?: string, 
 };
 
 export const enrichProposalsWithData = async (proposals: FromEventsToProposalsReturnType) => {
-  const ipfsFetches = proposals.map(p => getProposalsFromIpfs(p.ipfsHash));
+  // Only fetch from IPFS if ipfsHash is valid
+  const ipfsFetches = proposals.map(p =>
+    p.ipfsHash ? getProposalsFromIpfs(p.ipfsHash) : Promise.resolve({ ipfsHash: undefined }),
+  );
   const ipfsDetails: IpfsDetails[] = await Promise.all(ipfsFetches);
 
   const mergedWithIpfs = mergeIpfsDetails(ipfsDetails, proposals);
