@@ -52,7 +52,7 @@ export const useGovernanceSettings = () => {
           ...baseClause,
           data: contractInterface.encodeFunctionData("setMinVotingDuration", [blocksValue]),
           abi: JSON.parse(JSON.stringify(contractInterface.getFunction("setMinVotingDuration"))),
-          comment: `Set min voting duration to ${props.setMinVotingDuration} blocks)`,
+          comment: `Set min voting duration to ${blocksValue} blocks`,
         };
         clauses.push(clause as EnhancedClause);
       }
@@ -63,7 +63,7 @@ export const useGovernanceSettings = () => {
           ...baseClause,
           data: contractInterface.encodeFunctionData("setMaxVotingDuration", [blocksValue]),
           abi: JSON.parse(JSON.stringify(contractInterface.getFunction("setMaxVotingDuration"))),
-          comment: `Set max voting duration to ${props.setMaxVotingDuration} blocks)`,
+          comment: `Set max voting duration to ${blocksValue} blocks`,
         };
         clauses.push(clause as EnhancedClause);
       }
