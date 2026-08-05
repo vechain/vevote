@@ -41,7 +41,7 @@ export const useGovernanceSettings = () => {
           ...baseClause,
           data: contractInterface.encodeFunctionData("setMinVotingDelay", [blocksValue]),
           abi: JSON.parse(JSON.stringify(contractInterface.getFunction("setMinVotingDelay"))),
-          comment: `Set min voting delay to ${props.setMinVotingDelay} blocks)`,
+          comment: `Set min voting delay to ${blocksValue} blocks`,
         };
         clauses.push(clause as EnhancedClause);
       }
