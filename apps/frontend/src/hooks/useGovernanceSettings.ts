@@ -36,34 +36,34 @@ export const useGovernanceSettings = () => {
       }
 
       if (props.setMinVotingDelay !== undefined) {
-        const blocksValue = Math.floor(props.setMinVotingDelay / 10);
+        const blocksValue = Math.floor(props.setMinVotingDelay);
         const clause = {
           ...baseClause,
           data: contractInterface.encodeFunctionData("setMinVotingDelay", [blocksValue]),
           abi: JSON.parse(JSON.stringify(contractInterface.getFunction("setMinVotingDelay"))),
-          comment: `Set min voting delay to ${props.setMinVotingDelay} seconds (${blocksValue} blocks)`,
+          comment: `Set min voting delay to ${blocksValue} blocks`,
         };
         clauses.push(clause as EnhancedClause);
       }
 
       if (props.setMinVotingDuration !== undefined) {
-        const blocksValue = Math.floor(props.setMinVotingDuration / 10);
+        const blocksValue = Math.floor(props.setMinVotingDuration);
         const clause = {
           ...baseClause,
           data: contractInterface.encodeFunctionData("setMinVotingDuration", [blocksValue]),
           abi: JSON.parse(JSON.stringify(contractInterface.getFunction("setMinVotingDuration"))),
-          comment: `Set min voting duration to ${props.setMinVotingDuration} seconds (${blocksValue} blocks)`,
+          comment: `Set min voting duration to ${blocksValue} blocks`,
         };
         clauses.push(clause as EnhancedClause);
       }
 
       if (props.setMaxVotingDuration !== undefined) {
-        const blocksValue = Math.floor(props.setMaxVotingDuration / 10);
+        const blocksValue = Math.floor(props.setMaxVotingDuration);
         const clause = {
           ...baseClause,
           data: contractInterface.encodeFunctionData("setMaxVotingDuration", [blocksValue]),
           abi: JSON.parse(JSON.stringify(contractInterface.getFunction("setMaxVotingDuration"))),
-          comment: `Set max voting duration to ${props.setMaxVotingDuration} seconds (${blocksValue} blocks)`,
+          comment: `Set max voting duration to ${blocksValue} blocks`,
         };
         clauses.push(clause as EnhancedClause);
       }
