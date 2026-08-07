@@ -1,32 +1,50 @@
-import { describe, test, expect } from "vitest";
+import { describe, test, expect, vi, afterEach } from "vitest";
 import { validateDiscourseTopicExists } from "../src/utils/discourse";
 
+// Use a 0ms debounce so the network branch runs immediately in tests.
+const validate = (topic: string) => validateDiscourseTopicExists(topic, 0);
+
 describe("validateDiscourseTopicExists", () => {
-  test("accepts a plain slug", () => {
-    expect(validateDiscourseTopicExists("my-topic-slug")).toBe(true);
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    vi.restoreAllMocks();
   });
 
-  test("accepts a slug followed by a numeric id", () => {
-    expect(validateDiscourseTopicExists("my-topic-slug/12345")).toBe(true);
+  test("resolves false for an empty string without fetching", async () => {
+    const fetchMock = vi.fn();
+    vi.stubGlobal("fetch", fetchMock);
+
+    await expect(validate("")).resolves.toBe(false);
+    expect(fetchMock).not.toHaveBeenCalled();
   });
 
-  test("accepts a purely numeric topic id", () => {
-    expect(validateDiscourseTopicExists("12345")).toBe(true);
+  test("resolves false for a whitespace-only string without fetching", async () => {
+    const fetchMock = vi.fn();
+    vi.stubGlobal("fetch", fetchMock);
+
+    await expect(validate("   ")).resolves.toBe(false);
+    expect(fetchMock).not.toHaveBeenCalled();
   });
 
-  test("accepts a full pasted URL", () => {
-    expect(validateDiscourseTopicExists("https://vechain.discourse.group/t/my-topic-slug/98765")).toBe(true);
+  test("resolves true when the topic exists (CORS allowed, e.g. mainnet)", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({ ok: true });
+    vi.stubGlobal("fetch", fetchMock);
+
+    await expect(validate("my-topic-slug")).resolves.toBe(true);
+    expect(fetchMock).toHaveBeenCalledWith(expect.any(String), { method: "HEAD" });
   });
 
-  test("rejects an empty string", () => {
-    expect(validateDiscourseTopicExists("")).toBe(false);
+  test("resolves false when the topic genuinely does not exist (e.g. 404 on an allowed origin)", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({ ok: false });
+    vi.stubGlobal("fetch", fetchMock);
+
+    await expect(validate("does-not-exist")).resolves.toBe(false);
   });
 
-  test("rejects a whitespace-only string", () => {
-    expect(validateDiscourseTopicExists("   ")).toBe(false);
-  });
+  test("fails open (resolves true) when the browser blocks the request (CORS/network error, e.g. testnet)", async () => {
+    const fetchMock = vi.fn().mockRejectedValue(new TypeError("Failed to fetch"));
+    vi.stubGlobal("fetch", fetchMock);
 
-  test("rejects a value containing spaces", () => {
-    expect(validateDiscourseTopicExists("my topic with spaces")).toBe(false);
+    await expect(validate("my-topic-slug")).resolves.toBe(true);
   });
 });

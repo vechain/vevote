@@ -12,9 +12,10 @@ export const discourseTopic = z
   .trim()
   .min(1, { message: LL.field_errors.required() })
   .refine(
-    value => {
+    async value => {
       if (!value) return true;
-      return validateDiscourseTopicExists(value);
+      const result = await validateDiscourseTopicExists(value);
+      return result;
     },
     {
       message: LL.field_errors.discourse_topic_not_exist(),
