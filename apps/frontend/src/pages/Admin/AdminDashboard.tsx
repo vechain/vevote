@@ -6,8 +6,14 @@ import { UserManagement } from "./components/Utils/UserManagement";
 import { GovernanceSettings } from "./components/Utils/GovernanceSettings";
 import { ResponsiveNavigation } from "./components/navigation/ResponsiveNavigation";
 import { PageContainer } from "@/components/PageContainer";
+import { useDocumentTitle } from "@/hooks/useDocumentTitle";
+import { useI18nContext } from "@/i18n/i18n-react";
 
 export function AdminDashboard() {
+  const { LL } = useI18nContext();
+
+  useDocumentTitle(LL.admin.title());
+
   const containerPadding = useBreakpointValue({
     base: 4,
     md: 8,

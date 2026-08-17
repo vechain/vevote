@@ -306,6 +306,7 @@ const en = {
         voting_choice_subtitle: "The “single choice” voting type only allows the voter to select:",
         voting_options_subtitle: "Add between 2 and 30 options to vote:",
         add_new_option: "Add new option",
+        delete_voting_option: "Delete voting option {index:number}",
         voting_option_placeholder: "Write the voting option...",
       },
       summary_form: {
@@ -422,6 +423,8 @@ const en = {
       terms_of_service: "Terms of Service",
       privacy_policy: "Privacy Policy",
       cookies_policy: "Cookies Policy",
+      cookie_preferences: "Cookie Preferences",
+      do_not_sell: "Do Not Sell or Share My Personal Information",
     },
     resources: {
       title: "Resources",
@@ -645,6 +648,61 @@ const en = {
       invalid_address: "Please enter a valid address",
       role_required: "Please select a role",
       address_required: "User address is required",
+    },
+  },
+  accessibility: {
+    skip_to_content: "Skip to main content",
+  },
+  search: {
+    label: "Search",
+    clear: "Clear search",
+  },
+  pagination: {
+    previous_page: "Previous page",
+    next_page: "Next page",
+    page_of: "{current:number} of {total:number}",
+  },
+  input: {
+    increment: "Increase value",
+    decrement: "Decrease value",
+  },
+  consent: {
+    banner: {
+      title: "We ask before we track you",
+      description:
+        "VeVote uses strictly necessary storage to keep the app and your wallet session working. With your permission we also use Mixpanel to measure how the app is used. Analytics stay off unless you turn them on, and you can change your mind at any time from the footer.",
+      cookie_policy_link: "Cookie Policy",
+      privacy_policy_link: "Privacy Policy",
+    },
+    actions: {
+      accept_all: "Accept all",
+      reject_all: "Reject all",
+      manage: "Manage preferences",
+      save: "Save preferences",
+      cancel: "Cancel",
+    },
+    preferences: {
+      title: "Cookie preferences",
+      description:
+        "Choose which categories of storage and trackers VeVote may use. Strictly necessary items cannot be disabled because the app cannot function without them.",
+      always_active: "Always active",
+    },
+    categories: {
+      necessary: {
+        title: "Strictly necessary",
+        description:
+          "Required to run the app: your consent choice, cached blockchain queries and your wallet connection session. No consent is required for these.",
+      },
+      analytics: {
+        title: "Analytics",
+        description:
+          "Mixpanel product analytics: which pages and actions are used, plus the connected wallet address as a pseudonymous identifier. Used to improve VeVote.",
+      },
+    },
+    proof: {
+      title: "Your consent record",
+      description: "Record {id:string} — given on {date:string} against cookie policy version {version:number}.",
+      download: "Download my consent record",
     },
   },
 } satisfies BaseTranslation;

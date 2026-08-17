@@ -1012,6 +1012,11 @@ type RootTranslation = {
          */
         add_new_option: string;
         /**
+         * D​e​l​e​t​e​ ​v​o​t​i​n​g​ ​o​p​t​i​o​n​ ​{​i​n​d​e​x​}
+         * @param {number} index
+         */
+        delete_voting_option: RequiredParams<"index">;
+        /**
          * W​r​i​t​e​ ​t​h​e​ ​v​o​t​i​n​g​ ​o​p​t​i​o​n​.​.​.
          */
         voting_option_placeholder: string;
@@ -1384,6 +1389,14 @@ type RootTranslation = {
        * C​o​o​k​i​e​s​ ​P​o​l​i​c​y
        */
       cookies_policy: string;
+      /**
+       * C​o​o​k​i​e​ ​P​r​e​f​e​r​e​n​c​e​s
+       */
+      cookie_preferences: string;
+      /**
+       * D​o​ ​N​o​t​ ​S​e​l​l​ ​o​r​ ​S​h​a​r​e​ ​M​y​ ​P​e​r​s​o​n​a​l​ ​I​n​f​o​r​m​a​t​i​o​n
+       */
+      do_not_sell: string;
     };
     resources: {
       /**
@@ -2204,6 +2217,143 @@ type RootTranslation = {
        * U​s​e​r​ ​a​d​d​r​e​s​s​ ​i​s​ ​r​e​q​u​i​r​e​d
        */
       address_required: string;
+    };
+  };
+  accessibility: {
+    /**
+     * S​k​i​p​ ​t​o​ ​m​a​i​n​ ​c​o​n​t​e​n​t
+     */
+    skip_to_content: string;
+  };
+  search: {
+    /**
+     * S​e​a​r​c​h
+     */
+    label: string;
+    /**
+     * C​l​e​a​r​ ​s​e​a​r​c​h
+     */
+    clear: string;
+  };
+  pagination: {
+    /**
+     * P​r​e​v​i​o​u​s​ ​p​a​g​e
+     */
+    previous_page: string;
+    /**
+     * N​e​x​t​ ​p​a​g​e
+     */
+    next_page: string;
+    /**
+     * {​c​u​r​r​e​n​t​}​ ​o​f​ ​{​t​o​t​a​l​}
+     * @param {number} current
+     * @param {number} total
+     */
+    page_of: RequiredParams<"current" | "total">;
+  };
+  input: {
+    /**
+     * I​n​c​r​e​a​s​e​ ​v​a​l​u​e
+     */
+    increment: string;
+    /**
+     * D​e​c​r​e​a​s​e​ ​v​a​l​u​e
+     */
+    decrement: string;
+  };
+  consent: {
+    banner: {
+      /**
+       * W​e​ ​a​s​k​ ​b​e​f​o​r​e​ ​w​e​ ​t​r​a​c​k​ ​y​o​u
+       */
+      title: string;
+      /**
+       * V​e​V​o​t​e​ ​u​s​e​s​ ​s​t​r​i​c​t​l​y​ ​n​e​c​e​s​s​a​r​y​ ​s​t​o​r​a​g​e​ ​t​o​ ​k​e​e​p​ ​t​h​e​ ​a​p​p​ ​a​n​d​ ​y​o​u​r​ ​w​a​l​l​e​t​ ​s​e​s​s​i​o​n​ ​w​o​r​k​i​n​g​.​ ​W​i​t​h​ ​y​o​u​r​ ​p​e​r​m​i​s​s​i​o​n​ ​w​e​ ​a​l​s​o​ ​u​s​e​ ​M​i​x​p​a​n​e​l​ ​t​o​ ​m​e​a​s​u​r​e​ ​h​o​w​ ​t​h​e​ ​a​p​p​ ​i​s​ ​u​s​e​d​.​ ​A​n​a​l​y​t​i​c​s​ ​s​t​a​y​ ​o​f​f​ ​u​n​l​e​s​s​ ​y​o​u​ ​t​u​r​n​ ​t​h​e​m​ ​o​n​,​ ​a​n​d​ ​y​o​u​ ​c​a​n​ ​c​h​a​n​g​e​ ​y​o​u​r​ ​m​i​n​d​ ​a​t​ ​a​n​y​ ​t​i​m​e​ ​f​r​o​m​ ​t​h​e​ ​f​o​o​t​e​r​.
+       */
+      description: string;
+      /**
+       * C​o​o​k​i​e​ ​P​o​l​i​c​y
+       */
+      cookie_policy_link: string;
+      /**
+       * P​r​i​v​a​c​y​ ​P​o​l​i​c​y
+       */
+      privacy_policy_link: string;
+    };
+    actions: {
+      /**
+       * A​c​c​e​p​t​ ​a​l​l
+       */
+      accept_all: string;
+      /**
+       * R​e​j​e​c​t​ ​a​l​l
+       */
+      reject_all: string;
+      /**
+       * M​a​n​a​g​e​ ​p​r​e​f​e​r​e​n​c​e​s
+       */
+      manage: string;
+      /**
+       * S​a​v​e​ ​p​r​e​f​e​r​e​n​c​e​s
+       */
+      save: string;
+      /**
+       * C​a​n​c​e​l
+       */
+      cancel: string;
+    };
+    preferences: {
+      /**
+       * C​o​o​k​i​e​ ​p​r​e​f​e​r​e​n​c​e​s
+       */
+      title: string;
+      /**
+       * C​h​o​o​s​e​ ​w​h​i​c​h​ ​c​a​t​e​g​o​r​i​e​s​ ​o​f​ ​s​t​o​r​a​g​e​ ​a​n​d​ ​t​r​a​c​k​e​r​s​ ​V​e​V​o​t​e​ ​m​a​y​ ​u​s​e​.​ ​S​t​r​i​c​t​l​y​ ​n​e​c​e​s​s​a​r​y​ ​i​t​e​m​s​ ​c​a​n​n​o​t​ ​b​e​ ​d​i​s​a​b​l​e​d​ ​b​e​c​a​u​s​e​ ​t​h​e​ ​a​p​p​ ​c​a​n​n​o​t​ ​f​u​n​c​t​i​o​n​ ​w​i​t​h​o​u​t​ ​t​h​e​m​.
+       */
+      description: string;
+      /**
+       * A​l​w​a​y​s​ ​a​c​t​i​v​e
+       */
+      always_active: string;
+    };
+    categories: {
+      necessary: {
+        /**
+         * S​t​r​i​c​t​l​y​ ​n​e​c​e​s​s​a​r​y
+         */
+        title: string;
+        /**
+         * R​e​q​u​i​r​e​d​ ​t​o​ ​r​u​n​ ​t​h​e​ ​a​p​p​:​ ​y​o​u​r​ ​c​o​n​s​e​n​t​ ​c​h​o​i​c​e​,​ ​c​a​c​h​e​d​ ​b​l​o​c​k​c​h​a​i​n​ ​q​u​e​r​i​e​s​ ​a​n​d​ ​y​o​u​r​ ​w​a​l​l​e​t​ ​c​o​n​n​e​c​t​i​o​n​ ​s​e​s​s​i​o​n​.​ ​N​o​ ​c​o​n​s​e​n​t​ ​i​s​ ​r​e​q​u​i​r​e​d​ ​f​o​r​ ​t​h​e​s​e​.
+         */
+        description: string;
+      };
+      analytics: {
+        /**
+         * A​n​a​l​y​t​i​c​s
+         */
+        title: string;
+        /**
+         * M​i​x​p​a​n​e​l​ ​p​r​o​d​u​c​t​ ​a​n​a​l​y​t​i​c​s​:​ ​w​h​i​c​h​ ​p​a​g​e​s​ ​a​n​d​ ​a​c​t​i​o​n​s​ ​a​r​e​ ​u​s​e​d​,​ ​p​l​u​s​ ​t​h​e​ ​c​o​n​n​e​c​t​e​d​ ​w​a​l​l​e​t​ ​a​d​d​r​e​s​s​ ​a​s​ ​a​ ​p​s​e​u​d​o​n​y​m​o​u​s​ ​i​d​e​n​t​i​f​i​e​r​.​ ​U​s​e​d​ ​t​o​ ​i​m​p​r​o​v​e​ ​V​e​V​o​t​e​.
+         */
+        description: string;
+      };
+    };
+    proof: {
+      /**
+       * Y​o​u​r​ ​c​o​n​s​e​n​t​ ​r​e​c​o​r​d
+       */
+      title: string;
+      /**
+       * R​e​c​o​r​d​ ​{​i​d​}​ ​—​ ​g​i​v​e​n​ ​o​n​ ​{​d​a​t​e​}​ ​a​g​a​i​n​s​t​ ​c​o​o​k​i​e​ ​p​o​l​i​c​y​ ​v​e​r​s​i​o​n​ ​{​v​e​r​s​i​o​n​}​.
+       * @param {string} date
+       * @param {string} id
+       * @param {number} version
+       */
+      description: RequiredParams<"date" | "id" | "version">;
+      /**
+       * D​o​w​n​l​o​a​d​ ​m​y​ ​c​o​n​s​e​n​t​ ​r​e​c​o​r​d
+       */
+      download: string;
     };
   };
 };
@@ -3192,6 +3342,10 @@ JPG, PNG or SVG of maximum of {size}MB.
          */
         add_new_option: () => LocalizedString;
         /**
+         * Delete voting option {index}
+         */
+        delete_voting_option: (arg: { index: number }) => LocalizedString;
+        /**
          * Write the voting option...
          */
         voting_option_placeholder: () => LocalizedString;
@@ -3558,6 +3712,14 @@ JPG, PNG or SVG of maximum of {size}MB.
        * Cookies Policy
        */
       cookies_policy: () => LocalizedString;
+      /**
+       * Cookie Preferences
+       */
+      cookie_preferences: () => LocalizedString;
+      /**
+       * Do Not Sell or Share My Personal Information
+       */
+      do_not_sell: () => LocalizedString;
     };
     resources: {
       /**
@@ -4354,6 +4516,138 @@ JPG, PNG or SVG of maximum of {size}MB.
        * User address is required
        */
       address_required: () => LocalizedString;
+    };
+  };
+  accessibility: {
+    /**
+     * Skip to main content
+     */
+    skip_to_content: () => LocalizedString;
+  };
+  search: {
+    /**
+     * Search
+     */
+    label: () => LocalizedString;
+    /**
+     * Clear search
+     */
+    clear: () => LocalizedString;
+  };
+  pagination: {
+    /**
+     * Previous page
+     */
+    previous_page: () => LocalizedString;
+    /**
+     * Next page
+     */
+    next_page: () => LocalizedString;
+    /**
+     * {current} of {total}
+     */
+    page_of: (arg: { current: number; total: number }) => LocalizedString;
+  };
+  input: {
+    /**
+     * Increase value
+     */
+    increment: () => LocalizedString;
+    /**
+     * Decrease value
+     */
+    decrement: () => LocalizedString;
+  };
+  consent: {
+    banner: {
+      /**
+       * We ask before we track you
+       */
+      title: () => LocalizedString;
+      /**
+       * VeVote uses strictly necessary storage to keep the app and your wallet session working. With your permission we also use Mixpanel to measure how the app is used. Analytics stay off unless you turn them on, and you can change your mind at any time from the footer.
+       */
+      description: () => LocalizedString;
+      /**
+       * Cookie Policy
+       */
+      cookie_policy_link: () => LocalizedString;
+      /**
+       * Privacy Policy
+       */
+      privacy_policy_link: () => LocalizedString;
+    };
+    actions: {
+      /**
+       * Accept all
+       */
+      accept_all: () => LocalizedString;
+      /**
+       * Reject all
+       */
+      reject_all: () => LocalizedString;
+      /**
+       * Manage preferences
+       */
+      manage: () => LocalizedString;
+      /**
+       * Save preferences
+       */
+      save: () => LocalizedString;
+      /**
+       * Cancel
+       */
+      cancel: () => LocalizedString;
+    };
+    preferences: {
+      /**
+       * Cookie preferences
+       */
+      title: () => LocalizedString;
+      /**
+       * Choose which categories of storage and trackers VeVote may use. Strictly necessary items cannot be disabled because the app cannot function without them.
+       */
+      description: () => LocalizedString;
+      /**
+       * Always active
+       */
+      always_active: () => LocalizedString;
+    };
+    categories: {
+      necessary: {
+        /**
+         * Strictly necessary
+         */
+        title: () => LocalizedString;
+        /**
+         * Required to run the app: your consent choice, cached blockchain queries and your wallet connection session. No consent is required for these.
+         */
+        description: () => LocalizedString;
+      };
+      analytics: {
+        /**
+         * Analytics
+         */
+        title: () => LocalizedString;
+        /**
+         * Mixpanel product analytics: which pages and actions are used, plus the connected wallet address as a pseudonymous identifier. Used to improve VeVote.
+         */
+        description: () => LocalizedString;
+      };
+    };
+    proof: {
+      /**
+       * Your consent record
+       */
+      title: () => LocalizedString;
+      /**
+       * Record {id} — given on {date} against cookie policy version {version}.
+       */
+      description: (arg: { date: string; id: string; version: number }) => LocalizedString;
+      /**
+       * Download my consent record
+       */
+      download: () => LocalizedString;
     };
   };
 };

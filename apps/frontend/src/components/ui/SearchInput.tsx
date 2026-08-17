@@ -2,6 +2,7 @@ import { Button, defineStyle, Icon, InputGroupProps, InputProps } from "@chakra-
 import { InputWithIcon } from "./InputWithIcon";
 import { forwardRef } from "react";
 import { CloseIcon, SearchIcon } from "@/icons";
+import { useI18nContext } from "@/i18n/i18n-react";
 
 type SearchInputProps = InputProps & {
   onClear?: () => void;
@@ -24,12 +25,16 @@ const buttonStyle = defineStyle({
 
 export const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
   ({ onClear, value, groupProps, ...props }, ref) => {
+    const { LL } = useI18nContext();
+
     return (
       <InputWithIcon backgroundColor={"white"} position={"relative"} flex={1} minWidth="0" {...groupProps}>
         <InputWithIcon.Icon iconPosition="left">
-          <Icon as={SearchIcon} width={4} height={4} />
+          <Icon as={SearchIcon} width={4} height={4} aria-hidden />
         </InputWithIcon.Icon>
         <InputWithIcon.Input
+          type="search"
+          aria-label={props["aria-label"] ?? props.placeholder ?? LL.search.label()}
           paddingInlineEnd={0}
           minWidth="0"
           ref={ref}
@@ -39,8 +44,13 @@ export const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
           {...props}
         />
         {value && onClear && (
-          <Button {...buttonStyle} _hover={{ bg: "white" }} onClick={onClear} size={{ base: "sm", md: "md" }}>
-            <Icon as={CloseIcon} width={4} height={4} />
+          <Button
+            aria-label={LL.search.clear()}
+            {...buttonStyle}
+            _hover={{ bg: "white" }}
+            onClick={onClear}
+            size={{ base: "sm", md: "md" }}>
+            <Icon as={CloseIcon} width={4} height={4} aria-hidden />
           </Button>
         )}
       </InputWithIcon>

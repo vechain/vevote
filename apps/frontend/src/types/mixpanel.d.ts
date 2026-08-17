@@ -10,6 +10,11 @@ declare module "mixpanel-browser" {
       };
       track_pageview: (properties: Dict) => void;
       reset: () => void;
+      get_distinct_id: () => string;
+      /** Starts collection. Only called once the analytics consent category is granted. */
+      opt_in_tracking: () => void;
+      /** Stops collection and wipes the identifiers already stored on the device. */
+      opt_out_tracking: (options?: { clear_persistence?: boolean; delete_user?: boolean }) => void;
     };
   }
 }

@@ -8,9 +8,15 @@ import { useWallet } from "@vechain/vechain-kit";
 import { useUser } from "@/contexts/UserProvider";
 import { useNavigate } from "react-router-dom";
 import { Routes } from "@/types/routes";
+import { useDocumentTitle } from "@/hooks/useDocumentTitle";
+import { useI18nContext } from "@/i18n/i18n-react";
 
 export const CreateProposal = () => {
+  const { LL } = useI18nContext();
   const { openPreview } = useCreateProposal();
+
+  useDocumentTitle(LL.proposal.create.title());
+
   const { account } = useWallet();
   const { isWhitelisted } = useUser();
 

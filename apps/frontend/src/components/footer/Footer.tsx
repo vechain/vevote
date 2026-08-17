@@ -1,6 +1,7 @@
+import { useCookieConsent } from "@/contexts/CookieConsentProvider";
 import { useI18nContext } from "@/i18n/i18n-react";
 import { LegalLinks, ResourcesLinks, VeVoteLinks } from "@/types/terms";
-import { Box, Flex, Image, Link, Text } from "@chakra-ui/react";
+import { Box, Button, Flex, Image, Link, Text } from "@chakra-ui/react";
 import { PropsWithChildren } from "react";
 import { VoteLogo } from "../ui/VoteLogo";
 
@@ -8,8 +9,9 @@ export const Footer = () => {
   const { LL } = useI18nContext();
 
   return (
-    <Box position="relative">
-      <Image src="/images/footer-image.png" />
+    <Box as="footer" position="relative">
+      {/* Decorative only: an empty alt keeps it out of the accessibility tree. */}
+      <Image src="/images/footer-image.png" alt="" role="presentation" />
       <Flex
         id="footer"
         w={"100%"}
@@ -54,6 +56,7 @@ const DocLinks = () => {
         <FooterLink href={LegalLinks.PRIVACY_POLICY}>{LL.footer.legal.privacy_policy()}</FooterLink>
         <FooterLink href={LegalLinks.TERMS_OF_SERVICE}>{LL.footer.legal.terms_of_service()}</FooterLink>
         <FooterLink href={LegalLinks.COOKIES_POLICY}>{LL.footer.legal.cookies_policy()}</FooterLink>
+        <ConsentFooterActions />
       </Flex>
       <Flex flexDirection={"column"} alignItems={"start"} gap={3} maxWidth={{ base: "full", md: "fit-content" }}>
         <FooterLabel>{LL.footer.resources.title()}</FooterLabel>
@@ -63,6 +66,44 @@ const DocLinks = () => {
         <FooterLink href={VeVoteLinks.GOVERNANCE_CHARTER}>{LL.footer.resources.governance_charter()}</FooterLink>
       </Flex>
     </Flex>
+  );
+};
+
+/**
+ * Persistent access to the consent choice. The "Do Not Sell or Share" entry is
+ * the CCPA/CPRA opt-out link and must stay reachable from every page.
+ */
+const ConsentFooterActions = () => {
+  const { LL } = useI18nContext();
+  const { openPreferences, optOutOfSale } = useCookieConsent();
+
+  return (
+    <>
+      <FooterButton onClick={openPreferences}>{LL.footer.legal.cookie_preferences()}</FooterButton>
+      <FooterButton onClick={optOutOfSale}>{LL.footer.legal.do_not_sell()}</FooterButton>
+    </>
+  );
+};
+
+const FooterButton = ({ onClick, children }: PropsWithChildren<{ onClick: () => void }>) => {
+  return (
+    <Button
+      onClick={onClick}
+      variant="ghost"
+      height="auto"
+      minWidth={0}
+      paddingX={0}
+      paddingY={0}
+      fontSize="16px"
+      fontWeight={400}
+      textAlign="left"
+      whiteSpace="normal"
+      justifyContent="flex-start"
+      color="stargate.gray"
+      _hover={{ color: "stargate.white", bg: "transparent" }}
+      _active={{ bg: "transparent" }}>
+      {children}
+    </Button>
   );
 };
 
