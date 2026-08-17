@@ -17,6 +17,7 @@ import { DescriptionSection } from "./components/DescriptionSection";
 import { ProposalHeader } from "./components/ProposalHeader";
 import { VotingAndTimeline } from "./components/VotingAndTimeline/VotingAndTimeline";
 import { MergedProposal } from "@/types/historicalProposals";
+import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 
 export const Proposal = () => {
   const { LL } = useI18nContext();
@@ -39,6 +40,8 @@ export const Proposal = () => {
   }, [draftProposal, params.proposalId, proposalData]);
 
   const isCanceled = useMemo(() => proposal?.status === ProposalStatus.CANCELED, [proposal?.status]);
+
+  useDocumentTitle(proposal?.title);
 
   useEffect(() => {
     const isDraftProposal = params.proposalId === "draft" && !account?.address;

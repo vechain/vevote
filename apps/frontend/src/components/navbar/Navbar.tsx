@@ -22,7 +22,7 @@ export const bgHeaderStyle = defineStyle({
 export const Navbar = () => {
   const { connection } = useWallet();
   return (
-    <Box {...bgHeaderStyle} position="fixed" top="0" width="100%" zIndex={1000}>
+    <Box as="nav" aria-label="Main" {...bgHeaderStyle} position="fixed" top="0" width="100%" zIndex={1000}>
       <Container maxWidth={"1024px"} marginX={"auto"} paddingX={"20px"}>
         <Flex justifyContent={"space-between"} alignItems={"center"} gap={6} paddingY={4}>
           <Link to="/">

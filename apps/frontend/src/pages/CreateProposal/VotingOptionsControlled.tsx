@@ -117,8 +117,13 @@ const SortableVotingOption = ({ index, onDelete, id }: { index: number; onDelete
           </FormControl>
 
           {index > 1 && (
-            <Button onClick={onDelete} variant={"tertiary"} size={"fit"} width={"48px"}>
-              <Icon as={DeleteIcon} />
+            <Button
+              aria-label={LL.proposal.create.setup_form.delete_voting_option({ index: index + 1 })}
+              onClick={onDelete}
+              variant={"tertiary"}
+              size={"fit"}
+              width={"48px"}>
+              <Icon as={DeleteIcon} aria-hidden />
             </Button>
           )}
         </Flex>

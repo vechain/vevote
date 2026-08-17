@@ -19,6 +19,7 @@ import { CreateProposalProvider } from "./pages/CreateProposal/CreateProposalPro
 import { persister, queryClient } from "./utils/queryClient.ts";
 import { UserProvider } from "./contexts/UserProvider.tsx";
 import { MixPanelProvider } from "./contexts/MixPanelProvider.tsx";
+import { CookieConsentProvider } from "./contexts/CookieConsentProvider.tsx";
 import { LegalLinks } from "./types/terms.ts";
 
 loadLocale("en");
@@ -107,13 +108,16 @@ const Providers = ({ children }: PropsWithChildren) => {
             termsAndConditions: [{ url: LegalLinks.TERMS_OF_SERVICE, required: true, version: 1 }],
             cookiePolicy: [{ url: LegalLinks.COOKIES_POLICY, required: true, version: 1 }],
           }}>
-          <MixPanelProvider>
-            <ThemeProvider>
-              <UserProvider>
-                <CreateProposalProvider>{children}</CreateProposalProvider>
-              </UserProvider>
-            </ThemeProvider>
-          </MixPanelProvider>
+          {/* Consent must be resolved before any non-essential tracker starts. */}
+          <CookieConsentProvider>
+            <MixPanelProvider>
+              <ThemeProvider>
+                <UserProvider>
+                  <CreateProposalProvider>{children}</CreateProposalProvider>
+                </UserProvider>
+              </ThemeProvider>
+            </MixPanelProvider>
+          </CookieConsentProvider>
         </VeChainKitProvider>
       </PersistQueryClientProvider>
     </I18nProvider>

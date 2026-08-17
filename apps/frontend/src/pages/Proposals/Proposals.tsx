@@ -14,6 +14,7 @@ import { ProposalCardType } from "@/types/proposal";
 import { Flex, Heading, Icon, Text } from "@chakra-ui/react";
 import { useWallet } from "@vechain/vechain-kit";
 import { PropsWithChildren, useMemo } from "react";
+import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import { useCreateProposal } from "../CreateProposal/CreateProposalProvider";
 import { ProposalCard } from "./ProposalCard";
 
@@ -21,6 +22,8 @@ const ITEMS_PER_PAGE = 6;
 
 export const Proposals = () => {
   const { LL } = useI18nContext();
+
+  useDocumentTitle(LL.proposals.title());
 
   const { isWhitelisted } = useUser();
   const { account } = useWallet();
